@@ -1,0 +1,395 @@
+{
+  "week_label": "Week of May 3, 2026",
+  "events": [
+    {
+      "slug": "2026-05-13-gathering-of-men",
+      "title": "Gathering of Men",
+      "date": "2026-05-13",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-06-st-john-s-hearing-institute-ear-wax-cleaning",
+      "title": "St. John’s Hearing Institute - Ear Wax Cleaning",
+      "date": "2026-05-06",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-05-lawn-mowing",
+      "title": "Lawn Mowing",
+      "date": "2026-05-05",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-05-tennis",
+      "title": "Tennis",
+      "date": "2026-05-05",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-05-water-aerobics-with-joan",
+      "title": "Water Aerobics with Joan",
+      "date": "2026-05-05",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-05-artists-of-palm-hill-s",
+      "title": "Artists of Palm Hill (S)",
+      "date": "2026-05-05",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-05-bingo-n",
+      "title": "Bingo (N)",
+      "date": "2026-05-05",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-06-coffee-donuts-s",
+      "title": "Coffee & Donuts (S)",
+      "date": "2026-05-06",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-06-titanic-experience",
+      "title": "Titanic Experience",
+      "date": "2026-05-06",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-06-mahjong-group-n-library",
+      "title": "Mahjong Group (N Library)",
+      "date": "2026-05-06",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-06-bocce-ball-south-area",
+      "title": "Bocce Ball (South Area)",
+      "date": "2026-05-06",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-06-billiards-n",
+      "title": "Billiards (N)",
+      "date": "2026-05-06",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-07-tennis",
+      "title": "Tennis",
+      "date": "2026-05-07",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-07-quilt-club",
+      "title": "Quilt Club",
+      "date": "2026-05-07",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-07-bingo-s",
+      "title": "Bingo (S)",
+      "date": "2026-05-07",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-08-water-aerobics-with-joan",
+      "title": "Water Aerobics with Joan",
+      "date": "2026-05-08",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-08-hand-and-foot-n",
+      "title": "Hand and Foot(N)",
+      "date": "2026-05-08",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-08-pot-luck-dinner-s",
+      "title": "Pot Luck Dinner (S)",
+      "date": "2026-05-08",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-09-pickleball",
+      "title": "Pickleball",
+      "date": "2026-05-09",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-10-water-aerobics-with-lois",
+      "title": "Water Aerobics with Lois",
+      "date": "2026-05-10",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-11-coffee-donuts-n",
+      "title": "Coffee & Donuts (N)",
+      "date": "2026-05-11",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-11-chair-yoga-sch",
+      "title": "Chair Yoga (SCH)",
+      "date": "2026-05-11",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-11-communication-mtg",
+      "title": "Communication Mtg",
+      "date": "2026-05-11",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-11-bridge-group-north-library",
+      "title": "Bridge Group (North Library)",
+      "date": "2026-05-11",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-12-lawn-mowing",
+      "title": "Lawn Mowing",
+      "date": "2026-05-12",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-12-tennis",
+      "title": "Tennis",
+      "date": "2026-05-12",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-12-water-aerobics-with-joan",
+      "title": "Water Aerobics with Joan",
+      "date": "2026-05-12",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-12-artists-of-palm-hill-s",
+      "title": "Artists of Palm Hill (S)",
+      "date": "2026-05-12",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-12-bingo-n",
+      "title": "Bingo (N)",
+      "date": "2026-05-12",
+      "section": "whats_up_this_week"
+    },
+    {
+      "slug": "2026-05-13-coffee-donuts-s",
+      "title": "Coffee & Donuts (S)",
+      "date": "2026-05-13",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-13-mahjong-group-n-library",
+      "title": "Mahjong Group (N Library)",
+      "date": "2026-05-13",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-13-ukulele-group-s",
+      "title": "Ukulele Group (S)",
+      "date": "2026-05-13",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-13-gathering-of-men",
+      "title": "Gathering of Men",
+      "date": "2026-05-13",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-13-bocce-ball-south-area",
+      "title": "Bocce Ball (South Area)",
+      "date": "2026-05-13",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-13-nickels-game-n",
+      "title": "Nickels Game (N)",
+      "date": "2026-05-13",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-14-tennis",
+      "title": "Tennis",
+      "date": "2026-05-14",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-14-bingo-s",
+      "title": "Bingo (S)",
+      "date": "2026-05-14",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-15-water-aerobics-with-joan",
+      "title": "Water Aerobics with Joan",
+      "date": "2026-05-15",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-15-hand-and-foot-n",
+      "title": "Hand and Foot(N)",
+      "date": "2026-05-15",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-15-karaoke-obi-time-n",
+      "title": "Karaoke Obi-Time (N)",
+      "date": "2026-05-15",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-16-pickleball",
+      "title": "Pickleball",
+      "date": "2026-05-16",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-17-water-aerobics-with-lois",
+      "title": "Water Aerobics with Lois",
+      "date": "2026-05-17",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-18-coffee-donuts-n",
+      "title": "Coffee & Donuts (N)",
+      "date": "2026-05-18",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-18-chair-yoga-sch",
+      "title": "Chair Yoga (SCH)",
+      "date": "2026-05-18",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-18-bridge-group-north-library",
+      "title": "Bridge Group (North Library)",
+      "date": "2026-05-18",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-18-i-got-it-n",
+      "title": "I Got It (N)",
+      "date": "2026-05-18",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-19-lawn-mowing",
+      "title": "Lawn Mowing",
+      "date": "2026-05-19",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-19-tennis",
+      "title": "Tennis",
+      "date": "2026-05-19",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-19-water-aerobics-with-joan",
+      "title": "Water Aerobics with Joan",
+      "date": "2026-05-19",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-19-artists-of-palm-hill-s",
+      "title": "Artists of Palm Hill (S)",
+      "date": "2026-05-19",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-19-bingo-n",
+      "title": "Bingo (N)",
+      "date": "2026-05-19",
+      "section": "upcoming_events"
+    },
+    {
+      "slug": "2026-05-05-part-time-bingo-caller-needed",
+      "title": "Part-Time Bingo Caller Needed",
+      "date": "2026-05-05",
+      "section": "community_announcements"
+    },
+    {
+      "slug": "2026-04-28-block-captain-needed",
+      "title": "Block Captain Needed",
+      "date": "2026-04-28",
+      "section": "community_announcements"
+    },
+    {
+      "slug": "2026-04-29-south-lift-station",
+      "title": "South Lift Station",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-29-irrigation-water-updates",
+      "title": "Irrigation Water Updates",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-29-sewer-lining-pindo-east-apr-29",
+      "title": "Sewer Lining — Pindo East — Apr 29",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-29-sewer-lining-thatch-east-apr-29",
+      "title": "Sewer Lining — Thatch East — Apr 29",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-28-south-irrigation-water",
+      "title": "South Irrigation Water",
+      "date": "2026-04-28",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-28-sewer-lining-pindo-east-apr-28",
+      "title": "Sewer Lining — Pindo East — Apr 28",
+      "date": "2026-04-28",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-28-sewer-lining-thatch-east-apr-28",
+      "title": "Sewer Lining — Thatch East — Apr 28",
+      "date": "2026-04-28",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-28-sewer-lining-thatch-west-apr-28",
+      "title": "Sewer Lining — Thatch West — Apr 28",
+      "date": "2026-04-28",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-28-water-shutoff-south-area-apr-28",
+      "title": "Water Shutoff — South Area — Apr 28",
+      "date": "2026-04-28",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-29-lift-station-currently-running",
+      "title": "Lift Station Currently Running",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-29-irrigation-water-off-in-north",
+      "title": "Irrigation Water Off in North",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events"
+    },
+    {
+      "slug": "2026-04-30-south-potable-water-off-10am-12pm-approx",
+      "title": "South Potable Water Off 10am-12pm approx.",
+      "date": "2026-04-30",
+      "section": "past_maintenance_events"
+    }
+  ]
+}
