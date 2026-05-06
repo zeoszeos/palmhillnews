@@ -9,11 +9,25 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-gathering-of-men.html"
     },
     {
-      "slug": "2026-05-06-st-john-s-hearing-institute-ear-wax-cleaning",
-      "title": "St. John’s Hearing Institute - Ear Wax Cleaning",
+      "slug": "2026-05-06-titanic",
+      "title": "Titanic",
       "date": "2026-05-06",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-06-st-john-s-hearing-institute-ear-wax-cleaning.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-06-titanic.html"
+    },
+    {
+      "slug": "2026-04-30-new-email-address-for-the-link",
+      "title": "New email address for “The Link”",
+      "date": "2026-04-30",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-new-email-address-for-the-link.html"
+    },
+    {
+      "slug": "2026-04-30-fob-system-update",
+      "title": "Fob System Update",
+      "date": "2026-04-30",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-fob-system-update.html"
     },
     {
       "slug": "2026-05-06-coffee-donuts-s",
@@ -345,18 +359,18 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-bocce-ball-south-area.html"
     },
     {
-      "slug": "2026-05-11-communications-committee",
-      "title": "Communications Committee",
+      "slug": "2026-05-11-communications-committee-meeting",
+      "title": "Communications Committee Meeting",
       "date": "2026-05-11",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-11-communications-committee.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-11-communications-committee-meeting.html"
     },
     {
-      "slug": "2026-05-12-golf-committee",
-      "title": "Golf Committee",
+      "slug": "2026-05-12-golf-committee-meeting",
+      "title": "Golf Committee Meeting",
       "date": "2026-05-12",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-12-golf-committee.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-12-golf-committee-meeting.html"
     },
     {
       "slug": "2026-05-13-building-grounds-committee",
@@ -380,6 +394,13 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-27-board-meeting.html"
     },
     {
+      "slug": "2026-05-04-zoom-volunteers-needed",
+      "title": "Zoom Volunteers Needed",
+      "date": "2026-05-04",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-04-zoom-volunteers-needed.html"
+    },
+    {
       "slug": "2026-05-05-part-time-bingo-caller-needed",
       "title": "Part-Time Bingo Caller Needed",
       "date": "2026-05-05",
@@ -392,6 +413,83 @@
       "date": "2026-04-28",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-28-block-captain-needed.html"
+    },
+    {
+      "slug": "2026-05-05-south-irrigation-water-is-going-to-be-off-overnigh",
+      "title": "South Irrigation Water is going to be off overnight",
+      "date": "2026-05-05",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-south-irrigation-water-is-going-to-be-off-overnigh.html"
+    },
+    {
+      "slug": "2026-05-05-water-shutoff-south-area-may-5",
+      "title": "Water Shutoff — South Area — May 5",
+      "date": "2026-05-05",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-water-shutoff-south-area-may-5.html"
+    },
+    {
+      "slug": "2026-05-04-solar-panel-project-is-beginning-today-at-the-nort",
+      "title": "Solar Panel Project is beginning today at the North Clubhouse from 8-4pm until the project is completed. — May 4",
+      "date": "2026-05-04",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-04-solar-panel-project-is-beginning-today-at-the-nort.html"
+    },
+    {
+      "slug": "2026-05-01-irrigation-water-back-on",
+      "title": "Irrigation Water Back On",
+      "date": "2026-05-01",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-01-irrigation-water-back-on.html"
+    },
+    {
+      "slug": "2026-05-01-water-shutoff-south-area-may-1",
+      "title": "Water Shutoff — South Area — May 1",
+      "date": "2026-05-01",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-01-water-shutoff-south-area-may-1.html"
+    },
+    {
+      "slug": "2026-05-01-south-irrigation-water-shut-down-may-1",
+      "title": "South Irrigation Water Shut Down — May 1",
+      "date": "2026-05-01",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-01-south-irrigation-water-shut-down-may-1.html"
+    },
+    {
+      "slug": "2026-05-01-fob-updates-continue-today-may-1",
+      "title": "Fob Updates Continue Today — May 1",
+      "date": "2026-05-01",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-01-fob-updates-continue-today-may-1.html"
+    },
+    {
+      "slug": "2026-05-01-sewer-lining-may-1",
+      "title": "Sewer Lining — May 1",
+      "date": "2026-05-01",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-01-sewer-lining-may-1.html"
+    },
+    {
+      "slug": "2026-04-30-fob-entry-system",
+      "title": "Fob Entry System",
+      "date": "2026-04-30",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-fob-entry-system.html"
+    },
+    {
+      "slug": "2026-04-30-sewer-lining-pindo-west-apr-30",
+      "title": "Sewer Lining — Pindo West — Apr 30",
+      "date": "2026-04-30",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-sewer-lining-pindo-west-apr-30.html"
+    },
+    {
+      "slug": "2026-04-29-irrigation-water-back-on",
+      "title": "Irrigation Water Back On",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-29-irrigation-water-back-on.html"
     },
     {
       "slug": "2026-04-29-south-lift-station",
@@ -420,6 +518,34 @@
       "date": "2026-04-29",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-29-sewer-lining-thatch-east-apr-29.html"
+    },
+    {
+      "slug": "2026-05-01-south-irrigation-water-off-today",
+      "title": "South Irrigation Water Off Today",
+      "date": "2026-05-01",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-01-south-irrigation-water-off-today.html"
+    },
+    {
+      "slug": "2026-05-04-south-potable-water-off-at-9am-monday-may-4-2026",
+      "title": "South Potable Water off at 9am Monday May 4, 2026",
+      "date": "2026-05-04",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-04-south-potable-water-off-at-9am-monday-may-4-2026.html"
+    },
+    {
+      "slug": "2026-04-30-south-potable-water-off-today-10am-12-00pm-approx",
+      "title": "South Potable Water Off Today 10am-12:00pm approx",
+      "date": "2026-04-30",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-south-potable-water-off-today-10am-12-00pm-approx.html"
+    },
+    {
+      "slug": "2026-04-29-repairs-have-been-made-irrigation-water-back-on-in",
+      "title": "Repairs have been made - Irrigation Water back on in North and South",
+      "date": "2026-04-29",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-29-repairs-have-been-made-irrigation-water-back-on-in.html"
     },
     {
       "slug": "2026-04-29-lift-station-currently-running",
