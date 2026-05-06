@@ -16,20 +16,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-06-titanic.html"
     },
     {
-      "slug": "2026-04-30-new-email-address-for-the-link",
-      "title": "New email address for “The Link”",
-      "date": "2026-04-30",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-new-email-address-for-the-link.html"
-    },
-    {
-      "slug": "2026-04-30-fob-system-update",
-      "title": "Fob System Update",
-      "date": "2026-04-30",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-fob-system-update.html"
-    },
-    {
       "slug": "2026-05-06-coffee-donuts-s",
       "title": "Coffee & Donuts (S)",
       "date": "2026-05-06",
@@ -434,6 +420,20 @@
       "date": "2026-05-04",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-04-zoom-volunteers-needed.html"
+    },
+    {
+      "slug": "2026-04-30-new-email-address-for-the-link",
+      "title": "New email address for “The Link”",
+      "date": "2026-04-30",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-new-email-address-for-the-link.html"
+    },
+    {
+      "slug": "2026-04-30-fob-system-update",
+      "title": "Fob System Update",
+      "date": "2026-04-30",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-30-fob-system-update.html"
     },
     {
       "slug": "2026-05-05-part-time-bingo-caller-needed",
