@@ -16,41 +16,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-06-st-john-s-hearing-institute-ear-wax-cleaning.html"
     },
     {
-      "slug": "2026-05-05-lawn-mowing",
-      "title": "Lawn Mowing",
-      "date": "2026-05-05",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-lawn-mowing.html"
-    },
-    {
-      "slug": "2026-05-05-tennis",
-      "title": "Tennis",
-      "date": "2026-05-05",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-tennis.html"
-    },
-    {
-      "slug": "2026-05-05-water-aerobics-with-joan",
-      "title": "Water Aerobics with Joan",
-      "date": "2026-05-05",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-water-aerobics-with-joan.html"
-    },
-    {
-      "slug": "2026-05-05-artists-of-palm-hill-s",
-      "title": "Artists of Palm Hill (S)",
-      "date": "2026-05-05",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-artists-of-palm-hill-s.html"
-    },
-    {
-      "slug": "2026-05-05-bingo-n",
-      "title": "Bingo (N)",
-      "date": "2026-05-05",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-05-bingo-n.html"
-    },
-    {
       "slug": "2026-05-06-coffee-donuts-s",
       "title": "Coffee & Donuts (S)",
       "date": "2026-05-06",
@@ -208,42 +173,35 @@
       "slug": "2026-05-13-coffee-donuts-s",
       "title": "Coffee & Donuts (S)",
       "date": "2026-05-13",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-coffee-donuts-s.html"
     },
     {
       "slug": "2026-05-13-mahjong-group-n-library",
       "title": "Mahjong Group (N Library)",
       "date": "2026-05-13",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-mahjong-group-n-library.html"
     },
     {
       "slug": "2026-05-13-ukulele-group-s",
       "title": "Ukulele Group (S)",
       "date": "2026-05-13",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-ukulele-group-s.html"
-    },
-    {
-      "slug": "2026-05-13-gathering-of-men",
-      "title": "Gathering of Men",
-      "date": "2026-05-13",
-      "section": "upcoming_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-gathering-of-men.html"
     },
     {
       "slug": "2026-05-13-bocce-ball-south-area",
       "title": "Bocce Ball (South Area)",
       "date": "2026-05-13",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-bocce-ball-south-area.html"
     },
     {
       "slug": "2026-05-13-nickels-game-n",
       "title": "Nickels Game (N)",
       "date": "2026-05-13",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-nickels-game-n.html"
     },
     {
@@ -359,6 +317,34 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-19-bingo-n.html"
     },
     {
+      "slug": "2026-05-20-ladies-lunch",
+      "title": "Ladies Lunch",
+      "date": "2026-05-20",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-ladies-lunch.html"
+    },
+    {
+      "slug": "2026-05-20-coffee-donuts-s",
+      "title": "Coffee & Donuts (S)",
+      "date": "2026-05-20",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-coffee-donuts-s.html"
+    },
+    {
+      "slug": "2026-05-20-mahjong-group-n-library",
+      "title": "Mahjong Group (N Library)",
+      "date": "2026-05-20",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-mahjong-group-n-library.html"
+    },
+    {
+      "slug": "2026-05-20-bocce-ball-south-area",
+      "title": "Bocce Ball (South Area)",
+      "date": "2026-05-20",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-bocce-ball-south-area.html"
+    },
+    {
       "slug": "2026-05-05-part-time-bingo-caller-needed",
       "title": "Part-Time Bingo Caller Needed",
       "date": "2026-05-05",
@@ -399,41 +385,6 @@
       "date": "2026-04-29",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-29-sewer-lining-thatch-east-apr-29.html"
-    },
-    {
-      "slug": "2026-04-28-south-irrigation-water",
-      "title": "South Irrigation Water",
-      "date": "2026-04-28",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-28-south-irrigation-water.html"
-    },
-    {
-      "slug": "2026-04-28-sewer-lining-pindo-east-apr-28",
-      "title": "Sewer Lining — Pindo East — Apr 28",
-      "date": "2026-04-28",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-28-sewer-lining-pindo-east-apr-28.html"
-    },
-    {
-      "slug": "2026-04-28-sewer-lining-thatch-east-apr-28",
-      "title": "Sewer Lining — Thatch East — Apr 28",
-      "date": "2026-04-28",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-28-sewer-lining-thatch-east-apr-28.html"
-    },
-    {
-      "slug": "2026-04-28-sewer-lining-thatch-west-apr-28",
-      "title": "Sewer Lining — Thatch West — Apr 28",
-      "date": "2026-04-28",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-28-sewer-lining-thatch-west-apr-28.html"
-    },
-    {
-      "slug": "2026-04-28-water-shutoff-south-area-apr-28",
-      "title": "Water Shutoff — South Area — Apr 28",
-      "date": "2026-04-28",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-04-28-water-shutoff-south-area-apr-28.html"
     },
     {
       "slug": "2026-04-29-lift-station-currently-running",
