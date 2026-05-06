@@ -345,6 +345,41 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-bocce-ball-south-area.html"
     },
     {
+      "slug": "2026-05-11-communications-committee",
+      "title": "Communications Committee",
+      "date": "2026-05-11",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-11-communications-committee.html"
+    },
+    {
+      "slug": "2026-05-12-golf-committee",
+      "title": "Golf Committee",
+      "date": "2026-05-12",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-12-golf-committee.html"
+    },
+    {
+      "slug": "2026-05-13-building-grounds-committee",
+      "title": "Building & Grounds Committee",
+      "date": "2026-05-13",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-building-grounds-committee.html"
+    },
+    {
+      "slug": "2026-05-13-planning-environmental-committee",
+      "title": "Planning & Environmental Committee",
+      "date": "2026-05-13",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-planning-environmental-committee.html"
+    },
+    {
+      "slug": "2026-05-27-board-meeting",
+      "title": "Board Meeting",
+      "date": "2026-05-27",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-27-board-meeting.html"
+    },
+    {
       "slug": "2026-05-05-part-time-bingo-caller-needed",
       "title": "Part-Time Bingo Caller Needed",
       "date": "2026-05-05",
