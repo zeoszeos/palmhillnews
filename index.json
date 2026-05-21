@@ -2,11 +2,11 @@
   "week_label": "Week of May 17, 2026",
   "events": [
     {
-      "slug": "2026-05-25-memorial-day-program-and-lunch-monday-5-25-26-11am",
-      "title": "Memorial Day Program and Lunch - Monday, 5/25/26 11AM - South Clubhouse",
-      "date": "2026-05-25",
+      "slug": "2026-05-20-bocce-is-cancelled-tonight-05-20-2026",
+      "title": "Bocce is cancelled tonight - 05/20/2026",
+      "date": "2026-05-20",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-25-memorial-day-program-and-lunch-monday-5-25-26-11am.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-bocce-is-cancelled-tonight-05-20-2026.html"
     },
     {
       "slug": "2026-05-24-jigsaw-puzzles-available",
@@ -35,6 +35,13 @@
       "date": "2026-05-24",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-24-water-aerobics-with-lois-n.html"
+    },
+    {
+      "slug": "2026-05-25-memorial-day-program-s",
+      "title": "Memorial Day Program (S)",
+      "date": "2026-05-25",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-25-memorial-day-program-s.html"
     },
     {
       "slug": "2026-05-26-water-aerobics-with-joan-n",
