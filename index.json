@@ -2,6 +2,27 @@
   "week_label": "Week of May 24, 2026",
   "events": [
     {
+      "slug": "2026-06-17-june-ladies-luncheon",
+      "title": "June Ladies Luncheon",
+      "date": "2026-06-17",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-june-ladies-luncheon.html"
+    },
+    {
+      "slug": "2026-07-04-july-4th",
+      "title": "July 4th",
+      "date": "2026-07-04",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-july-4th.html"
+    },
+    {
+      "slug": "2026-06-01-reminders-regarding-hurricane-season",
+      "title": "Reminders regarding Hurricane Season",
+      "date": "2026-06-01",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-01-reminders-regarding-hurricane-season.html"
+    },
+    {
       "slug": "2026-06-08-communications-committee",
       "title": "Communications Committee",
       "date": "2026-06-08",
@@ -35,6 +56,111 @@
       "date": "2026-06-24",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-meeting.html"
+    },
+    {
+      "slug": "2026-05-27-closed-board-of-directors-meeting-following-1-00pm",
+      "title": "Closed Board of Directors Meeting following 1:00pm meeting — May 27, 1:00PM",
+      "date": "2026-05-27",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-27-closed-board-of-directors-meeting-following-1-00pm.html"
+    },
+    {
+      "slug": "2026-05-20-finance-committee-meeting-may-20-10-00-am",
+      "title": "Finance Committee Meeting — May 20, 10:00 AM",
+      "date": "2026-05-20",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-20-finance-committee-meeting-may-20-10-00-am.html"
+    },
+    {
+      "slug": "2026-05-18-finance-committee-meeting-may-18-10-00-am",
+      "title": "Finance Committee Meeting — May 18, 10:00 AM",
+      "date": "2026-05-18",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-18-finance-committee-meeting-may-18-10-00-am.html"
+    },
+    {
+      "slug": "2026-05-14-closed-board-of-directors-meeting-may-14-1-00-pm",
+      "title": "Closed Board of Directors Meeting — May 14, 1:00 PM",
+      "date": "2026-05-14",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-14-closed-board-of-directors-meeting-may-14-1-00-pm.html"
+    },
+    {
+      "slug": "2026-05-13-buildings-and-grounds-committee-meeting-may-13-10-",
+      "title": "Buildings and Grounds Committee Meeting — May 13, 10:00 AM",
+      "date": "2026-05-13",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-13-buildings-and-grounds-committee-meeting-may-13-10-.html"
+    },
+    {
+      "slug": "2026-05-12-golf-committee-meeting-may-12-2-00pm",
+      "title": "Golf Committee Meeting — May 12, 2:00PM",
+      "date": "2026-05-12",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-12-golf-committee-meeting-may-12-2-00pm.html"
+    },
+    {
+      "slug": "2026-05-11-rules-and-regulations-committee-meeting-may-11-01-",
+      "title": "Rules and Regulations Committee Meeting — May 11, 01:00 PM",
+      "date": "2026-05-11",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-11-rules-and-regulations-committee-meeting-may-11-01-.html"
+    },
+    {
+      "slug": "2026-05-22-sanitation-field-memorial-day-hours",
+      "title": "Sanitation Field - Memorial Day Hours",
+      "date": "2026-05-22",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-22-sanitation-field-memorial-day-hours.html"
+    },
+    {
+      "slug": "2026-05-04-zoom-volunteers-needed",
+      "title": "Zoom Volunteers Needed",
+      "date": "2026-05-04",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-04-zoom-volunteers-needed.html"
+    },
+    {
+      "slug": "2026-05-29-water-restored-north-area-may-29",
+      "title": "Water Restored — North Area — May 29",
+      "date": "2026-05-29",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-29-water-restored-north-area-may-29.html"
+    },
+    {
+      "slug": "2026-05-29-water-restored-community-may-29",
+      "title": "Water Restored — Community — May 29",
+      "date": "2026-05-29",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-29-water-restored-community-may-29.html"
+    },
+    {
+      "slug": "2026-05-26-hurricane-season-begins-in-one-week",
+      "title": "Hurricane Season Begins in One Week",
+      "date": "2026-05-26",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-26-hurricane-season-begins-in-one-week.html"
+    },
+    {
+      "slug": "2026-05-26-north-irrigation-water-is-back-on",
+      "title": "North Irrigation water is back on",
+      "date": "2026-05-26",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-26-north-irrigation-water-is-back-on.html"
+    },
+    {
+      "slug": "2026-05-25-may-25",
+      "title": " — May 25",
+      "date": "2026-05-25",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-25-may-25.html"
+    },
+    {
+      "slug": "2026-05-26-irrigation-water-leak-in-palm-forest-area",
+      "title": "Irrigation Water Leak in Palm Forest area",
+      "date": "2026-05-26",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-26-irrigation-water-leak-in-palm-forest-area.html"
     }
   ]
 }
