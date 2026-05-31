@@ -16,13 +16,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-july-4th.html"
     },
     {
-      "slug": "2026-06-01-reminders-regarding-hurricane-season",
-      "title": "Reminders regarding Hurricane Season",
-      "date": "2026-06-01",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-01-reminders-regarding-hurricane-season.html"
-    },
-    {
       "slug": "2026-06-08-communications-committee",
       "title": "Communications Committee",
       "date": "2026-06-08",
@@ -84,6 +77,13 @@
       "date": "2026-05-14",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-14-closed-board-of-directors-meeting-may-14-1-00-pm.html"
+    },
+    {
+      "slug": "2026-06-01-reminders-regarding-hurricane-season",
+      "title": "Reminders regarding Hurricane Season",
+      "date": "2026-06-01",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-01-reminders-regarding-hurricane-season.html"
     },
     {
       "slug": "2026-05-04-zoom-volunteers-needed",
