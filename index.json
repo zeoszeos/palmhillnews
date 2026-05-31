@@ -107,13 +107,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-11-rules-and-regulations-committee-meeting-may-11-01-.html"
     },
     {
-      "slug": "2026-05-22-sanitation-field-memorial-day-hours",
-      "title": "Sanitation Field - Memorial Day Hours",
-      "date": "2026-05-22",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-22-sanitation-field-memorial-day-hours.html"
-    },
-    {
       "slug": "2026-05-04-zoom-volunteers-needed",
       "title": "Zoom Volunteers Needed",
       "date": "2026-05-04",
@@ -154,13 +147,6 @@
       "date": "2026-05-25",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-25-may-25.html"
-    },
-    {
-      "slug": "2026-05-26-irrigation-water-leak-in-palm-forest-area",
-      "title": "Irrigation Water Leak in Palm Forest area",
-      "date": "2026-05-26",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-26-irrigation-water-leak-in-palm-forest-area.html"
     }
   ]
 }
