@@ -86,13 +86,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-08-communications-committee-meeting-today.html"
     },
     {
-      "slug": "2026-06-09-golf-committee-meeting",
-      "title": "Golf Committee Meeting",
-      "date": "2026-06-09",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-09-golf-committee-meeting.html"
-    },
-    {
       "slug": "2026-06-10-buildings-and-grounds-committee-meeting",
       "title": "Buildings and Grounds Committee Meeting",
       "date": "2026-06-10",
@@ -105,6 +98,13 @@
       "date": "2026-06-10",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-planning-and-environmental-committee-meeting.html"
+    },
+    {
+      "slug": "2026-06-09-golf-committee",
+      "title": "Golf Committee",
+      "date": "2026-06-09",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-09-golf-committee.html"
     },
     {
       "slug": "2026-06-24-board-meeting",
