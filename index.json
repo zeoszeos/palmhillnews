@@ -40,7 +40,7 @@
       "slug": "2026-06-17-ladies-luncheon",
       "title": "Ladies Luncheon",
       "date": "2026-06-17",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-ladies-luncheon.html"
     },
     {
@@ -72,18 +72,39 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-22-bunco.html"
     },
     {
-      "slug": "2026-07-08-buildings-and-grounds-committee-meeting",
-      "title": "Buildings and Grounds Committee Meeting",
-      "date": "2026-07-08",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-buildings-and-grounds-committee-meeting.html"
+      "slug": "2026-06-24-board-of-directors-meeting-sbr",
+      "title": "Board of Directors Meeting (SBR)",
+      "date": "2026-06-24",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-of-directors-meeting-sbr.html"
     },
     {
-      "slug": "2026-07-08-planning-and-environmental-committee-meeting",
-      "title": "Planning and Environmental Committee Meeting",
+      "slug": "2026-06-24-nickel-s-game-night-n",
+      "title": "Nickel’s Game Night (N)",
+      "date": "2026-06-24",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-nickel-s-game-night-n.html"
+    },
+    {
+      "slug": "2026-07-08-buildings-and-grounds-committee-meeting-today",
+      "title": "Buildings and Grounds Committee Meeting Today",
       "date": "2026-07-08",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-and-environmental-committee-meeting.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-buildings-and-grounds-committee-meeting-today.html"
+    },
+    {
+      "slug": "2026-07-08-planning-and-environmental-meeting-today",
+      "title": "Planning and Environmental Meeting Today",
+      "date": "2026-07-08",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-and-environmental-meeting-today.html"
+    },
+    {
+      "slug": "2026-06-10-planning-and-environmental-committee-meeting",
+      "title": "Planning and Environmental Committee Meeting",
+      "date": "2026-06-10",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-planning-and-environmental-committee-meeting.html"
     },
     {
       "slug": "2026-06-18-finance-committee-meeting",
@@ -93,18 +114,18 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-18-finance-committee-meeting.html"
     },
     {
-      "slug": "2026-06-09-golf-committee",
-      "title": "Golf Committee",
-      "date": "2026-06-09",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-09-golf-committee.html"
-    },
-    {
       "slug": "2026-06-24-board-meeting",
       "title": "Board Meeting",
       "date": "2026-06-24",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-meeting.html"
+    },
+    {
+      "slug": "2026-06-09-golf-committee-meeting-jun-9-2-00pm",
+      "title": "Golf Committee Meeting — Jun 9, 2:00PM",
+      "date": "2026-06-09",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-09-golf-committee-meeting-jun-9-2-00pm.html"
     },
     {
       "slug": "2026-06-08-communications-committee-meeting-jun-8-10-00-am",
@@ -119,6 +140,13 @@
       "date": "2026-05-27",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-27-closed-board-of-directors-meeting-following-1-00pm.html"
+    },
+    {
+      "slug": "2026-06-10-library",
+      "title": "Library",
+      "date": "2026-06-10",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-library.html"
     },
     {
       "slug": "2026-06-09-attention-all-residents",
@@ -161,13 +189,6 @@
       "date": "2026-06-03",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-please-return-mini-refrigerator.html"
-    },
-    {
-      "slug": "2026-06-01-reminders-regarding-hurricane-season",
-      "title": "Reminders regarding Hurricane Season",
-      "date": "2026-06-01",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-01-reminders-regarding-hurricane-season.html"
     },
     {
       "slug": "2026-06-03-fridge-returned",
