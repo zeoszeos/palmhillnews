@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>QC Redirect</title>
-<style>body{font-family:sans-serif;padding:30px}a.btn{display:inline-block;margin:6px;padding:10px 18px;background:#3A6B1A;color:#fff;text-decoration:none;border-radius:6px}small{color:#888}</style>
+<style>body{font-family:sans-serif;padding:30px}a.btn,button.btn{display:inline-block;margin:6px;padding:10px 18px;background:#3A6B1A;color:#fff;text-decoration:none;border:0;border-radius:6px;font-size:15px;cursor:pointer}small{color:#888}</style>
 </head>
 <body>
 <h3>QC: Open source email</h3>
@@ -11,16 +11,20 @@ const reset = new URLSearchParams(location.search).get('reset');
 if (reset) localStorage.removeItem('qcslot');
 const saved = localStorage.getItem('qcslot');
 const out = document.getElementById('out');
-function go(slot){ localStorage.setItem('qcslot', slot);
-  location.href = 'https://mail.google.com/mail/u/' + slot + '/#all/' + id; }
+function go(slot){
+  localStorage.setItem('qcslot', slot);
+  out.innerHTML = '<p>Loading Gmail (u/' + slot + '), jumping to email in 4s… <small><a href="?id=' + id + '&reset=1">wrong account? reset</a></small></p>';
+  const w = window.open('https://mail.google.com/mail/u/' + slot + '/', 'qcgmail');
+  setTimeout(function(){ w.location.href = 'https://mail.google.com/mail/u/' + slot + '/#all/' + id; }, 4000);
+}
 if (!id) { out.innerHTML = '<p>No email id provided.</p>'; }
-else if (saved !== null) {
-  out.innerHTML = '<p>Opening in account slot u/' + saved + '… <small><a href="?id=' + id + '&reset=1">wrong account? reset</a></small></p>';
-  go(saved);
-} else {
-  out.innerHTML = '<p>First time on this device — which slot is <b>gotwicz@gmail.com</b>?</p>' +
-    [0,1,2,3].map(n => '<a class="btn" href="#" onclick="go(' + n + ');return false">u/' + n + '</a>').join('') +
-    '<p><small>Your choice is remembered on this device. Check by opening mail.google.com/mail/u/1 etc.</small></p>';
+else {
+  const btns = [0,1,2,3].map(n => '<button class="btn" onclick="go(' + n + ')">u/' + n + '</button>').join('');
+  if (saved !== null) {
+    out.innerHTML = '<p><button class="btn" onclick="go(' + saved + ')">Open email (u/' + saved + ')</button> <small><a href="?id=' + id + '&reset=1">wrong account? reset</a></small></p>';
+  } else {
+    out.innerHTML = '<p>First time on this device — which slot is <b>gotwicz@gmail.com</b>?</p>' + btns;
+  }
 }
 </script>
 </body></html>
