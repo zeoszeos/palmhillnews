@@ -72,20 +72,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-18-finance-committee-meeting.html"
     },
     {
-      "slug": "2026-07-08-building-grounds-committee",
-      "title": "Building & Grounds Committee",
-      "date": "2026-07-08",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html"
-    },
-    {
-      "slug": "2026-07-08-planning-environmental-committee",
-      "title": "Planning & Environmental Committee",
-      "date": "2026-07-08",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html"
-    },
-    {
       "slug": "2026-06-24-board-meeting",
       "title": "Board Meeting",
       "date": "2026-06-24",
@@ -98,6 +84,20 @@
       "date": "2026-06-24",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-of-directors-meeting-sbr.html"
+    },
+    {
+      "slug": "2026-07-08-building-grounds-committee",
+      "title": "Building & Grounds Committee",
+      "date": "2026-07-08",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html"
+    },
+    {
+      "slug": "2026-07-08-planning-environmental-committee",
+      "title": "Planning & Environmental Committee",
+      "date": "2026-07-08",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html"
     },
     {
       "slug": "2026-06-09-golf-committee-meeting-jun-9-2-00pm",
