@@ -9,27 +9,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-palm-hill-ukulele-group-gathering.html"
     },
     {
-      "slug": "2026-06-10-building-and-grounds",
-      "title": "Building and Grounds",
-      "date": "2026-06-10",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-building-and-grounds.html"
-    },
-    {
-      "slug": "2026-06-10-volunteer-polar-fleece-blanket-tying-s",
-      "title": "Volunteer Polar Fleece Blanket Tying(S)",
-      "date": "2026-06-10",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-volunteer-polar-fleece-blanket-tying-s.html"
-    },
-    {
-      "slug": "2026-06-10-planning-and-environmental-s",
-      "title": "Planning and Environmental (S)",
-      "date": "2026-06-10",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-planning-and-environmental-s.html"
-    },
-    {
       "slug": "2026-06-11-quilt-club-s",
       "title": "Quilt Club (S)",
       "date": "2026-06-11",
@@ -54,7 +33,7 @@
       "slug": "2026-06-18-quilt-club-s",
       "title": "Quilt Club (S)",
       "date": "2026-06-18",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-18-quilt-club-s.html"
     },
     {
@@ -79,6 +58,13 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-nickel-s-game-night-n.html"
     },
     {
+      "slug": "2026-06-25-quilt-club-s",
+      "title": "Quilt Club (S)",
+      "date": "2026-06-25",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-25-quilt-club-s.html"
+    },
+    {
       "slug": "2026-06-18-finance-committee-meeting",
       "title": "Finance Committee Meeting",
       "date": "2026-06-18",
@@ -100,6 +86,20 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-of-directors-meeting-sbr.html"
     },
     {
+      "slug": "2026-06-25-compliance-committee-meeting-s",
+      "title": "Compliance Committee Meeting (S)",
+      "date": "2026-06-25",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-25-compliance-committee-meeting-s.html"
+    },
+    {
+      "slug": "2026-06-10-buildings-and-grounds-committee-meeting-jun-10-10-",
+      "title": "Buildings and Grounds Committee Meeting — Jun 10, 10:00 AM",
+      "date": "2026-06-10",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-buildings-and-grounds-committee-meeting-jun-10-10-.html"
+    },
+    {
       "slug": "2026-06-09-golf-committee-meeting-jun-9-2-00pm",
       "title": "Golf Committee Meeting — Jun 9, 2:00PM",
       "date": "2026-06-09",
@@ -112,13 +112,6 @@
       "date": "2026-06-08",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-08-communications-committee-meeting-jun-8-10-00-am.html"
-    },
-    {
-      "slug": "2026-05-27-closed-board-of-directors-meeting-following-1-00pm",
-      "title": "Closed Board of Directors Meeting following 1:00pm meeting — May 27, 1:00PM",
-      "date": "2026-05-27",
-      "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-05-27-closed-board-of-directors-meeting-following-1-00pm.html"
     },
     {
       "slug": "2026-06-10-library",
@@ -168,34 +161,6 @@
       "date": "2026-06-03",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-please-return-mini-refrigerator.html"
-    },
-    {
-      "slug": "2026-06-03-fridge-returned",
-      "title": "Fridge Returned",
-      "date": "2026-06-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-fridge-returned.html"
-    },
-    {
-      "slug": "2026-06-03-water-restored-south-area-jun-3",
-      "title": "Water Restored — South Area — Jun 3",
-      "date": "2026-06-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-water-restored-south-area-jun-3.html"
-    },
-    {
-      "slug": "2026-06-03-missing-refrigerator",
-      "title": "Missing Refrigerator",
-      "date": "2026-06-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-missing-refrigerator.html"
-    },
-    {
-      "slug": "2026-06-03-water-shutoff-south-area-jun-3",
-      "title": "Water Shutoff — South Area — Jun 3",
-      "date": "2026-06-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-water-shutoff-south-area-jun-3.html"
     },
     {
       "slug": "2026-06-06-north-irrigation-water-off",
