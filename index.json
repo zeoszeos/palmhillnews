@@ -2,18 +2,18 @@
   "week_label": "Week of June 7, 2026",
   "events": [
     {
-      "slug": "2026-06-10-palm-hill-ukulele-group-gathering",
-      "title": "Palm Hill Ukulele Group Gathering",
-      "date": "2026-06-10",
+      "slug": "2026-06-17-june-ladies-luncheon",
+      "title": "June Ladies Luncheon",
+      "date": "2026-06-17",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-palm-hill-ukulele-group-gathering.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-june-ladies-luncheon.html"
     },
     {
-      "slug": "2026-06-11-quilt-club-s",
-      "title": "Quilt Club (S)",
-      "date": "2026-06-11",
+      "slug": "2026-07-04-july-4th-picnic",
+      "title": "July 4th Picnic",
+      "date": "2026-07-04",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-quilt-club-s.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-july-4th-picnic.html"
     },
     {
       "slug": "2026-06-12-pot-luck-dinner-and-game-night-s",
@@ -21,13 +21,6 @@
       "date": "2026-06-12",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-pot-luck-dinner-and-game-night-s.html"
-    },
-    {
-      "slug": "2026-06-17-ladies-luncheon",
-      "title": "Ladies Luncheon",
-      "date": "2026-06-17",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-ladies-luncheon.html"
     },
     {
       "slug": "2026-06-18-quilt-club-s",
@@ -40,7 +33,7 @@
       "slug": "2026-06-19-karaoke-obi-time-n",
       "title": "Karaoke Obi-Time (N)",
       "date": "2026-06-19",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-19-karaoke-obi-time-n.html"
     },
     {
@@ -114,6 +107,20 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-08-communications-committee-meeting-jun-8-10-00-am.html"
     },
     {
+      "slug": "2026-06-11-golf-information",
+      "title": "Golf Information",
+      "date": "2026-06-11",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-golf-information.html"
+    },
+    {
+      "slug": "2026-06-11-water-repair-vendor-has-arrived",
+      "title": "Water Repair Vendor has Arrived",
+      "date": "2026-06-11",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-repair-vendor-has-arrived.html"
+    },
+    {
       "slug": "2026-06-10-library",
       "title": "Library",
       "date": "2026-06-10",
@@ -149,18 +156,32 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-05-5-card-game-of-chance.html"
     },
     {
-      "slug": "2026-06-03-refrigerator-had-been-returned",
-      "title": "Refrigerator had been returned",
-      "date": "2026-06-03",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-refrigerator-had-been-returned.html"
+      "slug": "2026-06-12-water-restored-north-area-jun-12",
+      "title": "Water Restored — North Area — Jun 12",
+      "date": "2026-06-12",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-water-restored-north-area-jun-12.html"
     },
     {
-      "slug": "2026-06-03-please-return-mini-refrigerator",
-      "title": "Please return Mini Refrigerator",
-      "date": "2026-06-03",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-03-please-return-mini-refrigerator.html"
+      "slug": "2026-06-11-water-restored-north-area-jun-11",
+      "title": "Water Restored — North Area — Jun 11",
+      "date": "2026-06-11",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-restored-north-area-jun-11.html"
+    },
+    {
+      "slug": "2026-06-11-water-shutoff-north-area-jun-11",
+      "title": "Water Shutoff — North Area — Jun 11",
+      "date": "2026-06-11",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-shutoff-north-area-jun-11.html"
+    },
+    {
+      "slug": "2026-06-11-2026-2027-golf-memberships",
+      "title": "2026-2027 Golf Memberships",
+      "date": "2026-06-11",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-2026-2027-golf-memberships.html"
     },
     {
       "slug": "2026-06-06-north-irrigation-water-off",
