@@ -1,12 +1,26 @@
 {
-  "week_label": "Week of June 7, 2026",
+  "week_label": "Week of June 14, 2026",
   "events": [
     {
-      "slug": "2026-06-17-june-ladies-luncheon",
-      "title": "June Ladies Luncheon",
-      "date": "2026-06-17",
+      "slug": "2026-06-19-obi-time-karaoke-tonight-friday-june-19th",
+      "title": "Obi-Time Karaoke Tonight Friday June 19th",
+      "date": "2026-06-19",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-june-ladies-luncheon.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-19-obi-time-karaoke-tonight-friday-june-19th.html"
+    },
+    {
+      "slug": "2026-06-21-golf-course-closed-sunday-june-21st",
+      "title": "Golf Course Closed Sunday June 21st",
+      "date": "2026-06-21",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-21-golf-course-closed-sunday-june-21st.html"
+    },
+    {
+      "slug": "2026-06-19-resource-property-management-offices-closed-today",
+      "title": "Resource Property Management Offices Closed Today",
+      "date": "2026-06-19",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-19-resource-property-management-offices-closed-today.html"
     },
     {
       "slug": "2026-07-04-july-4th-picnic",
@@ -16,53 +30,25 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-july-4th-picnic.html"
     },
     {
-      "slug": "2026-06-12-pot-luck-dinner-and-game-night-s",
-      "title": "Pot Luck Dinner and Game Night (S)",
-      "date": "2026-06-12",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-pot-luck-dinner-and-game-night-s.html"
-    },
-    {
-      "slug": "2026-06-18-quilt-club-s",
-      "title": "Quilt Club (S)",
-      "date": "2026-06-18",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-18-quilt-club-s.html"
-    },
-    {
-      "slug": "2026-06-19-karaoke-obi-time-n",
-      "title": "Karaoke Obi-Time (N)",
-      "date": "2026-06-19",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-19-karaoke-obi-time-n.html"
-    },
-    {
       "slug": "2026-06-22-bunco",
       "title": "Bunco",
       "date": "2026-06-22",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-22-bunco.html"
     },
     {
       "slug": "2026-06-24-nickel-s-game-night-n",
       "title": "Nickel’s Game Night (N)",
       "date": "2026-06-24",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-nickel-s-game-night-n.html"
     },
     {
       "slug": "2026-06-25-quilt-club-s",
       "title": "Quilt Club (S)",
       "date": "2026-06-25",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-25-quilt-club-s.html"
-    },
-    {
-      "slug": "2026-06-18-finance-committee-meeting",
-      "title": "Finance Committee Meeting",
-      "date": "2026-06-18",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-18-finance-committee-meeting.html"
     },
     {
       "slug": "2026-06-24-board-meeting",
@@ -72,18 +58,25 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-meeting.html"
     },
     {
-      "slug": "2026-06-24-board-of-directors-meeting-sbr",
-      "title": "Board of Directors Meeting (SBR)",
-      "date": "2026-06-24",
+      "slug": "2026-07-08-building-grounds-committee",
+      "title": "Building & Grounds Committee",
+      "date": "2026-07-08",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-of-directors-meeting-sbr.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html"
     },
     {
-      "slug": "2026-06-25-compliance-committee-meeting-s",
-      "title": "Compliance Committee Meeting (S)",
-      "date": "2026-06-25",
+      "slug": "2026-07-08-planning-environmental-committee",
+      "title": "Planning & Environmental Committee",
+      "date": "2026-07-08",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-25-compliance-committee-meeting-s.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html"
+    },
+    {
+      "slug": "2026-06-18-finance-committee-meeting-jun-18-10-00-am",
+      "title": "Finance Committee Meeting — Jun 18, 10:00 AM",
+      "date": "2026-06-18",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-18-finance-committee-meeting-jun-18-10-00-am.html"
     },
     {
       "slug": "2026-06-10-buildings-and-grounds-committee-meeting-jun-10-10-",
@@ -107,13 +100,6 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-08-communications-committee-meeting-jun-8-10-00-am.html"
     },
     {
-      "slug": "2026-06-11-golf-information",
-      "title": "Golf Information",
-      "date": "2026-06-11",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-golf-information.html"
-    },
-    {
       "slug": "2026-06-11-water-repair-vendor-has-arrived",
       "title": "Water Repair Vendor has Arrived",
       "date": "2026-06-11",
@@ -121,39 +107,39 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-repair-vendor-has-arrived.html"
     },
     {
-      "slug": "2026-06-10-library",
-      "title": "Library",
-      "date": "2026-06-10",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-10-library.html"
+      "slug": "2026-06-17-recycling-pickup-today-jun-17",
+      "title": "Recycling Pickup Today — Jun 17",
+      "date": "2026-06-17",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-recycling-pickup-today-jun-17.html"
     },
     {
-      "slug": "2026-06-09-attention-all-residents",
-      "title": "Attention ALL Residents",
-      "date": "2026-06-09",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-09-attention-all-residents.html"
+      "slug": "2026-06-17-south-irrigation-water-is-back-on",
+      "title": "South Irrigation Water is back on",
+      "date": "2026-06-17",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-17-south-irrigation-water-is-back-on.html"
     },
     {
-      "slug": "2026-06-07-revised-4th-of-july-picnic",
-      "title": "Revised 4th of July Picnic",
-      "date": "2026-06-07",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-07-revised-4th-of-july-picnic.html"
+      "slug": "2026-06-16-friday-june-19-2026-sanitation-field-hours-9am-3pm",
+      "title": "Friday, June 19, 2026 Sanitation Field Hours 9am-3pm",
+      "date": "2026-06-16",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-16-friday-june-19-2026-sanitation-field-hours-9am-3pm.html"
     },
     {
-      "slug": "2026-06-07-4th-of-july-picnic",
-      "title": "4th of July Picnic",
-      "date": "2026-06-07",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-07-4th-of-july-picnic.html"
+      "slug": "2026-06-16-south-irrigation-water-is-off-until-wednesday-morn",
+      "title": "South Irrigation Water is off until Wednesday Morning. The front office will advise when it is turned back on",
+      "date": "2026-06-16",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-16-south-irrigation-water-is-off-until-wednesday-morn.html"
     },
     {
-      "slug": "2026-06-05-5-card-game-of-chance",
-      "title": "5 Card Game of Chance",
-      "date": "2026-06-05",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-05-5-card-game-of-chance.html"
+      "slug": "2026-06-16-north-irrigation-water-is-off-we-will-advise-when-",
+      "title": "North Irrigation Water is off. We will advise when it is turned back on.",
+      "date": "2026-06-16",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-16-north-irrigation-water-is-off-we-will-advise-when-.html"
     },
     {
       "slug": "2026-06-12-water-restored-north-area-jun-12",
@@ -163,32 +149,18 @@
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-water-restored-north-area-jun-12.html"
     },
     {
-      "slug": "2026-06-11-water-restored-north-area-jun-11",
-      "title": "Water Restored — North Area — Jun 11",
-      "date": "2026-06-11",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-restored-north-area-jun-11.html"
-    },
-    {
-      "slug": "2026-06-11-water-shutoff-north-area-jun-11",
-      "title": "Water Shutoff — North Area — Jun 11",
-      "date": "2026-06-11",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-shutoff-north-area-jun-11.html"
-    },
-    {
-      "slug": "2026-06-11-2026-2027-golf-memberships",
-      "title": "2026-2027 Golf Memberships",
-      "date": "2026-06-11",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-2026-2027-golf-memberships.html"
-    },
-    {
-      "slug": "2026-06-06-north-irrigation-water-off",
+      "slug": "2026-06-16-north-irrigation-water-off",
       "title": "North Irrigation Water Off",
-      "date": "2026-06-06",
+      "date": "2026-06-16",
       "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-06-north-irrigation-water-off.html"
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-16-north-irrigation-water-off.html"
+    },
+    {
+      "slug": "2026-06-12-potable-water-service-in-the-north-section-yesterd",
+      "title": "Potable Water Service in the North Section Yesterday",
+      "date": "2026-06-12",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-potable-water-service-in-the-north-section-yesterd.html"
     }
   ]
 }
