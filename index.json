@@ -39,7 +39,7 @@
       "date": "2026-06-22",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-22-bunco.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-06-24-nickel-s-game-night-n",
@@ -47,7 +47,7 @@
       "date": "2026-06-24",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-nickel-s-game-night-n.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-06-25-quilt-club-s",
@@ -55,7 +55,7 @@
       "date": "2026-06-25",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-25-quilt-club-s.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-06-24-board-meeting",
@@ -63,7 +63,7 @@
       "date": "2026-06-24",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-meeting.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-07-08-building-grounds-committee",
@@ -71,7 +71,7 @@
       "date": "2026-07-08",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-07-08-planning-environmental-committee",
@@ -79,7 +79,7 @@
       "date": "2026-07-08",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-06-18-finance-committee-meeting-jun-18-10-00-am",
