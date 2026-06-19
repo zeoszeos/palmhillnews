@@ -63,7 +63,7 @@
       "date": "2026-06-24",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-board-meeting.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-07-08-building-grounds-committee",
@@ -71,7 +71,7 @@
       "date": "2026-07-08",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-07-08-planning-environmental-committee",
@@ -79,7 +79,7 @@
       "date": "2026-07-08",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-06-18-finance-committee-meeting-jun-18-10-00-am",
