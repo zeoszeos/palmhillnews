@@ -26,14 +26,6 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-04-july-4th-picnic",
-      "title": "July 4th Picnic",
-      "date": "2026-07-04",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-july-4th-picnic.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-06-22-bunco",
       "title": "Bunco",
       "date": "2026-06-22",
@@ -114,14 +106,6 @@
       "hasBody": true
     },
     {
-      "slug": "2026-06-11-water-repair-vendor-has-arrived",
-      "title": "Water Repair Vendor has Arrived",
-      "date": "2026-06-11",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-11-water-repair-vendor-has-arrived.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-06-17-recycling-pickup-today-jun-17",
       "title": "Recycling Pickup Today — Jun 17",
       "date": "2026-06-17",
@@ -162,27 +146,11 @@
       "hasBody": true
     },
     {
-      "slug": "2026-06-12-water-restored-north-area-jun-12",
-      "title": "Water Restored — North Area — Jun 12",
-      "date": "2026-06-12",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-water-restored-north-area-jun-12.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-06-16-north-irrigation-water-off",
       "title": "North Irrigation Water Off",
       "date": "2026-06-16",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-16-north-irrigation-water-off.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-06-12-potable-water-service-in-the-north-section-yesterd",
-      "title": "Potable Water Service in the North Section Yesterday",
-      "date": "2026-06-12",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-12-potable-water-service-in-the-north-section-yesterd.html",
       "hasBody": true
     }
   ]
