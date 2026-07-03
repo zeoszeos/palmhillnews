@@ -2,6 +2,30 @@
   "week_label": "Week of June 28, 2026",
   "events": [
     {
+      "slug": "2026-07-03-palm-hill-office-closed-today",
+      "title": "Palm Hill Office Closed Today",
+      "date": "2026-07-03",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-03-palm-hill-office-closed-today.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-04-4th-of-july-picnic-reminder",
+      "title": "4th of July Picnic Reminder",
+      "date": "2026-07-04",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-4th-of-july-picnic-reminder.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-15-updates-from-linda-keehl",
+      "title": "Updates from Linda Keehl",
+      "date": "2026-07-15",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-updates-from-linda-keehl.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-07-06-5-card-chance-s",
       "title": "5 Card Chance (S)",
       "date": "2026-07-06",
@@ -87,6 +111,70 @@
       "date": "2026-07-14",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-14-golf-committee.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-25-compliance-committee-meeting-jun-25-1-00pm",
+      "title": "Compliance Committee Meeting — Jun 25, 1:00PM",
+      "date": "2026-06-25",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-25-compliance-committee-meeting-jun-25-1-00pm.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-24-closed-board-of-directors-meeting-jun-24",
+      "title": "Closed Board of Directors Meeting — Jun 24",
+      "date": "2026-06-24",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-closed-board-of-directors-meeting-jun-24.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-03-attention-palm-hill-residents",
+      "title": "Attention Palm Hill Residents",
+      "date": "2026-07-03",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-03-attention-palm-hill-residents.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-28-block-captains-for-thatch-palm-east-west-needed",
+      "title": "Block Captains for Thatch Palm East & West Needed",
+      "date": "2026-06-28",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-block-captains-for-thatch-palm-east-west-needed.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-28-lisa-bria-new-link-editor",
+      "title": "Lisa Bria New Link Editor",
+      "date": "2026-06-28",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-lisa-bria-new-link-editor.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-27-two-north-block-captains-needed-for-thatcher-palm-",
+      "title": "Two North Block Captains needed for Thatcher Palm E",
+      "date": "2026-06-27",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-27-two-north-block-captains-needed-for-thatcher-palm-.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-24-north-block-captain-needed",
+      "title": "North Block Captain Needed",
+      "date": "2026-06-24",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-north-block-captain-needed.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-06-29-fourth-of-july-schedule",
+      "title": "Fourth of July Schedule",
+      "date": "2026-06-29",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-29-fourth-of-july-schedule.html",
       "hasBody": true
     }
   ]
