@@ -2,14 +2,6 @@
   "week_label": "Week of June 28, 2026",
   "events": [
     {
-      "slug": "2026-07-03-palm-hill-office-closed-today",
-      "title": "Palm Hill Office Closed Today",
-      "date": "2026-07-03",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-03-palm-hill-office-closed-today.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-07-04-4th-of-july-picnic-reminder",
       "title": "4th of July Picnic Reminder",
       "date": "2026-07-04",
