@@ -4,6 +4,7 @@
     {
       "slug": "2026-07-04-4th-of-july-picnic-reminder",
       "title": "4th of July Picnic Reminder",
+      "display_title": "4th of July Picnic Reminder",
       "date": "2026-07-04",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-4th-of-july-picnic-reminder.html",
@@ -12,6 +13,7 @@
     {
       "slug": "2026-07-15-updates-from-linda-keehl",
       "title": "Updates from Linda Keehl",
+      "display_title": "Updates from Linda Keehl",
       "date": "2026-07-15",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-updates-from-linda-keehl.html",
@@ -20,6 +22,7 @@
     {
       "slug": "2026-07-06-5-card-chance-s",
       "title": "5 Card Chance (S)",
+      "display_title": "5 Card Chance (S)",
       "date": "2026-07-06",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-5-card-chance-s.html",
@@ -28,6 +31,7 @@
     {
       "slug": "2026-07-08-nickle-s-game-night-n",
       "title": "Nickle's Game Night (N)",
+      "display_title": "Nickle's Game Night (N)",
       "date": "2026-07-08",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-nickle-s-game-night-n.html",
@@ -36,6 +40,7 @@
     {
       "slug": "2026-07-09-quilt-club-s",
       "title": "Quilt Club (S)",
+      "display_title": "Quilt Club (S)",
       "date": "2026-07-09",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-09-quilt-club-s.html",
@@ -44,6 +49,7 @@
     {
       "slug": "2026-07-10-pot-luck-supper-s",
       "title": "Pot Luck Supper (S)",
+      "display_title": "Pot Luck Supper (S)",
       "date": "2026-07-10",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-pot-luck-supper-s.html",
@@ -52,6 +58,7 @@
     {
       "slug": "2026-07-15-ladies-luncheon",
       "title": "Ladies Luncheon",
+      "display_title": "Ladies Luncheon",
       "date": "2026-07-15",
       "section": "upcoming_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-ladies-luncheon.html",
@@ -60,6 +67,7 @@
     {
       "slug": "2026-07-16-quilt-club-s",
       "title": "Quilt Club (S)",
+      "display_title": "Quilt Club (S)",
       "date": "2026-07-16",
       "section": "upcoming_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-quilt-club-s.html",
@@ -68,6 +76,7 @@
     {
       "slug": "2026-07-17-karaoke-obi-time-n",
       "title": "Karaoke Obi-Time (N)",
+      "display_title": "Karaoke Obi-Time (N)",
       "date": "2026-07-17",
       "section": "upcoming_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-17-karaoke-obi-time-n.html",
@@ -76,6 +85,7 @@
     {
       "slug": "2026-07-08-building-grounds-committee",
       "title": "Building & Grounds Committee",
+      "display_title": "Building & Grounds Committee",
       "date": "2026-07-08",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html",
@@ -84,6 +94,7 @@
     {
       "slug": "2026-07-08-planning-environmental-committee",
       "title": "Planning & Environmental Committee",
+      "display_title": "Planning & Environmental Committee",
       "date": "2026-07-08",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html",
@@ -92,6 +103,7 @@
     {
       "slug": "2026-07-13-communications-committee",
       "title": "Communications Committee",
+      "display_title": "Communications Committee",
       "date": "2026-07-13",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-13-communications-committee.html",
@@ -100,22 +112,25 @@
     {
       "slug": "2026-07-14-golf-committee",
       "title": "Golf Committee",
+      "display_title": "Golf Committee",
       "date": "2026-07-14",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-14-golf-committee.html",
       "hasBody": false
     },
     {
-      "slug": "2026-06-30-re-golf-advisory-committee-meeting-summary-june-30",
+      "slug": "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20",
       "title": "Re: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
+      "display_title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
       "hasBody": true
     },
     {
       "slug": "2026-07-03-attention-palm-hill-residents",
       "title": "Attention Palm Hill Residents",
+      "display_title": "Attention Palm Hill Residents",
       "date": "2026-07-03",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-03-attention-palm-hill-residents.html",
@@ -124,14 +139,16 @@
     {
       "slug": "2026-06-28-block-captains-for-thatch-palm-east-west-needed",
       "title": "Block Captains for Thatch Palm East & West Needed",
+      "display_title": "Block Captains for Thatch Palm East & West Needed",
       "date": "2026-06-28",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-block-captains-for-thatch-palm-east-west-needed.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-06-28-lisa-bria-new-link-editor",
       "title": "Lisa Bria New Link Editor",
+      "display_title": "Lisa Bria New Link Editor",
       "date": "2026-06-28",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-lisa-bria-new-link-editor.html",
@@ -140,14 +157,16 @@
     {
       "slug": "2026-06-27-two-north-block-captains-needed-for-thatcher-palm-",
       "title": "Two North Block Captains needed for Thatcher Palm E",
+      "display_title": "Two North Block Captains needed for Thatcher Palm E",
       "date": "2026-06-27",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-27-two-north-block-captains-needed-for-thatcher-palm-.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-06-24-north-block-captain-needed",
       "title": "North Block Captain Needed",
+      "display_title": "North Block Captain Needed",
       "date": "2026-06-24",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-north-block-captain-needed.html",
@@ -156,6 +175,7 @@
     {
       "slug": "2026-07-07-re-test-event-pool-maintenance-jul-7",
       "title": "Re: \"TEST EVENT: Pool Maintenance\" — Jul 7",
+      "display_title": "Re: \"TEST EVENT: Pool Maintenance\" — Jul 7",
       "date": "2026-07-07",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-07-re-test-event-pool-maintenance-jul-7.html",
@@ -164,6 +184,7 @@
     {
       "slug": "2026-06-29-fourth-of-july-schedule",
       "title": "Fourth of July Schedule",
+      "display_title": "Fourth of July Schedule",
       "date": "2026-06-29",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-29-fourth-of-july-schedule.html",
