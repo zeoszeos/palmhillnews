@@ -1,6 +1,6 @@
 {
   "title": "4th of July Picnic Reminder",
-  "summary": "4th of July picnic this Saturday at 4:00 in North Clubhouse—games, prizes, and fun! Contact Jane Doe at 555-1234 for details.",
+  "summary": "4th of July picnic this Saturday at 4:00 in North Clubhouse—games, prizes, and fun! Contact Jane Doe for info; 555-1234.",
   "source_link": "https://mail.google.com/mail/u/0/#all/19f1f6c0a1b2c09c",
   "date": "2026-07-04",
   "source_message_id": "19f1f6c0a1b2c09c",
@@ -8,6 +8,6 @@
   "_ollama_summarized": true,
   "section": "whats_up_this_week",
   "week_label": "Week of June 28, 2026",
-  "published_at": "2026-07-04T14:15:32.189Z",
+  "published_at": "2026-07-04T14:30:26.250Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-4th-of-july-picnic-reminder.html"
 }
