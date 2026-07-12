@@ -1,65 +1,35 @@
 {
-  "week_label": "Week of June 28, 2026",
+  "week_label": "Week of July 12, 2026",
   "events": [
     {
-      "slug": "2026-07-04-4th-of-july-picnic-reminder",
-      "title": "4th of July Picnic Reminder",
-      "raw_title": "4th of July Picnic Reminder",
-      "display_title": "4th of July Picnic Reminder",
-      "date": "2026-07-04",
+      "slug": "2026-07-31-announcing-evening-dinner-cruise-clearwater-friday",
+      "title": "Announcing Evening Dinner Cruise Clearwater Friday, July 31st.",
+      "raw_title": "Announcing Evening Dinner Cruise Clearwater Friday, July 31st.",
+      "display_title": "Announcing Evening Dinner Cruise Clearwater Friday, July 31st.",
+      "date": "2026-07-31",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-04-4th-of-july-picnic-reminder.html",
-      "hasBody": false
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-31-announcing-evening-dinner-cruise-clearwater-friday.html",
+      "hasBody": true
     },
     {
-      "slug": "2026-07-15-updates-from-linda-keehl",
-      "title": "Updates from Linda Keehl",
-      "raw_title": "Updates from Linda Keehl",
-      "display_title": "Updates from Linda Keehl",
+      "slug": "2026-07-31-july-31st-discontinuing-of-the-coaxial-cable-syste",
+      "title": "July 31st - Discontinuing of the Coaxial Cable System",
+      "raw_title": "July 31st - Discontinuing of the Coaxial Cable System",
+      "display_title": "July 31st - Discontinuing of the Coaxial Cable System",
+      "date": "2026-07-31",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-31-july-31st-discontinuing-of-the-coaxial-cable-syste.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-15-north-pool-closed-on-wednesday-july-15th-for-repai",
+      "title": "North Pool Closed on Wednesday July 15th for repairs",
+      "raw_title": "North Pool Closed on Wednesday July 15th for repairs",
+      "display_title": "North Pool Closed on Wednesday July 15th for repairs",
       "date": "2026-07-15",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-updates-from-linda-keehl.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-07-06-5-card-chance-s",
-      "title": "5 Card Chance (S)",
-      "raw_title": "5 Card Chance (S)",
-      "display_title": "5 Card Chance (S)",
-      "date": "2026-07-06",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-5-card-chance-s.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-07-08-nickle-s-game-night-n",
-      "title": "Nickle's Game Night (N)",
-      "raw_title": "Nickle's Game Night (N)",
-      "display_title": "Nickle's Game Night (N)",
-      "date": "2026-07-08",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-nickle-s-game-night-n.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-07-09-quilt-club-s",
-      "title": "Quilt Club (S)",
-      "raw_title": "Quilt Club (S)",
-      "display_title": "Quilt Club (S)",
-      "date": "2026-07-09",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-09-quilt-club-s.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-07-10-pot-luck-supper-s",
-      "title": "Pot Luck Supper (S)",
-      "raw_title": "Pot Luck Supper (S)",
-      "display_title": "Pot Luck Supper (S)",
-      "date": "2026-07-10",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-pot-luck-supper-s.html",
-      "hasBody": false
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-north-pool-closed-on-wednesday-july-15th-for-repai.html",
+      "hasBody": true
     },
     {
       "slug": "2026-07-15-ladies-luncheon",
@@ -67,7 +37,7 @@
       "raw_title": "Ladies Luncheon",
       "display_title": "Ladies Luncheon",
       "date": "2026-07-15",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-ladies-luncheon.html",
       "hasBody": false
     },
@@ -77,7 +47,7 @@
       "raw_title": "Quilt Club (S)",
       "display_title": "Quilt Club (S)",
       "date": "2026-07-16",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-quilt-club-s.html",
       "hasBody": false
     },
@@ -87,38 +57,58 @@
       "raw_title": "Karaoke Obi-Time (N)",
       "display_title": "Karaoke Obi-Time (N)",
       "date": "2026-07-17",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-17-karaoke-obi-time-n.html",
       "hasBody": false
     },
     {
-      "slug": "2026-07-08-building-grounds-committee",
-      "title": "Building & Grounds Committee",
-      "raw_title": "Building & Grounds Committee",
-      "display_title": "Building & Grounds Committee",
-      "date": "2026-07-08",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-building-grounds-committee.html",
+      "slug": "2026-07-17-evening-dinner-cruise-rsvp",
+      "title": "Evening Dinner Cruise (RSVP)",
+      "raw_title": "Evening Dinner Cruise (RSVP)",
+      "display_title": "Evening Dinner Cruise (RSVP)",
+      "date": "2026-07-17",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-17-evening-dinner-cruise-rsvp.html",
       "hasBody": false
     },
     {
-      "slug": "2026-07-08-planning-environmental-committee",
-      "title": "Planning & Environmental Committee",
-      "raw_title": "Planning & Environmental Committee",
-      "display_title": "Planning & Environmental Committee",
-      "date": "2026-07-08",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-planning-environmental-committee.html",
+      "slug": "2026-07-20-i-got-it-n",
+      "title": "I Got It (N)",
+      "raw_title": "I Got It (N)",
+      "display_title": "I Got It (N)",
+      "date": "2026-07-20",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-i-got-it-n.html",
       "hasBody": false
     },
     {
-      "slug": "2026-07-13-communications-committee",
-      "title": "Communications Committee",
-      "raw_title": "Communications Committee",
-      "display_title": "Communications Committee",
-      "date": "2026-07-13",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-13-communications-committee.html",
+      "slug": "2026-07-22-nickle-s-game-night-n",
+      "title": "Nickle's Game Night (N)",
+      "raw_title": "Nickle's Game Night (N)",
+      "display_title": "Nickle's Game Night (N)",
+      "date": "2026-07-22",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-nickle-s-game-night-n.html",
+      "hasBody": false
+    },
+    {
+      "slug": "2026-07-23-quilt-club-s",
+      "title": "Quilt Club (S)",
+      "raw_title": "Quilt Club (S)",
+      "display_title": "Quilt Club (S)",
+      "date": "2026-07-23",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-23-quilt-club-s.html",
+      "hasBody": false
+    },
+    {
+      "slug": "2026-07-24-glass-painting-s",
+      "title": "Glass Painting (S)",
+      "raw_title": "Glass Painting (S)",
+      "display_title": "Glass Painting (S)",
+      "date": "2026-07-24",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-glass-painting-s.html",
       "hasBody": false
     },
     {
@@ -132,6 +122,16 @@
       "hasBody": false
     },
     {
+      "slug": "2026-07-29-board-meeting",
+      "title": "Board Meeting",
+      "raw_title": "Board Meeting",
+      "display_title": "Board Meeting",
+      "date": "2026-07-29",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-board-meeting.html",
+      "hasBody": false
+    },
+    {
       "slug": "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20",
       "title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
       "raw_title": "Re: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
@@ -142,14 +142,14 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-03-attention-palm-hill-residents",
-      "title": "Attention Palm Hill Residents",
-      "raw_title": "Attention Palm Hill Residents",
-      "display_title": "Attention Palm Hill Residents",
-      "date": "2026-07-03",
+      "slug": "2026-07-06-missing-item-and-pickup-of-things-left",
+      "title": "Missing Item and pickup of things left",
+      "raw_title": "Missing Item and pickup of things left",
+      "display_title": "Missing Item and pickup of things left",
+      "date": "2026-07-06",
       "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-03-attention-palm-hill-residents.html",
-      "hasBody": false
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-missing-item-and-pickup-of-things-left.html",
+      "hasBody": true
     },
     {
       "slug": "2026-06-28-block-captains-for-thatch-palm-east-west-needed",
@@ -159,36 +159,6 @@
       "date": "2026-06-28",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-block-captains-for-thatch-palm-east-west-needed.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-06-28-lisa-bria-new-link-editor",
-      "title": "Lisa Bria New Link Editor",
-      "raw_title": "Lisa Bria New Link Editor",
-      "display_title": "Lisa Bria New Link Editor",
-      "date": "2026-06-28",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-lisa-bria-new-link-editor.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-06-27-two-north-block-captains-needed-for-thatcher-palm-",
-      "title": "Two North Block Captains needed for Thatcher Palm E",
-      "raw_title": "Two North Block Captains needed for Thatcher Palm E",
-      "display_title": "Two North Block Captains needed for Thatcher Palm E",
-      "date": "2026-06-27",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-27-two-north-block-captains-needed-for-thatcher-palm-.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-06-24-north-block-captain-needed",
-      "title": "North Block Captain Needed",
-      "raw_title": "North Block Captain Needed",
-      "display_title": "North Block Captain Needed",
-      "date": "2026-06-24",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-24-north-block-captain-needed.html",
       "hasBody": false
     },
     {
@@ -202,13 +172,93 @@
       "hasBody": false
     },
     {
-      "slug": "2026-06-29-fourth-of-july-schedule",
-      "title": "Fourth of July Schedule",
-      "raw_title": "Fourth of July Schedule",
-      "display_title": "Fourth of July Schedule",
-      "date": "2026-06-29",
+      "slug": "2026-07-10-south-irrigation-will-remain-off-the-weekend-due-t",
+      "title": "South Irrigation will remain off the weekend due to a major leak at the South Well",
+      "raw_title": "South Irrigation will remain off the weekend due to a major leak at the South Well",
+      "display_title": "South Irrigation will remain off the weekend due to a major leak at the South Well",
+      "date": "2026-07-10",
       "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-29-fourth-of-july-schedule.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-south-irrigation-will-remain-off-the-weekend-due-t.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-10-important-notice-television-internet-service-chang",
+      "title": "IMPORTANT NOTICE: TELEVISION/INTERNET SERVICE CHANGE",
+      "raw_title": "IMPORTANT NOTICE: TELEVISION/INTERNET SERVICE CHANGE",
+      "display_title": "IMPORTANT NOTICE: TELEVISION/INTERNET SERVICE CHANGE",
+      "date": "2026-07-10",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-important-notice-television-internet-service-chang.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-10-south-irrigation-water-is-off-for-a-few-hours",
+      "title": "South Irrigation Water is off for a few hours",
+      "raw_title": "South Irrigation Water is off for a few hours",
+      "display_title": "South Irrigation Water is off for a few hours",
+      "date": "2026-07-10",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-south-irrigation-water-is-off-for-a-few-hours.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-08-water-restored-north-area-jul-8",
+      "title": "Water Restored — North Area — Jul 8",
+      "raw_title": "Water Restored — North Area — Jul 8",
+      "display_title": "Water Restored — North Area — Jul 8",
+      "date": "2026-07-08",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-water-restored-north-area-jul-8.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-08-north-pool-will-be-closed-for-repairs-on-july-15-2",
+      "title": "North  Pool will be closed for repairs on July 15, 2026",
+      "raw_title": "North  Pool will be closed for repairs on July 15, 2026",
+      "display_title": "North  Pool will be closed for repairs on July 15, 2026",
+      "date": "2026-07-08",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-north-pool-will-be-closed-for-repairs-on-july-15-2.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-06-south-pool-canopy-installation",
+      "title": "South Pool Canopy Installation",
+      "raw_title": "South Pool Canopy Installation",
+      "display_title": "South Pool Canopy Installation",
+      "date": "2026-07-06",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-south-pool-canopy-installation.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-06-water-shutoff-north-area-jul-6",
+      "title": "Water Shutoff — North Area — Jul 6",
+      "raw_title": "Water Shutoff — North Area — Jul 6",
+      "display_title": "Water Shutoff — North Area — Jul 6",
+      "date": "2026-07-06",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-water-shutoff-north-area-jul-6.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-13-south-irrigation-water-off",
+      "title": "South Irrigation Water Off",
+      "raw_title": "South Irrigation Water Off",
+      "display_title": "South Irrigation Water Off",
+      "date": "2026-07-13",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-13-south-irrigation-water-off.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-08-north-potable-water-off-wednesday-morning-july-8th",
+      "title": "North Potable Water Off Wednesday Morning July 8th",
+      "raw_title": "North Potable Water Off Wednesday Morning July 8th",
+      "display_title": "North Potable Water Off Wednesday Morning July 8th",
+      "date": "2026-07-08",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-08-north-potable-water-off-wednesday-morning-july-8th.html",
       "hasBody": true
     }
   ]
