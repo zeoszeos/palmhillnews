@@ -2,16 +2,6 @@
   "week_label": "Week of July 12, 2026",
   "events": [
     {
-      "slug": "2026-07-16-3-boxes-of-sweets-available-today-north-clubhouse-",
-      "title": "3 boxes of sweets available today North Clubhouse at 3:30pm",
-      "raw_title": "3 boxes of sweets available today North Clubhouse at 3:30pm",
-      "display_title": "3 boxes of sweets available today North Clubhouse at 3:30pm",
-      "date": "2026-07-16",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-3-boxes-of-sweets-available-today-north-clubhouse-.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-07-31-july-31st-discontinuing-of-the-coaxial-cable-syste",
       "title": "July 31st - Discontinuing of the Coaxial Cable System",
       "raw_title": "July 31st - Discontinuing of the Coaxial Cable System",
@@ -20,36 +10,6 @@
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-31-july-31st-discontinuing-of-the-coaxial-cable-syste.html",
       "hasBody": true
-    },
-    {
-      "slug": "2026-07-16-quilt-club-s",
-      "title": "Quilt Club (S)",
-      "raw_title": "Quilt Club (S)",
-      "display_title": "Quilt Club (S)",
-      "date": "2026-07-16",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-quilt-club-s.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-07-17-karaoke-obi-time-n",
-      "title": "Karaoke Obi-Time (N)",
-      "raw_title": "Karaoke Obi-Time (N)",
-      "display_title": "Karaoke Obi-Time (N)",
-      "date": "2026-07-17",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-17-karaoke-obi-time-n.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-07-17-evening-dinner-cruise-rsvp",
-      "title": "Evening Dinner Cruise (RSVP)",
-      "raw_title": "Evening Dinner Cruise (RSVP)",
-      "display_title": "Evening Dinner Cruise (RSVP)",
-      "date": "2026-07-17",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-17-evening-dinner-cruise-rsvp.html",
-      "hasBody": false
     },
     {
       "slug": "2026-07-22-nickle-s-game-night-n",
@@ -77,7 +37,7 @@
       "raw_title": "Glass Painting (S)",
       "display_title": "Glass Painting (S)",
       "date": "2026-07-24",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-glass-painting-s.html",
       "hasBody": false
     },
@@ -119,6 +79,16 @@
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-18-jigsaw-puzzles",
+      "title": "Jigsaw Puzzles",
+      "raw_title": "Jigsaw Puzzles",
+      "display_title": "Jigsaw Puzzles",
+      "date": "2026-07-18",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-18-jigsaw-puzzles.html",
       "hasBody": true
     },
     {
@@ -179,36 +149,6 @@
       "date": "2026-07-13",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-13-tree-trimming-session-for-july-2026.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-10-south-irrigation-will-remain-off-the-weekend-due-t",
-      "title": "South Irrigation will remain off the weekend due to a major leak at the South Well",
-      "raw_title": "South Irrigation will remain off the weekend due to a major leak at the South Well",
-      "display_title": "South Irrigation will remain off the weekend due to a major leak at the South Well",
-      "date": "2026-07-10",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-south-irrigation-will-remain-off-the-weekend-due-t.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-10-important-notice-television-internet-service-chang",
-      "title": "IMPORTANT NOTICE: TELEVISION/INTERNET SERVICE CHANGE",
-      "raw_title": "IMPORTANT NOTICE: TELEVISION/INTERNET SERVICE CHANGE",
-      "display_title": "IMPORTANT NOTICE: TELEVISION/INTERNET SERVICE CHANGE",
-      "date": "2026-07-10",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-important-notice-television-internet-service-chang.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-10-south-irrigation-water-is-off-for-a-few-hours",
-      "title": "South Irrigation Water is off for a few hours",
-      "raw_title": "South Irrigation Water is off for a few hours",
-      "display_title": "South Irrigation Water is off for a few hours",
-      "date": "2026-07-10",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-10-south-irrigation-water-is-off-for-a-few-hours.html",
       "hasBody": true
     },
     {
