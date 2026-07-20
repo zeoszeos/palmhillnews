@@ -62,6 +62,16 @@
       "hasBody": false
     },
     {
+      "slug": "2026-08-10-communications-committee",
+      "title": "Communications Committee",
+      "raw_title": "Communications Committee",
+      "display_title": "Communications Committee",
+      "date": "2026-08-10",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-communications-committee.html",
+      "hasBody": false
+    },
+    {
       "slug": "2026-07-18-jigsaw-puzzles",
       "title": "Jigsaw Puzzles",
       "raw_title": "Jigsaw Puzzles",
@@ -90,16 +100,6 @@
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-missing-item-and-pickup-of-things-left.html",
       "hasBody": true
-    },
-    {
-      "slug": "2026-07-20-re-test-event-pool-maintenance-jul-20",
-      "title": "Re: \"TEST EVENT: Pool Maintenance\" — Jul 20",
-      "raw_title": "Re: \"TEST EVENT: Pool Maintenance\" — Jul 20",
-      "display_title": "Re: \"TEST EVENT: Pool Maintenance\" — Jul 20",
-      "date": "2026-07-20",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-re-test-event-pool-maintenance-jul-20.html",
-      "hasBody": false
     },
     {
       "slug": "2026-07-15-reminder-north-pool-shut-down-for-repairs",
