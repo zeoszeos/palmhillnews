@@ -1,12 +1,4 @@
 {
-  "buildCommand": "echo 'Static site, no build needed'",
-  "outputDirectory": "public",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/pages/:path*",
-      "destination": "/pages/:path*"
-    }
-  ]
+  "buildCommand": "mkdir -p public/pages public/events && cp -r pages/. public/pages/ && cp -r events/. public/events/",
+  "outputDirectory": "public"
 }
