@@ -2,6 +2,16 @@
   "week_label": "Week of July 19, 2026",
   "events": [
     {
+      "slug": "2026-07-22-food-distribution-set-for-wednesday-july-22nd",
+      "title": "Food Distribution Set for Wednesday July 22nd",
+      "raw_title": "Food Distribution Set for Wednesday July 22nd",
+      "display_title": "Food Distribution Set for Wednesday July 22nd",
+      "date": "2026-07-22",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-food-distribution-set-for-wednesday-july-22nd.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-07-22-nickle-s-game-night-n",
       "title": "Nickle's Game Night (N)",
       "raw_title": "Nickle's Game Night (N)",
@@ -99,6 +109,16 @@
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-21-palm-hill-weekly-newsletter",
+      "title": "Palm Hill Weekly Newsletter",
+      "raw_title": "Palm Hill Weekly Newsletter",
+      "display_title": "Palm Hill Weekly Newsletter",
+      "date": "2026-07-21",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-21-palm-hill-weekly-newsletter.html",
       "hasBody": true
     },
     {
