@@ -42,6 +42,16 @@
       "hasBody": false
     },
     {
+      "slug": "2026-07-22-finance-committee-meeting",
+      "title": "Finance Committee Meeting",
+      "raw_title": "Finance Committee Meeting",
+      "display_title": "Finance Committee Meeting",
+      "date": "2026-07-22",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-finance-committee-meeting.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-07-29-board-meeting",
       "title": "Board Meeting",
       "raw_title": "Board Meeting",
@@ -72,6 +82,16 @@
       "hasBody": false
     },
     {
+      "slug": "2026-08-11-golf-committee",
+      "title": "Golf Committee",
+      "raw_title": "Golf Committee",
+      "display_title": "Golf Committee",
+      "date": "2026-08-11",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-11-golf-committee.html",
+      "hasBody": false
+    },
+    {
       "slug": "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20",
       "title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
       "raw_title": "Re: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
@@ -79,6 +99,16 @@
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-20-message-from-linda-keehl",
+      "title": "Message from Linda Keehl",
+      "raw_title": "Message from Linda Keehl",
+      "display_title": "Message from Linda Keehl",
+      "date": "2026-07-20",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-message-from-linda-keehl.html",
       "hasBody": true
     },
     {
@@ -112,6 +142,16 @@
       "hasBody": true
     },
     {
+      "slug": "2026-07-21-water-shutoff-south-area-jul-21",
+      "title": "Water Shutoff — South Area — Jul 21",
+      "raw_title": "Water Shutoff — South Area — Jul 21",
+      "display_title": "Water Shutoff — South Area — Jul 21",
+      "date": "2026-07-21",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-21-water-shutoff-south-area-jul-21.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-07-20-water-shutoff-south-area-jul-20",
       "title": "Water Shutoff — South Area — Jul 20",
       "raw_title": "Water Shutoff — South Area — Jul 20",
@@ -129,26 +169,6 @@
       "date": "2026-07-15",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-reminder-north-pool-shut-down-for-repairs.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-13-south-irrigation-water-is-back-on",
-      "title": "South Irrigation Water is back on",
-      "raw_title": "South Irrigation Water is back on",
-      "display_title": "South Irrigation Water is back on",
-      "date": "2026-07-13",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-13-south-irrigation-water-is-back-on.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-13-tree-trimming-session-for-july-2026",
-      "title": "Tree Trimming Session for July 2026",
-      "raw_title": "Tree Trimming Session for July 2026",
-      "display_title": "Tree Trimming Session for July 2026",
-      "date": "2026-07-13",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-13-tree-trimming-session-for-july-2026.html",
       "hasBody": true
     }
   ]
