@@ -102,6 +102,26 @@
       "hasBody": false
     },
     {
+      "slug": "2026-08-12-building-grounds-committee",
+      "title": "Building & Grounds Committee",
+      "raw_title": "Building & Grounds Committee",
+      "display_title": "Building & Grounds Committee",
+      "date": "2026-08-12",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-building-grounds-committee.html",
+      "hasBody": false
+    },
+    {
+      "slug": "2026-08-12-planning-environmental-committee",
+      "title": "Planning & Environmental Committee",
+      "raw_title": "Planning & Environmental Committee",
+      "display_title": "Planning & Environmental Committee",
+      "date": "2026-08-12",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-environmental-committee.html",
+      "hasBody": false
+    },
+    {
       "slug": "2026-07-21-palm-hill-weekly-newsletter",
       "title": "Palm Hill Weekly Newsletter",
       "raw_title": "Palm Hill Weekly Newsletter",
@@ -139,16 +159,6 @@
       "date": "2026-07-16",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-small-medical-cooler.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-06-missing-item-and-pickup-of-things-left",
-      "title": "Missing Item and pickup of things left",
-      "raw_title": "Missing Item and pickup of things left",
-      "display_title": "Missing Item and pickup of things left",
-      "date": "2026-07-06",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-missing-item-and-pickup-of-things-left.html",
       "hasBody": true
     },
     {
