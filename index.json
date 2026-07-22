@@ -2,13 +2,23 @@
   "week_label": "Week of July 19, 2026",
   "events": [
     {
-      "slug": "2026-07-22-food-distribution-set-for-wednesday-july-22nd",
-      "title": "Food Distribution Set for Wednesday July 22nd",
-      "raw_title": "Food Distribution Set for Wednesday July 22nd",
-      "display_title": "Food Distribution Set for Wednesday July 22nd",
+      "slug": "2026-07-27-produce-available-south-clubhouse-lobby-milk-on-mo",
+      "title": "Produce available South Clubhouse Lobby - Milk on Monday Morning Available",
+      "raw_title": "Produce available South Clubhouse Lobby - Milk on Monday Morning Available",
+      "display_title": "Produce available South Clubhouse Lobby - Milk on Monday Morning Available",
+      "date": "2026-07-27",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-produce-available-south-clubhouse-lobby-milk-on-mo.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-22-food-distribution-today-july-22-at-north-clubhouse",
+      "title": "Food Distribution Today July 22 at North Clubhouse",
+      "raw_title": "Food Distribution Today July 22 at North Clubhouse",
+      "display_title": "Food Distribution Today July 22 at North Clubhouse",
       "date": "2026-07-22",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-food-distribution-set-for-wednesday-july-22nd.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-food-distribution-today-july-22-at-north-clubhouse.html",
       "hasBody": true
     },
     {
@@ -52,13 +62,13 @@
       "hasBody": false
     },
     {
-      "slug": "2026-07-22-finance-committee-meeting",
-      "title": "Finance Committee Meeting",
-      "raw_title": "Finance Committee Meeting",
-      "display_title": "Finance Committee Meeting",
+      "slug": "2026-07-22-finance-committee-meeting-today",
+      "title": "Finance Committee Meeting Today",
+      "raw_title": "Finance Committee Meeting Today",
+      "display_title": "Finance Committee Meeting Today",
       "date": "2026-07-22",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-finance-committee-meeting.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-finance-committee-meeting-today.html",
       "hasBody": true
     },
     {
@@ -159,6 +169,16 @@
       "date": "2026-07-16",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-small-medical-cooler.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-22-water-restored-south-area-jul-22",
+      "title": "Water Restored — South Area — Jul 22",
+      "raw_title": "Water Restored — South Area — Jul 22",
+      "display_title": "Water Restored — South Area — Jul 22",
+      "date": "2026-07-22",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-22-water-restored-south-area-jul-22.html",
       "hasBody": true
     },
     {
