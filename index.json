@@ -12,16 +12,6 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-23-quilt-club-s",
-      "title": "Quilt Club (S)",
-      "raw_title": "Quilt Club (S)",
-      "display_title": "Quilt Club (S)",
-      "date": "2026-07-23",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-23-quilt-club-s.html",
-      "hasBody": false
-    },
-    {
       "slug": "2026-07-24-glass-painting-s",
       "title": "Glass Painting (S)",
       "raw_title": "Glass Painting (S)",
@@ -139,6 +129,36 @@
       "date": "2026-07-16",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-16-small-medical-cooler.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-23-north-and-south-irrigation-is-back-on",
+      "title": "North and South Irrigation is back on",
+      "raw_title": "North and South Irrigation is back on",
+      "display_title": "North and South Irrigation is back on",
+      "date": "2026-07-23",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-23-north-and-south-irrigation-is-back-on.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-23-north-and-south-irrigation-is-off-for-approximatel",
+      "title": "North and South Irrigation is off for approximately 1 hour",
+      "raw_title": "North and South Irrigation is off for approximately 1 hour",
+      "display_title": "North and South Irrigation is off for approximately 1 hour",
+      "date": "2026-07-23",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-23-north-and-south-irrigation-is-off-for-approximatel.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-23-inliner-will-be-in-the-park-today-to-line-under-21",
+      "title": "Inliner will be in the park today to line under 21 & 28 Thatch West only — Jul 23",
+      "raw_title": "Inliner will be in the park today to line under 21 & 28 Thatch West only — Jul 23",
+      "display_title": "Inliner will be in the park today to line under 21 & 28 Thatch West only — Jul 23",
+      "date": "2026-07-23",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-23-inliner-will-be-in-the-park-today-to-line-under-21.html",
       "hasBody": true
     },
     {
