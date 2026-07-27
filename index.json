@@ -32,16 +32,6 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-26-mesco",
-      "title": "Mesco",
-      "raw_title": "Mesco",
-      "display_title": "Mesco",
-      "date": "2026-07-26",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-26-mesco.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-07-30-quilt-club-s",
       "title": "Quilt Club (S)",
       "raw_title": "Quilt Club (S)",
@@ -129,16 +119,6 @@
       "date": "2026-07-20",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-message-from-linda-keehl.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-18-jigsaw-puzzles",
-      "title": "Jigsaw Puzzles",
-      "raw_title": "Jigsaw Puzzles",
-      "display_title": "Jigsaw Puzzles",
-      "date": "2026-07-18",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-18-jigsaw-puzzles.html",
       "hasBody": true
     },
     {
