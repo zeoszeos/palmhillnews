@@ -92,6 +92,26 @@
       "hasBody": false
     },
     {
+      "slug": "undated-finance",
+      "title": "Finance",
+      "raw_title": "Finance",
+      "display_title": "Finance",
+      "date": "",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-finance.html",
+      "hasBody": false
+    },
+    {
+      "slug": "undated-july-s-board-report-on-real-estate-sales",
+      "title": "July's Board Report on Real Estate Sales",
+      "raw_title": "July's Board Report on Real Estate Sales",
+      "display_title": "July's Board Report on Real Estate Sales",
+      "date": "",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-july-s-board-report-on-real-estate-sales.html",
+      "hasBody": false
+    },
+    {
       "slug": "2026-07-20-message-from-linda-keehl",
       "title": "Message from Linda Keehl",
       "raw_title": "Message from Linda Keehl",
@@ -99,6 +119,16 @@
       "date": "2026-07-20",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-message-from-linda-keehl.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-24-fwd-spectrum-fiber-connections-jul-24-45-31-pm",
+      "title": "Fwd: Spectrum Fiber Connections — Jul 24, 45:31 PM",
+      "raw_title": "Fwd: Spectrum Fiber Connections — Jul 24, 45:31 PM",
+      "display_title": "Fwd: Spectrum Fiber Connections — Jul 24, 45:31 PM",
+      "date": "2026-07-24",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-fwd-spectrum-fiber-connections-jul-24-45-31-pm.html",
       "hasBody": true
     },
     {
