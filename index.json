@@ -12,26 +12,6 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-27-produce-available-south-clubhouse-lobby-milk-on-mo",
-      "title": "Produce available South Clubhouse Lobby - Milk on Monday Morning Available",
-      "raw_title": "Produce available South Clubhouse Lobby - Milk on Monday Morning Available",
-      "display_title": "Produce available South Clubhouse Lobby - Milk on Monday Morning Available",
-      "date": "2026-07-27",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-produce-available-south-clubhouse-lobby-milk-on-mo.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-31-to-all-residents",
-      "title": "to all Residents",
-      "raw_title": "to all Residents",
-      "display_title": "to all Residents",
-      "date": "2026-07-31",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-31-to-all-residents.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-07-30-quilt-club-s",
       "title": "Quilt Club (S)",
       "raw_title": "Quilt Club (S)",
@@ -42,14 +22,24 @@
       "hasBody": false
     },
     {
-      "slug": "2026-07-29-board-meeting",
-      "title": "Board Meeting",
-      "raw_title": "Board Meeting",
-      "display_title": "Board Meeting",
+      "slug": "2026-07-29-noice-is-given-of-a-board-of-directors-meeting-of-",
+      "title": "Noice is given of a Board of Directors Meeting of the HOPH",
+      "raw_title": "Noice is given of a Board of Directors Meeting of the HOPH",
+      "display_title": "Noice is given of a Board of Directors Meeting of the HOPH",
       "date": "2026-07-29",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-board-meeting.html",
-      "hasBody": false
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-noice-is-given-of-a-board-of-directors-meeting-of-.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-30-compliance-committee-meeting",
+      "title": "Compliance Committee Meeting",
+      "raw_title": "Compliance Committee Meeting",
+      "display_title": "Compliance Committee Meeting",
+      "date": "2026-07-30",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-30-compliance-committee-meeting.html",
+      "hasBody": true
     },
     {
       "slug": "2026-08-10-communications-committee",
@@ -92,14 +82,14 @@
       "hasBody": false
     },
     {
-      "slug": "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20",
-      "title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
-      "raw_title": "Re: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
-      "display_title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
+      "slug": "2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3",
+      "title": "Fwd: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
+      "raw_title": "Fwd: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
+      "display_title": "Fwd: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
-      "hasBody": true
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
+      "hasBody": false
     },
     {
       "slug": "2026-07-20-message-from-linda-keehl",
@@ -109,6 +99,16 @@
       "date": "2026-07-20",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-message-from-linda-keehl.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-27-portal-login-information",
+      "title": "Portal Login Information",
+      "raw_title": "Portal Login Information",
+      "display_title": "Portal Login Information",
+      "date": "2026-07-27",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-portal-login-information.html",
       "hasBody": true
     },
     {
@@ -169,16 +169,6 @@
       "date": "2026-07-21",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-21-water-shutoff-south-area-jul-21.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-20-water-shutoff-south-area-jul-20",
-      "title": "Water Shutoff — South Area — Jul 20",
-      "raw_title": "Water Shutoff — South Area — Jul 20",
-      "display_title": "Water Shutoff — South Area — Jul 20",
-      "date": "2026-07-20",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-20-water-shutoff-south-area-jul-20.html",
       "hasBody": true
     },
     {
