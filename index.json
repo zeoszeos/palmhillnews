@@ -200,6 +200,28 @@
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-23-water-shut-off-in-the-south-revised.html",
       "hasBody": true
+    },
+    {
+      "slug": "undated-weekly-weekly-update-2026-7-22",
+      "title": "Weekly Update 2026.7.22",
+      "raw_title": "Weekly Update 2026.7.22",
+      "display_title": "Weekly Update 2026.7.22",
+      "date": "",
+      "section": "shareholders_report_weekly",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
+      "pdf_url": null,
+      "hasBody": true
+    },
+    {
+      "slug": "undated-monthly-palm-hill-country-club-week-of-july-12-202",
+      "title": "Palm Hill Country Club - Week of July 12, 2026",
+      "raw_title": "Palm Hill Country Club - Week of July 12, 2026",
+      "display_title": "Palm Hill Country Club - Week of July 12, 2026",
+      "date": "",
+      "section": "shareholders_report_monthly",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-monthly-palm-hill-country-club-week-of-july-12-202.html",
+      "pdf_url": "https://palmhillnews.vercel.app/reports/undated-monthly-palm-hill-country-club-week-of-july-12-202.pdf",
+      "hasBody": true
     }
   ]
 }
