@@ -1,7 +1,16 @@
 {
   "title": "July's Board Report on Real Estate Sales",
-  "summary": "Steve, I don't know if you want this for the Newsletter, but thought you could decide. Bob N.",
-  "_full_body": "",
+  "summary": "Attached report: July 2026 Board Report June sales and orientations - Final 7-28-26.pdf",
+  "_full_body": "Steve, I don't know if you want this for the Newsletter, but thought you could decide. Bob N.",
+  "source_attachments": [
+    {
+      "filename": "July 2026 Board Report June sales and orientations - Final 7-28-26.pdf",
+      "mimeType": "application/pdf",
+      "size": 215549,
+      "attachmentId": "ANGjdJ_WQzP6cMVYnZlicU4asRpMcYWtGqJVBIU-OUD_W3d-Ay4-OaGXkwdj3runW9TNt83quMW1CE7KRMg9VBImOjosDPpmpjxsoORc406o9Av2ie4gmwDscy7sbcbLM-5IKT3rgj6vKyavpbcQdIqhYXA6kqaB28KfcL1_iQO40WNgYKsiFzxLKoGOxN5dxTaM7y1hzPYlgohI8niVl1F8N1lQz49Iu6w18hr_X3QSOEXAvDn5quRLTvGPbCTvhAcZW5AfPWS20IAta6sJAolXOO3ABqP7f5GzrRFTM1h1BWdWeC7nZvsiVkG2NF1-mHRr5Pq0sBBmWuDrOkJDLb5YpjQqAlFqOsxHloN7mm3ErcJd_Ut90AM9HuojQ7HP_QxMmXN1BT5pnm4JaYGd",
+      "local_path": "/home/leono/.openclaw/workspace/projects/newsletters/palm-hill-country-club/data/gmail_attachments/19fa8f757630e6ec_July_2026_Board_Report_June_sales_and_orientations_-_Final_7-28-26.pdf"
+    }
+  ],
   "date": "",
   "source_link": "https://mail.google.com/mail/u/0/#all/19fa8f757630e6ec",
   "qc_gmail_link": "https://mail.google.com/mail/u/0/#all/19fa8f757630e6ec",
@@ -9,6 +18,6 @@
   "display_title": "July's Board Report on Real Estate Sales",
   "section": "past_committee_board_summaries",
   "week_label": "Week of July 26, 2026",
-  "published_at": "2026-07-29T02:14:27.059Z",
+  "published_at": "2026-07-29T17:15:39.547Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/undated-july-s-board-report-on-real-estate-sales.html"
 }
