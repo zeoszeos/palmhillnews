@@ -90,6 +90,14 @@
       "hasBody": true
     },
     {
+      "slug": "undated-july-s-board-report-on-real-estate-sales",
+      "title": "July's Board Report on Real Estate Sales",
+      "date": "",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-july-s-board-report-on-real-estate-sales.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-07-06-missing-item-and-pickup-of-things-left",
       "title": "Missing Item and pickup of things left",
       "date": "2026-07-06",
@@ -106,11 +114,27 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-24-fwd-spectrum-fiber-connections-jul-24-45-31-pm",
-      "title": "Fwd: Spectrum Fiber Connections — Jul 24, 45:31 PM",
+      "slug": "2026-07-24-spectrum-fiber-connections",
+      "title": "Spectrum Fiber Connections",
       "date": "2026-07-24",
       "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-fwd-spectrum-fiber-connections-jul-24-45-31-pm.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-spectrum-fiber-connections.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-27-weekly-manager-update-2026-07-27",
+      "title": "Weekly manager update — 2026-07-27",
+      "date": "2026-07-27",
+      "section": "shareholders_weekly",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-weekly-manager-update-2026-07-27.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-15-monthly-management-and-maintenance-report-2026-07-",
+      "title": "Monthly management and maintenance report — 2026-07-15",
+      "date": "2026-07-15",
+      "section": "shareholders_monthly",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
       "hasBody": true
     },
     {
