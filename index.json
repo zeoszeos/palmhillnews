@@ -1,194 +1,148 @@
 {
-  "week_label": "Week of July 26, 2026",
+  "week_label": "Week of August 2, 2026",
   "events": [
     {
-      "slug": "2026-08-02-worship-service-sunday-august-2nd-at-north-clubhou",
-      "title": "Worship Service - Sunday, August 2nd at North Clubhouse",
-      "raw_title": "Worship Service - Sunday, August 2nd at North Clubhouse",
-      "display_title": "Worship Service - Sunday, August 2nd at North Clubhouse",
+      "slug": "2026-08-02-worship-service-today-in-north-clubhouse-4pm",
+      "title": "Worship Service Today in North Clubhouse 4pm",
       "date": "2026-08-02",
-      "source_message_id": "19fb8652fb7b0f81",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-02-worship-service-sunday-august-2nd-at-north-clubhou.html",
-      "pdf_url": null,
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-31-you-re-invited-an-evening-dinner-cruise-aboard-the",
-      "title": "You're Invited: An Evening Dinner Cruise aboard the  StarLite Infinity Dining...",
-      "raw_title": "You're Invited: An Evening Dinner Cruise aboard the  StarLite Infinity Dining...",
-      "display_title": "You're Invited: An Evening Dinner Cruise aboard the  StarLite Infinity Dining...",
-      "date": "2026-07-31",
-      "source_message_id": "19f9947c783cacc7",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-31-you-re-invited-an-evening-dinner-cruise-aboard-the.html",
-      "pdf_url": null,
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-31-to-all-residents",
-      "title": "to all Residents",
-      "raw_title": "to all Residents",
-      "display_title": "to all Residents",
-      "date": "2026-07-31",
-      "source_message_id": "19f99593855b5815",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-31-to-all-residents.html",
-      "pdf_url": null,
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-02-worship-service-today-in-north-clubhouse-4pm.html",
       "hasBody": true
     },
     {
       "slug": "2026-12-05-north-clubhouse-bazaar-december-5-2026",
       "title": "North Clubhouse Bazaar-  December 5, 2026",
-      "raw_title": "North Clubhouse Bazaar-  December 5, 2026",
-      "display_title": "North Clubhouse Bazaar-  December 5, 2026",
       "date": "2026-12-05",
-      "source_message_id": "19faf1403e362b3f",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-12-05-north-clubhouse-bazaar-december-5-2026.html",
-      "pdf_url": null,
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-03-5-card-chance-s",
+      "title": "5 Card Chance (S)",
+      "date": "2026-08-03",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-5-card-chance-s.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-05-earwax-removal",
+      "title": "Earwax Removal",
+      "date": "2026-08-05",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-05-earwax-removal.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-06-quilt-club-s",
+      "title": "Quilt Club (S)",
+      "date": "2026-08-06",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-06-quilt-club-s.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-07-cooking-class-sweet-savory-dips-s",
+      "title": "Cooking Class - Sweet & Savory Dips (S)",
+      "date": "2026-08-07",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-07-cooking-class-sweet-savory-dips-s.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-13-quilt-club-s",
+      "title": "Quilt Club (S)",
+      "date": "2026-08-13",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-13-quilt-club-s.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-13-card-game-n",
+      "title": "Card Game (N)",
+      "date": "2026-08-13",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-13-card-game-n.html",
       "hasBody": true
     },
     {
       "slug": "2026-08-10-communications-committee",
       "title": "Communications Committee",
-      "raw_title": "Communications Committee",
-      "display_title": "Communications Committee",
       "date": "2026-08-10",
-      "source_message_id": "",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-communications-committee.html",
-      "pdf_url": null,
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-11-golf-committee",
       "title": "Golf Committee",
-      "raw_title": "Golf Committee",
-      "display_title": "Golf Committee",
       "date": "2026-08-11",
-      "source_message_id": "",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-11-golf-committee.html",
-      "pdf_url": null,
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-12-building-grounds-committee",
       "title": "Building & Grounds Committee",
-      "raw_title": "Building & Grounds Committee",
-      "display_title": "Building & Grounds Committee",
       "date": "2026-08-12",
-      "source_message_id": "",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-building-grounds-committee.html",
-      "pdf_url": null,
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-12-planning-environmental-committee",
       "title": "Planning & Environmental Committee",
-      "raw_title": "Planning & Environmental Committee",
-      "display_title": "Planning & Environmental Committee",
       "date": "2026-08-12",
-      "source_message_id": "",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-environmental-committee.html",
-      "pdf_url": null,
-      "hasBody": false
+      "hasBody": true
     },
     {
-      "slug": "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20",
-      "title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30, 6:05 PM",
-      "raw_title": "Fwd: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30, 6:05 PM",
-      "display_title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30, 6:05 PM",
+      "slug": "2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3",
+      "title": "Fwd: Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30",
       "date": "2026-06-30",
-      "source_message_id": "19faa580bc7cf1e7",
       "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
-      "pdf_url": null,
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
       "hasBody": true
     },
     {
-      "slug": "undated-july-s-board-report-on-real-estate-sales",
-      "title": "July's Board Report on Real Estate Sales",
-      "raw_title": "July's Board Report on Real Estate Sales",
-      "display_title": "July's Board Report on Real Estate Sales",
-      "date": "",
-      "source_message_id": "19fa8f757630e6ec",
-      "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-july-s-board-report-on-real-estate-sales.html",
-      "pdf_url": "https://palmhillnews.vercel.app/reports/undated-july-s-board-report-on-real-estate-sales.pdf",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-24-spectrum-fiber-connections",
-      "title": "Spectrum Fiber Connections",
-      "raw_title": "Spectrum Fiber Connections",
-      "display_title": "Spectrum Fiber Connections",
-      "date": "2026-07-24",
-      "source_message_id": "19f9697a3a515b0e",
+      "slug": "2026-07-27-palm-hill-weekly-newsletter-correction-is-coming-s",
+      "title": "Palm Hill Weekly Newsletter CORRECTION IS COMING SOON",
+      "date": "2026-07-27",
       "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-spectrum-fiber-connections.html",
-      "pdf_url": null,
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-palm-hill-weekly-newsletter-correction-is-coming-s.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-26-palm-hill-weekly-newsletter",
+      "title": "Palm Hill Weekly Newsletter",
+      "date": "2026-07-26",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-26-palm-hill-weekly-newsletter.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-07-24-fwd-spectrum-fiber-connections-jul-24-45-31-pm",
+      "title": "Fwd: Spectrum Fiber Connections — Jul 24, 45:31 PM",
+      "date": "2026-07-24",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-fwd-spectrum-fiber-connections-jul-24-45-31-pm.html",
       "hasBody": true
     },
     {
       "slug": "2026-07-29-water-shutoff-north-area-jul-29",
       "title": "Water Shutoff — North Area — Jul 29",
-      "raw_title": "Water Shutoff — North Area — Jul 29",
-      "display_title": "Water Shutoff — North Area — Jul 29",
       "date": "2026-07-29",
-      "source_message_id": "",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-water-shutoff-north-area-jul-29.html",
-      "pdf_url": null,
       "hasBody": true
     },
     {
       "slug": "2026-07-27-portal-login-information",
       "title": "Portal Login Information",
-      "raw_title": "Portal Login Information",
-      "display_title": "Portal Login Information",
       "date": "2026-07-27",
-      "source_message_id": "",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-portal-login-information.html",
-      "pdf_url": null,
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-24-inliner-jul-24",
-      "title": "Inliner — Jul 24",
-      "raw_title": "Inliner — Jul 24",
-      "display_title": "Inliner — Jul 24",
-      "date": "2026-07-24",
-      "source_message_id": "",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-24-inliner-jul-24.html",
-      "pdf_url": null,
-      "hasBody": true
-    },
-    {
-      "slug": "undated-weekly-weekly-update-2026-7-22",
-      "title": "Weekly Update 2026.7.22",
-      "raw_title": "Weekly Update 2026.7.22",
-      "display_title": "Weekly Update 2026.7.22",
-      "date": "",
-      "section": "shareholders_report_weekly",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
-      "pdf_url": null,
-      "hasBody": true
-    },
-    {
-      "slug": "undated-monthly-palm-hill-country-club-week-of-july-12-202",
-      "title": "Palm Hill Country Club - Week of July 12, 2026",
-      "raw_title": "Palm Hill Country Club - Week of July 12, 2026",
-      "display_title": "Palm Hill Country Club - Week of July 12, 2026",
-      "date": "",
-      "section": "shareholders_report_monthly",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/undated-monthly-palm-hill-country-club-week-of-july-12-202.html",
-      "pdf_url": "https://palmhillnews.vercel.app/reports/undated-monthly-palm-hill-country-club-week-of-july-12-202.pdf",
       "hasBody": true
     }
   ]
