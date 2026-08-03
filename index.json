@@ -50,14 +50,6 @@
       "hasBody": true
     },
     {
-      "slug": "2026-08-10-communications-committee",
-      "title": "Communications Committee",
-      "date": "2026-08-10",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-communications-committee.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-08-11-golf-committee",
       "title": "Golf Committee",
       "date": "2026-08-11",
@@ -79,6 +71,14 @@
       "date": "2026-08-12",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-environmental-committee.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-17-communications-committee",
+      "title": "Communications Committee",
+      "date": "2026-08-17",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee.html",
       "hasBody": true
     },
     {
