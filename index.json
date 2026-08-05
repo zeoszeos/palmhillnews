@@ -2,11 +2,27 @@
   "week_label": "Week of August 2, 2026",
   "events": [
     {
-      "slug": "2026-08-03-5-card-chance-s",
-      "title": "5 Card Chance (S)",
-      "date": "2026-08-03",
+      "slug": "2026-08-07-bazaar-shed-open-friday-8-7",
+      "title": "Bazaar Shed Open Friday 8/7",
+      "date": "2026-08-07",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-5-card-chance-s.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-07-bazaar-shed-open-friday-8-7.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-05-bocce-ball-caneled-tonight-8-5",
+      "title": "Bocce Ball Caneled Tonight 8/5",
+      "date": "2026-08-05",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-05-bocce-ball-caneled-tonight-8-5.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-05-annual-hydrant-flushing-wednesday-august-5th",
+      "title": "Annual Hydrant Flushing Wednesday August 5th",
+      "date": "2026-08-05",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-05-annual-hydrant-flushing-wednesday-august-5th.html",
       "hasBody": true
     },
     {
@@ -50,6 +66,22 @@
       "hasBody": true
     },
     {
+      "slug": "2026-08-17-i-got-it",
+      "title": "I Got It",
+      "date": "2026-08-17",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-i-got-it.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-19-ladies-luncheon",
+      "title": "Ladies Luncheon",
+      "date": "2026-08-19",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-19-ladies-luncheon.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-08-11-golf-committee",
       "title": "Golf Committee",
       "date": "2026-08-11",
@@ -82,6 +114,14 @@
       "hasBody": true
     },
     {
+      "slug": "2026-08-26-board-meeting",
+      "title": "Board Meeting",
+      "date": "2026-08-26",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-26-board-meeting.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20",
       "title": "Golf Advisory Committee Meeting Summary - June 30, 2026 — Jun 30, 6:05 PM",
       "date": "2026-06-30",
@@ -98,19 +138,11 @@
       "hasBody": true
     },
     {
-      "slug": "2026-07-06-missing-item-and-pickup-of-things-left",
-      "title": "Missing Item and pickup of things left",
-      "date": "2026-07-06",
+      "slug": "2026-08-05-north-clubhouse-now-available-for-use",
+      "title": "North Clubhouse now available for Use",
+      "date": "2026-08-05",
       "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-06-missing-item-and-pickup-of-things-left.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-06-28-block-captains-for-thatch-palm-east-west-needed",
-      "title": "Block Captains for Thatch Palm East & West Needed",
-      "date": "2026-06-28",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-28-block-captains-for-thatch-palm-east-west-needed.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-05-north-clubhouse-now-available-for-use.html",
       "hasBody": true
     },
     {
@@ -138,19 +170,35 @@
       "hasBody": true
     },
     {
+      "slug": "2026-08-04-annual-fire-inspection-wednesday-august-5-2026",
+      "title": "Annual Fire Inspection Wednesday, August 5, 2026",
+      "date": "2026-08-04",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-04-annual-fire-inspection-wednesday-august-5-2026.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-03-north-spa-is-closed",
+      "title": "North Spa is Closed",
+      "date": "2026-08-03",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-north-spa-is-closed.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-03-north-clubhouse-closure",
+      "title": "North Clubhouse Closure",
+      "date": "2026-08-03",
+      "section": "past_maintenance_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-north-clubhouse-closure.html",
+      "hasBody": true
+    },
+    {
       "slug": "2026-07-29-water-shutoff-north-area-jul-29",
       "title": "Water Shutoff — North Area — Jul 29",
       "date": "2026-07-29",
       "section": "past_maintenance_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-water-shutoff-north-area-jul-29.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-07-27-portal-login-information",
-      "title": "Portal Login Information",
-      "date": "2026-07-27",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-27-portal-login-information.html",
       "hasBody": true
     }
   ]
