@@ -176,46 +176,6 @@
       "section": "shareholders_monthly",
       "vercel_url": "https://palmhillnews.vercel.app/reports/undated-monthly-palm-hill-country-club-week-of-july-12-202.pdf",
       "hasBody": true
-    },
-    {
-      "slug": "2026-08-06-north-spa-is-open",
-      "title": "North Spa is open",
-      "date": "2026-08-06",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-06-north-spa-is-open.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-05-north-clubhouse-updates",
-      "title": "North Clubhouse Updates",
-      "date": "2026-08-05",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-05-north-clubhouse-updates.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-04-annual-fire-inspection-wednesday-august-5-2026",
-      "title": "Annual Fire Inspection Wednesday, August 5, 2026",
-      "date": "2026-08-04",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-04-annual-fire-inspection-wednesday-august-5-2026.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-03-north-spa-is-closed",
-      "title": "North Spa is Closed",
-      "date": "2026-08-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-north-spa-is-closed.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-03-north-clubhouse-closure",
-      "title": "North Clubhouse Closure",
-      "date": "2026-08-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-north-clubhouse-closure.html",
-      "hasBody": true
     }
   ]
 }
