@@ -98,19 +98,19 @@
       "hasBody": false
     },
     {
+      "slug": "2026-08-12-planning-and-environmental-meeting",
+      "title": "Planning and Environmental Meeting",
+      "date": "2026-08-12",
+      "section": "committee_board_meetings",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-and-environmental-meeting.html",
+      "hasBody": false
+    },
+    {
       "slug": "2026-08-12-building-grounds-committee",
       "title": "Building & Grounds Committee",
       "date": "2026-08-12",
       "section": "committee_board_meetings",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-building-grounds-committee.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-08-12-planning-environmental-committee",
-      "title": "Planning & Environmental Committee",
-      "date": "2026-08-12",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-environmental-committee.html",
       "hasBody": false
     },
     {
@@ -143,6 +143,14 @@
       "date": "",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/reports/undated-july-s-board-report-on-real-estate-sales.pdf",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-08-07-alert-for-palm-hill-residents",
+      "title": "Alert for Palm Hill Residents",
+      "date": "2026-08-07",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-07-alert-for-palm-hill-residents.html",
       "hasBody": true
     },
     {
