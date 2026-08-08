@@ -111,7 +111,7 @@
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "undated-july-s-board-report-on-real-estate-sales",
@@ -119,7 +119,7 @@
       "date": "",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/reports/undated-july-s-board-report-on-real-estate-sales.pdf",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-07-alert-for-palm-hill-residents",
@@ -127,7 +127,7 @@
       "date": "2026-08-07",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-07-alert-for-palm-hill-residents.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-03-spectrum-outage-aug-3",
@@ -135,7 +135,7 @@
       "date": "2026-08-03",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-spectrum-outage-aug-3.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-07-27-weekly-manager-update-2026-07-27",
