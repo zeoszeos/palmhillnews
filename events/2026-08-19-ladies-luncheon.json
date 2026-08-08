@@ -5,8 +5,10 @@
   "time": "11:30am",
   "source_link": null,
   "from_calendar": true,
+  "_recurrence_status": "not-recurring",
+  "_recurrence_calendar_match": "",
   "section": "upcoming_events",
   "week_label": "Week of August 2, 2026",
-  "published_at": "2026-08-08T14:13:38.147Z",
+  "published_at": "2026-08-08T14:25:02.045Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-19-ladies-luncheon.html"
 }

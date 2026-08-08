@@ -9,8 +9,10 @@
   "email_source_message_id": "19fcd4e9ae7a8898",
   "email_source_thread_id": "19fcd4e9ae7a8898",
   "merge_confidence": "high",
+  "_recurrence_status": "not-recurring",
+  "_recurrence_calendar_match": "",
   "section": "upcoming_events",
   "week_label": "Week of August 2, 2026",
-  "published_at": "2026-08-08T14:13:38.145Z",
+  "published_at": "2026-08-08T14:25:02.044Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-south-hall-closed-for-voting.html"
 }

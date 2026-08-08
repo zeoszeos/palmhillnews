@@ -42,22 +42,6 @@
       "hasBody": false
     },
     {
-      "slug": "2026-08-19-bocce-ball-south-weather-permitting",
-      "title": "Bocce Ball (South) WEATHER PERMITTING",
-      "date": "2026-08-19",
-      "section": "upcoming_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-19-bocce-ball-south-weather-permitting.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-08-20-quilt-club-s",
-      "title": "Quilt Club (S)",
-      "date": "2026-08-20",
-      "section": "upcoming_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-20-quilt-club-s.html",
-      "hasBody": false
-    },
-    {
       "slug": "2026-08-21-karaoke-obi-time",
       "title": "Karaoke Obi-Time",
       "date": "2026-08-21",
@@ -111,7 +95,7 @@
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "undated-july-s-board-report-on-real-estate-sales",
@@ -119,7 +103,7 @@
       "date": "",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/reports/undated-july-s-board-report-on-real-estate-sales.pdf",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-08-07-alert-for-palm-hill-residents",
@@ -127,7 +111,7 @@
       "date": "2026-08-07",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-07-alert-for-palm-hill-residents.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-08-03-spectrum-outage-aug-3",
@@ -135,7 +119,7 @@
       "date": "2026-08-03",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-spectrum-outage-aug-3.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-07-27-weekly-manager-update-2026-07-27",
