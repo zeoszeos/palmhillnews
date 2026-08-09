@@ -103,7 +103,7 @@
       "date": "2026-07-29",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-real-estate-committee-report.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-06-30-golf-advisory-committee-meeting-summary",
@@ -111,7 +111,7 @@
       "date": "2026-06-30",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-08-07-alert-for-palm-hill-residents",
