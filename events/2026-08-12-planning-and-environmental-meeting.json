@@ -7,9 +7,133 @@
   "source_thread_id": "19fde30916710398",
   "_is_meeting_cancellation": false,
   "_has_meeting_agenda": true,
+  "_agenda_items": [
+    {
+      "marker": "1",
+      "level": 0,
+      "text": "Call meeting to order"
+    },
+    {
+      "marker": "2",
+      "level": 0,
+      "text": "Roll Call"
+    },
+    {
+      "marker": "3",
+      "level": 0,
+      "text": "Approve agenda for this meeting"
+    },
+    {
+      "marker": "4",
+      "level": 0,
+      "text": "Approve 6/10/26 meeting minutes"
+    },
+    {
+      "marker": "5",
+      "level": 0,
+      "text": "Correspondences"
+    },
+    {
+      "marker": "6",
+      "level": 0,
+      "text": "Resignations and Elections"
+    },
+    {
+      "marker": "a",
+      "level": 1,
+      "text": "Introduce new members"
+    },
+    {
+      "marker": "b",
+      "level": 1,
+      "text": "Remarks from new members"
+    },
+    {
+      "marker": "7",
+      "level": 0,
+      "text": "Unfinished Business"
+    },
+    {
+      "marker": "a",
+      "level": 1,
+      "text": "Environmental activities"
+    },
+    {
+      "marker": "i",
+      "level": 2,
+      "text": "Recycling"
+    },
+    {
+      "marker": "b",
+      "level": 1,
+      "text": "North Clubhouse Wellness transition assessment."
+    },
+    {
+      "marker": "i",
+      "level": 2,
+      "text": "North clubhouse enhancement assessment"
+    },
+    {
+      "marker": "c",
+      "level": 1,
+      "text": "Survey and Consultant analysis"
+    },
+    {
+      "marker": "i",
+      "level": 2,
+      "text": "Laundry"
+    },
+    {
+      "marker": "ii",
+      "level": 2,
+      "text": "Park land purchase investigation"
+    },
+    {
+      "marker": "iii",
+      "level": 2,
+      "text": "Library consolidation"
+    },
+    {
+      "marker": "d",
+      "level": 1,
+      "text": "Reserve fund action plan"
+    },
+    {
+      "marker": "i",
+      "level": 2,
+      "text": "Plan for funded maintenance"
+    },
+    {
+      "marker": "8",
+      "level": 0,
+      "text": "New Business"
+    },
+    {
+      "marker": "a",
+      "level": 1,
+      "text": "Strat Plan progress"
+    },
+    {
+      "marker": "9",
+      "level": 0,
+      "text": "Next Meeting September 1:00"
+    },
+    {
+      "marker": "10",
+      "level": 0,
+      "text": "Motion to adjourn"
+    },
+    {
+      "marker": "11",
+      "level": 0,
+      "text": "Shareholder input"
+    }
+  ],
+  "_agenda_location": "Main Hall Board Room, Zoom, Community Access Channel",
+  "_agenda_time": "1:00 PM",
   "_public_detail_text": "DATE: Wednesday, \n\nAugust 12, 2026 1:00 EST Main Hall Board Room, Zoom, Community Access Channel\n\nAgenda : 1 Call meeting to order 2 Roll Call 3 Approve agenda for this meeting 4 Approve 6/10/26 meeting minutes 5 Correspondences 6 Resignations and Elections a. Introduce new members b. Remarks from new members 7 Unfinished Business a. Environmental activities i. Recycling b. North Clubhouse Wellness transition assessment. i. North clubhouse enhancement assessment c. Survey and Consultant analysis i. Laundry ii. Park land purchase investigation iii. Library consolidation d. Reserve fund action plan i. Plan for funded maintenance 8 New Business a. Strat Plan progress 9 Next Meeting September 1:00 10 Motion to adjourn 11\n\nShareholder input",
   "section": "committee_board_meetings",
   "week_label": "Week of August 9, 2026",
-  "published_at": "2026-08-09T22:53:09.078Z",
+  "published_at": "2026-08-09T23:02:57.614Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-and-environmental-meeting.html"
 }
