@@ -1,5 +1,5 @@
 {
-  "week_label": "Week of August 2, 2026",
+  "week_label": "Week of August 9, 2026",
   "events": [
     {
       "slug": "2026-08-17-south-hall-closed-for-voting",
@@ -98,11 +98,11 @@
       "hasBody": false
     },
     {
-      "slug": "2026-07-29-july-s-board-report-on-real-estate-sales",
-      "title": "July's Board Report on Real Estate Sales",
+      "slug": "2026-07-29-real-estate-committee-report",
+      "title": "Real Estate Committee Report",
       "date": "2026-07-29",
       "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/reports/undated-july-s-board-report-on-real-estate-sales.pdf",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-07-29-real-estate-committee-report.html",
       "hasBody": true
     },
     {
