@@ -82,12 +82,12 @@
       "hasBody": true
     },
     {
-      "slug": "2026-08-17-communications-committee",
-      "title": "Communications Committee",
+      "slug": "2026-08-17-communications-committee-meeting",
+      "title": "Communications Committee Meeting",
       "date": "2026-08-17",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee.html",
-      "hasBody": false
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-meeting.html",
+      "hasBody": true
     },
     {
       "slug": "2026-08-17-planning-and-environmental-s",
