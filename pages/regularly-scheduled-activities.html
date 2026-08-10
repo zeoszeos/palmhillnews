@@ -4,27 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Regularly Scheduled Activities — Palm Hill</title>
+  <link rel="stylesheet" href="/pages/shared/ph-info.css">
   <style>
-    body { font-family: Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 20px; color: #333; }
-    h1 { color: #2d6a2d; border-bottom: 2px solid #2d6a2d; padding-bottom: 10px; }
-    .meta { color: #777; font-size: 14px; margin-bottom: 20px; }
+    main { width:min(960px,100%); }
+    .meta { color:#596159; font-size:14px; margin-bottom:12px; text-align:center; }
+    .view-nav { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:18px; }
+    .view-nav a { padding:9px 15px; border-radius:999px; color:#fff; background:#254d2b; font-weight:700; text-decoration:none; }
+    .table-wrap { overflow-x:auto; background:#fff; border:1px solid #d7d1bd; border-radius:12px; box-shadow:0 3px 12px #0002; }
     table { width: 100%; border-collapse: collapse; font-size: 15px; }
     tr:nth-child(even) { background: #eef6ea; }
-    .back { margin-top: 28px; font-size: 13px; }
-    .back a { color: #2d6a2d; }
-    .badge { display:inline-block;background:#2d6a2d;color:white;padding:3px 10px;border-radius:12px;font-size:12px;margin-bottom:10px; }
+    th { padding:10px 8px; text-align:left; color:#254d2b; background:#eaf3e7; }
   </style>
 </head>
 <body>
-  <span class="badge">🌴 Palm Hill Country Club</span>
-  <h1>Regularly Scheduled Activities — By Date</h1>
-  <div class="meta">August 2026</div>
-  <p>Weekly and monthly Palm Hill activities listed for the current month.</p>
-  <p><a href="regularly-scheduled-activities.html">View by date</a> &nbsp;·&nbsp; <a href="regularly-scheduled-activities-by-activity.html">View by activity</a></p>
-  <table>
-    
-    <tbody>
+  <header><h1>Regularly Scheduled Activities</h1><p>Calendar Date View</p></header>
+  <main>
+    <div class="meta">August 2026</div>
+    <p style="text-align:center;">Weekly and monthly Palm Hill activities listed for the current month.</p>
+    <div class="view-nav"><a href="regularly-scheduled-activities.html">View by Date</a><a href="regularly-scheduled-activities-by-activity.html">View by Activity</a></div>
+    <div class="source"><a class="button" href="https://www.palmhillcountryclub.net/calendar/" target="_blank" rel="noopener">View Official Palm Hill Calendar →</a><p>Palm Hill resident login may be required.</p></div>
+    <div class="table-wrap"><table>
       
+      <tbody>
+        
       <tr>
         <td style="padding:10px 8px;border-bottom:1px solid #ddd;font-weight:bold;vertical-align:top;">Pickleball</td>
         <td style="padding:10px 8px;border-bottom:1px solid #ddd;color:#666;vertical-align:top;">Aug 1, at 8:30 AM, in Pickleball Courts</td>
@@ -289,8 +291,9 @@
         <td style="padding:10px 8px;border-bottom:1px solid #ddd;font-weight:bold;vertical-align:top;">Chair Yoga (SCH)</td>
         <td style="padding:10px 8px;border-bottom:1px solid #ddd;color:#666;vertical-align:top;">Aug 31, at 9:15 AM-10:15 AM, in South Clubhouse</td>
       </tr>
-    </tbody>
-  </table>
-  <div class="back"><a href="https://www.palmhillcountryclub.net/calendar/">View the official Palm Hill calendar →</a></div>
+      </tbody>
+    </table></div>
+  </main>
+  <footer>Generated from the current Palm Hill calendar snapshot. Use the official calendar for authoritative details and late changes.</footer>
 </body>
 </html>
