@@ -2,14 +2,6 @@
   "week_label": "Week of August 9, 2026",
   "events": [
     {
-      "slug": "2026-08-12-palm-hill-ukulele-group",
-      "title": "Palm Hill Ukulele Group",
-      "date": "2026-08-12",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-palm-hill-ukulele-group.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-08-17-south-hall-closed-for-voting",
       "title": "SOUTH HALL CLOSED FOR VOTING",
       "date": "2026-08-17",
