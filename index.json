@@ -5,7 +5,7 @@
       "slug": "2026-08-17-south-hall-closed-for-voting",
       "title": "SOUTH HALL CLOSED FOR VOTING",
       "date": "2026-08-17",
-      "section": "upcoming_events",
+      "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-south-hall-closed-for-voting.html",
       "hasBody": false
     },
@@ -26,11 +26,11 @@
       "hasBody": false
     },
     {
-      "slug": "2026-08-10-rules-and-regulations-committee-meeting",
-      "title": "Rules and Regulations Committee Meeting",
+      "slug": "2026-08-10-rules-and-regulations-committee-meeting-today",
+      "title": "Rules and Regulations Committee Meeting Today",
       "date": "2026-08-10",
       "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-rules-and-regulations-committee-meeting.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-rules-and-regulations-committee-meeting-today.html",
       "hasBody": true
     },
     {
@@ -138,11 +138,11 @@
       "hasBody": true
     },
     {
-      "slug": "2026-08-03-spectrum-outage-aug-3",
+      "slug": "2027-08-03-spectrum-outage-aug-3",
       "title": "Spectrum Outage — Aug 3",
-      "date": "2026-08-03",
+      "date": "2027-08-03",
       "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-03-spectrum-outage-aug-3.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2027-08-03-spectrum-outage-aug-3.html",
       "hasBody": true
     },
     {

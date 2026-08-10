@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Palm Hill Street Map — Private Pilot</title>
+  <style>
+    :root { color-scheme: light; --green:#254d2b; --gold:#c9a227; --paper:#f6f3e8; --ink:#1d261f; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.45 Arial,sans-serif; }
+    header { padding:22px 18px; color:#fff; text-align:center; background:var(--green); border-bottom:5px solid var(--gold); }
+    h1 { margin:0; font-size:clamp(1.55rem,5vw,2.25rem); }
+    header p { margin:6px 0 0; }
+    main { width:min(1200px,100%); margin:auto; padding:18px; }
+    nav { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:18px; }
+    nav a { padding:10px 18px; border-radius:999px; color:#fff; background:var(--green); font-weight:700; text-decoration:none; }
+    .map { margin:0 0 24px; padding:14px; background:#fff; border:1px solid #d7d1bd; border-radius:12px; box-shadow:0 3px 12px #0002; scroll-margin-top:10px; }
+    .map h2 { margin:0 0 10px; color:var(--green); }
+    .map img { display:block; width:100%; height:auto; border:1px solid #bbb; cursor:zoom-in; }
+    .map p { margin:10px 0 0; text-align:center; }
+    .map a { color:var(--green); font-weight:700; }
+    footer { padding:0 18px 24px; color:#596159; text-align:center; font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Palm Hill Street Map</h1>
+    <p>Choose North or South, then tap the map for the full-size original.</p>
+  </header>
+  <main>
+    <nav aria-label="Map sections">
+      <a href="#north">North Map</a>
+      <a href="#south">South Map</a>
+    </nav>
+    <section class="map" id="north">
+      <h2>North Map</h2>
+      <a href="assets/palm-hill-map-north.jpeg" target="_blank" rel="noopener">
+        <img src="assets/palm-hill-map-north.jpeg" width="864" height="1000" alt="Palm Hill North street map">
+      </a>
+      <p><a href="assets/palm-hill-map-north.jpeg" target="_blank" rel="noopener">Open full-size North map</a></p>
+    </section>
+    <section class="map" id="south">
+      <h2>South Map</h2>
+      <a href="assets/palm-hill-map-south.jpeg" target="_blank" rel="noopener">
+        <img src="assets/palm-hill-map-south.jpeg" width="1328" height="1000" alt="Palm Hill South street map">
+      </a>
+      <p><a href="assets/palm-hill-map-south.jpeg" target="_blank" rel="noopener">Open full-size South map</a></p>
+    </section>
+  </main>
+  <footer>Private presentation pilot using verified copies of the original Palm Hill Country Club map images.</footer>
+</body>
+</html>
