@@ -42,22 +42,6 @@
       "hasBody": false
     },
     {
-      "slug": "2026-08-12-building-grounds-committee",
-      "title": "Building & Grounds Committee",
-      "date": "2026-08-12",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-building-grounds-committee.html",
-      "hasBody": false
-    },
-    {
-      "slug": "2026-08-12-planning-environmental-committee",
-      "title": "Planning & Environmental Committee",
-      "date": "2026-08-12",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-environmental-committee.html",
-      "hasBody": false
-    },
-    {
       "slug": "2026-08-17-communications-committee-meeting",
       "title": "Communications Committee Meeting",
       "date": "2026-08-17",
@@ -111,7 +95,7 @@
       "date": "2026-08-13",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-13-block-captain-is-needed.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-08-10-bingo-volunteers-needed",
@@ -119,7 +103,7 @@
       "date": "2026-08-10",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-bingo-volunteers-needed.html",
-      "hasBody": true
+      "hasBody": false
     },
     {
       "slug": "2026-08-07-alert-for-palm-hill-residents",
