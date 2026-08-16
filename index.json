@@ -7,7 +7,7 @@
       "date": "2026-08-17",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-south-hall-closed-for-voting.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-18-south-hall-closed-for-voting",
@@ -15,7 +15,7 @@
       "date": "2026-08-18",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-18-south-hall-closed-for-voting.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-19-ladies-luncheon",
@@ -23,7 +23,7 @@
       "date": "2026-08-19",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-19-ladies-luncheon.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-21-karaoke-obi-time",
@@ -31,7 +31,7 @@
       "date": "2026-08-21",
       "section": "whats_up_this_week",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-21-karaoke-obi-time.html",
-      "hasBody": false
+      "hasBody": true
     },
     {
       "slug": "2026-08-26-scallop-shell-crafting",
