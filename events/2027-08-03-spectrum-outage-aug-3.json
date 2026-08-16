@@ -1,16 +1,17 @@
 {
   "title": "Spectrum Outage — Aug 3",
-  "summary": "If Spectrum goes out, check for WIFI access; use other streaming apps or smart TV devices for entertainment.",
+  "summary": "If Spectrum goes out, check for WIFI and use other streaming apps like Crackle or Tubi. Experiment with your XUMO remote to access content.",
   "date": "2027-08-03",
   "source_message_id": "19fd2987cb3a9f0e",
   "source_thread_id": "19fd2987cb3a9f0e",
   "_manual_label": "community-notice",
   "_manual_route_target": "community_announcements",
   "_summary_source_original": "Steve, you are free to put this in your next Newsletter. Gail, could you please post this : This past Sunday, August 3rd, it appears that Spectrum had a spotty outage, meaning that not everyone was affected. If your Spectrum goes out, not all is lost sometimes. Check to see if you still have WIFI. If you do have WIFI, you still have the option of watching other Streaming APPs. Through Spectrum we have access to Paramount, Disney, AMC,,and several others. There are also several Free APPs like Crackle, Tubi, BYU, and several others. If Spectrum is not working, you could try to access one of these through your XUMO Box. If that doesn't work, and you have a \"Smart TV\" ,Firestick, or ROKU , you might try accessing some of these APPs that way. On another note, don't be afraid you will break something by experimenting with your XUMO remote. Go ahead and try pushing the different buttons to see what they do. If you get lost, you just hit the button that looks like a House, and it will return you to the XUMO screen, where you can get to the Spectrum APP. BOB NEWPORT",
-  "_summary_fallback_preserved": true,
+  "_ollama_summarized": true,
+  "_summary_source_length": 1073,
   "_public_detail_text": "This past Sunday, August 3rd, it appears that Spectrum had a spotty outage, meaning that not everyone was affected. If your Spectrum goes out, not all is lost sometimes. Check to see if you still have WIFI. If you do have WIFI, you still have the option of watching other Streaming APPs. Through Spectrum we have access to Paramount, Disney, AMC,,and several others. There are also several Free APPs like Crackle, Tubi, BYU, and several others. If Spectrum is not working, you could try to access one of these through your XUMO Box. If that doesn't work, and you have a \"Smart TV\" ,Firestick, or ROKU , you might try accessing some of these APPs that way. On another note, don't be afraid you will break something by experimenting with your XUMO remote. Go ahead and try pushing the different buttons to see what they do. If you get lost, you just hit the button that looks like a House, and it will return you to the XUMO screen, where you can get to the Spectrum APP. \n\nBOB NEWPORT",
   "section": "community_announcements",
-  "week_label": "Week of August 9, 2026",
-  "published_at": "2026-08-15T17:44:46.146Z",
+  "week_label": "Week of August 16, 2026",
+  "published_at": "2026-08-16T19:36:08.139Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2027-08-03-spectrum-outage-aug-3.html"
 }

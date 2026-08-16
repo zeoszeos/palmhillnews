@@ -1,16 +1,16 @@
 {
   "title": "Karaoke Obi-Time",
-  "summary": "Aug 21, at 6pm-9:30pm, in North Clubhouse",
+  "summary": "Aug 21, at 6pm to 9:30pm, in North Clubhouse",
   "date": "2026-08-21",
-  "time": "6pm-9:30pm",
+  "time": "6pm to 9:30pm",
   "location": "North Clubhouse",
-  "source_link": null,
+  "source_link": "https://www.palmhillcountryclub.net/calendar/?cat=&view=day&month=8&day=21&year=2026",
+  "_public_detail_text": "",
   "from_calendar": true,
   "_recurrence_status": "not-recurring",
   "_recurrence_calendar_match": "",
-  "_public_detail_text": "",
   "section": "whats_up_this_week",
-  "week_label": "Week of August 9, 2026",
-  "published_at": "2026-08-15T17:44:45.951Z",
+  "week_label": "Week of August 16, 2026",
+  "published_at": "2026-08-16T19:36:07.257Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-21-karaoke-obi-time.html"
 }
