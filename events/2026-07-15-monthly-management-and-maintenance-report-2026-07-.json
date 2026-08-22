@@ -1,5 +1,7 @@
 {
   "title": "Monthly Management and Maintenance Report",
+  "summary": "",
+  "date": "2026-07-15",
   "sections": [
     {
       "header": "VENDOR MEETINGS & MAINTENANCE UPDATES",
@@ -72,7 +74,6 @@
       ]
     }
   ],
-  "date": "2026-07-15",
   "section": "shareholders_monthly",
   "week_label": "Week of August 16, 2026",
   "published_at": "2026-08-16T20:20:25.063Z",

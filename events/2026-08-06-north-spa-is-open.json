@@ -1,10 +1,10 @@
 {
   "title": "North Spa is open",
-  "summary": "If you would like to respond to this notification, please place your response above the dotted line. The North Clubhouse Spa is now open. Sorry for th…",
-  "_full_body": "If you would like to respond to this notification, please place your response above the dotted line. The North Clubhouse Spa is now open. Sorry for the inconvenience! Sincerely, Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc (727) 581-2662 | www.resourcepropertymgmt.com",
+  "summary": "The North Clubhouse Spa is now open. Sorry for th…",
   "date": "2026-08-06",
   "section": "past_maintenance_events",
   "week_label": "Week of August 9, 2026",
+  "public_detail": "The North Clubhouse Spa is now open. Sorry for the inconvenience! Sincerely, Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc (727) 581-2662 | www.resourcepropertymgmt.com",
   "published_at": "2026-08-13T20:36:43.979Z",
   "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-06-north-spa-is-open.html"
 }
