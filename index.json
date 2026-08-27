@@ -2,19 +2,11 @@
   "week_label": "Week of August 23, 2026",
   "events": [
     {
-      "slug": "2026-08-26-scallop-shell-crafting",
-      "title": "Scallop Shell Crafting",
-      "date": "2026-08-26",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-26-scallop-shell-crafting.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-11-pot-luck-supper-s",
-      "title": "Pot Luck Supper S",
-      "date": "2026-09-11",
+      "slug": "2026-09-16-creative-writing",
+      "title": "Creative Writing",
+      "date": "2026-09-16",
       "section": "upcoming_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-11-pot-luck-supper-s.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-16-creative-writing.html",
       "hasBody": true
     },
     {
@@ -26,27 +18,19 @@
       "hasBody": true
     },
     {
-      "slug": "2026-09-08-golf-advisory-committee",
-      "title": "Golf Advisory Committee",
-      "date": "2026-09-08",
-      "section": "committee_board_meetings",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-08-golf-advisory-committee.html",
+      "slug": "2026-08-17-communications-committee-report-aug-17",
+      "title": "Communications Committee report — Aug 17",
+      "date": "2026-08-17",
+      "section": "past_committee_board_summaries",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-report-aug-17.html",
       "hasBody": true
     },
     {
-      "slug": "2026-08-13-block-captain-is-needed",
-      "title": "Block captain is needed",
-      "date": "2026-08-13",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-13-block-captain-is-needed.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-10-bingo-volunteers-needed",
-      "title": "Bingo Volunteers Needed",
-      "date": "2026-08-10",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-bingo-volunteers-needed.html",
+      "slug": "2026-08-24-weekly-manager-update-2026-08-24",
+      "title": "Weekly manager update — 2026-08-24",
+      "date": "2026-08-24",
+      "section": "shareholders_weekly",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
       "hasBody": true
     }
   ]
