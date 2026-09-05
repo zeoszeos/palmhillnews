@@ -1,20 +1,12 @@
 {
-  "week_label": "Week of August 30, 2026",
+  "week_label": "Week of August 23, 2026",
   "events": [
     {
-      "slug": "2026-09-06-classes-with-linda-keehl",
-      "title": "Classes with Linda Keehl",
-      "date": "2026-09-06",
+      "slug": "2026-09-02-creative-writing",
+      "title": "Creative Writing",
+      "date": "2026-09-02",
       "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-06-classes-with-linda-keehl.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-07-holiday-weekend-schedule",
-      "title": "Holiday Weekend Schedule",
-      "date": "2026-09-07",
-      "section": "whats_up_this_week",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-07-holiday-weekend-schedule.html",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-02-creative-writing.html",
       "hasBody": true
     },
     {
@@ -34,147 +26,27 @@
       "hasBody": true
     },
     {
-      "slug": "2026-08-26-real-estate-committee-report",
-      "title": "Real Estate Committee Report",
-      "date": "2026-08-26",
-      "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-26-real-estate-committee-report.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-26-golf-advisory-committee-report",
-      "title": "Golf Advisory Committee Report",
-      "date": "2026-08-26",
-      "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-26-golf-advisory-committee-report.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-08-17-communications-committee-report-aug-17",
-      "title": "Communications Committee report — Aug 17",
+      "title": "Communications Committee report \u2014 Aug 17",
       "date": "2026-08-17",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-report-aug-17.html",
       "hasBody": true
     },
     {
-      "slug": "2026-08-10-rules-and-regulations-committee-report",
-      "title": "Rules and Regulations Committee Report",
-      "date": "2026-08-10",
-      "section": "past_committee_board_summaries",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-rules-and-regulations-committee-report.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-24-helping-hands-temporary-tv-assistance-needed",
-      "title": "Helping Hands: Temporary TV Assistance Needed",
-      "date": "2026-08-24",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-24-helping-hands-temporary-tv-assistance-needed.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-13-block-captain-is-needed",
-      "title": "Block captain is needed",
-      "date": "2026-08-13",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-13-block-captain-is-needed.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-10-bingo-volunteers-needed",
-      "title": "Bingo Volunteers Needed",
-      "date": "2026-08-10",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-10-bingo-volunteers-needed.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-04-bocce-play-is-weather-dependent",
-      "title": "Bocce Play Is Weather-Dependent",
-      "date": "2026-08-04",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-04-palm-hill-community-notices-august-2026.html#bocce-weather",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-04-bring-your-clubhouse-fob",
-      "title": "Bring Your Clubhouse Fob",
-      "date": "2026-08-04",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-04-palm-hill-community-notices-august-2026.html#clubhouse-fob",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-07-rpm-offices-closed-labor-day",
-      "title": "RPM Offices Closed - Labor Day",
-      "date": "2026-09-07",
-      "section": "community_announcements",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-07-rpm-offices-closed-labor-day.html",
-      "hasBody": true
-    },
-    {
       "slug": "2026-08-24-weekly-manager-update-2026-08-24",
-      "title": "Weekly manager update — 2026-08-24",
+      "title": "Weekly manager update \u2014 2026-08-24",
       "date": "2026-08-24",
       "section": "shareholders_weekly",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
       "hasBody": true
     },
     {
-      "slug": "2026-09-04-sanitation-field-hours-on-monday-september-7-2026-",
-      "title": "Sanitation Field Hours on Monday September 7, 2026 9am 12:00pm",
-      "date": "2026-09-04",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-04-sanitation-field-hours-on-monday-september-7-2026-.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-04-water-shutoff-community-sep-4",
-      "title": "Water Shutoff — Community — Sep 4",
-      "date": "2026-09-04",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-04-water-shutoff-community-sep-4.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-04-water-shutoff-north-area-sep-4",
-      "title": "Water Shutoff — North Area — Sep 4",
-      "date": "2026-09-04",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-04-water-shutoff-north-area-sep-4.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-03-south-irrigation-shutdown",
-      "title": "South Irrigation Shutdown",
-      "date": "2026-09-03",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-03-south-irrigation-shutdown.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-09-01-south-irrigation-water-will-be-turned-off-beginnin",
-      "title": "South Irrigation Water will be turned off beginning 11:00am this morning for approximately 2 hours",
-      "date": "2026-09-01",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-01-south-irrigation-water-will-be-turned-off-beginnin.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-31-north-irrigation-water-is-back-on",
-      "title": "North Irrigation Water is back on",
-      "date": "2026-08-31",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-31-north-irrigation-water-is-back-on.html",
-      "hasBody": true
-    },
-    {
-      "slug": "2026-08-31-north-irrigation-is-off-resident-broke-a-pipe-on-t",
-      "title": "North Irrigation is off.  Resident broke a pipe on their property",
-      "date": "2026-08-31",
-      "section": "past_maintenance_events",
-      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-31-north-irrigation-is-off-resident-broke-a-pipe-on-t.html",
+      "slug": "2026-09-07-rpm-offices-closed-in-observance-of-labor-day",
+      "title": "RPM Offices Closed in Observance of Labor Day",
+      "date": "2026-09-07",
+      "section": "community_announcements",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-07-rpm-offices-closed-in-observance-of-labor-day.html",
       "hasBody": true
     }
   ]
