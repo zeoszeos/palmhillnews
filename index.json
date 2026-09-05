@@ -27,7 +27,7 @@
     },
     {
       "slug": "2026-08-17-communications-committee-report-aug-17",
-      "title": "Communications Committee report \u2014 Aug 17",
+      "title": "Communications Committee report — Aug 17",
       "date": "2026-08-17",
       "section": "past_committee_board_summaries",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-report-aug-17.html",
@@ -35,7 +35,7 @@
     },
     {
       "slug": "2026-08-24-weekly-manager-update-2026-08-24",
-      "title": "Weekly manager update \u2014 2026-08-24",
+      "title": "Weekly manager update — 2026-08-24",
       "date": "2026-08-24",
       "section": "shareholders_weekly",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
@@ -47,6 +47,46 @@
       "date": "2026-09-07",
       "section": "community_announcements",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-07-rpm-offices-closed-in-observance-of-labor-day.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-09-06-classes-with-linda-keehl",
+      "title": "Classes with Linda Keehl",
+      "date": "2026-09-06",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-06-classes-with-linda-keehl.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-09-07-holiday-weekend-schedule",
+      "title": "Holiday Weekend Schedule",
+      "date": "2026-09-07",
+      "section": "whats_up_this_week",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-07-holiday-weekend-schedule.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-09-08-golf-advisory-committee",
+      "title": "Golf Advisory Committee",
+      "date": "2026-09-08",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-08-golf-advisory-committee.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-09-09-planning-and-environmental-committee-meeting",
+      "title": "Planning and Environmental Committee Meeting",
+      "date": "2026-09-09",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-09-planning-and-environmental-committee-meeting.html",
+      "hasBody": true
+    },
+    {
+      "slug": "2026-09-09-buildings-and-grounds-committee-meeting",
+      "title": "Buildings and Grounds Committee Meeting",
+      "date": "2026-09-09",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-09-buildings-and-grounds-committee-meeting.html",
       "hasBody": true
     }
   ]
