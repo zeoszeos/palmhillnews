@@ -88,6 +88,14 @@
       "section": "upcoming_events",
       "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-09-buildings-and-grounds-committee-meeting.html",
       "hasBody": true
+    },
+    {
+      "slug": "2026-09-16-ladies-luncheon",
+      "title": "Ladies Luncheon",
+      "date": "2026-09-16",
+      "section": "upcoming_events",
+      "vercel_url": "https://palmhillnews.vercel.app/pages/2026-09-16-ladies-luncheon.html",
+      "hasBody": true
     }
   ]
 }
