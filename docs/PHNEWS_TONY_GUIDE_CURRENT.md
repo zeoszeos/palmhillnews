@@ -7,6 +7,50 @@
 
 ---
 
+# One-Page Overview
+
+**What this guide is for:** This is the plain-language explanation of PHNEWS for Tony C. and other non-programmer stakeholders.
+
+**What it is not:** This guide is not the technical source of truth for code status, commits, tests, deployment state, or publication authorization. Those details belong in the System Handbook, current Handoff, and evidence records.
+
+## PHNEWS in one page
+
+Palm Hill residents receive information from several places: Palm Hill emails and calendar entries, RPM notices, reports, attachments, reminders, corrections, and other community communications.
+
+PHNEWS helps turn that stream into one organized resident reference.
+
+```text
+approved sources
+    ↓
+check dates, identity, corrections, and duplicates
+    ↓
+preserve the complete useful source information
+    ↓
+write a short resident-friendly newsletter summary
+    ↓
+provide a fuller detail page when useful
+    ↓
+quality check
+    ↓
+human review
+    ↓
+publish only after approval
+```
+
+The main ideas are:
+
+- PHNEWS does **not** replace urgent official communications.
+- It helps residents find current information without searching many separate messages.
+- A short newsletter item and a fuller detail page can come from the same verified information.
+- Different sources may support different facts, so PHNEWS should not claim more than a source actually proves.
+- Human review remains part of the system.
+- Technical PASS does not mean permission to publish or send.
+
+StevO retains final editorial and publication authority.
+
+---
+
+
 # The Basic Idea
 
 PHNEWS is a **supervised editorial pipeline**, not an unrestricted AI writer.
@@ -314,13 +358,9 @@ The better rule is:
 
 > Preserve the complete substantive source description in the canonical record first.
 
-For Calendar events, PHNEWS now uses a field such as:
+PHNEWS now keeps the complete useful Calendar description before creating any shorter resident version.
 
-```text
-source_body
-```
-
-The system then creates two different views from that same full record:
+The system then creates two different views from that same complete record:
 
 ```text
 complete source record
@@ -691,3 +731,20 @@ Branch: phnews-shared-docs
 
 The shared documentation is intended to keep StevO, ChatGPT, Hermes, Codex, and future maintainers working from the same rules rather than passing large blocks of text back and forth.
 
+
+
+---
+
+# Document Authority and Maintenance Note
+
+This Tony Guide is authoritative for **plain-language explanation**, not technical implementation state.
+
+When a technical detail changes, the System Handbook and current Handoff should be updated first. This Guide should be updated only when the change affects how a stakeholder should understand PHNEWS.
+
+If this Guide conflicts with verified source evidence, an approved artifact, StevO's explicit decision, the durable System Handbook, or a newer reconciled Handoff, report the contradiction rather than silently deciding that this Guide wins.
+
+Technical evidence identifiers, commit SHAs, test names, and detailed provenance codes should generally remain outside this Guide so it stays readable.
+
+A good acceptance test is:
+
+> Could Tony accurately explain PHNEWS to another committee member after reading this guide once?
