@@ -1,10 +1,31 @@
+# Handoff Authority and Snapshot Metadata
+
+**Handoff date:** September 25, 2026  
+**Document role:** Point-in-time implementation snapshot  
+**Repository for shared documentation:** `zeoszeos/palmhillnews`  
+**Documentation branch:** `phnews-shared-docs`  
+**Handoff source commit:** documentation snapshot as maintained on `phnews-shared-docs`; verify current branch history before relying on a specific SHA  
+**Handoff-declared primary worktree:** `/home/leono/hermes-bridge/Projects/PHNEWS-Palm-Hill-Newsletter`  
+**Worktree authority:** PENDING LIVE FILESYSTEM/GIT VERIFICATION  
+**Last verified public Events - Upcoming deployment in this handoff:** merge commit `d058716faa58fa969393ceb2ad40c290130926a4` for the earlier six-page deployment  
+**Latest local build/QC:** see current local artifacts and reports; live filesystem verification required before claiming current-state PASS  
+**Last approved full-newsletter reference:** September 21, 2026 reference artifact as previously identified; approval-package formalization remains planned  
+**Unresolved issues:** see the Immediate Next Steps, Evidence Ledger, and Contradiction Register
+
+> This Handoff is a dated snapshot, not permanent law. It must not override later verified source evidence, later Git state, later approved artifacts, later System Handbook decisions, or explicit StevO decisions.
+
+> Reading this Handoff does not authorize code changes, publication, deployment, sending email, or overwriting approved artifacts.
+
+---
+
 # PHNEWS / Palm Hill Newsletter — Hermes Project Handoff
 ## Detailed Progression, Architecture, Decisions, Current State, and Next Steps
 
 **Prepared for:** Hermes  
 **Project:** Palm Hill Country Club Newsletter / PHNEWS  
 **As of:** September 25, 2026  
-**Primary working project:** `/home/leono/hermes-bridge/Projects/PHNEWS-Palm-Hill-Newsletter`  
+**Handoff-declared primary working project:** `/home/leono/hermes-bridge/Projects/PHNEWS-Palm-Hill-Newsletter`  
+**Path authority:** PENDING LIVE FILESYSTEM/GIT VERIFICATION  
 **Primary reviewer / product owner:** StevO
 
 > HERMES: Treat this file as the current PHNEWS handoff. Read it fully before making changes. Preserve the architecture, rules, paths, provenance logic, QC requirements, approval controls, and unresolved issues unless StevO explicitly changes them.
@@ -1302,3 +1323,61 @@ PHNEWS is being converted from a loose collection of scripts into a controlled p
 The guiding principle is:
 
 > Turn lessons from individual defects into shared program behavior.
+
+
+---
+
+# 47. Claim / Evidence Status Addendum
+
+This section distinguishes implementation claims from acceptance claims.
+
+## Canonical worktree
+
+**Claim type:** current-state / unresolved  
+**Status:** PENDING LIVE FILESYSTEM/GIT VERIFICATION  
+**Declared path:** `/home/leono/hermes-bridge/Projects/PHNEWS-Palm-Hill-Newsletter`  
+**Evidence needed:** `pwd`, Git top-level, remotes, branch, status, and latest commit for each plausible worktree.
+
+## `source_body`
+
+**Claim type:** current-state  
+**Reported state:** IMPLEMENTED  
+**Evidence currently available:** this Handoff's recorded local implementation behavior and generated-detail review history.  
+**Evidence still needed:** live worktree/commit/test verification before upgrading the claim to fully verified current implementation.
+
+## Fact-level provenance / `fact_sources`
+
+**Claim type:** current-state  
+**Reported state:** IMPLEMENTED  
+**Known behavior:** PHLGA contact source is scoped to the contact fact; fallback occurrence is not given a general source label.  
+**Evidence still needed:** live worktree/commit verification and preventive fact-level provenance QC.
+
+## Events - Upcoming
+
+**Claim type:** current-state  
+**Implementation:** reported IMPLEMENTED  
+**Focused behavior:** locally reviewed  
+**Preventive provenance QC:** still pending/in progress  
+**Editorial acceptance:** pending final review after remaining defects  
+**Publication authorization for latest local fixes:** not granted  
+**Published state:** earlier six-page public deployment exists; newer local fixes are not assumed published.
+
+## 170-message statistic
+
+**Claim type:** pending-verification  
+**Reported historical result:** 170 messages, reported as 126 Palm Hill + 44 RPM, June 23 through September 23, 2026.  
+**Reproduction attempt:** September 25, 2026 live query using the currently documented exact sender addresses produced 154 Palm Hill results and 0 results for the currently documented RPM sender address.  
+**Interpretation:** the original statistic is not disproven; its original query/report and sender definitions are not yet preserved well enough for reproducibility.  
+**Action:** recover or reconstruct durable evidence before treating the statistic as VERIFIED_CURRENT.
+
+## Conflict handling
+
+If this Handoff conflicts with:
+
+- live authoritative source evidence;
+- current verified Git state;
+- a later approved artifact;
+- a later durable Handbook decision;
+- explicit StevO direction;
+
+record the conflict and reconcile it rather than treating this dated Handoff as controlling.
