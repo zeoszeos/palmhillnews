@@ -8,7 +8,69 @@
 
 > This document is the current working source of truth for the PHNEWS system. It combines the previously approved handbook-development rules with the architecture, editorial rules, source/provenance controls, review workflow, and corrective actions established through September 25, 2026.
 
+
 ---
+
+# Documentation Authority, Claim Types, and Evidence Control
+
+**Document role:** This Handbook is authoritative for durable PHNEWS architecture, editorial rules, provenance rules, QC rules, approval boundaries, and operating principles.
+
+**This Handbook is not by itself proof that a current implementation is complete, tested, accepted, deployed, or publicly verified.** Current implementation claims must be supported by the newest reconciled Handoff, Git/test/artifact evidence, and the Evidence Ledger.
+
+When information conflicts, use the authority-by-question model in `docs/PHNEWS_SHARED_DOCS_INDEX.md`.
+
+Important claims in this Handbook should be understood as one of:
+
+- **durable-rule**
+- **current-state**
+- **proposed**
+- **historical**
+- **unresolved**
+- **pending-verification**
+
+Implementation/acceptance state is distinct from provenance state.
+
+### Implementation / acceptance stages
+
+```text
+IMPLEMENTED
+FOCUSED_TEST_PASS
+FULL_QC_PASS
+HTML_INSPECTED
+EDITORIALLY_ACCEPTED
+APPROVED_FOR_PUBLICATION
+PUBLISHED_VERIFIED
+```
+
+### Provenance states
+
+```text
+VERIFIED_CURRENT_SOURCE
+VERIFIED_RETAINED_SOURCE
+FALLBACK_ONLY
+SOURCE_DATA_DEFECT
+```
+
+A feature can be implemented without being accepted. A source can be verified without the surrounding feature being publication-ready.
+
+### Evidence pattern for important claims
+
+Where practical, use:
+
+```text
+Claim type:
+Status:
+Status as of:
+Evidence:
+Verified by:
+Owner:
+Approval state:
+Blocking conditions:
+Next verification:
+```
+
+Detailed evidence belongs in the Handbook, Handoff, or Evidence Ledger rather than the Tony Guide.
+
 
 # 1. Purpose
 
@@ -16,14 +78,20 @@ PHNEWS is a controlled resident-information publishing system for Palm Hill Coun
 
 It exists to reduce resident information fragmentation and overload by turning many separate emails, calendar entries, reports, notices, attachments, corrections, and reminders into a consolidated, readable, current reference.
 
-A 90-day Gmail sample covering June 23 through September 23, 2026 found 170 direct Palm Hill/RPM messages in one resident mailbox:
+A previously reported 90-day Gmail sample covering June 23 through September 23, 2026 recorded **170 direct Palm Hill/RPM messages** in one resident mailbox:
 
-- 126 from the Palm Hill Webmaster
-- 44 from Resource Property Management
-- about 56 messages per month
-- about 12.8 messages per week
+- reported Palm Hill Webmaster count: 126
+- reported Resource Property Management count: 44
+- reported average: about 56 messages per month
+- reported average: about 12.8 messages per week
 
-Those counts are message volume, not unique information volume. Repeated reminders, updates, corrections, and duplicate source routes are part of the problem PHNEWS is designed to solve.
+**Claim type:** pending-verification  
+**Current status:** REPORTED_PENDING_EVIDENCE_VERIFICATION  
+**Meaning:** message volume, not unique information volume.  
+**Evidence gap:** the original query/report and sender-definition set have not yet been preserved in the shared evidence layer.  
+**Reproduction attempt, September 25, 2026:** using the exact sender addresses currently documented for the stated date window, GPT's live Gmail query returned 154 Palm Hill messages and 0 messages for the currently documented RPM sender address. This does not disprove the original 170 count; it shows that the current documentation is insufficient to reproduce the earlier calculation. See `docs/PHNEWS_EVIDENCE_LEDGER.md` and `docs/PHNEWS_CONTRADICTION_REGISTER.md`.
+
+Repeated reminders, updates, corrections, and duplicate source routes remain part of the resident-information problem PHNEWS is designed to solve.
 
 The high-level transformation is:
 
@@ -1244,3 +1312,130 @@ The goal is to turn each discovered problem into:
 - a reusable piece of standard work
 
 That is the direction of the PHNEWS system.
+
+
+---
+
+# Evidence, Conflict, and Change-Control Addendum — September 25, 2026
+
+## A. Current path authority
+
+**Claim type:** current-state / pending-verification
+
+Handoff-declared primary project path:
+
+```text
+/home/leono/hermes-bridge/Projects/PHNEWS-Palm-Hill-Newsletter
+```
+
+**Authority status:** PENDING LIVE FILESYSTEM/GIT VERIFICATION.
+
+Older PHNEWS records identify other project and repository paths. Do not silently merge those histories or assume the newest remembered path is canonical.
+
+Before code changes, verify candidate worktrees with:
+
+```text
+pwd
+git rev-parse --show-toplevel
+git remote -v
+git branch --show-current
+git status
+git log -1 --oneline
+```
+
+Record the resulting decision in the Evidence Ledger and resolve the corresponding Contradiction Register entry.
+
+## B. Evidence-based section status
+
+Do not use `locked`, `ready`, `stable`, or `close to acceptance` as a complete technical status.
+
+For major sections, prefer:
+
+```text
+Section:
+Canonical ID:
+Implementation state:
+Current renderer:
+Source families:
+Latest test/QC:
+Latest artifact:
+HTML inspected:
+Editorial acceptance:
+Publication state:
+Known gaps:
+Next action:
+```
+
+A section may simultaneously be IMPLEMENTED and still be awaiting FULL_QC_PASS, EDITORIALLY_ACCEPTED, or PUBLISHED_VERIFIED.
+
+## C. Current Events - Upcoming status
+
+**Claim type:** current-state  
+**Status as of:** September 25, 2026
+
+- Architecture and renderer work: IMPLEMENTED based on the September 25 Handoff.
+- Full-fidelity `source_body` handling: reported IMPLEMENTED; live worktree/commit verification still required.
+- Fact-level provenance / `fact_sources`: reported IMPLEMENTED; live worktree/commit verification still required.
+- Preventive fact-level provenance QC: IN_PROGRESS / not yet established as FULL_QC_PASS.
+- Latest local HTML: previously inspected during section review, but current regenerated post-QC artifact still requires final confirmation.
+- Editorial acceptance: pending final StevO acceptance after remaining issues.
+- Publication authorization: not granted for the latest local fixes.
+- Public state: earlier six detail pages were deployed from merge commit `d058716faa58fa969393ceb2ad40c290130926a4`; newer local source-body/provenance/source-display changes are not assumed published.
+
+Known remaining items:
+
+1. implement preventive fact-level provenance QC;
+2. clean stale Craft Fair fallback phone typo;
+3. tighten/remove implicit default-source behavior;
+4. resolve Karaoke time discrepancy;
+5. regenerate section and six detail pages;
+6. run structural/content/full-source/provenance QC;
+7. inspect actual HTML;
+8. obtain StevO acceptance;
+9. publish only after explicit approval;
+10. verify every public URL;
+11. create approved Events - Upcoming baseline.
+
+## D. Material conflict procedure
+
+When sources, approved artifacts, implementation status, and editorial decisions disagree:
+
+1. classify the question;
+2. preserve both claims;
+3. identify the relevant authority type;
+4. verify evidence;
+5. record material unresolved conflicts;
+6. avoid silently promoting fallback evidence into factual authority;
+7. seek StevO decision for consequential editorial/publication choices;
+8. update all affected documents after resolution.
+
+## E. Shared-document privacy
+
+Never store in shared PHNEWS documentation:
+
+- passwords
+- API keys
+- session cookies
+- authentication tokens
+- connection strings
+- private Gmail URLs
+- raw authentication headers
+- unnecessary resident-private information
+- unnecessary raw personal mailbox content
+
+Use `[REDACTED]` where a security-related event must be documented.
+
+## F. Change control
+
+A durable rule change should identify its trigger, evidence, affected documents, and approval state.
+
+Update:
+
+- Handbook for durable rules;
+- Tony Guide for stakeholder-facing explanation;
+- Handoff for implementation state;
+- Index for document structure/authority;
+- Evidence Ledger for major claims;
+- Contradiction Register for material conflicts.
+
+Preserve prior versions through Git history.
