@@ -2,7 +2,7 @@
 ## Plain-Language Guide for Tony C.
 
 **Prepared for:** Tony C.  
-**Updated:** September 25, 2026  
+**Updated:** October 2, 2026 (October 4 local-review update)
 **Purpose:** Explain in plain language how PHNEWS gathers, checks, organizes, summarizes, and publishes Palm Hill information.
 
 ---
@@ -12,6 +12,16 @@
 **What this guide is for:** This is the plain-language explanation of PHNEWS for Tony C. and other non-programmer stakeholders.
 
 **What it is not:** This guide is not the technical source of truth for code status, commits, tests, deployment state, or publication authorization. Those details belong in the System Handbook, current Handoff, and evidence records.
+
+## What is new in the October 4 local review
+
+The September 27 standard-format committee example was approved. The next issue is being assembled with Palm Hill's **new calendar**, masthead style #1, more detailed section icons, a Palm Hill Community Story, a message from Board President Henry Klain, updated meeting-video links, and full-text read-aloud links for those features and the Committee Chair Reports. This October 4 version is still a local review; it has not been approved as a final email or published as a complete issue.
+
+Tony supplied a public calendar feed that PHNEWS can read directly. The October 2 test successfully retrieved events. For the new issue, calendar entries come from that feed, and resident calendar links use the club's new `/calendar-1/` page. RPM emails can still provide maintenance or management notices, but RPM is no longer the calendar source for this issue.
+
+The recurring-activities pages now give each dated occurrence its own easy-to-read row. The By Date view begins with the date; the By Name view begins with the activity. Both have compact links to the other view and the Palm Hill Calendar. Dates are shortened (for example, **Sun, Oct 4, 2026**). The calendar identifies an entry as recurring but does not tell us its exact rule, so PHNEWS does not invent labels such as “second Tuesday.”
+
+A “Listen” link opens the full article or report page and *tries* to begin reading automatically. The page retains a large Read button if a browser blocks automatic speech. The local test simplifies playback to one Read/Pause/Resume button, Stop, Reading Speed, and Volume. Desktop retesting and a real iPhone email test are still needed before promising that this works for residents. Human approval and public-link checks remain required before sending.
 
 ## PHNEWS in one page
 
@@ -128,9 +138,11 @@ The framework should not be rebuilt or restyled differently every time.
 
 ---
 
-# The 13 Canonical Newsletter Headings
+# The 13 Canonical Newsletter Headings (September 25 baseline)
 
-PHNEWS now recognizes these headings as the official ordered structure:
+As of September 25, PHNEWS recognized these headings as the official ordered structure:
+
+The October 4 local preview displays section 4 as **Recurring Meetings & Events** and adds two proposed feature sections; the older canonical list below has not yet been updated in the publishing system or accepted as a new baseline.
 
 1. Committee & Board Meeting Schedules
 2. Committee Chair Reports
@@ -201,6 +213,8 @@ Used especially for:
 
 The occurrence-level Calendar record is preferred over merely assuming a recurring series still applies.
 
+For the October 4 local review, PHNEWS reads the new Palm Hill Calendar feed directly. The resident link is `https://www.palmhillcountryclub.net/calendar-1/`; “Palm Hill Calendar” is the source label. The older `/calendar/` link should not be reused for this issue.
+
 ## RPM / VANTACA
 
 Used for:
@@ -208,7 +222,8 @@ Used for:
 - property-management information
 - maintenance activity
 - RPM notices
-- RPM-controlled calendar information
+
+RPM calendar information was part of the earlier workflow, but is not being used as the calendar source for the October 4 review. A current RPM management email may still support a maintenance notice.
 
 ## Approved Gmail Messages
 
@@ -479,7 +494,7 @@ Some Community Notices stay active until resolved or expired instead of disappea
 
 ---
 
-# Regularly Scheduled Meetings & Events
+# Recurring Meetings & Events (October 4 local preview)
 
 This section has intentionally become a navigation hub instead of one enormous list.
 
@@ -491,9 +506,13 @@ By Name →
 Palm Hill Calendar →
 ```
 
-The system uses a rolling 30-day set of recurring activities.
+The intended process uses a rolling 30-day set of recurring activities. The October 4 review holds October 4–November 2 fixed while Steve checks that issue.
 
 The same filtered data drives the By Date and By Name views so those pages do not drift apart.
+
+Each confirmed, non-private calendar occurrence marked recurring gets its own row. By Date shows the date first; By Name shows the activity first. Both views use a short date such as “Sun, Oct 4, 2026,” compact links in the green header, and a short reminder that times and rooms can change. These are still local pages until publication and link verification.
+
+The feed does not provide the actual repeat rule. Even if one occurrence is in this 30-day view, that does not prove it happens only once, and PHNEWS should not guess a “first Monday” or “second Tuesday” description.
 
 ---
 
@@ -674,7 +693,7 @@ PHNEWS should not use live publication or email sending as a debugging step.
 
 ---
 
-# Current General Section Status
+# Earlier General Section Status (September 25 snapshot)
 
 As of September 25:
 
