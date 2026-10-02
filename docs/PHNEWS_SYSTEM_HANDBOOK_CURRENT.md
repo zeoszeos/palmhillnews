@@ -2,11 +2,39 @@
 
 **Project:** Palm Hill Country Club PHNEWS  
 **Status:** Current working handbook  
-**Updated:** September 25, 2026  
+**Updated:** October 2, 2026 (local October 4 review addendum)
 **Primary owner:** StevO  
 **Audience:** StevO, Communications Committee, ChatGPT, Hermes, Codex, and future PHNEWS maintainers
 
-> This document is the current working source of truth for the PHNEWS system. It combines the previously approved handbook-development rules with the architecture, editorial rules, source/provenance controls, review workflow, and corrective actions established through September 25, 2026.
+> This document preserves the operating rules established through September 25, 2026 and records the October 4 issue work as a local review pilot. The addendum and revised sections below do not certify deployment, final editorial acceptance, or sending.
+
+## October 2 field update — October 4 issue in local review
+
+**Claim type:** current-state / pending-verification for release. **Approval state:** the September 27 standard-format committee example was approved; the October 4 integrated calendar/audio iteration is still a local review and is not a send-ready MyNetWire source. Do not overwrite the frozen September 27 baseline or previously published Vercel pages. StevO retains final editorial and release approval.
+
+### New calendar source and selection
+
+- Tony C. supplied and authorized the public Google Apps Script feed used by the new Palm Hill Calendar. Fetch `action=range_events` with explicit `start` and `end` ISO dates and follow redirects. `action=notices` supplies current calendar notices; it returned no notices in the October 2 test. The source snapshot for the local review was fetched October 2, 2026; it is not a live-update guarantee.
+
+  ```text
+  https://script.google.com/macros/s/AKfycbyvtkPTYvMnc5u_BmQdbRezCRNItiYdCDYe1jVZ3lN5qICGQwyeLPpA9Js40R9RTdI/exec?action=range_events&start=2026-10-04&end=2026-10-10
+  ```
+
+  The feed accepts up to 100 days per request under Tony's present arrangement. Keep the requested range and retrieval time with each snapshot; check for feed changes before relying on it for future issues.
+- The authoritative club calendar link for this issue is `https://www.palmhillcountryclub.net/calendar-1/`, not the retired `/calendar/`. Use resident-facing source label **Palm Hill Calendar**, not “booking calendar.” The feed itself needs no special login under Tony's current arrangement; the club web page may require sign-in.
+- Do not use RPM as a calendar source for the October 4 issue. Direct RPM management emails and notices remain legitimate non-calendar evidence. Reconcile email details against each occurrence; the calendar supplies the event skeleton, not necessarily all context.
+- For the local recurring-activities pages, include only occurrences with `status == CONFIRMED`, `recurring == true`, a date within October 4–November 2 inclusive, and a name other than `Private Event`. Both views use the same 138 selected occurrences from the October 2 snapshot. `recurring` does **not** expose a repeat rule such as “second Tuesday”; do not infer one. A series can show only one occurrence in the 30-day window.
+- The October 4 local section is labeled **Recurring Meetings & Events**. The two local pages are labeled **Recurring Palm Hill Activities — By Date/By Name** and retain one row per dated occurrence. By Date columns: Date, Start, Activity, Venue. By Name columns: Activity, Date, Start, Venue. Dates use abbreviated weekday/month, e.g. `Sun, Oct 4, 2026`. Both pages have compact By Date, By Name, and Palm Hill Calendar links in the green header. The only explanatory paragraph below it is: “Times and rooms are subject to change. The club calendar may require sign-in.” The older canonical registry label is still recorded below until implementation and approval are reconciled.
+- These dated local pages are review artifacts, not verified public URLs. Before sending, publish new dated pages without changing old assets, confirm the public URLs, replace local paths in the email source, then run link and content QC.
+
+### October 4 editorial and accessibility pilot
+
+- The local issue combines masthead style #1, detailed section icons, the community story about Mary Leslie, a message from Board President Henry Klain, a latest-meeting-videos guide, and full-text read-aloud pages for five chair reports plus the two new feature items. Permission to include the community story and photo was stated by StevO for the committee example; retain attribution and verify final public copy before issue release.
+- The resident-facing “Listen” link opens the full-text reader page. The local test appends `?autoplay=1` so speech is attempted after page load, but browsers may block it. Keep the large manual Read button as a fallback; do not promise one-tap playback until tested from an actual email on iPhone and desktop.
+- The local control design has one primary button that changes Read → Pause → Resume, a separate Stop button, Reading Speed, and Volume. Pause cancels browser speech; Resume repeats the current short passage rather than relying on native `speechSynthesis.resume()`, which failed in a PAV desktop test. Releasing Volume restarts the short passage at the new level. A few words can repeat. These revisions were generated and statically checked, but StevO's fresh PC retest and phone test are still outstanding.
+- Preserve email-safe image/title treatment. A previous iPhone test rendered dark title text on green bars when color was declared only on an outer container; explicitly style the title cell/text white in the final source. Do not assume a local browser preview proves MyNetWire or iPhone rendering.
+
+**Local evidence:** `outputs/PHNEWS-2026-10-04-NEW-CALENDAR-LOCAL-REVIEW/` and `outputs/PHNEWS-2026-10-04-AUDIO-AUTOSTART-LOCAL-TEST/` in the September 29 Codex workspace; generating scripts in that workspace's `work/` directory. These are not in the shared-docs branch and must not be mistaken for published pages.
 
 
 ---
@@ -493,7 +521,7 @@ Useful source families include:
 
 - Palm Hill Calendar
 - Palm Hill public pages
-- RPM/VANTACA calendar
+- RPM/VANTACA calendar (historical source; not the October 4 calendar source)
 - Webmaster email
 - RPM management email
 - committee chair email
@@ -515,7 +543,7 @@ For a missing source, preferred recovery order is:
 
 1. live authoritative source
 2. retained authoritative source
-3. RPM/VANTACA
+3. RPM/VANTACA for management notices when applicable, not as a substitute for the new Palm Hill Calendar
 4. current authorized emails/attachments/notices
 5. other verified source submissions
 6. prior approved PHNEWS artifact as last-resort fallback
@@ -823,20 +851,20 @@ Community Notices may use **Active-Until-Resolved** behavior where appropriate.
 
 ---
 
-# 20. Regularly Scheduled Meetings & Events
+# 20. Recurring Meetings & Events — October 4 Local Display Pilot
 
-This section is a navigation hub rather than a giant event dump.
+This section is a navigation hub rather than a giant event dump. The October 4 local review uses the new Palm Hill Calendar feed and the source's `recurring` flag; it does not infer a repeat pattern from dates.
 
 Title:
 
 ```text
-Regularly Scheduled Meetings & Events
+Recurring Meetings & Events
 ```
 
 Subtitle:
 
 ```text
-Regular Palm Hill meetings and events scheduled over the next 30 days.
+Confirmed recurring Palm Hill activities, October 4 through November 2, 2026. (Issue-specific local-review wording.)
 ```
 
 Navigation:
@@ -855,7 +883,9 @@ window_end_exclusive = generation date + 30 days
 include if start <= occurrence < end_exclusive
 ```
 
-The same filtered dataset must drive both By Date and By Name.
+The same filtered occurrence dataset must drive both By Date and By Name. Keep one row per date; place Date first in By Date and Activity first in By Name. Do not collapse all dates of one activity into a crowded row. For the October 4 local review, use `Sun, Oct 4, 2026`-style dates. The three links belong compactly in each page's header. The page body needs only the short times/rooms and sign-in caution recorded in the October 2 addendum.
+
+The long-term rolling-window rule above remains the intended design. The October 4 local review uses a fixed issue window (October 4–November 2 inclusive) for editorial inspection; this does not silently replace the durable rolling rule.
 
 ---
 
@@ -1168,9 +1198,11 @@ Locked/ready; intentional distinctive layout.
 
 ---
 
-# 28. Accessibility — Parked Until Current Milestone
+# 28. Accessibility — Read-Aloud Local Pilot
 
-Future accessibility layer may include:
+The October 4 local review explicitly pilots full-text read-aloud for chair reports, the community story, and the Board President message. A Listen link opens an accessible reading page with a large primary Read/Pause/Resume control, Stop, speed and volume controls, and visible full text. Autostart is an attempted enhancement, not a guaranteed browser behavior; always retain manual activation and test assistive use on desktop and phone before approval.
+
+Additional accessibility work may include:
 
 - larger fonts
 - font scaling
@@ -1179,14 +1211,14 @@ Future accessibility layer may include:
 - screen-reader-friendly structure
 - descriptive links
 - larger touch targets
-- optional Listen/TTS control
+- broader Listen/TTS coverage after this pilot is accepted
 
 Distinguish:
 
 - **PHNEWS Theme** = appearance/design system
 - **PHNEWS Accessibility Layer** = usability/inclusion constraints
 
-Do not disrupt current stabilization milestone unless explicitly requested.
+Do not treat the local pilot as general rollout or remove readable text when speech fails.
 
 ---
 
@@ -1280,7 +1312,7 @@ Recommended shared set:
 
 ---
 
-# 32. Current Immediate Next Steps
+# 32. September 25 Immediate Next Steps (Historical Snapshot)
 
 1. implement fact-level provenance QC
 2. clean stale Craft Fair fallback phone typo
