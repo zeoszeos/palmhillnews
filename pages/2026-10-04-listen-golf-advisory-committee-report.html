@@ -74,7 +74,7 @@
     };
     synth.speak(utterance);
   }
-  function beginReading(automatic = false) {
+  function beginReading() {
     run += 1;
     synth.cancel();
     const lines = Array.from(document.querySelectorAll('article h2, article h3, article p, article li'))
@@ -85,19 +85,8 @@
     state = 'playing';
     started = false;
     updateControls();
-    status.textContent = automatic ? 'Trying to begin reading automatically…' : `Starting the full ${kind.toLowerCase()}…`;
+    status.textContent = `Starting the full ${kind.toLowerCase()}…`;
     speakNext(run);
-    if (automatic) {
-      const thisRun = run;
-      window.setTimeout(() => {
-        if (thisRun !== run || state !== 'playing' || started) return;
-        run += 1;
-        synth.cancel();
-        state = 'idle';
-        updateControls();
-        status.textContent = `Your browser did not start the voice automatically. Tap ${startLabel} to begin.`;
-      }, 4000);
-    }
   }
   function stopReading() {
     run += 1;
@@ -148,8 +137,5 @@
   });
   window.addEventListener('pagehide', stopReading);
   updateControls();
-  if (new URLSearchParams(location.search).get('autoplay') === '1') {
-    window.addEventListener('load', () => beginReading(true), {once: true});
-  }
 })();
 </script></body></html>
