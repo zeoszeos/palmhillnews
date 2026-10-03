@@ -28,3 +28,5 @@ Verification: all article words are preserved with both segmentation methods; si
 The October 4 guide now uses the heading and browser title “Latest Committee and Board Meeting Videos.” All eight recording links use singular “Video,” including “Board Meeting Video.” Recording URLs, dates, and the link to all past committee videos are unchanged. This wording-only change was also applied to the existing public October 4 guide on main; the draft copy matches it.
 
 The video guide now has a decorative green-and-gold SVG camera before each of its eight recording links and the archive link. Date labels use three-letter months (for example, Sep 30, 2026). Icons are hidden from screen readers; link text, dates, and recording URLs remain accessible. Both the public and draft guides use these changes.
+
+The archive link's final label is “Go To The Original Committees of Palm Hill Webpage.” It retains https://www.palmhillcountryclub.net/committees/ as its destination.
