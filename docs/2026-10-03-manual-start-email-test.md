@@ -25,4 +25,4 @@ Verification: all article words are preserved with both segmentation methods; si
 
 ## Video guide wording
 
-The October 4 guide now uses the heading and browser title “The Latest Committee and Board Meeting Videos.” All eight recording links use singular “Video,” including “Board Meeting Video.” Recording URLs, dates, and the link to all past committee videos are unchanged. This wording-only change was also applied to the existing public October 4 guide on main; the draft copy matches it.
+The October 4 guide now uses the heading and browser title “Latest Committee and Board Meeting Videos.” All eight recording links use singular “Video,” including “Board Meeting Video.” Recording URLs, dates, and the link to all past committee videos are unchanged. This wording-only change was also applied to the existing public October 4 guide on main; the draft copy matches it.
