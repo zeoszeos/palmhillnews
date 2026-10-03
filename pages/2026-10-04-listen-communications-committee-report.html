@@ -31,17 +31,26 @@
     stop.hidden = state === 'idle';
   }
   function chunks(text) {
-    const result = [];
-    let chunk = '';
-    for (const word of text.trim().split(/\s+/)) {
-      if (chunk && chunk.length + word.length + 1 > 65) {
-        result.push(chunk);
-        chunk = word;
-      } else {
-        chunk += (chunk ? ' ' : '') + word;
-      }
+    const clean = text.trim().replace(/\s+/g, ' ');
+    if (!clean) return [];
+    // Sentence boundaries keep the voice from restarting in the middle of a sentence.
+    if (typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function') {
+      const segmenter = new Intl.Segmenter('en-US', {granularity: 'sentence'});
+      return Array.from(segmenter.segment(clean), part => part.segment.trim()).filter(Boolean);
     }
-    if (chunk) result.push(chunk);
+    // Older browsers retain every word while splitting at sentence-ending punctuation.
+    const result = [];
+    const endings = /[.!?]+["'’”)\]]*(?=\s|$)/g;
+    let start = 0;
+    let match;
+    while ((match = endings.exec(clean)) !== null) {
+      const end = match.index + match[0].length;
+      const sentence = clean.slice(start, end).trim();
+      if (sentence) result.push(sentence);
+      start = end;
+    }
+    const remaining = clean.slice(start).trim();
+    if (remaining) result.push(remaining);
     return result;
   }
   function speakNext(thisRun) {
@@ -102,12 +111,12 @@
       state = 'paused';
       synth.cancel();
       updateControls();
-      status.textContent = 'Paused. Resume will repeat the current short passage.';
+      status.textContent = 'Paused. Resume will repeat the current sentence.';
     } else {
       state = 'playing';
       updateControls();
       const thisRun = ++run;
-      status.textContent = 'Resuming the current short passage…';
+      status.textContent = 'Resuming the current sentence…';
       window.setTimeout(() => speakNext(thisRun), 120);
     }
   });
@@ -118,12 +127,12 @@
       return;
     }
     if (state === 'paused') {
-      status.textContent = `${label} set. Resume to repeat the current short passage.`;
+      status.textContent = `${label} set. Resume to repeat the current sentence.`;
       return;
     }
     const thisRun = ++run;
     synth.cancel();
-    status.textContent = `${label} set; repeating the current short passage.`;
+    status.textContent = `${label} set; repeating the current sentence.`;
     window.setTimeout(() => speakNext(thisRun), 120);
   }
   speed.addEventListener('change', () => {

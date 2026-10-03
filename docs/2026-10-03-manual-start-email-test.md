@@ -14,3 +14,11 @@ Files:
 - pages/2026-10-04-manual-start-email-source.txt
 - pages/2026-10-04-manual-start-email-copy.html
 - pages/2026-10-04-manual-start-email-preview.html
+
+## Sentence-based reading update
+
+All seven draft readers now split reports and stories at complete sentence boundaries, using Intl.Segmenter where available and a punctuation-based fallback for older browsers. This replaces the 65-character chunks that restarted speech in the middle of sentences.
+
+Pause/resume and setting changes repeat the current sentence. Manual start remains required. Newsletter content, source HTML links, and the October 2 calendar snapshot are unchanged.
+
+Verification: all article words are preserved with both segmentation methods; simulated speech callbacks confirm manual start, completion, pause/resume, speed and volume changes, Stop, and rejection of stale callbacks after cancellation. Henry's message drops from 63 speech requests to 37, and Mary's story from 47 to 28. The browser's actual audible smoothness still requires listening on PC and phone; these checks do not emulate a real voice engine.
