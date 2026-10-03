@@ -22,3 +22,7 @@ All seven draft readers now split reports and stories at complete sentence bound
 Pause/resume and setting changes repeat the current sentence. Manual start remains required. Newsletter content, source HTML links, and the October 2 calendar snapshot are unchanged.
 
 Verification: all article words are preserved with both segmentation methods; simulated speech callbacks confirm manual start, completion, pause/resume, speed and volume changes, Stop, and rejection of stale callbacks after cancellation. Henry's message drops from 63 speech requests to 37, and Mary's story from 47 to 28. The browser's actual audible smoothness still requires listening on PC and phone; these checks do not emulate a real voice engine.
+
+## Video guide wording
+
+The October 4 guide now uses the heading and browser title “The Latest Committee and Board Meeting Videos.” All eight recording links use singular “Video,” including “Board Meeting Video.” Recording URLs, dates, and the link to all past committee videos are unchanged. This wording-only change was also applied to the existing public October 4 guide on main; the draft copy matches it.
