@@ -30,3 +30,9 @@ The October 4 guide now uses the heading and browser title “Latest Committee a
 The video guide has a decorative green-and-gold SVG camera before each of its eight recording links. The link to the original committee webpage has a webpage icon instead of a camera. Date labels use three-letter months (for example, Sep 30, 2026). Icons are hidden from screen readers; link text, dates, and recording URLs remain accessible. Both the public and draft guides use these changes.
 
 The archive line is one continuous hyperlink: “See all videos at the Palm Hill committees webpage.” It retains https://www.palmhillcountryclub.net/committees/ as its destination.
+
+Video and webpage icons are vector SVGs, enlarged from 26px to 34px for clearer visibility. They scale without pixelation.
+
+## Planned design work
+
+Add small, optional Easter eggs to selected other newsletter icons. This is parked for the later graphics work; details have not been chosen. Preserve each icon's recognizability and readable section headings, and preserve approved archived assets by creating new versions for experiments.
