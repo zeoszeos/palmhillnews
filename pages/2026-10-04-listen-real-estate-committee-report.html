@@ -48,17 +48,36 @@ main{padding-top:14px}
     stop.hidden = state === 'idle';
   }
   function chunks(text) {
-    const result = [];
-    let chunk = '';
-    for (const word of text.trim().split(/\s+/)) {
-      if (chunk && chunk.length + word.length + 1 > 65) {
-        result.push(chunk);
-        chunk = word;
+    const clean = text.replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    // Let the voice finish a sentence. A character limit must never split it.
+    // Segmenter handles abbreviations, initials, decimals, and quotation marks.
+    // Older browsers read the complete paragraph rather than guessing breaks.
+    const fragments = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean),
+          item => item.segment.trim()).filter(Boolean)
+      : [clean];
+    const sentences = [];
+    for (const fragment of fragments) {
+      const previous = sentences[sentences.length - 1];
+      // Some engines treat a title or initial as a sentence ending.
+      if (previous && /(?:\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|No|vs|etc)\.|\b[A-Z]\.|\b[ap]\.m\.|^\d+\.)$/i.test(previous)) {
+        sentences[sentences.length - 1] += ' ' + fragment;
       } else {
-        chunk += (chunk ? ' ' : '') + word;
+        sentences.push(fragment);
       }
     }
-    if (chunk) result.push(chunk);
+    const result = [];
+    let passage = '';
+    for (const sentence of sentences) {
+      if (passage && passage.length + sentence.length + 1 > 260) {
+        result.push(passage);
+        passage = sentence;
+      } else {
+        passage += (passage ? ' ' : '') + sentence;
+      }
+    }
+    if (passage) result.push(passage);
     return result;
   }
   function speakNext(thisRun) {
