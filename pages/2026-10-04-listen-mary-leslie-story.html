@@ -100,7 +100,10 @@ main{padding-top:14px}
     }
     const utterance = new SpeechSynthesisUtterance(parts[current]);
     utterance.lang = 'en-US';
-    utterance.rate = Number(speed.value);
+    const selectedRate = Number(speed.value);
+    // iPhone voices can make the Fast setting much faster than desktop voices.
+    utterance.rate = /iPhone/i.test(navigator.userAgent) && selectedRate === 1.5
+      ? 1.2 : selectedRate;
     utterance.volume = Number(volume.value);
     utterance.onstart = () => {
       if (thisRun !== run) return;
