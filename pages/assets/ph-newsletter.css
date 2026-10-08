@@ -1,0 +1,282 @@
+/*
+  Palm Hill newsletter page shell.
+
+  Tokens are copied from the October 4, 2026 sent newsletter
+  (the Tony-candidate render_email.js values that match that mail):
+
+    Canvas            max-width 660px, one column, Arial
+    Masthead          #2d5016, 105px bar, wordmark 700 29px/34px Arial,
+                      issue date 700 15px/22px #e5f1d1
+    Tagline           #8b6914, italic 13px/18px Georgia, white
+    Address strip     #eaf4e4, 12px/18px Arial, #3e513f
+    Section bar       #2d5016, white, 19px bold, padding 8px 12px, radius 3px
+    Activity title    15px bold #333333
+    Activity meta     14px #666666, "Weekday, Month D, YYYY • time • place"
+    Detail text       15px #333333
+    Source line       13px #666666
+    Row               padding 6px 8px, border-bottom 1px solid #ddd
+    Zebra             #ffffff / #eaf4e4
+    Links             #3a6b1a, underlined, arrow in the link text (By Date →)
+    Footer note       italic 12px #666666, centered
+    Urgent block      #fff9e6, 14px, bold #2d5016
+
+  Do not bring back the schedule_page() spreadsheet:
+  no 4-column table, no min-width, no pill navigation,
+  no Georgia page title, no gold #c5a638, no link green #245c25.
+
+  Markup guide: ph-newsletter-shell.html in this folder.
+*/
+
+:root { color-scheme: light; }
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  color: #333333;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+img { border: 0; max-width: 100%; height: auto; }
+
+.ph-page {
+  width: 100%;
+  max-width: 660px;
+  margin: 0 auto;
+  background: #ffffff;
+  overflow-wrap: break-word;
+}
+
+.ph-page a { color: #3a6b1a; }
+
+.ph-page a:focus-visible {
+  outline: 2px solid #2d5016;
+  outline-offset: 2px;
+}
+
+/* Masthead. Full 29px wordmark and 74px palms fit the 660px mail.
+   Below that, the type and palms scale so 375px does not scroll sideways. */
+.ph-masthead {
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 105px;
+  padding: 10px 6px;
+  background: #2d5016;
+  color: #ffffff;
+  text-align: center;
+}
+
+.ph-palm {
+  display: block;
+  width: 36px;
+  height: 38px;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.ph-masthead-text { min-width: 0; }
+
+.ph-wordmark {
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ffffff;
+}
+
+.ph-issuedate {
+  margin-top: 2px;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 22px;
+  color: #e5f1d1;
+}
+
+@container (min-width: 420px) {
+  .ph-palm { width: 48px; height: 50px; }
+  .ph-wordmark { font-size: 24px; line-height: 28px; }
+}
+
+@container (min-width: 560px) {
+  .ph-palm { width: 64px; height: 67px; }
+  .ph-wordmark {
+    font-size: 29px;
+    line-height: 34px;
+    white-space: nowrap;
+  }
+}
+
+@container (min-width: 640px) {
+  .ph-masthead { height: 105px; padding: 0 4px; }
+  .ph-palm { width: 74px; height: 77px; }
+}
+
+.ph-tagline {
+  margin: 0;
+  padding: 10px 12px;
+  background: #8b6914;
+  color: #ffffff;
+  text-align: center;
+  font: italic 13px/18px Georgia, serif;
+}
+
+.ph-address {
+  margin: 0;
+  min-height: 21px;
+  padding: 2px 12px;
+  background: #eaf4e4;
+  color: #3e513f;
+  text-align: center;
+  font: 12px/18px Arial, sans-serif;
+}
+
+.ph-address a { color: #3e513f; }
+
+.ph-body { padding: 16px 14px 4px; }
+
+.ph-section {
+  margin: 0 0 6px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  background: #2d5016;
+  color: #ffffff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  font-weight: bold;
+  line-height: 1.25;
+}
+
+.ph-view {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: #2d5016;
+}
+
+.ph-lead {
+  margin: 8px 0;
+  font-size: 15px;
+  color: #333333;
+}
+
+.ph-links {
+  margin: 5px 0 12px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.ph-links a {
+  color: #3a6b1a;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ph-dot { color: #333333; font-weight: normal; }
+
+.ph-subhead {
+  margin: 0;
+  padding: 10px 8px 2px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.3;
+  color: #2d5016;
+}
+
+.ph-row {
+  padding: 6px 8px;
+  border-bottom: 1px solid #ddd;
+  background: #ffffff;
+}
+
+.ph-row.ph-alt { background: #eaf4e4; }
+
+.ph-row-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.ph-row-meta,
+.ph-meta {
+  margin-top: 2px;
+  font-size: 14px;
+  color: #666666;
+}
+
+.ph-meta { margin: 2px 0 8px; }
+
+.ph-detail {
+  margin-top: 3px;
+  font-size: 15px;
+  color: #333333;
+}
+
+.ph-source {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: #666666;
+}
+
+.ph-agenda {
+  margin: 8px 0 0;
+  padding: 0 0 0 1.6rem;
+  font-size: 15px;
+  color: #333333;
+}
+
+.ph-agenda li { margin: 0 0 10px; }
+
+.ph-agenda li::marker {
+  color: #2d5016;
+  font-weight: bold;
+}
+
+.ph-agenda ol {
+  margin: 8px 0 0;
+  padding-left: 1.3rem;
+  list-style: lower-alpha;
+}
+
+.ph-footer { padding: 4px 14px 18px; }
+
+.ph-urgent {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 3px;
+  background: #fff9e6;
+  font-size: 14px;
+}
+
+.ph-urgent-line {
+  margin: 0;
+  color: #2d5016;
+  font-weight: bold;
+}
+
+.ph-urgent-line + .ph-urgent-line { margin-top: 4px; }
+
+.ph-fineprint {
+  margin: 16px 0 0;
+  color: #666666;
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+}
+
+@media (min-width: 700px) {
+  body { padding: 20px 0; }
+  .ph-page { border-radius: 6px; overflow: hidden; }
+  .ph-body { padding: 16px 20px 4px; }
+  .ph-footer { padding: 4px 20px 20px; }
+}
