@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  PALM HILL NEWSLETTER PAGE SHELL
+
+  Copy this file to pages/your-page.html when adding a detail page.
+  Keep the masthead, gold tagline, address strip, and footer as they are.
+  Put the page's own words inside <main class="ph-body">.
+
+  Stylesheet: /pages/assets/ph-newsletter.css
+  Palm icon:  /pages/assets/masthead-palm.png
+
+  An activity is a bold name plus one gray line:
+    Weekday, Month D, YYYY • time • place
+  Group a long list with an h2.ph-subhead (the date, or the activity name).
+  Venue stays on that same gray line. Do not use a 4-column table.
+
+  Links are green text with an arrow, for example: By Date →
+  Do not use pill buttons.
+
+  The Codex script build_oct4_new_calendar_review.py schedule_page()
+  is not in this repo. Do not copy its spreadsheet HTML back in.
+  That function hard-codes min-width:650px, pill navigation, and gold #c5a638.
+
+  Issue date in the masthead is the page's own date (the newsletter date
+  or the meeting date), passed as the text of .ph-issuedate.
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page shell template — Palm Hill Country Club</title>
+<link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
+</head>
+<body>
+<!-- Shell: /pages/assets/ph-newsletter-shell.html — one column, no min-width table, no pill links. -->
+<div class="ph-page">
+<header class="ph-banner">
+  <div class="ph-masthead">
+    <img class="ph-palm" src="/pages/assets/masthead-palm.png" alt="" width="74" height="77">
+    <div class="ph-masthead-text">
+      <div class="ph-wordmark">Palm Hill Country Club</div>
+      <div class="ph-issuedate">October 4, 2026</div>
+    </div>
+    <img class="ph-palm" src="/pages/assets/masthead-palm.png" alt="" width="74" height="77">
+  </div>
+  <p class="ph-tagline">A look at upcoming events, meetings, maintenance notices, useful resources and helpful links</p>
+  <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
+</header>
+<main class="ph-body">
+<h1 class="ph-section">Section title</h1>
+<p class="ph-lead">One or two short sentences that say what this page is.</p>
+<nav class="ph-links" aria-label="Related pages"><a href="2026-10-04-recurring-activities-by-date.html">By Date →</a></nav>
+<h2 class="ph-subhead">Sunday, October 4, 2026</h2>
+<div class="ph-row">
+  <div class="ph-row-title">Activity name</div>
+  <div class="ph-row-meta">Sunday, October 4, 2026 • 10:00 AM • North Clubhouse</div>
+</div>
+<div class="ph-row ph-alt">
+  <div class="ph-row-title">Second activity</div>
+  <div class="ph-row-meta">Sunday, October 4, 2026 • 4:00 PM • South Clubhouse</div>
+</div>
+<p class="ph-source">Source: where the words on this page came from.</p>
+</main>
+<footer class="ph-footer">
+  <div class="ph-urgent">
+    <p class="ph-urgent-line">NON-URGENT SERVICE REQUESTS – Submit through the <a href="https://home.resourcepropertymgmt.com/community/requests">VANTACA Service Request System</a></p>
+    <p class="ph-urgent-line">URGENT SERVICE REQUESTS – Business Hours: <a href="tel:+17275818729">(727) 581-8729</a> / After Hours: <a href="tel:+17272698236">(727) 269-8236</a></p>
+  </div>
+  <p class="ph-fineprint">For the latest details, always confirm event times and updates on the <a href="https://www.palmhillcountryclub.net/calendar-1/">official Palm Hill calendar</a>.</p>
+</footer>
+</div>
+</body>
+</html>
