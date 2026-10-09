@@ -331,7 +331,20 @@ function stripFor(k, page, headerText = '') {
   const sec = S[k];
   const it = DATED.has(k) ? pageItem.get(page) : null;
   const dateline = it && it.date && !headerText.includes(midDate(it.date)) ? `\n<p class="ph-dateline" style="display:block;margin:0;padding:10px 14px 0;box-sizing:border-box;background:none;border:0;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none">${fullDate(it)}</p>` : '';
+  if (sec.story_nav && it) return `<!-- ph-archive-nav:start -->\n${storyNav(k, page, it, !headerText.includes(midDate(it.date)))}\n<!-- ph-archive-nav:end -->`;
   return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}${dateline}\n<!-- ph-archive-nav:end -->`;
+}
+// "story_nav" sections (Community Stories), Steven Oct 9: under the header, the full date with Listen (or, on the
+// listen page, Read the Story) right-aligned on the same row; below it ONE line: Previous Stories → · Newsletter Archive →.
+function storyNav(k, page, it, showDate) {
+  const sec = S[k];
+  const F = 'Arial,Helvetica,sans-serif';
+  const A = `display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap`;
+  const side = page === it.listen ? (it.page ? [pageUrl(it.page), 'Read the Story →'] : null) : (it.listen ? [pageUrl(it.listen), '🔊 Listen →'] : null);
+  const row1 = `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${showDate ? fullDate(it) : ''}</span>${side ? `<a href="${side[0]}" style="${A};margin-left:auto">${esc(side[1])}</a>` : ''}</div>`;
+  const L = `${A};font-size:min(17px,4.3vw)`;
+  const row2 = `<div style="margin:6px 0 0;white-space:nowrap;overflow-wrap:normal;color:#1a1a1a;font:bold min(17px,4.3vw)/1.5 ${F}"><a href="${archUrl(`${k}.html`)}" style="${L}">${esc(sec.prev)}</a><span aria-hidden="true" style="padding:0 6px"> · </span><a href="${archUrl('index.html')}" style="${L}">Newsletter Archive →</a></div>`;
+  return `<div class="ph-story-nav" role="navigation" aria-label="Story date and newsletter archive" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none">${row1}${row2}</div>`;
 }
 function addStrip(page, k) {
   const file = path.join(PAGES, page);
