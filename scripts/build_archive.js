@@ -65,6 +65,9 @@ const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 function d(iso) { const [y, m, dd] = iso.slice(0, 10).split('-').map(Number); return new Date(Date.UTC(y, m - 1, dd)); }
 const longDate = (iso) => { const x = d(iso); return `${DAYS[x.getUTCDay()]}, ${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
 const midDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
+// Every listed item shows a full date. Link items (date_label, month-only issues) show "Month D, YYYY" from their
+// date field (1st of the issue month unless a real day is known) without a weekday.
+const fullDate = (it) => (it.date_label ? midDate(it.date) : longDate(it.date));
 const shortDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()].slice(0, 3)} ${x.getUTCDate()}`; };
 const etParts = (iso) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).formatToParts(new Date(iso)).map((p) => [p.type, p.value]));
 const fileDated = (iso) => { const p = etParts(iso); return `${p.month} ${p.day}, ${p.year} ${p.hour}:${p.minute} ${p.dayPeriod}`; };
@@ -129,19 +132,12 @@ ${canonical ? `<link rel="canonical" href="${canonical}">\n` : ''}<link rel="sty
     </div>
     <img class="ph-palm" src="/pages/assets/masthead-palm.png" alt="" width="74" height="77">
   </div>
-  <p class="ph-tagline">A look at upcoming events, meetings, maintenance notices, useful resources and helpful links</p>
+  <div class="ph-tagline ph-gold-rule" aria-hidden="true" style="height:8px;padding:0;margin:0;font-size:0;line-height:0"></div>
   <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
 </header>
 ${topNav ? topNav + '\n' : ''}<main class="ph-body">
 ${body}
 </main>
-<footer class="ph-footer">
-  <div class="ph-urgent">
-    <p class="ph-urgent-line">NON-URGENT SERVICE REQUESTS – Submit through the <a href="https://home.resourcepropertymgmt.com/community/requests">VANTACA Service Request System</a></p>
-    <p class="ph-urgent-line">URGENT SERVICE REQUESTS – Business Hours: <a href="tel:+17275818729">(727) 581-8729</a> / After Hours: <a href="tel:+17272698236">(727) 269-8236</a></p>
-  </div>
-  <p class="ph-fineprint">For the latest details, always confirm event times and updates on the <a href="https://www.palmhillcountryclub.net/calendar-1/">official Palm Hill calendar</a>.</p>
-</footer>
 </div>
 </body>
 </html>
@@ -183,7 +179,7 @@ function sectionPage(k) {
   // "feature_latest": the newest item leads the page as the current one; the rest list below as previous items.
   if (sec.feature_latest && rows.length) {
     const top = rows[0]; rows = rows.slice(1);
-    const when = top.date_label ? esc(top.date_label) : longDate(top.date);
+    const when = fullDate(top);
     const links = [top.page ? `<a href="${pageUrl(top.page)}">${esc(sec.feature_read || 'Read →')}</a>` : null, top.listen ? `<a href="${pageUrl(top.listen)}">Listen →</a>` : null].filter(Boolean).join('<span class="ph-dot"> · </span>');
     out += `<section class="ph-feature" aria-label="${esc(sec.feature_label || 'Latest')}">\n<p class="ph-feature-kicker">${esc(sec.feature_label || 'Latest')}</p>\n`;
     out += `<h2 class="ph-feature-title">${top.page ? `<a href="${pageUrl(top.page)}">${esc(top.title)}</a>` : esc(top.title)}</h2>\n`;
@@ -202,7 +198,7 @@ function sectionPage(k) {
     const head = it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    const meta = [it.date_label ? esc(it.date_label) : longDate(it.date), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
+    const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
     if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
@@ -325,9 +321,17 @@ function cleanIssue(raw, iss) {
 }
 
 // ---------- detail-page strip ----------
-function stripFor(k) {
+// Story and report sections: each item page (and its listen page) also gets a full-date line under the bar,
+// and loses its bottom <footer> (Steven, Oct 9: no footer on archive/story/report pages).
+const DATED = new Set(['community-stories', 'presidents-message', 'committee-reports', 'manager-reports']);
+const pageItem = new Map();
+for (const k of DATED) for (const it of S[k].items) for (const pg of [it.page, it.listen]) if (pg && !pageItem.has(pg)) pageItem.set(pg, it);
+// No dateline when the page's own <header> already shows that full date (e.g. chair-report pages).
+function stripFor(k, page, headerText = '') {
   const sec = S[k];
-  return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}\n<!-- ph-archive-nav:end -->`;
+  const it = DATED.has(k) ? pageItem.get(page) : null;
+  const dateline = it && it.date && !headerText.includes(midDate(it.date)) ? `\n<p class="ph-dateline" style="display:block;margin:0;padding:10px 14px 0;box-sizing:border-box;background:none;border:0;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none">${fullDate(it)}</p>` : '';
+  return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}${dateline}\n<!-- ph-archive-nav:end -->`;
 }
 function addStrip(page, k) {
   const file = path.join(PAGES, page);
@@ -344,7 +348,10 @@ function addStrip(page, k) {
     at = b >= 0 ? next.indexOf('>', b) + 1 : 0;
     if (!at) throw new Error(`${page}: no <body>`);
   }
-  next = next.slice(0, at) + '\n' + stripFor(k) + '\n' + next.slice(at).replace(/^\n/, '');
+  const hs = lower.indexOf('<header');
+  const headerText = h >= 0 && hs >= 0 && hs < h ? next.slice(hs, h).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ') : '';
+  next = next.slice(0, at) + '\n' + stripFor(k, page, headerText) + '\n' + next.slice(at).replace(/^\n/, '');
+  if (DATED.has(k)) next = next.replace(/<footer\b[\s\S]*?<\/footer>/gi, '');
   write(file, next);
 }
 
