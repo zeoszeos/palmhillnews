@@ -23,8 +23,8 @@
           "strip_as": "<section>" gives the item's page that section's strip instead (video guide -> Previous Videos).
           Section option "feature_latest": true leads the section page with the newest item (feature_label / feature_read /
           feature_rest set the wording). Item options "date_label" (shown instead of the weekday date, e.g. a Link month)
-          and "summary" (one-line teaser). Item option "link_pdf": site path of the article's pages from the Palm Hill
-          Link (public/assets/link/), shown as "Palm Hill Link (PDF) →".
+          and "summary" (one-line teaser). Section option "plain_rows": true hides the
+          grey "Source: …" and "In the newsletter: …" lines on that section page (Community Stories).
           Archive nav (v2, one bar for every section): a single light bar at the TOP of the page only, right under
           the page's first <header> (right after <body> if it has none), dark text, 18px:
           "Previous <Section> → · Newsletter Archive →". Detail/listen pages carry it between
@@ -180,14 +180,14 @@ function sectionPage(k) {
   if (sec.feature_latest && rows.length) {
     const top = rows[0]; rows = rows.slice(1);
     const when = fullDate(top);
-    const links = [top.page ? `<a href="${pageUrl(top.page)}">${esc(sec.feature_read || 'Read →')}</a>` : null, top.listen ? `<a href="${pageUrl(top.listen)}">Listen →</a>` : null, top.link_pdf ? `<a href="${BASE}${esc(top.link_pdf)}">Palm Hill Link (PDF) →</a>` : null].filter(Boolean).join('<span class="ph-dot"> · </span>');
+    const links = [top.page ? `<a href="${pageUrl(top.page)}">${esc(sec.feature_read || 'Read →')}</a>` : null, top.listen ? `<a href="${pageUrl(top.listen)}">Listen →</a>` : null].filter(Boolean).join('<span class="ph-dot"> · </span>');
     out += `<section class="ph-feature" aria-label="${esc(sec.feature_label || 'Latest')}">\n<p class="ph-feature-kicker">${esc(sec.feature_label || 'Latest')}</p>\n`;
     out += `<h2 class="ph-feature-title">${top.page ? `<a href="${pageUrl(top.page)}">${esc(top.title)}</a>` : esc(top.title)}</h2>\n`;
     out += `<div class="ph-row-meta">${[top.byline ? esc(top.byline) : null, when].filter(Boolean).join(' · ')}</div>\n`;
     if (top.summary) out += `<p class="ph-detail">${esc(top.summary)}</p>\n`;
     if (links) out += `<nav class="ph-links">${links}</nav>\n`;
-    if (top.source) out += `<div class="ph-row-meta">Source: ${esc(top.source)}</div>\n`;
-    if (top.issues && top.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${top.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
+    if (top.source && !sec.plain_rows) out += `<div class="ph-row-meta">Source: ${esc(top.source)}</div>\n`;
+    if (!sec.plain_rows && top.issues && top.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${top.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
     out += `</section>\n`;
     if (rows.length) out += `<h2 class="ph-subhead ph-prev-head" id="previous">${esc(sec.feature_rest || 'Previous')}</h2>\n`;
   }
@@ -198,13 +198,13 @@ function sectionPage(k) {
     const head = it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, it.link_pdf ? `<a href="${BASE}${esc(it.link_pdf)}">Palm Hill Link (PDF) →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
+    const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
     if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
     if (it.external) out += `<nav class="ph-links"><a href="${esc(it.external)}">${esc(it.external_label || 'Open →')}</a></nav>\n`;
-    if (it.source) out += `<div class="ph-row-meta">Source: ${esc(it.source)}</div>\n`;
-    if (it.issues && it.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
+    if (it.source && !sec.plain_rows) out += `<div class="ph-row-meta">Source: ${esc(it.source)}</div>\n`;
+    if (!sec.plain_rows && it.issues && it.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
     out += `</div>\n`;
     n++;
   }
