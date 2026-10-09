@@ -1,0 +1,420 @@
+{
+  "schema": "phnews-archive-index/1",
+  "generated_by": "scripts/build_archive.js",
+  "base_url": "https://palmhillnews.vercel.app",
+  "archive_home": "https://palmhillnews.vercel.app/pages/archive/index.html",
+  "issues": [
+    {
+      "date": "2026-10-04",
+      "sent": "2026-10-04T14:24:00-04:00",
+      "format": "Email newsletter",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-10-04.html"
+    },
+    {
+      "date": "2026-09-27",
+      "sent": "2026-09-27T10:38:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-27.html"
+    },
+    {
+      "date": "2026-09-21",
+      "sent": "2026-09-21T17:59:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-21.html"
+    },
+    {
+      "date": "2026-09-13",
+      "sent": "2026-09-13T10:12:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-13.html"
+    },
+    {
+      "date": "2026-09-08",
+      "sent": "2026-09-08T16:41:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-08.html"
+    }
+  ],
+  "sections": {
+    "community-stories": {
+      "title": "Community Stories",
+      "url": "https://palmhillnews.vercel.app/pages/archive/community-stories.html",
+      "email_link_label": "Past Stories →",
+      "page_link_label": "Previous Stories →",
+      "items": [
+        {
+          "date": "2026-10-04",
+          "title": "97½ and Still Chasing Birdies Instead of Birthdays",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-04-mary-leslie-chasing-birdies.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-mary-leslie-story.html",
+          "issues": [
+            "2026-10-04"
+          ]
+        }
+      ]
+    },
+    "presidents-message": {
+      "title": "President's Message",
+      "url": "https://palmhillnews.vercel.app/pages/archive/presidents-message.html",
+      "email_link_label": "Past Messages →",
+      "page_link_label": "Previous Messages →",
+      "items": [
+        {
+          "date": "2026-10-04",
+          "title": "Status Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-04-henry-klain-status-update.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-henry-klain-message.html",
+          "issues": [
+            "2026-10-04"
+          ]
+        }
+      ]
+    },
+    "committee-reports": {
+      "title": "Committee Chair Reports",
+      "url": "https://palmhillnews.vercel.app/pages/archive/committee-reports.html",
+      "email_link_label": "Past Reports →",
+      "page_link_label": "Previous Chair Reports →",
+      "items": [
+        {
+          "date": "2026-09-21",
+          "title": "Communications Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-21-communications-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-communications-committee-report.html",
+          "issues": [
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-09",
+          "title": "Planning and Environmental Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-16-planning-and-environmental-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-planning-environmental-committee-report.html",
+          "issues": [
+            "2026-09-21",
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "Golf Advisory Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-08-golf-advisory-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-golf-advisory-committee-report.html",
+          "issues": [
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-08-26",
+          "title": "Real Estate Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-26-real-estate-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-real-estate-committee-report.html",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13",
+            "2026-09-21",
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-08-26",
+          "title": "Golf Advisory Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-26-golf-advisory-committee-report.html",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-08-17",
+          "title": "Communications Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-report-aug-17.html",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-08-10",
+          "title": "Rules and Regulations Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-10-rules-and-regulations-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-rules-regulations-committee-report.html",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13",
+            "2026-09-21",
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-07-29",
+          "title": "Real Estate Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-29-real-estate-committee-report.html",
+          "issues": []
+        }
+      ]
+    },
+    "manager-reports": {
+      "title": "Manager Reports",
+      "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html",
+      "email_link_label": "Past Reports →",
+      "page_link_label": "Previous Manager Reports →",
+      "items": [
+        {
+          "date": "2026-09-18",
+          "title": "Weekly Manager Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-18-weekly-manager-report.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-08-24",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
+          "issues": [
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-08-21",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-21-weekly-manager-update-2026-08-21.html",
+          "issues": [
+            "2026-09-13",
+            "2026-09-21"
+          ]
+        },
+        {
+          "date": "2026-07-27",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-27-weekly-manager-update-2026-07-27.html",
+          "issues": []
+        },
+        {
+          "date": "2026-07-22",
+          "title": "Weekly Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
+          "issues": []
+        },
+        {
+          "date": "2026-07-15",
+          "title": "Monthly Management and Maintenance Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
+          "issues": [
+            "2026-09-21"
+          ]
+        }
+      ]
+    },
+    "community-notices": {
+      "title": "Community Notices",
+      "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html",
+      "email_link_label": "Past Notices →",
+      "page_link_label": "Previous Notices →",
+      "items": [
+        {
+          "date": "2026-10-04",
+          "title": "Palm Hill Calendar Has a New Look",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-10-04-calendar-new-look",
+          "issues": [
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-10-04",
+          "title": "Largo Library Outreach: Home Delivery",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-10-04-largo-library-outreach",
+          "issues": [
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-10-04",
+          "title": "October Mowing Dates",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-10-04-october-mowing",
+          "issues": [
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-27",
+          "title": "Block Captain Needed for November & December",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-09-27-block-captain-nov-dec",
+          "issues": [
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-27",
+          "title": "Early Election Volunteers Needed",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-09-27-early-election-volunteers",
+          "issues": [
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-27",
+          "title": "Lost Cat",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-09-27-lost-cat",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-09-13",
+          "title": "Taco Dinner Tickets Available",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-25-taco-dinner-tickets-available.html",
+          "issues": [
+            "2026-09-13",
+            "2026-09-21"
+          ]
+        },
+        {
+          "date": "2026-09-13",
+          "title": "Road Closure — Fern Street",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-09-road-closure.html",
+          "issues": [
+            "2026-09-13",
+            "2026-09-21"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "RPM Offices Closed — Labor Day",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-07-rpm-offices-closed-in-observance-of-labor-day.html",
+          "issues": [
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "Helping Hands: Temporary TV Assistance Needed",
+          "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-09-08-helping-hands-tv",
+          "issues": [
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "Block Captain Needed — Thatch Way",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-13-block-captain-is-needed.html",
+          "issues": [
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "Bingo Volunteers Needed",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-10-bingo-volunteers-needed.html",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13"
+          ]
+        }
+      ]
+    },
+    "did-you-know": {
+      "title": "Did You Know?",
+      "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html",
+      "email_link_label": "Past Tips →",
+      "page_link_label": "Previous Tips →",
+      "items": [
+        {
+          "date": "2026-10-04",
+          "title": "How to Access Board and Committee Meeting Videos",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-04-committee-video-guide.html",
+          "issues": [
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "How to submit a service request in VANTACA",
+          "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#vantaca-service-request",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13",
+            "2026-09-21",
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "title": "How to view a meeting on Zoom",
+          "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#zoom-how-to",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13",
+            "2026-09-21",
+            "2026-09-27",
+            "2026-10-04"
+          ]
+        }
+      ]
+    },
+    "videos": {
+      "title": "Meeting Videos",
+      "url": "https://palmhillnews.vercel.app/pages/archive/videos.html",
+      "email_link_label": "Past Videos →",
+      "page_link_label": "Previous Videos →",
+      "items": [
+        {
+          "date": "2026-09-30",
+          "title": "Board Meeting",
+          "url": "https://drive.google.com/file/d/1QSk27sDMe9p9EdnI_AX3RkGf0j_vN-g-/view?usp=sharing"
+        },
+        {
+          "date": "2026-09-21",
+          "title": "Communications Committee",
+          "url": "https://drive.google.com/file/d/1sQGMYpqgUVOR4RdYh7O-08zWxRxnltR9/view?usp=sharing"
+        },
+        {
+          "date": "2026-09-17",
+          "title": "Finance Committee",
+          "url": "https://drive.google.com/file/d/1PpzIv83WA6l69DA2Up95vcJikbXbZVmV/view?usp=sharing"
+        },
+        {
+          "date": "2026-09-09",
+          "title": "Buildings & Grounds Committee",
+          "url": "https://drive.google.com/file/d/14bwCpe_mMuanR6ZcZ0hTfvSLGYYm1ut7/view?usp=sharing"
+        },
+        {
+          "date": "2026-09-09",
+          "title": "Planning & Environmental Committee",
+          "url": "https://drive.google.com/file/d/1JsvM4j5MM9x_UTdNU-n5BwUYUjeLclrT/view?usp=sharing"
+        },
+        {
+          "date": "2026-09-08",
+          "title": "Golf Committee",
+          "url": "https://drive.google.com/file/d/1wXfk8PKMJMEs7A9MtY4sgTy5eyeqrPaW/view?usp=sharing"
+        },
+        {
+          "date": "2026-08-10",
+          "title": "Rules & Regulations Committee",
+          "url": "https://drive.google.com/file/d/1rXk1lDEmGtcAxA4eK7YAKTkp4elPAA8R/view?usp=sharing"
+        },
+        {
+          "date": "2026-03-31",
+          "title": "Real Estate Committee",
+          "url": "https://drive.google.com/file/d/1QPY_R4aZSbpipZLkFQqp11EXP15JGJS-/view?usp=sharing"
+        }
+      ]
+    }
+  },
+  "hidden": [
+    "https://palmhillnews.vercel.app/pages/2026-09-08-golf-advisory-committee.html",
+    "https://palmhillnews.vercel.app/pages/2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
+    "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
+    "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary.html",
+    "https://palmhillnews.vercel.app/pages/2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html"
+  ]
+}
