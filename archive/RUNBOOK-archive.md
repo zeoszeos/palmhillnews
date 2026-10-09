@@ -1,0 +1,53 @@
+# RUNBOOK: PHNEWS Newsletter Archive
+
+Plain Node CLI, with no Grok Bot or cloud steps. Hermes (the `phnews` profile on the Omen) can run it from a clone of `zeoszeos/palmhillnews`.
+
+## What it does
+- Builds the resident archive at `/pages/archive/`:
+  - an archive home
+  - 7 section pages: Community Stories, President's Message, Committee Chair Reports, Manager Reports, Community Notices, Did You Know, and Meeting Videos
+  - `archive-index.json`
+  - one frozen page per sent issue
+- Adds a "Previous … → · Newsletter Archive →" strip to each listed detail page. Nothing else in those pages changes, and no URLs change (Handbook §8).
+- Issue pages are written **once** and never overwritten (Handbook §17).
+
+## When to run it
+After each issue is **sent**: as part of that week's pages PR, or as its own PR. Never before the send, because the archive only lists sent issues. Merging to `main` publishes, so that step needs Steven's OK.
+
+## Steps
+1. **Save the sent issue HTML (copy only).** Put the attached newsletter HTML (or, from Oct 4 on, the resident blast body) in
+   `\\freenas2\zeosdata2\E_Drive\OpenClaw\PH Newsletter\02-Issues\<YYYY-MM-DD>\sent-gmail-html\`.
+   Remove any personal unsubscribe link before it reaches the repo; the script also strips it.
+2. **Edit `archive/archive-items.json`:**
+   - Add the issue: `date`, `sent` (ISO time with offset), `format`, `source`, `nas` (path whose basename is the file from step 1), and an optional `caveat` or `remove_sections`.
+   - Add each new item to its section, giving `page` (existing `pages/…` file) or `id` + `text` for notices that have no page of their own, plus `issues: [date]`.
+   - Append the new date to `issues` on items carried over from earlier issues.
+   - Videos: add `{group, date, url}` rows from the signed-in "Committees of Palm Hill" save (the `scan_committee_videos.py` output).
+3. **Build:**
+   ```
+   node scripts/build_archive.js --issues-from "/mnt/z/E_Drive/OpenClaw/PH Newsletter/02-Issues"   # or a local copy of 02-Issues
+   ```
+   Without `--issues-from`, only the section pages, home, index and strips are rebuilt.
+4. **Verify:**
+   - `node scripts/build_archive.js --check` exits 0 (everything is up to date).
+   - `git diff --stat`: changes to existing `pages/*.html` must be strip-only (3–4 added lines each).
+   - Open `pages/archive/index.html` and the new issue page at 375, 390 and 660 px. There must be no sideways scrolling.
+   - Every `palmhillnews.vercel.app/pages/…` link resolves. External OneDrive links may return 403 to scripts but open in a browser.
+   - Search the new issue page for `unsubscribe`, `passcode`, `zoom.us/j`, and `LOCAL REVIEW`. All must be absent.
+5. **Commit** on a branch and open a **draft** PR. Never merge without Steven's OK.
+
+## Inputs and outputs
+| | Path |
+|---|---|
+| In | `archive/archive-items.json` (curated, not published) |
+| In | `pages/*.html` (existing detail pages) |
+| In | `<02-Issues>/<date>/sent-gmail-html/<file>` (sent issue HTML) |
+| Out | `pages/archive/index.html`, `pages/archive/{community-stories,presidents-message,committee-reports,manager-reports,community-notices,did-you-know,videos}.html` |
+| Out | `pages/archive/issues/<date>.html` (immutable) |
+| Out | `pages/archive/archive-index.json` |
+| Out | the marked strip in listed detail pages |
+
+**Errors and exit codes:**
+- A missing detail page, listen page or issue source makes the script stop with an error and a non-zero exit.
+- `--check` exits 1 if anything is out of date.
+- `--force-issues` regenerates frozen issue pages. Use it only before they are published.

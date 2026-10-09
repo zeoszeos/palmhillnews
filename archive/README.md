@@ -12,3 +12,4 @@
   1. Add the issue (sent time, source file) and its new items to `archive-items.json`.
   2. Save the sent HTML to the NAS (`02-Issues/2026-10-11/sent-gmail-html/`).
   3. Run the builder with `--issues-from`.
+- **Runbook** (for Hermes or anyone): `archive/RUNBOOK-archive.md`. Run `node scripts/build_archive.js --help` to see the inputs and outputs.

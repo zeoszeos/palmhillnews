@@ -27,6 +27,20 @@ const BASE = ITEMS.base_url.replace(/\/$/, '');
 const args = process.argv.slice(2);
 const argVal = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : null; };
 const CHECK = args.includes('--check');
+if (args.includes('--help') || args.includes('-h')) {
+  console.log(`Usage: node scripts/build_archive.js [--issues-from DIR] [--force-issues] [--check]
+
+Inputs:   archive/archive-items.json        curated issues, section items, hidden pages, video list
+          pages/*.html                      existing detail pages (must exist; never renamed)
+          DIR/<date>/<file>                 (--issues-from) sent newsletter HTML, NAS 02-Issues layout;
+                                            <file> = basename of issues[].nas in archive-items.json
+Outputs:  pages/archive/index.html, pages/archive/<section>.html (7), pages/archive/archive-index.json,
+          pages/archive/issues/<date>.html (only with --issues-from; written once),
+          marked nav strip in each listed detail page
+Exit:     0 ok; 1 with --check if anything is out of date; non-zero on any missing page/source
+See archive/RUNBOOK-archive.md.`);
+  process.exit(0);
+}
 const changed = [];
 
 const SECTION_ORDER = ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'community-notices', 'did-you-know', 'videos'];
