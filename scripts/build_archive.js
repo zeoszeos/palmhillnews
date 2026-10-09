@@ -354,6 +354,8 @@ function storyNav(k, page, it, showDate) {
 function addStrip(page, k) {
   const file = path.join(PAGES, page);
   const src = fs.readFileSync(file, 'utf8');
+  // Pages marked <!-- ph-archive-nav:none --> (original-notice pages, Steven Oct 9) get no bar: title only.
+  if (src.includes('<!-- ph-archive-nav:none')) return;
   // Drop any earlier strip (footer v1 or header-top), then put the one bar at the top.
   let next = src.replace(/\n?<!-- ph-archive-nav-top:start -->[\s\S]*?<!-- ph-archive-nav-top:end -->\n?/g, '')
     .replace(/\n?<!-- ph-archive-nav:start -->[\s\S]*?<!-- ph-archive-nav:end -->\n?/g, (m0, off, all) => (/\n$/.test(m0) && all[off + m0.length] !== undefined ? '\n' : ''));
