@@ -24,10 +24,12 @@
           Section option "feature_latest": true leads the section page with the newest item (feature_label / feature_read /
           feature_rest set the wording). Item options "date_label" (shown instead of the weekday date, e.g. a Link month)
           and "summary" (one-line teaser).
-          Section option "header_nav": true also puts the archive links at the TOP: inside the <header> of the
-          section page, and inside the first <header> of each detail/listen page that gets the strip (between
-          <!-- ph-archive-nav-top:start --> / <!-- ph-archive-nav-top:end -->; right after <body> if a page has no
-          <header>). The footer strip stays.
+          Archive nav (v2, one bar for every section): a single light bar at the TOP of the page only, right under
+          the page's first <header> (right after <body> if it has none), dark text, 18px:
+          "Previous <Section> → · Newsletter Archive →". Detail/listen pages carry it between
+          <!-- ph-archive-nav:start --> / <!-- ph-archive-nav:end -->; older footer strips and
+          <!-- ph-archive-nav-top --> header strips are removed on rebuild. Section pages get the same bar under
+          the banner (feature_latest sections: "Previous … ↓" jumps to the list). "header_nav" is no longer used.
 */
 const fs = require('fs');
 const path = require('path');
@@ -105,7 +107,7 @@ function write(file, content) {
   if (!CHECK) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, content); }
 }
 
-function shell({ title, issuedate, body, canonical, headerNav }) {
+function shell({ title, issuedate, body, canonical, topNav }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,8 +131,8 @@ ${canonical ? `<link rel="canonical" href="${canonical}">\n` : ''}<link rel="sty
   </div>
   <p class="ph-tagline">A look at upcoming events, meetings, maintenance notices, useful resources and helpful links</p>
   <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
-${headerNav ? headerNav + '\n' : ''}</header>
-<main class="ph-body">
+</header>
+${topNav ? topNav + '\n' : ''}<main class="ph-body">
 ${body}
 </main>
 <footer class="ph-footer">
@@ -161,6 +163,16 @@ const sorted = (k) => [...S[k].items].sort((a, b) => (b.date || '').localeCompar
 const issueDates = ITEMS.issues.map((i) => i.date).sort().reverse();
 const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href="issues/${date}.html">${shortDate(date)}</a>` : shortDate(date);
 const crumbs = (title) => `<p class="ph-crumbs"><a href="index.html">Newsletter Archive</a> › ${esc(title)}</p>`;
+
+// ---------- shared archive nav bar (top of page only) ----------
+// Fully inline styles so each page's own nav/a rules cannot restyle it. Large, dark, high-contrast for older eyes.
+function navBar(links) {
+  const A = 'display:inline-block;background:none;border:0;border-radius:0;box-shadow:none;padding:4px 2px;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none';
+  const body = links.map(([href, label]) => `<a href="${href}" style="${A}">${esc(label)}</a>`).join('<span class="ph-sep" style="color:#1a1a1a;font:bold 18px/1.5 Arial,Helvetica,sans-serif;padding:0 6px" aria-hidden="true">·</span>');
+  // On phones the two links stack, one per line, and the dot drops out (no dangling "·" at a line end).
+  const css = '<style>@media (max-width:480px){.ph-archive-bar .ph-sep{display:none!important}.ph-archive-bar a{display:block!important;margin:0 auto!important;width:max-content}}</style>';
+  return `<div class="ph-archive-bar" role="navigation" aria-label="Newsletter archive" style="display:block;width:100%;margin:0;padding:10px 14px;box-sizing:border-box;background:#f3f8ee;border:0;border-bottom:2px solid #2d5016;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none">${css}${body}</div>`;
+}
 
 // ---------- section pages ----------
 function sectionPage(k) {
@@ -200,15 +212,9 @@ function sectionPage(k) {
     out += `</div>\n`;
     n++;
   }
-  out += `<nav class="ph-archive-nav" aria-label="More from the newsletter"><a href="index.html">Newsletter Archive →</a></nav>\n`;
-  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archive', body: out, canonical: archUrl(`${k}.html`), headerNav: sec.header_nav ? sectionHeaderNav(k, sec.feature_latest && sorted(k).length > 1) : null });
-}
-// Archive links at the top of a section page ("header_nav"), inside the banner. Same wording as the strips.
-function sectionHeaderNav(k, hasPrev) {
-  const sec = S[k];
-  const A = 'color:#3a6b1a;font-weight:bold;text-decoration:underline';
-  const links = [hasPrev ? `<a href="#previous" style="${A}">${esc(sec.prev.replace(/\s*→$/, ''))} ↓</a>` : null, `<a href="index.html" style="${A}">Newsletter Archive →</a>`].filter(Boolean);
-  return `<nav class="ph-header-nav" aria-label="Newsletter archive" style="margin:10px auto 0;max-width:600px;padding:8px 12px;background:#eaf4e4;border-top:3px solid #2d5016;border-radius:0 0 4px 4px;font:15px/1.8 Arial,sans-serif;color:#333333;text-align:center">${links.join('<span style="font-weight:normal"> · </span>')}</nav>`;
+  const hasPrev = sec.feature_latest && sorted(k).length > 1;
+  const topNav = navBar([hasPrev ? ['#previous', `${sec.prev.replace(/\s*→$/, '')} ↓`] : null, ['index.html', 'Newsletter Archive →']].filter(Boolean));
+  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archive', body: out, canonical: archUrl(`${k}.html`), topNav });
 }
 
 function videosPage() {
@@ -224,8 +230,8 @@ function videosPage() {
   });
   out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">All recordings on the Palm Hill website (sign-in required) →</a></nav>\n`;
   out += `<p class="ph-source">Source: ${esc(sec.snapshot)}. Recordings open in Google Drive.</p>\n`;
-  out += `<nav class="ph-archive-nav" aria-label="More from the newsletter"><a href="${pageUrl('2026-10-04-committee-video-guide.html')}">How to find videos on the Palm Hill website →</a><span class="ph-dot"> · </span><a href="index.html">Newsletter Archive →</a></nav>\n`;
-  return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archive', body: out, canonical: archUrl('videos.html') });
+  const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], ['index.html', 'Newsletter Archive →']]);
+  return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archive', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
 function homePage() {
@@ -321,47 +327,24 @@ function cleanIssue(raw, iss) {
 // ---------- detail-page strip ----------
 function stripFor(k) {
   const sec = S[k];
-  // A <div role="navigation"> with fully inline styles, so each page's own nav/a rules cannot restyle it.
-  const A = 'display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#3a6b1a;font:bold 15px/1.8 Arial,sans-serif;text-decoration:underline';
-  return `<!-- ph-archive-nav:start -->
-<div role="navigation" aria-label="More from the newsletter" style="display:block;max-width:660px;margin:24px auto 16px;padding:10px 14px;box-sizing:border-box;background:#eaf4e4;border:0;border-top:3px solid #2d5016;border-radius:0 0 4px 4px;font:15px/1.8 Arial,sans-serif;color:#333333;text-align:left"><a href="${archUrl(`${k}.html`)}" style="${A}">${esc(sec.prev)}</a><span style="color:#333333;font-weight:normal"> · </span><a href="${archUrl('index.html')}" style="${A}">Newsletter Archive →</a></div>
-<!-- ph-archive-nav:end -->`;
-}
-// Top-of-page version for "header_nav" sections: sits inside the page's dark green <header>, so gold links on green.
-function topStripFor(k) {
-  const sec = S[k];
-  const A = 'display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#f3dfa2;font:bold 15px/1.8 Arial,sans-serif;text-decoration:underline;letter-spacing:0;text-transform:none';
-  return `<!-- ph-archive-nav-top:start -->
-<div role="navigation" aria-label="Newsletter archive" style="display:block;max-width:780px;margin:10px auto 0;padding:6px 0 0;box-sizing:border-box;background:none;border:0;border-top:1px solid rgba(243,223,162,.45);font:15px/1.8 Arial,sans-serif;color:#ffffff;text-align:inherit;letter-spacing:0;text-transform:none"><a href="${archUrl(`${k}.html`)}" style="${A}">${esc(sec.prev)}</a><span style="color:#ffffff;font-weight:normal"> · </span><a href="${archUrl('index.html')}" style="${A}">Newsletter Archive →</a></div>
-<!-- ph-archive-nav-top:end -->`;
+  return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}\n<!-- ph-archive-nav:end -->`;
 }
 function addStrip(page, k) {
   const file = path.join(PAGES, page);
   const src = fs.readFileSync(file, 'utf8');
-  const strip = stripFor(k);
-  let next;
-  if (src.includes('<!-- ph-archive-nav:start -->')) next = src.replace(/<!-- ph-archive-nav:start -->[\s\S]*?<!-- ph-archive-nav:end -->/, strip);
+  // Drop any earlier strip (footer v1 or header-top), then put the one bar at the top.
+  let next = src.replace(/\n?<!-- ph-archive-nav-top:start -->[\s\S]*?<!-- ph-archive-nav-top:end -->\n?/g, '')
+    .replace(/\n?<!-- ph-archive-nav:start -->[\s\S]*?<!-- ph-archive-nav:end -->\n?/g, (m0, off, all) => (/\n$/.test(m0) && all[off + m0.length] !== undefined ? '\n' : ''));
+  const lower = next.toLowerCase();
+  const h = lower.indexOf('</header>');
+  let at;
+  if (h >= 0) at = h + '</header>'.length;
   else {
-    const i = src.toLowerCase().lastIndexOf('</body>');
-    if (i < 0) throw new Error(`${page}: no </body>`);
-    next = src.slice(0, i) + strip + '\n' + src.slice(i);
+    const b = lower.indexOf('<body');
+    at = b >= 0 ? next.indexOf('>', b) + 1 : 0;
+    if (!at) throw new Error(`${page}: no <body>`);
   }
-  const top = S[k].header_nav ? topStripFor(k) : null;
-  const TOP_RE = /<!-- ph-archive-nav-top:start -->[\s\S]*?<!-- ph-archive-nav-top:end -->\n?/;
-  if (top) {
-    if (TOP_RE.test(next)) next = next.replace(TOP_RE, top + '\n');
-    else {
-      const lower = next.toLowerCase();
-      const h = lower.indexOf('</header>');
-      if (h >= 0) next = next.slice(0, h) + top + '\n' + next.slice(h);
-      else {
-        const b = lower.indexOf('<body');
-        const e = b >= 0 ? next.indexOf('>', b) : -1;
-        if (e < 0) throw new Error(`${page}: no <body>`);
-        next = next.slice(0, e + 1) + '\n' + top + '\n' + next.slice(e + 1);
-      }
-    }
-  } else next = next.replace(TOP_RE, '');
+  next = next.slice(0, at) + '\n' + stripFor(k) + '\n' + next.slice(at).replace(/^\n/, '');
   write(file, next);
 }
 
