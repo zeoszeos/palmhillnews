@@ -33,7 +33,7 @@
     "community-stories": {"title": "Community Stories", "prev": "Previous Stories →", "past": "Past Stories →", "lead": "Stories about Palm Hill neighbors, newest first. Each story has a read-aloud version.", "items": [
       {"date": "2026-10-04", "title": "97½ and Still Chasing Birdies Instead of Birthdays", "byline": "Carolyn M. Story, as told by Mary Leslie", "page": "2026-10-04-mary-leslie-chasing-birdies.html", "listen": "2026-10-04-listen-mary-leslie-story.html", "issues": ["2026-10-04"]}
     ]},
-    "presidents-message": {"title": "President's Message", "prev": "Previous Messages →", "past": "Past Messages →", "lead": "Messages from the Board President, newest first.", "items": [
+    "presidents-message": {"title": "President's Message", "prev": "Previous President Messages →", "past": "Past Messages →", "strip_listen": true, "lead": "Messages from the Board President, newest first.", "items": [
       {"date": "2026-10-04", "title": "Status Update", "byline": "Henry Klain, Board President", "page": "2026-10-04-henry-klain-status-update.html", "listen": "2026-10-04-listen-henry-klain-message.html", "issues": ["2026-10-04"]}
     ]},
     "committee-reports": {"title": "Committee Chair Reports", "prev": "Previous Chair Reports →", "past": "Past Reports →", "strip_listen": true, "lead": "Every committee chair report the newsletter has carried, newest meeting first.", "items": [
