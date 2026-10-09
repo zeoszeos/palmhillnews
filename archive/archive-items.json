@@ -36,7 +36,7 @@
     "presidents-message": {"title": "President's Message", "prev": "Previous Messages →", "past": "Past Messages →", "lead": "Messages from the Board President, newest first.", "items": [
       {"date": "2026-10-04", "title": "Status Update", "byline": "Henry Klain, Board President", "page": "2026-10-04-henry-klain-status-update.html", "listen": "2026-10-04-listen-henry-klain-message.html", "issues": ["2026-10-04"]}
     ]},
-    "committee-reports": {"title": "Committee Chair Reports", "prev": "Previous Chair Reports →", "past": "Past Reports →", "lead": "Every committee chair report the newsletter has carried, newest meeting first.", "items": [
+    "committee-reports": {"title": "Committee Chair Reports", "prev": "Previous Chair Reports →", "past": "Past Reports →", "strip_listen": true, "lead": "Every committee chair report the newsletter has carried, newest meeting first.", "items": [
       {"date": "2026-09-21", "title": "Communications Committee Report", "page": "2026-09-21-communications-committee-report.html", "listen": "2026-10-04-listen-communications-committee-report.html", "issues": ["2026-09-27", "2026-10-04"]},
       {"date": "2026-09-09", "title": "Planning and Environmental Committee Report", "page": "2026-09-16-planning-and-environmental-committee-report.html", "listen": "2026-10-04-listen-planning-environmental-committee-report.html", "issues": ["2026-09-21", "2026-09-27", "2026-10-04"]},
       {"date": "2026-09-08", "title": "Golf Advisory Committee Report", "page": "2026-09-08-golf-advisory-committee-report.html", "listen": "2026-10-04-listen-golf-advisory-committee-report.html", "issues": ["2026-09-27", "2026-10-04"]},

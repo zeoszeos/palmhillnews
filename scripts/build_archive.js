@@ -17,6 +17,7 @@
   Rules:  item pages keep their permanent URLs (Handbook 8). The detail-page strip is appended between
           <!-- ph-archive-nav:start --> / <!-- ph-archive-nav:end --> markers just before </body>;
           nothing else in those pages changes. Hidden pages stay live and are simply not listed.
+          A section with "strip_listen": true also gets the strip on its items' listen pages.
 */
 const fs = require('fs');
 const path = require('path');
@@ -308,6 +309,8 @@ write(path.join(OUT, 'index.html'), homePage());
 
 const stripped = new Map();
 for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stripped.has(it.page)) stripped.set(it.page, k);
+// Sections with "strip_listen": true also get the strip on each item's read-aloud (listen) page.
+for (const k of SECTION_ORDER) if (S[k].strip_listen) for (const it of S[k].items) if (it.listen && !stripped.has(it.listen)) stripped.set(it.listen, k);
 for (const [p, k] of stripped) addStrip(p, k);
 
 const issuesFrom = argVal('--issues-from');
