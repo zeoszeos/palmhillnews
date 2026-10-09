@@ -23,7 +23,8 @@
           "strip_as": "<section>" gives the item's page that section's strip instead (video guide -> Previous Videos).
           Section option "feature_latest": true leads the section page with the newest item (feature_label / feature_read /
           feature_rest set the wording). Item options "date_label" (shown instead of the weekday date, e.g. a Link month)
-          and "summary" (one-line teaser).
+          and "summary" (one-line teaser). Item option "link_pdf": site path of the article's pages from the Palm Hill
+          Link (public/assets/link/), shown as "Palm Hill Link (PDF) →".
           Archive nav (v2, one bar for every section): a single light bar at the TOP of the page only, right under
           the page's first <header> (right after <body> if it has none), dark text, 18px:
           "Previous <Section> → · Newsletter Archive →". Detail/listen pages carry it between
@@ -132,8 +133,7 @@ ${canonical ? `<link rel="canonical" href="${canonical}">\n` : ''}<link rel="sty
     </div>
     <img class="ph-palm" src="/pages/assets/masthead-palm.png" alt="" width="74" height="77">
   </div>
-  <div class="ph-tagline ph-gold-rule" aria-hidden="true" style="height:8px;padding:0;margin:0;font-size:0;line-height:0"></div>
-  <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
+  <p class="ph-tagline ph-address-strip" style="padding:8px 12px;font:15px/1.4 Arial,Helvetica,sans-serif;font-style:normal"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778" style="color:#ffffff;text-decoration:underline">1800 Seminole Blvd, Largo, FL 33778</a></p>
 </header>
 ${topNav ? topNav + '\n' : ''}<main class="ph-body">
 ${body}
@@ -180,7 +180,7 @@ function sectionPage(k) {
   if (sec.feature_latest && rows.length) {
     const top = rows[0]; rows = rows.slice(1);
     const when = fullDate(top);
-    const links = [top.page ? `<a href="${pageUrl(top.page)}">${esc(sec.feature_read || 'Read →')}</a>` : null, top.listen ? `<a href="${pageUrl(top.listen)}">Listen →</a>` : null].filter(Boolean).join('<span class="ph-dot"> · </span>');
+    const links = [top.page ? `<a href="${pageUrl(top.page)}">${esc(sec.feature_read || 'Read →')}</a>` : null, top.listen ? `<a href="${pageUrl(top.listen)}">Listen →</a>` : null, top.link_pdf ? `<a href="${BASE}${esc(top.link_pdf)}">Palm Hill Link (PDF) →</a>` : null].filter(Boolean).join('<span class="ph-dot"> · </span>');
     out += `<section class="ph-feature" aria-label="${esc(sec.feature_label || 'Latest')}">\n<p class="ph-feature-kicker">${esc(sec.feature_label || 'Latest')}</p>\n`;
     out += `<h2 class="ph-feature-title">${top.page ? `<a href="${pageUrl(top.page)}">${esc(top.title)}</a>` : esc(top.title)}</h2>\n`;
     out += `<div class="ph-row-meta">${[top.byline ? esc(top.byline) : null, when].filter(Boolean).join(' · ')}</div>\n`;
@@ -198,7 +198,7 @@ function sectionPage(k) {
     const head = it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
+    const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, it.link_pdf ? `<a href="${BASE}${esc(it.link_pdf)}">Palm Hill Link (PDF) →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
     if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
