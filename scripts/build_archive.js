@@ -158,7 +158,7 @@ for (const k of SECTION_ORDER) if (!S[k]) throw new Error(`archive-items.json ha
 const sorted = (k) => [...S[k].items].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 const issueDates = ITEMS.issues.map((i) => i.date).sort().reverse();
 const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href="issues/${date}.html">${shortDate(date)}</a>` : shortDate(date);
-const crumbs = (title) => `<p class="ph-crumbs"><a href="index.html">Newsletter Archive</a> › ${esc(title)}</p>`;
+const crumbs = (title) => `<p class="ph-crumbs"><a href="index.html">Newsletter Archives</a> › ${esc(title)}</p>`;
 
 // ---------- shared archive nav bar (top of page only) ----------
 // Fully inline styles so each page's own nav/a rules cannot restyle it. Large, dark, high-contrast for older eyes.
@@ -210,7 +210,7 @@ function sectionPage(k) {
   }
   const hasPrev = sec.feature_latest && sorted(k).length > 1;
   const topNav = navBar([hasPrev ? ['#previous', `${sec.prev.replace(/\s*→$/, '')} ↓`] : null, ['index.html', 'Newsletter Archive →']].filter(Boolean));
-  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archive', body: out, canonical: archUrl(`${k}.html`), topNav });
+  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl(`${k}.html`), topNav });
 }
 
 function videosPage() {
@@ -227,14 +227,14 @@ function videosPage() {
   out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">All recordings on the Palm Hill website (sign-in required) →</a></nav>\n`;
   out += `<p class="ph-source">Source: ${esc(sec.snapshot)}. Recordings open in Google Drive.</p>\n`;
   const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], ['index.html', 'Newsletter Archive →']]);
-  return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archive', body: out, canonical: archUrl('videos.html'), topNav });
+  return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
 function homePage() {
   const tiles = SECTION_ORDER.map((k) => {
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
     const noun = k === 'videos' ? 'recording' : 'item';
-    return `<a class="ph-tile" href="${k}.html"><b>${esc(S[k].title)} →</b><span>${items.length} ${noun}${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
+    return `<a class="ph-tile" href="${k}.html"><b>${esc(S[k].hub_label || S[k].title)} →</b><span>${esc(S[k].title)} · ${items.length} ${noun}${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
   }).join('\n');
   let rows = ''; let n = 0;
   for (const iss of [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date))) {
@@ -245,16 +245,17 @@ function homePage() {
     }
     rows += `<div class="ph-row${n++ % 2 ? ' ph-alt' : ''}"><a class="ph-row-title" href="issues/${iss.date}.html">${esc(issueLabel(iss))} →</a>\n<div class="ph-row-meta"><b>${volNo(iss)}</b> · Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''} · ${esc(iss.format)}</div>\n<div class="ph-row-meta">${esc(parts.join(' · '))}</div></div>\n`;
   }
-  const body = `<h1 class="ph-section">Newsletter Archive</h1>
-<p class="ph-lead">Past issues of the Palm Hill weekly newsletter, plus a page for each regular section so you can catch up on anything you missed.</p>
-<h2 class="ph-subhead">Browse by Section</h2>
+  const body = `<h1 class="ph-section">Palm Hill Newsletter Archives</h1>
+<p class="ph-lead">Everything the Palm Hill weekly newsletter has carried, in one place: an archive for each section, and every back issue as it was sent.</p>
+<h2 class="ph-subhead" id="sections">Section Archives</h2>
 <div class="ph-grid">
 ${tiles}
 </div>
-<h2 class="ph-subhead">Past Issues</h2>
+<h2 class="ph-subhead" id="issues">Newsletter Back Issues</h2>
 ${rows}<p class="ph-source">The archive starts with the first resident issue, sent July 21, 2026. Issues before October 4 were sent as a PDF from palmhillcountryclub.net; their archive pages are made from the exact HTML build of that PDF. Private meeting links, download links and unsubscribe links are removed.</p>
 `;
-  return shell({ title: 'Newsletter Archive', issuedate: 'Newsletter Archive', body, canonical: archUrl('index.html') });
+  const topNav = navBar([['#sections', 'Section Archives ↓'], ['#issues', 'Back Issues ↓']]);
+  return shell({ title: 'Palm Hill Newsletter Archives', issuedate: 'Newsletter Archives', body, canonical: archUrl('index.html'), topNav });
 }
 
 // ---------- issue pages (immutable) ----------
@@ -335,7 +336,7 @@ function stripFor(k, page, headerText = '') {
   return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}${dateline}\n<!-- ph-archive-nav:end -->`;
 }
 // "story_nav" sections (Community Stories), Steven Oct 9: under the header, the full date with Listen (or, on the
-// listen page, Read the Story) right-aligned on the same row; below it ONE line: Previous Stories → · Newsletter Archive →.
+// listen page, Read the Story) right-aligned on the same row; below it ONE line: Story Archives → · Newsletter Archive →.
 function storyNav(k, page, it, showDate) {
   const sec = S[k];
   const F = 'Arial,Helvetica,sans-serif';
