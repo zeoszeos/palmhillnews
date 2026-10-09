@@ -21,6 +21,7 @@ After each issue is **sent**: as part of that week's pages PR, or as its own PR.
    Remove any personal unsubscribe token from that copy; the script also strips it.
 2. **Edit `archive/archive-items.json`:**
    - Add the issue: `date` (send date), `label` (e.g. "Week of October 11, 2026"), `sent` (ISO send time with offset), `file_dated` (ISO time of the HTML build, from its file time / "Updated:" line), `format`, `source`, `nas` (`02-Issues/<YYYY-MM>/<send date>/sent-final/<file>`), and an optional `caveat` or `remove_sections`.
+   - Give it `volume` and `number` ("Vol. 1, No. 13"). Numbering: Jul 21, 2026 is Vol. 1, No. 1; every SENT issue (not a correction or "correction coming" notice) is the next No.; the volume goes up on each Jul 21 anniversary and No. restarts at 1 (rule in `numbering`). Get the value from the phnews helper: `python3 pipeline/scripts/issue_number.py <send date>`. The builder fills in a missing value and stops with an error if a stored value breaks the rule. Vol./No. appears in the archive home list, the issue page banner and title, and `archive-index.json`.
    - The issue banner reads "Archive copy · Sent <weekday, Month d, yyyy> at <time> ET · file dated <Mon d, yyyy h:mm AM/PM>", then the caveat.
    - Add each new item to its section, giving `page` (existing `pages/…` file) or `id` + `text` for notices that have no page of their own, plus `issues: [date]`.
    - Append the new date to `issues` on items carried over from earlier issues.

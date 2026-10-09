@@ -57,6 +57,31 @@ const etParts = (iso) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { t
 const fileDated = (iso) => { const p = etParts(iso); return `${p.month} ${p.day}, ${p.year} ${p.hour}:${p.minute} ${p.dayPeriod}`; };
 const sentTimeET = (iso) => new Date(iso).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
 const issueLabel = (iss) => iss.label || `Week of ${midDate(iss.date)}`;
+// ---------- issue numbering: "Vol. V, No. N" ----------
+// Vol. 1, No. 1 = first resident issue (numbering.first_issue). Each sent issue is the next No.; the volume goes up on
+// every numbering.volume_anniversary (MM-DD) and No. restarts at 1. Stored issues[].volume/number are checked against
+// this rule (missing values are filled in). Same rule as phnews pipeline/scripts/issue_number.py.
+const NUMBERING = ITEMS.numbering || { first_issue: '2026-07-21', volume_anniversary: '07-21' };
+const volYear = (iso) => Number(iso.slice(0, 4)) + (iso.slice(5, 10) >= NUMBERING.volume_anniversary ? 1 : 0);
+const volumeOf = (iso) => {
+  const v = volYear(iso) - volYear(NUMBERING.first_issue) + 1;
+  if (v < 1) throw new Error(`${iso}: before the first issue ${NUMBERING.first_issue}`);
+  return v;
+};
+{
+  const asc = [...ITEMS.issues].sort((a, b) => a.date.localeCompare(b.date));
+  if (asc.length && asc[0].date !== NUMBERING.first_issue) throw new Error(`first issue is ${asc[0].date}, numbering.first_issue is ${NUMBERING.first_issue}`);
+  let vol = 0; let no = 0;
+  for (const iss of asc) {
+    const v = volumeOf(iss.date);
+    if (v !== vol) { vol = v; no = 0; }
+    no++;
+    if (iss.volume == null) iss.volume = v;
+    if (iss.number == null) iss.number = no;
+    if (iss.volume !== v || iss.number !== no) throw new Error(`${iss.date}: archive-items.json says Vol. ${iss.volume}, No. ${iss.number}; the numbering rule gives Vol. ${v}, No. ${no}`);
+  }
+}
+const volNo = (iss) => `Vol. ${iss.volume}, No. ${iss.number}`;
 const monthKey = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
 const pageUrl = (p) => `${BASE}/pages/${p}`;
 const archUrl = (p) => `${BASE}/pages/archive/${p}`;
@@ -177,7 +202,7 @@ function homePage() {
       const c = S[k].items.filter((x) => (x.issues || []).includes(iss.date)).length;
       if (c) parts.push(`${c} ${S[k].title.replace('?', '')}`);
     }
-    rows += `<div class="ph-row${n++ % 2 ? ' ph-alt' : ''}"><a class="ph-row-title" href="issues/${iss.date}.html">${esc(issueLabel(iss))} →</a>\n<div class="ph-row-meta">Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''} · ${esc(iss.format)}</div>\n<div class="ph-row-meta">${esc(parts.join(' · '))}</div></div>\n`;
+    rows += `<div class="ph-row${n++ % 2 ? ' ph-alt' : ''}"><a class="ph-row-title" href="issues/${iss.date}.html">${esc(issueLabel(iss))} →</a>\n<div class="ph-row-meta"><b>${volNo(iss)}</b> · Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''} · ${esc(iss.format)}</div>\n<div class="ph-row-meta">${esc(parts.join(' · '))}</div></div>\n`;
   }
   const body = `<h1 class="ph-section">Newsletter Archive</h1>
 <p class="ph-lead">Past issues of the Palm Hill weekly newsletter, plus a page for each regular section so you can catch up on anything you missed.</p>
@@ -238,14 +263,14 @@ function cleanIssue(raw, iss) {
     }
     linkStats.kept++; return m;
   });
-  const head = `<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="robots" content="noindex">\n<title>Palm Hill Newsletter — ${esc(issueLabel(iss))} (archive copy)</title>\n<link rel="canonical" href="${archUrl(`issues/${iss.date}.html`)}">\n${ISSUE_CSS}`;
+  const head = `<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="robots" content="noindex">\n<title>Palm Hill Newsletter — ${esc(issueLabel(iss))}, ${volNo(iss)} (archive copy)</title>\n<link rel="canonical" href="${archUrl(`issues/${iss.date}.html`)}">\n${ISSUE_CSS}`;
   if (/<head[^>]*>/i.test(h)) {
     h = h.replace(/<meta[^>]*name="viewport"[^>]*>/gi, '').replace(/<title>[\s\S]*?<\/title>/i, '');
     h = h.replace(/<head([^>]*)>/i, `<head$1>\n<meta charset="utf-8">\n${head}`);
   } else {
     h = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n${head}\n</head>\n<body>\n${h}\n</body>\n</html>\n`;
   }
-  const banner = `<div class="pha-banner" role="note"><b>Archive copy · Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''}.</b> This is the version sent to Palm Hill residents; dates, times and links are as they were that week. <a href="${archUrl('index.html')}">Newsletter Archive →</a>${iss.caveat ? `<span class="pha-note">${esc(iss.caveat)}</span>` : ''}</div>`;
+  const banner = `<div class="pha-banner" role="note"><b>Archive copy · ${volNo(iss)} · Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''}.</b> This is the version sent to Palm Hill residents; dates, times and links are as they were that week. <a href="${archUrl('index.html')}">Newsletter Archive →</a>${iss.caveat ? `<span class="pha-note">${esc(iss.caveat)}</span>` : ''}</div>`;
   const foot = `<nav class="pha-foot" aria-label="Newsletter archive"><a href="${archUrl('index.html')}">Newsletter Archive →</a> · <a href="${archUrl('community-notices.html')}">Previous Notices →</a> · <a href="${archUrl('committee-reports.html')}">Previous Chair Reports →</a></nav>`;
   h = h.replace(/<body([^>]*)>/i, `<body$1>\n<!-- Archive copy generated by scripts/build_archive.js from ${esc(iss.source)}. Written once; never overwritten. -->\n${banner}`);
   h = h.replace(/<\/body>(?![\s\S]*<\/body>)/i, `${foot}\n</body>`);
@@ -305,7 +330,7 @@ const index = {
   generated_by: 'scripts/build_archive.js',
   base_url: BASE,
   archive_home: archUrl('index.html'),
-  issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, label: issueLabel(i), sent: i.sent, file_dated: i.file_dated, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
+  issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, volume: i.volume, number: i.number, issue_number: volNo(i), label: issueLabel(i), sent: i.sent, file_dated: i.file_dated, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
   sections: Object.fromEntries(SECTION_ORDER.map((k) => [k, {
     title: S[k].title, url: archUrl(`${k}.html`), email_link_label: S[k].past, page_link_label: S[k].prev,
     items: sorted(k).map((it) => ({ date: it.date, title: it.title || it.group, url: it.page ? pageUrl(it.page) : (it.url || (it.id ? `${archUrl(`${k}.html`)}#${it.id}` : null)), listen_url: it.listen ? pageUrl(it.listen) : undefined, issues: it.issues })),
