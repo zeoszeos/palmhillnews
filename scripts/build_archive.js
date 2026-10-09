@@ -21,6 +21,9 @@
           Item options: "also": [{page,label}] extra pages listed on the row (e.g. Original notice) and given the
           strip; "strip_extra": [page] pages that get the strip but are not listed (e.g. Zoom pages);
           "strip_as": "<section>" gives the item's page that section's strip instead (video guide -> Previous Videos).
+          Section option "feature_latest": true leads the section page with the newest item (feature_label / feature_read /
+          feature_rest set the wording). Item options "date_label" (shown instead of the weekday date, e.g. a Link month)
+          and "summary" (one-line teaser).
 */
 const fs = require('fs');
 const path = require('path');
@@ -160,16 +163,33 @@ function sectionPage(k) {
   const sec = S[k];
   let out = `${crumbs(sec.title)}\n<h1 class="ph-section">${esc(sec.title)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n`;
   let month = null; let n = 0;
-  for (const it of sorted(k)) {
+  let rows = sorted(k);
+  // "feature_latest": the newest item leads the page as the current one; the rest list below as previous items.
+  if (sec.feature_latest && rows.length) {
+    const top = rows[0]; rows = rows.slice(1);
+    const when = top.date_label ? esc(top.date_label) : longDate(top.date);
+    const links = [top.page ? `<a href="${pageUrl(top.page)}">${esc(sec.feature_read || 'Read →')}</a>` : null, top.listen ? `<a href="${pageUrl(top.listen)}">Listen →</a>` : null].filter(Boolean).join('<span class="ph-dot"> · </span>');
+    out += `<section class="ph-feature" aria-label="${esc(sec.feature_label || 'Latest')}">\n<p class="ph-feature-kicker">${esc(sec.feature_label || 'Latest')}</p>\n`;
+    out += `<h2 class="ph-feature-title">${top.page ? `<a href="${pageUrl(top.page)}">${esc(top.title)}</a>` : esc(top.title)}</h2>\n`;
+    out += `<div class="ph-row-meta">${[top.byline ? esc(top.byline) : null, when].filter(Boolean).join(' · ')}</div>\n`;
+    if (top.summary) out += `<p class="ph-detail">${esc(top.summary)}</p>\n`;
+    if (links) out += `<nav class="ph-links">${links}</nav>\n`;
+    if (top.source) out += `<div class="ph-row-meta">Source: ${esc(top.source)}</div>\n`;
+    if (top.issues && top.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${top.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
+    out += `</section>\n`;
+    if (rows.length) out += `<h2 class="ph-subhead ph-prev-head">${esc(sec.feature_rest || 'Previous')}</h2>\n`;
+  }
+  for (const it of rows) {
     const m = monthKey(it.date);
     if (m !== month) { out += `<h2 class="ph-subhead">${m}</h2>\n`; month = m; }
     const id = it.id ? ` id="${esc(it.id)}"` : '';
     const head = it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    const meta = [longDate(it.date), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
+    const meta = [it.date_label ? esc(it.date_label) : longDate(it.date), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
+    if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
     if (it.external) out += `<nav class="ph-links"><a href="${esc(it.external)}">${esc(it.external_label || 'Open →')}</a></nav>\n`;
     if (it.source) out += `<div class="ph-row-meta">Source: ${esc(it.source)}</div>\n`;
     if (it.issues && it.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;

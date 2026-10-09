@@ -27,6 +27,7 @@ After each issue is **sent**: as part of that week's pages PR, or as its own PR.
    - Append the new date to `issues` on items carried over from earlier issues.
    - Meetings: add the agenda page as `page`, the Original notice page under `also` (`{page, label: "Original notice →"}`), and the Zoom page under `strip_extra` (gets the strip, never listed).
    - Events: add each special-event page the issue linked.
+   - Community Stories: the section has `feature_latest`, so the newest item leads the page as "Current Story" and the rest list under "Previous Stories". Add the new story with `page`, `listen`, `byline`, a one-line `summary` and `source`; a story first printed in the Palm Hill Link and not yet in a sent issue gets `date_label` (e.g. "Palm Hill Link, September 2026") and `issues: []`.
    - Videos: add `{group, date, url}` rows from the signed-in "Committees of Palm Hill" save (the `scan_committee_videos.py` output).
 3. **Build:**
    ```
