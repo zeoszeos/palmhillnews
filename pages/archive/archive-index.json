@@ -173,7 +173,7 @@
       "title": "President's Message",
       "url": "https://palmhillnews.vercel.app/pages/archive/presidents-message.html",
       "email_link_label": "Past Messages →",
-      "page_link_label": "Previous President Messages →",
+      "page_link_label": "President Message Archives →",
       "items": [
         {
           "date": "2026-10-04",
@@ -183,6 +183,20 @@
           "issues": [
             "2026-10-04"
           ]
+        },
+        {
+          "date": "2026-01-20",
+          "title": "Message from the President of the HOPH",
+          "url": "https://palmhillnews.vercel.app/pages/2026-01-20-henry-klain-message-from-the-president.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-01-20-listen-henry-klain-message.html",
+          "issues": []
+        },
+        {
+          "date": "2025-06-25",
+          "title": "Palm Hill: A Community at a Crossroads",
+          "url": "https://palmhillnews.vercel.app/pages/2025-06-25-henry-klain-community-at-a-crossroads.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-06-25-listen-henry-klain-crossroads.html",
+          "issues": []
         }
       ]
     },
