@@ -24,6 +24,10 @@
           Section option "feature_latest": true leads the section page with the newest item (feature_label / feature_read /
           feature_rest set the wording). Item options "date_label" (shown instead of the weekday date, e.g. a Link month)
           and "summary" (one-line teaser).
+          Section option "header_nav": true also puts the archive links at the TOP: inside the <header> of the
+          section page, and inside the first <header> of each detail/listen page that gets the strip (between
+          <!-- ph-archive-nav-top:start --> / <!-- ph-archive-nav-top:end -->; right after <body> if a page has no
+          <header>). The footer strip stays.
 */
 const fs = require('fs');
 const path = require('path');
@@ -101,7 +105,7 @@ function write(file, content) {
   if (!CHECK) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, content); }
 }
 
-function shell({ title, issuedate, body, canonical }) {
+function shell({ title, issuedate, body, canonical, headerNav }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,7 +129,7 @@ ${canonical ? `<link rel="canonical" href="${canonical}">\n` : ''}<link rel="sty
   </div>
   <p class="ph-tagline">A look at upcoming events, meetings, maintenance notices, useful resources and helpful links</p>
   <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
-</header>
+${headerNav ? headerNav + '\n' : ''}</header>
 <main class="ph-body">
 ${body}
 </main>
@@ -177,7 +181,7 @@ function sectionPage(k) {
     if (top.source) out += `<div class="ph-row-meta">Source: ${esc(top.source)}</div>\n`;
     if (top.issues && top.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${top.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
     out += `</section>\n`;
-    if (rows.length) out += `<h2 class="ph-subhead ph-prev-head">${esc(sec.feature_rest || 'Previous')}</h2>\n`;
+    if (rows.length) out += `<h2 class="ph-subhead ph-prev-head" id="previous">${esc(sec.feature_rest || 'Previous')}</h2>\n`;
   }
   for (const it of rows) {
     const m = monthKey(it.date);
@@ -197,7 +201,14 @@ function sectionPage(k) {
     n++;
   }
   out += `<nav class="ph-archive-nav" aria-label="More from the newsletter"><a href="index.html">Newsletter Archive →</a></nav>\n`;
-  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archive', body: out, canonical: archUrl(`${k}.html`) });
+  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archive', body: out, canonical: archUrl(`${k}.html`), headerNav: sec.header_nav ? sectionHeaderNav(k, sec.feature_latest && sorted(k).length > 1) : null });
+}
+// Archive links at the top of a section page ("header_nav"), inside the banner. Same wording as the strips.
+function sectionHeaderNav(k, hasPrev) {
+  const sec = S[k];
+  const A = 'color:#3a6b1a;font-weight:bold;text-decoration:underline';
+  const links = [hasPrev ? `<a href="#previous" style="${A}">${esc(sec.prev.replace(/\s*→$/, ''))} ↓</a>` : null, `<a href="index.html" style="${A}">Newsletter Archive →</a>`].filter(Boolean);
+  return `<nav class="ph-header-nav" aria-label="Newsletter archive" style="margin:10px auto 0;max-width:600px;padding:8px 12px;background:#eaf4e4;border-top:3px solid #2d5016;border-radius:0 0 4px 4px;font:15px/1.8 Arial,sans-serif;color:#333333;text-align:center">${links.join('<span style="font-weight:normal"> · </span>')}</nav>`;
 }
 
 function videosPage() {
@@ -316,6 +327,14 @@ function stripFor(k) {
 <div role="navigation" aria-label="More from the newsletter" style="display:block;max-width:660px;margin:24px auto 16px;padding:10px 14px;box-sizing:border-box;background:#eaf4e4;border:0;border-top:3px solid #2d5016;border-radius:0 0 4px 4px;font:15px/1.8 Arial,sans-serif;color:#333333;text-align:left"><a href="${archUrl(`${k}.html`)}" style="${A}">${esc(sec.prev)}</a><span style="color:#333333;font-weight:normal"> · </span><a href="${archUrl('index.html')}" style="${A}">Newsletter Archive →</a></div>
 <!-- ph-archive-nav:end -->`;
 }
+// Top-of-page version for "header_nav" sections: sits inside the page's dark green <header>, so gold links on green.
+function topStripFor(k) {
+  const sec = S[k];
+  const A = 'display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#f3dfa2;font:bold 15px/1.8 Arial,sans-serif;text-decoration:underline;letter-spacing:0;text-transform:none';
+  return `<!-- ph-archive-nav-top:start -->
+<div role="navigation" aria-label="Newsletter archive" style="display:block;max-width:780px;margin:10px auto 0;padding:6px 0 0;box-sizing:border-box;background:none;border:0;border-top:1px solid rgba(243,223,162,.45);font:15px/1.8 Arial,sans-serif;color:#ffffff;text-align:inherit;letter-spacing:0;text-transform:none"><a href="${archUrl(`${k}.html`)}" style="${A}">${esc(sec.prev)}</a><span style="color:#ffffff;font-weight:normal"> · </span><a href="${archUrl('index.html')}" style="${A}">Newsletter Archive →</a></div>
+<!-- ph-archive-nav-top:end -->`;
+}
 function addStrip(page, k) {
   const file = path.join(PAGES, page);
   const src = fs.readFileSync(file, 'utf8');
@@ -327,6 +346,22 @@ function addStrip(page, k) {
     if (i < 0) throw new Error(`${page}: no </body>`);
     next = src.slice(0, i) + strip + '\n' + src.slice(i);
   }
+  const top = S[k].header_nav ? topStripFor(k) : null;
+  const TOP_RE = /<!-- ph-archive-nav-top:start -->[\s\S]*?<!-- ph-archive-nav-top:end -->\n?/;
+  if (top) {
+    if (TOP_RE.test(next)) next = next.replace(TOP_RE, top + '\n');
+    else {
+      const lower = next.toLowerCase();
+      const h = lower.indexOf('</header>');
+      if (h >= 0) next = next.slice(0, h) + top + '\n' + next.slice(h);
+      else {
+        const b = lower.indexOf('<body');
+        const e = b >= 0 ? next.indexOf('>', b) : -1;
+        if (e < 0) throw new Error(`${page}: no <body>`);
+        next = next.slice(0, e + 1) + '\n' + top + '\n' + next.slice(e + 1);
+      }
+    }
+  } else next = next.replace(TOP_RE, '');
   write(file, next);
 }
 
