@@ -5,7 +5,7 @@ Plain Node CLI, with no Grok Bot or cloud steps. Hermes (the `phnews` profile on
 ## What it does
 - Builds the resident archive at `/pages/archive/`:
   - an archive home
-  - 7 section pages: Community Stories, President's Message, Committee Chair Reports, Manager Reports, Community Notices, Did You Know, and Meeting Videos
+  - 9 section pages: Community Stories, President's Message, Committee & Board Meetings, Committee Chair Reports, Manager Reports, Special Events, Community Notices, Did You Know, and Meeting Videos
   - `archive-index.json`
   - one frozen page per sent issue
 - Adds a "Previous … → · Newsletter Archive →" strip to each listed detail page. Nothing else in those pages changes, and no URLs change (Handbook §8).
@@ -25,6 +25,8 @@ After each issue is **sent**: as part of that week's pages PR, or as its own PR.
    - The issue banner reads "Archive copy · Sent <weekday, Month d, yyyy> at <time> ET · file dated <Mon d, yyyy h:mm AM/PM>", then the caveat.
    - Add each new item to its section, giving `page` (existing `pages/…` file) or `id` + `text` for notices that have no page of their own, plus `issues: [date]`.
    - Append the new date to `issues` on items carried over from earlier issues.
+   - Meetings: add the agenda page as `page`, the Original notice page under `also` (`{page, label: "Original notice →"}`), and the Zoom page under `strip_extra` (gets the strip, never listed).
+   - Events: add each special-event page the issue linked.
    - Videos: add `{group, date, url}` rows from the signed-in "Committees of Palm Hill" save (the `scan_committee_videos.py` output).
 3. **Build:**
    ```
@@ -45,7 +47,7 @@ After each issue is **sent**: as part of that week's pages PR, or as its own PR.
 | In | `archive/archive-items.json` (curated, not published) |
 | In | `pages/*.html` (existing detail pages) |
 | In | `<02-Issues>/<YYYY-MM>/<send date>/sent-final/<file>` (exact sent HTML; resolved from `issues[].nas`; old `<date>/<basename>` layout still accepted) |
-| Out | `pages/archive/index.html`, `pages/archive/{community-stories,presidents-message,committee-reports,manager-reports,community-notices,did-you-know,videos}.html` |
+| Out | `pages/archive/index.html`, `pages/archive/{community-stories,presidents-message,meetings,committee-reports,manager-reports,events,community-notices,did-you-know,videos}.html` |
 | Out | `pages/archive/issues/<date>.html` (immutable) |
 | Out | `pages/archive/archive-index.json` |
 | Out | the marked strip in listed detail pages |

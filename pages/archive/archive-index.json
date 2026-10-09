@@ -172,6 +172,147 @@
         }
       ]
     },
+    "meetings": {
+      "title": "Committee & Board Meetings",
+      "url": "https://palmhillnews.vercel.app/pages/archive/meetings.html",
+      "email_link_label": "Past Meetings →",
+      "page_link_label": "Previous Meetings →",
+      "items": [
+        {
+          "date": "2026-10-13",
+          "title": "Golf Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-13-golf-committee-meeting.html",
+          "also": [
+            {
+              "label": "Original notice →",
+              "url": "https://palmhillnews.vercel.app/pages/2026-10-13-golf-committee-notice.html"
+            }
+          ],
+          "issues": []
+        },
+        {
+          "date": "2026-10-12",
+          "title": "Communications Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-12-communications-committee-meeting.html",
+          "also": [
+            {
+              "label": "Original notice →",
+              "url": "https://palmhillnews.vercel.app/pages/2026-10-12-communications-committee-notice.html"
+            }
+          ],
+          "issues": []
+        },
+        {
+          "date": "2026-09-09",
+          "title": "Buildings & Grounds Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-09-buildings-and-grounds-committee-meeting.html",
+          "issues": [
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-09-09",
+          "title": "Planning & Environmental Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-09-planning-and-environmental-committee-meeting.html",
+          "issues": [
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-08-27",
+          "title": "Compliance Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-27-compliance-committee-meeting.html",
+          "issues": [
+            "2026-08-17"
+          ]
+        },
+        {
+          "date": "2026-08-19",
+          "title": "Finance Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-19-finance-committee-meeting.html",
+          "issues": [
+            "2026-08-17"
+          ]
+        },
+        {
+          "date": "2026-08-17",
+          "title": "Communications Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-meeting.html",
+          "also": [
+            {
+              "label": "First listing →",
+              "url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee.html"
+            }
+          ],
+          "issues": [
+            "2026-08-03",
+            "2026-08-11",
+            "2026-08-17"
+          ]
+        },
+        {
+          "date": "2026-08-12",
+          "title": "Buildings & Grounds Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-12-buildings-and-grounds-committee-meeting.html",
+          "also": [
+            {
+              "label": "First listing →",
+              "url": "https://palmhillnews.vercel.app/pages/2026-08-12-building-grounds-committee.html"
+            }
+          ],
+          "issues": [
+            "2026-08-03",
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-08-12",
+          "title": "Planning & Environmental Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-and-environmental-meeting.html",
+          "also": [
+            {
+              "label": "First listing →",
+              "url": "https://palmhillnews.vercel.app/pages/2026-08-12-planning-environmental-committee.html"
+            }
+          ],
+          "issues": [
+            "2026-08-03",
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-08-11",
+          "title": "Golf Committee Meeting — Cancelled",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-11-golf-committee-meeting-cancelled.html",
+          "also": [
+            {
+              "label": "First listing →",
+              "url": "https://palmhillnews.vercel.app/pages/2026-08-11-golf-committee.html"
+            }
+          ],
+          "issues": [
+            "2026-08-03",
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-08-10",
+          "title": "Rules & Regulations Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-10-rules-and-regulations-committee-meeting.html",
+          "issues": [
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-07-22",
+          "title": "Finance Committee Meeting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-22-finance-committee-meeting.html",
+          "issues": [
+            "2026-07-21"
+          ]
+        }
+      ]
+    },
     "committee-reports": {
       "title": "Committee Chair Reports",
       "url": "https://palmhillnews.vercel.app/pages/archive/committee-reports.html",
@@ -351,6 +492,132 @@
         }
       ]
     },
+    "events": {
+      "title": "Special Events",
+      "url": "https://palmhillnews.vercel.app/pages/archive/events.html",
+      "email_link_label": "Past Events →",
+      "page_link_label": "Previous Events →",
+      "items": [
+        {
+          "date": "2026-11-21",
+          "title": "Travel Tag Distribution",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-21-travel-tag-distribution.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-11-14",
+          "title": "Pancake Breakfast",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-14-pancakes-breakfast.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-11-13",
+          "title": "PHLGA",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-13-phlga.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-11-07",
+          "title": "North Clubhouse Craft Fair",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-07-north-clubhouse-craft-fair.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-10-31",
+          "title": "Halloween Dance",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-31-halloween-dance.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-10-24",
+          "title": "Halloween Golf Cart Parade",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-24-halloween-golf-cart-parade.html",
+          "issues": [
+            "2026-09-27"
+          ]
+        },
+        {
+          "date": "2026-10-07",
+          "title": "Creative Writing",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-07-creative-writing.html",
+          "issues": [
+            "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-09-18",
+          "title": "Karaoke Obi-Time",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-18-karaoke-obi-time.html",
+          "issues": [
+            "2026-08-24",
+            "2026-08-30",
+            "2026-09-08",
+            "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Creative Writing",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-16-creative-writing.html",
+          "issues": [
+            "2026-08-30",
+            "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Ladies Luncheon",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-16-ladies-luncheon.html",
+          "issues": [
+            "2026-09-08",
+            "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-09-02",
+          "title": "Creative Writing",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-02-creative-writing.html",
+          "issues": [
+            "2026-08-30",
+            "2026-09-08"
+          ]
+        },
+        {
+          "date": "2026-08-26",
+          "title": "Scallop Shell Crafting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-26-scallop-shell-crafting.html",
+          "issues": [
+            "2026-08-24"
+          ]
+        },
+        {
+          "date": "2026-08-13",
+          "title": "Card Game (North Clubhouse)",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-13-card-game-n.html",
+          "issues": [
+            "2026-08-03"
+          ]
+        },
+        {
+          "date": "2026-08-13",
+          "title": "Quilt Club (South Clubhouse)",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-13-quilt-club-s.html",
+          "issues": [
+            "2026-08-03"
+          ]
+        }
+      ]
+    },
     "community-notices": {
       "title": "Community Notices",
       "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html",
@@ -464,6 +731,14 @@
             "2026-08-30",
             "2026-09-08",
             "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-09-07",
+          "title": "Holiday Weekend Schedule",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-07-holiday-weekend-schedule.html",
+          "issues": [
+            "2026-09-08"
           ]
         },
         {

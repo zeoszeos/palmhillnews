@@ -30,11 +30,25 @@
     "2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html"
   ],
   "sections": {
-    "community-stories": {"title": "Community Stories", "prev": "Previous Stories →", "past": "Past Stories →", "lead": "Stories about Palm Hill neighbors, newest first. Each story has a read-aloud version.", "items": [
+    "community-stories": {"title": "Community Stories", "prev": "Previous Stories →", "past": "Past Stories →", "lead": "Stories about Palm Hill neighbors, newest first. Each story has a read-aloud version.", "strip_listen": true, "items": [
       {"date": "2026-10-04", "title": "97½ and Still Chasing Birdies Instead of Birthdays", "byline": "Carolyn M. Story, as told by Mary Leslie", "page": "2026-10-04-mary-leslie-chasing-birdies.html", "listen": "2026-10-04-listen-mary-leslie-story.html", "issues": ["2026-10-04"]}
     ]},
     "presidents-message": {"title": "President's Message", "prev": "Previous President Messages →", "past": "Past Messages →", "strip_listen": true, "lead": "Messages from the Board President, newest first.", "items": [
       {"date": "2026-10-04", "title": "Status Update", "byline": "Henry Klain, Board President", "page": "2026-10-04-henry-klain-status-update.html", "listen": "2026-10-04-listen-henry-klain-message.html", "issues": ["2026-10-04"]}
+    ]},
+    "meetings": {"title": "Committee & Board Meetings", "prev": "Previous Meetings →", "past": "Past Meetings →", "lead": "Committee and Board meeting pages from past newsletters, newest meeting first. Zoom links are not listed here.", "items": [
+      {"date": "2026-07-22", "title": "Finance Committee Meeting", "page": "2026-07-22-finance-committee-meeting.html", "issues": ["2026-07-21"]},
+      {"date": "2026-08-10", "title": "Rules & Regulations Committee Meeting", "page": "2026-08-10-rules-and-regulations-committee-meeting.html", "issues": ["2026-08-11"]},
+      {"date": "2026-08-11", "title": "Golf Committee Meeting — Cancelled", "page": "2026-08-11-golf-committee-meeting-cancelled.html", "issues": ["2026-08-03", "2026-08-11"], "also": [{"page": "2026-08-11-golf-committee.html", "label": "First listing →"}]},
+      {"date": "2026-08-12", "title": "Buildings & Grounds Committee Meeting", "page": "2026-08-12-buildings-and-grounds-committee-meeting.html", "issues": ["2026-08-03", "2026-08-11"], "also": [{"page": "2026-08-12-building-grounds-committee.html", "label": "First listing →"}]},
+      {"date": "2026-08-12", "title": "Planning & Environmental Committee Meeting", "page": "2026-08-12-planning-and-environmental-meeting.html", "issues": ["2026-08-03", "2026-08-11"], "also": [{"page": "2026-08-12-planning-environmental-committee.html", "label": "First listing →"}]},
+      {"date": "2026-08-17", "title": "Communications Committee Meeting", "page": "2026-08-17-communications-committee-meeting.html", "issues": ["2026-08-03", "2026-08-11", "2026-08-17"], "also": [{"page": "2026-08-17-communications-committee.html", "label": "First listing →"}]},
+      {"date": "2026-08-19", "title": "Finance Committee Meeting", "page": "2026-08-19-finance-committee-meeting.html", "issues": ["2026-08-17"]},
+      {"date": "2026-08-27", "title": "Compliance Committee Meeting", "page": "2026-08-27-compliance-committee-meeting.html", "issues": ["2026-08-17"]},
+      {"date": "2026-09-09", "title": "Buildings & Grounds Committee Meeting", "page": "2026-09-09-buildings-and-grounds-committee-meeting.html", "issues": ["2026-09-08"]},
+      {"date": "2026-09-09", "title": "Planning & Environmental Committee Meeting", "page": "2026-09-09-planning-and-environmental-committee-meeting.html", "issues": ["2026-09-08"]},
+      {"date": "2026-10-12", "title": "Communications Committee Meeting", "page": "2026-10-12-communications-committee-meeting.html", "issues": [], "also": [{"page": "2026-10-12-communications-committee-notice.html", "label": "Original notice →"}], "strip_extra": ["2026-10-12-communications-committee-zoom.html"]},
+      {"date": "2026-10-13", "title": "Golf Committee Meeting", "page": "2026-10-13-golf-committee-meeting.html", "issues": [], "also": [{"page": "2026-10-13-golf-committee-notice.html", "label": "Original notice →"}], "strip_extra": ["2026-10-13-golf-committee-zoom.html"]}
     ]},
     "committee-reports": {"title": "Committee Chair Reports", "prev": "Previous Chair Reports →", "past": "Past Reports →", "strip_listen": true, "lead": "Every committee chair report the newsletter has carried, newest meeting first.", "items": [
       {"date": "2026-09-21", "title": "Communications Committee Report", "page": "2026-09-21-communications-committee-report.html", "listen": "2026-10-04-listen-communications-committee-report.html", "issues": ["2026-09-27", "2026-10-04"]},
@@ -57,6 +71,22 @@
       {"date": "2026-06-24", "id": "2026-06-24-shareholders-report", "title": "Shareholders Report", "text": "The June 24, 2026 Shareholders Report, linked in the first resident newsletter.", "external": "https://palmhillnews.vercel.app/shareholders-report/2026-06-24-Shareholders-Report.pdf", "external_label": "Open the report (PDF) →", "issues": ["2026-07-21"]},
       {"date": "2026-07-12", "id": "2026-07-12-monthly-report", "title": "Monthly Management Report — Week of July 12", "external": "https://palmhillnews.vercel.app/reports/undated-monthly-palm-hill-country-club-week-of-july-12-202.pdf", "external_label": "Open the report (PDF) →", "issues": ["2026-08-03"]}
     ]},
+    "events": {"title": "Special Events", "prev": "Previous Events →", "past": "Past Events →", "lead": "Special events from past newsletters, newest event date first. Always confirm times on the official Palm Hill calendar.", "items": [
+      {"date": "2026-08-13", "title": "Card Game (North Clubhouse)", "page": "2026-08-13-card-game-n.html", "issues": ["2026-08-03"]},
+      {"date": "2026-08-13", "title": "Quilt Club (South Clubhouse)", "page": "2026-08-13-quilt-club-s.html", "issues": ["2026-08-03"]},
+      {"date": "2026-08-26", "title": "Scallop Shell Crafting", "page": "2026-08-26-scallop-shell-crafting.html", "issues": ["2026-08-24"]},
+      {"date": "2026-09-02", "title": "Creative Writing", "page": "2026-09-02-creative-writing.html", "issues": ["2026-08-30", "2026-09-08"]},
+      {"date": "2026-09-16", "title": "Creative Writing", "page": "2026-09-16-creative-writing.html", "issues": ["2026-08-30", "2026-09-13"]},
+      {"date": "2026-09-16", "title": "Ladies Luncheon", "page": "2026-09-16-ladies-luncheon.html", "issues": ["2026-09-08", "2026-09-13"]},
+      {"date": "2026-09-18", "title": "Karaoke Obi-Time", "page": "2026-09-18-karaoke-obi-time.html", "issues": ["2026-08-24", "2026-08-30", "2026-09-08", "2026-09-13"]},
+      {"date": "2026-10-07", "title": "Creative Writing", "page": "2026-10-07-creative-writing.html", "issues": ["2026-09-13"]},
+      {"date": "2026-10-24", "title": "Halloween Golf Cart Parade", "page": "2026-10-24-halloween-golf-cart-parade.html", "issues": ["2026-09-27"]},
+      {"date": "2026-10-31", "title": "Halloween Dance", "page": "2026-10-31-halloween-dance.html", "issues": ["2026-09-27"]},
+      {"date": "2026-11-07", "title": "North Clubhouse Craft Fair", "page": "2026-11-07-north-clubhouse-craft-fair.html", "issues": ["2026-09-27"]},
+      {"date": "2026-11-13", "title": "PHLGA", "page": "2026-11-13-phlga.html", "issues": ["2026-09-27"]},
+      {"date": "2026-11-14", "title": "Pancake Breakfast", "page": "2026-11-14-pancakes-breakfast.html", "issues": ["2026-09-27"]},
+      {"date": "2026-11-21", "title": "Travel Tag Distribution", "page": "2026-11-21-travel-tag-distribution.html", "issues": ["2026-09-27"]}
+    ]},
     "community-notices": {"title": "Community Notices", "prev": "Previous Notices →", "past": "Past Notices →", "lead": "Neighborhood announcements from past newsletters, newest first. Notices that never had their own page are shown here in full.", "items": [
       {"date": "2026-10-04", "id": "2026-10-04-calendar-new-look", "title": "Palm Hill Calendar Has a New Look", "text": "The club says its new calendar now reflects the booking system. After signing in, residents can use Upcoming, Month, or Week views, search activities, and tap an item for its time, room, and contact details.", "source": "Communications Committee announcement, September 30", "issues": ["2026-10-04"]},
       {"date": "2026-10-04", "id": "2026-10-04-largo-library-outreach", "title": "Largo Library Outreach: Home Delivery", "text": "Residents who cannot get to the library may be eligible for delivery and pickup of library books. For details, call the Largo Public Library Outreach Liaison at 727-587-6715, extension 2560.", "source": "Palm Hill Webmaster notice, October 1", "issues": ["2026-10-04"]},
@@ -70,6 +100,7 @@
       {"date": "2026-09-08", "id": "2026-09-08-helping-hands-tv", "title": "Helping Hands: Temporary TV Assistance Needed", "text": "Temporary early-evening help is needed 4–5 times a week through October 18 to turn on a resident’s TV. (The rest of this notice, including the contact, was shortened in the newsletter and its detail page was never published.)", "source": "Newsletter of September 8", "issues": ["2026-08-30", "2026-09-08"]},
       {"date": "2026-09-08", "title": "Block Captain Needed — Thatch Way", "page": "2026-08-13-block-captain-is-needed.html", "issues": ["2026-08-17", "2026-08-24", "2026-08-30", "2026-09-08"]},
       {"date": "2026-09-08", "title": "Bingo Volunteers Needed", "page": "2026-08-10-bingo-volunteers-needed.html", "issues": ["2026-08-17", "2026-08-24", "2026-08-30", "2026-09-08", "2026-09-13"]},
+      {"date": "2026-09-07", "title": "Holiday Weekend Schedule", "page": "2026-09-07-holiday-weekend-schedule.html", "issues": ["2026-09-08"]},
       {"date": "2026-07-20", "title": "Message from Linda Keehl", "page": "2026-07-20-message-from-linda-keehl.html", "issues": ["2026-07-21", "2026-07-26"]},
       {"date": "2026-07-18", "title": "Jigsaw Puzzles", "page": "2026-07-18-jigsaw-puzzles.html", "issues": ["2026-07-21"]},
       {"date": "2026-07-16", "title": "Small Medical Cooler", "page": "2026-07-16-small-medical-cooler.html", "issues": ["2026-07-21"]},
@@ -86,7 +117,7 @@
       {"date": "2026-08-04", "title": "Palm Hill Community Notices — August 2026", "page": "2026-08-04-palm-hill-community-notices-august-2026.html", "issues": ["2026-08-17", "2026-08-30"]}
     ]},
     "did-you-know": {"title": "Did You Know?", "prev": "Previous Tips →", "past": "Past Tips →", "lead": "Helpful how-tos from past newsletters.", "items": [
-      {"date": "2026-10-04", "title": "How to Access Board and Committee Meeting Videos", "page": "2026-10-04-committee-video-guide.html", "text": "Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account.", "issues": ["2026-10-04"]},
+      {"date": "2026-10-04", "title": "How to Access Board and Committee Meeting Videos", "page": "2026-10-04-committee-video-guide.html", "text": "Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account.", "issues": ["2026-10-04"], "strip_as": "videos"},
       {"date": "2026-09-08", "id": "vantaca-service-request", "title": "How to submit a service request in VANTACA", "text": "If you notice potholes, broken gates, lights out, or irrigation issues, send the request directly through the VANTACA dashboard.", "external": "https://1drv.ms/v/c/e0092a6f69ebf15a/IQBzytqUf0OISZk_4alhRSJ4AcXuMlzU2-mfo5edSJeGYxw", "external_label": "Watch the three-minute tutorial video →", "issues": ["2026-07-21", "2026-07-26", "2026-08-03", "2026-08-11", "2026-08-17", "2026-08-24", "2026-08-30", "2026-09-08", "2026-09-13", "2026-09-21", "2026-09-27", "2026-10-04"]},
       {"date": "2026-09-08", "id": "zoom-how-to", "title": "How to view a meeting on Zoom", "text": "To watch a Palm Hill meeting from home, use the Zoom meeting link provided in the meeting notice.", "external": "https://1drv.ms/v/c/e0092a6f69ebf15a/IQCBOm7PC8QQSKHU9xcxrotVAbkE0riOGGlxxQPsUnSZZ4A", "external_label": "Watch the tutorial video →", "issues": ["2026-07-21", "2026-07-26", "2026-08-03", "2026-08-11", "2026-08-17", "2026-08-24", "2026-08-30", "2026-09-08", "2026-09-13", "2026-09-21", "2026-09-27", "2026-10-04"]}
     ]},

@@ -18,6 +18,9 @@
           <!-- ph-archive-nav:start --> / <!-- ph-archive-nav:end --> markers just before </body>;
           nothing else in those pages changes. Hidden pages stay live and are simply not listed.
           A section with "strip_listen": true also gets the strip on its items' listen pages.
+          Item options: "also": [{page,label}] extra pages listed on the row (e.g. Original notice) and given the
+          strip; "strip_extra": [page] pages that get the strip but are not listed (e.g. Zoom pages);
+          "strip_as": "<section>" gives the item's page that section's strip instead (video guide -> Previous Videos).
 */
 const fs = require('fs');
 const path = require('path');
@@ -37,7 +40,7 @@ Inputs:   archive/archive-items.json        curated issues, section items, hidde
           pages/*.html                      existing detail pages (must exist; never renamed)
           DIR/<issues[].nas minus 02-Issues/>  (--issues-from) sent newsletter HTML, NAS 02-Issues layout
                                             (<YYYY-MM>/<send date>/sent-final/<file>); fallback DIR/<date>/<basename>
-Outputs:  pages/archive/index.html, pages/archive/<section>.html (7), pages/archive/archive-index.json,
+Outputs:  pages/archive/index.html, pages/archive/<section>.html (9), pages/archive/archive-index.json,
           pages/archive/issues/<date>.html (only with --issues-from; written once),
           marked nav strip in each listed detail page
 Exit:     0 ok; 1 with --check if anything is out of date; non-zero on any missing page/source
@@ -46,7 +49,7 @@ See archive/RUNBOOK-archive.md.`);
 }
 const changed = [];
 
-const SECTION_ORDER = ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'community-notices', 'did-you-know', 'videos'];
+const SECTION_ORDER = ['community-stories', 'presidents-message', 'meetings', 'committee-reports', 'manager-reports', 'events', 'community-notices', 'did-you-know', 'videos'];
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -142,7 +145,11 @@ for (const [k, sec] of Object.entries(S)) for (const it of sec.items) {
   if (it.page && hidden.has(it.page)) throw new Error(`${k}: ${it.page} is in hidden[]`);
   if (it.page && !pageExists(it.page)) throw new Error(`${k}: missing page ${it.page}`);
   if (it.listen && !pageExists(it.listen)) throw new Error(`${k}: missing listen page ${it.listen}`);
+  for (const a of it.also || []) if (!pageExists(a.page)) throw new Error(`${k}: missing page ${a.page}`);
+  for (const p of it.strip_extra || []) if (!pageExists(p)) throw new Error(`${k}: missing page ${p}`);
+  if (it.strip_as && !S[it.strip_as]) throw new Error(`${k}: strip_as names unknown section ${it.strip_as}`);
 }
+for (const k of SECTION_ORDER) if (!S[k]) throw new Error(`archive-items.json has no section ${k}`);
 const sorted = (k) => [...S[k].items].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 const issueDates = ITEMS.issues.map((i) => i.date).sort().reverse();
 const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href="issues/${date}.html">${shortDate(date)}</a>` : shortDate(date);
@@ -160,7 +167,7 @@ function sectionPage(k) {
     const head = it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    const meta = [longDate(it.date), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
+    const meta = [longDate(it.date), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
     if (it.external) out += `<nav class="ph-links"><a href="${esc(it.external)}">${esc(it.external_label || 'Open →')}</a></nav>\n`;
@@ -308,7 +315,9 @@ for (const k of SECTION_ORDER) write(path.join(OUT, `${k}.html`), k === 'videos'
 write(path.join(OUT, 'index.html'), homePage());
 
 const stripped = new Map();
-for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stripped.has(it.page)) stripped.set(it.page, k);
+for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stripped.has(it.page)) stripped.set(it.page, it.strip_as || k);
+// "also" pages (e.g. Original notice) and "strip_extra" pages (e.g. Zoom) get their item's section strip.
+for (const k of SECTION_ORDER) for (const it of S[k].items) for (const p of [...(it.also || []).map((a) => a.page), ...(it.strip_extra || [])]) if (!stripped.has(p)) stripped.set(p, k);
 // Sections with "strip_listen": true also get the strip on each item's read-aloud (listen) page.
 for (const k of SECTION_ORDER) if (S[k].strip_listen) for (const it of S[k].items) if (it.listen && !stripped.has(it.listen)) stripped.set(it.listen, k);
 for (const [p, k] of stripped) addStrip(p, k);
@@ -336,7 +345,7 @@ const index = {
   issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, volume: i.volume, number: i.number, issue_number: volNo(i), label: issueLabel(i), sent: i.sent, file_dated: i.file_dated, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
   sections: Object.fromEntries(SECTION_ORDER.map((k) => [k, {
     title: S[k].title, url: archUrl(`${k}.html`), email_link_label: S[k].past, page_link_label: S[k].prev,
-    items: sorted(k).map((it) => ({ date: it.date, title: it.title || it.group, url: it.page ? pageUrl(it.page) : (it.url || (it.id ? `${archUrl(`${k}.html`)}#${it.id}` : null)), listen_url: it.listen ? pageUrl(it.listen) : undefined, issues: it.issues })),
+    items: sorted(k).map((it) => ({ date: it.date, title: it.title || it.group, url: it.page ? pageUrl(it.page) : (it.url || (it.id ? `${archUrl(`${k}.html`)}#${it.id}` : null)), listen_url: it.listen ? pageUrl(it.listen) : undefined, also: it.also ? it.also.map((a) => ({ label: a.label, url: pageUrl(a.page) })) : undefined, issues: it.issues })),
   }])),
   hidden: [...hidden].map(pageUrl),
 };
