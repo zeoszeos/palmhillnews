@@ -6,7 +6,9 @@
   node scripts/build_archive.js                      section pages, archive home, videos, archive-index.json,
                                                      and the "Previous … → · Newsletter Archive →" strip on detail pages
   node scripts/build_archive.js --issues-from DIR    also writes pages/archive/issues/<date>.html from the sent
-                                                     newsletter HTML in DIR/<date>/<file> (NAS 02-Issues layout).
+                                                     newsletter HTML at DIR/<issues[].nas minus "02-Issues/">
+                                                     (NAS layout <YYYY-MM>/<send date>/sent-final/<file>), falling back
+                                                     to DIR/<date>/<basename>.
                                                      Issue pages are written ONCE; existing ones are never overwritten
                                                      (Handbook 17) unless --force-issues is given.
   node scripts/build_archive.js --check              exits 1 if anything would change (CI use)
@@ -32,8 +34,8 @@ if (args.includes('--help') || args.includes('-h')) {
 
 Inputs:   archive/archive-items.json        curated issues, section items, hidden pages, video list
           pages/*.html                      existing detail pages (must exist; never renamed)
-          DIR/<date>/<file>                 (--issues-from) sent newsletter HTML, NAS 02-Issues layout;
-                                            <file> = basename of issues[].nas in archive-items.json
+          DIR/<issues[].nas minus 02-Issues/>  (--issues-from) sent newsletter HTML, NAS 02-Issues layout
+                                            (<YYYY-MM>/<send date>/sent-final/<file>); fallback DIR/<date>/<basename>
 Outputs:  pages/archive/index.html, pages/archive/<section>.html (7), pages/archive/archive-index.json,
           pages/archive/issues/<date>.html (only with --issues-from; written once),
           marked nav strip in each listed detail page
@@ -51,6 +53,10 @@ function d(iso) { const [y, m, dd] = iso.slice(0, 10).split('-').map(Number); re
 const longDate = (iso) => { const x = d(iso); return `${DAYS[x.getUTCDay()]}, ${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
 const midDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
 const shortDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()].slice(0, 3)} ${x.getUTCDate()}`; };
+const etParts = (iso) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).formatToParts(new Date(iso)).map((p) => [p.type, p.value]));
+const fileDated = (iso) => { const p = etParts(iso); return `${p.month} ${p.day}, ${p.year} ${p.hour}:${p.minute} ${p.dayPeriod}`; };
+const sentTimeET = (iso) => new Date(iso).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
+const issueLabel = (iss) => iss.label || `Week of ${midDate(iss.date)}`;
 const monthKey = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
 const pageUrl = (p) => `${BASE}/pages/${p}`;
 const archUrl = (p) => `${BASE}/pages/archive/${p}`;
@@ -171,7 +177,7 @@ function homePage() {
       const c = S[k].items.filter((x) => (x.issues || []).includes(iss.date)).length;
       if (c) parts.push(`${c} ${S[k].title.replace('?', '')}`);
     }
-    rows += `<div class="ph-row${n++ % 2 ? ' ph-alt' : ''}"><a class="ph-row-title" href="issues/${iss.date}.html">Week of ${midDate(iss.date)} →</a>\n<div class="ph-row-meta">Sent ${longDate(iss.date)} · ${esc(iss.format)}</div>\n<div class="ph-row-meta">${esc(parts.join(' · '))}</div></div>\n`;
+    rows += `<div class="ph-row${n++ % 2 ? ' ph-alt' : ''}"><a class="ph-row-title" href="issues/${iss.date}.html">${esc(issueLabel(iss))} →</a>\n<div class="ph-row-meta">Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''} · ${esc(iss.format)}</div>\n<div class="ph-row-meta">${esc(parts.join(' · '))}</div></div>\n`;
   }
   const body = `<h1 class="ph-section">Newsletter Archive</h1>
 <p class="ph-lead">Past issues of the Palm Hill weekly newsletter, plus a page for each regular section so you can catch up on anything you missed.</p>
@@ -180,7 +186,7 @@ function homePage() {
 ${tiles}
 </div>
 <h2 class="ph-subhead">Past Issues</h2>
-${rows}<p class="ph-source">The archive starts with the September 8, 2026 issue. Issues before October 4 were sent as a PDF from palmhillcountryclub.net; their archive pages are made from the saved newsletter copy.</p>
+${rows}<p class="ph-source">The archive starts with the first resident issue, sent July 21, 2026. Issues before October 4 were sent as a PDF from palmhillcountryclub.net; their archive pages are made from the exact HTML build of that PDF. Private meeting links, download links and unsubscribe links are removed.</p>
 `;
   return shell({ title: 'Newsletter Archive', issuedate: 'Newsletter Archive', body, canonical: archUrl('index.html') });
 }
@@ -199,6 +205,12 @@ function cleanIssue(raw, iss) {
   // personal unsubscribe link from the resident blast
   h = h.replace(/<hr>\s*<div>\s*If you no longer wish to receive these emails[\s\S]*?<\/div>/i, '');
   h = h.replace(/<a [^>]*unsubscribe[^>]*>[\s\S]*?<\/a>/gi, '');
+  // private links: Zoom meeting links/passcodes, monthly-media download tokens (anchor text kept, link removed)
+  h = h.replace(/\s*(?:&nbsp;|\s)*[·•|](?:&nbsp;|\s)*<a\b[^>]*href="[^"]*zoom\.us[^"]*"[^>]*>[\s\S]*?<\/a>/gi, '');
+  h = h.replace(/<a\b[^>]*href="[^"]*zoom\.us[^"]*"[^>]*>[\s\S]*?<\/a>/gi, '');
+  h = h.replace(/https?:\/\/[\w.-]*zoom\.us\/\S*/gi, '');
+  h = h.replace(/(?:Passcode|Meeting ID|Password)\s*:?\s*[\w\s-]{3,20}?(?=<|$)/gi, '');
+  h = h.replace(/<a\b[^>]*href="[^"]*newsletter_download\.php[^"]*"[^>]*>([\s\S]*?)<\/a>/gi, '<span>$1</span>');
   // review-only banners
   h = h.replace(/<(div|p)[^>]*>[^<]*LOCAL REVIEW[^<]*<\/\1>/gi, '');
   for (const name of iss.remove_sections || []) {
@@ -226,18 +238,19 @@ function cleanIssue(raw, iss) {
     }
     linkStats.kept++; return m;
   });
-  const head = `<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="robots" content="noindex">\n<title>Palm Hill Newsletter — Week of ${midDate(iss.date)} (archive copy)</title>\n<link rel="canonical" href="${archUrl(`issues/${iss.date}.html`)}">\n${ISSUE_CSS}`;
+  const head = `<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="robots" content="noindex">\n<title>Palm Hill Newsletter — ${esc(issueLabel(iss))} (archive copy)</title>\n<link rel="canonical" href="${archUrl(`issues/${iss.date}.html`)}">\n${ISSUE_CSS}`;
   if (/<head[^>]*>/i.test(h)) {
     h = h.replace(/<meta[^>]*name="viewport"[^>]*>/gi, '').replace(/<title>[\s\S]*?<\/title>/i, '');
     h = h.replace(/<head([^>]*)>/i, `<head$1>\n<meta charset="utf-8">\n${head}`);
   } else {
     h = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n${head}\n</head>\n<body>\n${h}\n</body>\n</html>\n`;
   }
-  const sentTime = new Date(iss.sent).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
-  const banner = `<div class="pha-banner" role="note"><b>Archive copy.</b> This issue was sent to Palm Hill residents on ${longDate(iss.date)} at ${sentTime} ET. Dates, times and links are as they were that week. <a href="${archUrl('index.html')}">Newsletter Archive →</a>${iss.caveat ? `<span class="pha-note">${esc(iss.caveat)}</span>` : ''}</div>`;
+  const banner = `<div class="pha-banner" role="note"><b>Archive copy · Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''}.</b> This is the version sent to Palm Hill residents; dates, times and links are as they were that week. <a href="${archUrl('index.html')}">Newsletter Archive →</a>${iss.caveat ? `<span class="pha-note">${esc(iss.caveat)}</span>` : ''}</div>`;
   const foot = `<nav class="pha-foot" aria-label="Newsletter archive"><a href="${archUrl('index.html')}">Newsletter Archive →</a> · <a href="${archUrl('community-notices.html')}">Previous Notices →</a> · <a href="${archUrl('committee-reports.html')}">Previous Chair Reports →</a></nav>`;
   h = h.replace(/<body([^>]*)>/i, `<body$1>\n<!-- Archive copy generated by scripts/build_archive.js from ${esc(iss.source)}. Written once; never overwritten. -->\n${banner}`);
   h = h.replace(/<\/body>(?![\s\S]*<\/body>)/i, `${foot}\n</body>`);
+  const leak = h.match(/zoom\.us|pwd=|newsletter_download\.php|unsubscribe\.php|LOCAL REVIEW/i);
+  if (leak) throw new Error(`${iss.date}: private content left after cleaning (${leak[0]})`);
   return { html: h, linkStats };
 }
 
@@ -278,7 +291,9 @@ if (issuesFrom) {
   for (const iss of ITEMS.issues) {
     const target = path.join(OUT, 'issues', `${iss.date}.html`);
     if (fs.existsSync(target) && !args.includes('--force-issues')) { report[iss.date] = 'exists (kept)'; continue; }
-    const src = path.join(issuesFrom, iss.date, path.basename(iss.nas));
+    const cands = [path.join(issuesFrom, iss.nas.replace(/^02-Issues\//, '')), path.join(issuesFrom, iss.date, path.basename(iss.nas))];
+    const src = cands.find((c) => fs.existsSync(c));
+    if (!src) throw new Error(`${iss.date}: source not found (tried ${cands.join(', ')})`);
     const { html, linkStats } = cleanIssue(fs.readFileSync(src, 'utf8'), iss);
     write(target, html);
     report[iss.date] = linkStats;
@@ -290,7 +305,7 @@ const index = {
   generated_by: 'scripts/build_archive.js',
   base_url: BASE,
   archive_home: archUrl('index.html'),
-  issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, sent: i.sent, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
+  issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, label: issueLabel(i), sent: i.sent, file_dated: i.file_dated, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
   sections: Object.fromEntries(SECTION_ORDER.map((k) => [k, {
     title: S[k].title, url: archUrl(`${k}.html`), email_link_label: S[k].past, page_link_label: S[k].prev,
     items: sorted(k).map((it) => ({ date: it.date, title: it.title || it.group, url: it.page ? pageUrl(it.page) : (it.url || (it.id ? `${archUrl(`${k}.html`)}#${it.id}` : null)), listen_url: it.listen ? pageUrl(it.listen) : undefined, issues: it.issues })),

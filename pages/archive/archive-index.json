@@ -6,33 +6,99 @@
   "issues": [
     {
       "date": "2026-10-04",
+      "label": "Week of October 4, 2026",
       "sent": "2026-10-04T14:24:00-04:00",
+      "file_dated": "2026-10-04T14:24:00-04:00",
       "format": "Email newsletter",
       "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-10-04.html"
     },
     {
       "date": "2026-09-27",
+      "label": "Week of September 27, 2026",
       "sent": "2026-09-27T10:38:00-04:00",
+      "file_dated": "2026-09-26T22:09:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
       "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-27.html"
     },
     {
       "date": "2026-09-21",
+      "label": "Week of September 21, 2026",
       "sent": "2026-09-21T17:59:00-04:00",
+      "file_dated": "2026-09-21T09:13:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
       "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-21.html"
     },
     {
       "date": "2026-09-13",
+      "label": "Week of September 13, 2026",
       "sent": "2026-09-13T10:12:00-04:00",
+      "file_dated": "2026-09-13T09:39:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
       "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-13.html"
     },
     {
       "date": "2026-09-08",
+      "label": "Week of September 6, 2026",
       "sent": "2026-09-08T16:41:00-04:00",
+      "file_dated": "2026-09-06T22:09:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
       "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-09-08.html"
+    },
+    {
+      "date": "2026-08-30",
+      "label": "Week of August 30, 2026",
+      "sent": "2026-08-30T12:24:00-04:00",
+      "file_dated": "2026-08-29T15:09:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-08-30.html"
+    },
+    {
+      "date": "2026-08-24",
+      "label": "Week of August 23, 2026",
+      "sent": "2026-08-24T11:24:00-04:00",
+      "file_dated": "2026-08-24T10:47:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-08-24.html"
+    },
+    {
+      "date": "2026-08-17",
+      "label": "Week of August 16, 2026",
+      "sent": "2026-08-17T12:21:00-04:00",
+      "file_dated": "2026-08-16T16:28:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-08-17.html"
+    },
+    {
+      "date": "2026-08-11",
+      "label": "Week of August 9, 2026",
+      "sent": "2026-08-11T11:45:00-04:00",
+      "file_dated": "2026-08-09T21:25:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-08-11.html"
+    },
+    {
+      "date": "2026-08-03",
+      "label": "Week of August 2, 2026",
+      "sent": "2026-08-03T17:48:00-04:00",
+      "file_dated": "2026-08-02T23:18:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-08-03.html"
+    },
+    {
+      "date": "2026-07-26",
+      "label": "Week of July 26, 2026",
+      "sent": "2026-07-26T23:33:00-04:00",
+      "file_dated": "2026-07-26T20:21:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-07-26.html"
+    },
+    {
+      "date": "2026-07-21",
+      "label": "Week of July 19, 2026",
+      "sent": "2026-07-21T16:59:00-04:00",
+      "file_dated": "2026-07-21T14:48:00-04:00",
+      "format": "PDF on palmhillcountryclub.net",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-07-21.html"
     }
   ],
   "sections": {
@@ -113,6 +179,7 @@
           "url": "https://palmhillnews.vercel.app/pages/2026-08-26-real-estate-committee-report.html",
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-real-estate-committee-report.html",
           "issues": [
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13",
             "2026-09-21",
@@ -125,6 +192,7 @@
           "title": "Golf Advisory Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-26-golf-advisory-committee-report.html",
           "issues": [
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13"
           ]
@@ -134,6 +202,7 @@
           "title": "Communications Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-17-communications-committee-report-aug-17.html",
           "issues": [
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13"
           ]
@@ -144,6 +213,7 @@
           "url": "https://palmhillnews.vercel.app/pages/2026-08-10-rules-and-regulations-committee-report.html",
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-rules-regulations-committee-report.html",
           "issues": [
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13",
             "2026-09-21",
@@ -155,7 +225,17 @@
           "date": "2026-07-29",
           "title": "Real Estate Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-07-29-real-estate-committee-report.html",
-          "issues": []
+          "issues": [
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-07-29",
+          "title": "July’s Board Report on Real Estate Sales",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-29-july-s-board-report-on-real-estate-sales.html",
+          "issues": [
+            "2026-08-03"
+          ]
         }
       ]
     },
@@ -178,6 +258,7 @@
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
           "issues": [
+            "2026-08-30",
             "2026-09-08"
           ]
         },
@@ -194,7 +275,11 @@
           "date": "2026-07-27",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-07-27-weekly-manager-update-2026-07-27.html",
-          "issues": []
+          "issues": [
+            "2026-08-03",
+            "2026-08-11",
+            "2026-08-17"
+          ]
         },
         {
           "date": "2026-07-22",
@@ -207,7 +292,25 @@
           "title": "Monthly Management and Maintenance Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
           "issues": [
+            "2026-08-11",
+            "2026-08-17",
             "2026-09-21"
+          ]
+        },
+        {
+          "date": "2026-07-12",
+          "title": "Monthly Management Report — Week of July 12",
+          "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html#2026-07-12-monthly-report",
+          "issues": [
+            "2026-08-03"
+          ]
+        },
+        {
+          "date": "2026-06-24",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html#2026-06-24-shareholders-report",
+          "issues": [
+            "2026-07-21"
           ]
         }
       ]
@@ -291,6 +394,7 @@
           "title": "RPM Offices Closed — Labor Day",
           "url": "https://palmhillnews.vercel.app/pages/2026-09-07-rpm-offices-closed-in-observance-of-labor-day.html",
           "issues": [
+            "2026-08-30",
             "2026-09-08"
           ]
         },
@@ -299,6 +403,7 @@
           "title": "Helping Hands: Temporary TV Assistance Needed",
           "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-09-08-helping-hands-tv",
           "issues": [
+            "2026-08-30",
             "2026-09-08"
           ]
         },
@@ -307,6 +412,9 @@
           "title": "Block Captain Needed — Thatch Way",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-13-block-captain-is-needed.html",
           "issues": [
+            "2026-08-17",
+            "2026-08-24",
+            "2026-08-30",
             "2026-09-08"
           ]
         },
@@ -315,8 +423,127 @@
           "title": "Bingo Volunteers Needed",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-10-bingo-volunteers-needed.html",
           "issues": [
+            "2026-08-17",
+            "2026-08-24",
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13"
+          ]
+        },
+        {
+          "date": "2026-08-17",
+          "title": "South Clubhouse Closed for Voting",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-17-south-clubhouse-closed-for-voting.html",
+          "issues": [
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-08-07",
+          "title": "Alert for Palm Hill Residents",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-07-alert-for-palm-hill-residents.html",
+          "issues": [
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-08-04",
+          "title": "Bring Your Clubhouse Fob",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-04-bring-your-clubhouse-fob.html",
+          "issues": [
+            "2026-08-11"
+          ]
+        },
+        {
+          "date": "2026-08-04",
+          "title": "Palm Hill Community Notices — August 2026",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-04-palm-hill-community-notices-august-2026.html",
+          "issues": [
+            "2026-08-17",
+            "2026-08-30"
+          ]
+        },
+        {
+          "date": "2026-08-03",
+          "title": "Spectrum Outage — August 3",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-03-spectrum-outage-aug-3.html",
+          "issues": [
+            "2026-08-11",
+            "2026-08-17"
+          ]
+        },
+        {
+          "date": "2026-07-31",
+          "title": "An Evening Dinner Cruise — You’re Invited",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-31-you-re-invited-an-evening-dinner-cruise-aboard-the.html",
+          "issues": [
+            "2026-07-26"
+          ]
+        },
+        {
+          "date": "2026-07-31",
+          "title": "To All Residents: Coaxial Cable Service Ending",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-31-to-all-residents.html",
+          "issues": [
+            "2026-07-26"
+          ]
+        },
+        {
+          "date": "2026-07-27",
+          "title": "Produce Available — South Clubhouse Lobby",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-27-produce-available-south-clubhouse-lobby-milk-on-mo.html",
+          "issues": [
+            "2026-07-26"
+          ]
+        },
+        {
+          "date": "2026-07-24",
+          "title": "Spectrum Fiber Connections",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-24-spectrum-fiber-connections.html",
+          "issues": [
+            "2026-08-03"
+          ]
+        },
+        {
+          "date": "2026-07-20",
+          "title": "Message from Linda Keehl",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-20-message-from-linda-keehl.html",
+          "issues": [
+            "2026-07-21",
+            "2026-07-26"
+          ]
+        },
+        {
+          "date": "2026-07-18",
+          "title": "Jigsaw Puzzles",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-18-jigsaw-puzzles.html",
+          "issues": [
+            "2026-07-21"
+          ]
+        },
+        {
+          "date": "2026-07-16",
+          "title": "Small Medical Cooler",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-16-small-medical-cooler.html",
+          "issues": [
+            "2026-07-21"
+          ]
+        },
+        {
+          "date": "2026-07-06",
+          "title": "Missing Item and Pickup of Things Left",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-06-missing-item-and-pickup-of-things-left.html",
+          "issues": [
+            "2026-07-21",
+            "2026-08-03"
+          ]
+        },
+        {
+          "date": "2026-06-28",
+          "title": "Block Captains Needed — Thatch Palm East & West",
+          "url": "https://palmhillnews.vercel.app/pages/2026-06-28-block-captains-for-thatch-palm-east-west-needed.html",
+          "issues": [
+            "2026-08-03"
           ]
         }
       ]
@@ -340,6 +567,13 @@
           "title": "How to submit a service request in VANTACA",
           "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#vantaca-service-request",
           "issues": [
+            "2026-07-21",
+            "2026-07-26",
+            "2026-08-03",
+            "2026-08-11",
+            "2026-08-17",
+            "2026-08-24",
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13",
             "2026-09-21",
@@ -352,6 +586,13 @@
           "title": "How to view a meeting on Zoom",
           "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#zoom-how-to",
           "issues": [
+            "2026-07-21",
+            "2026-07-26",
+            "2026-08-03",
+            "2026-08-11",
+            "2026-08-17",
+            "2026-08-24",
+            "2026-08-30",
             "2026-09-08",
             "2026-09-13",
             "2026-09-21",
