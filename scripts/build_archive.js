@@ -152,6 +152,7 @@ for (const [k, sec] of Object.entries(S)) for (const it of sec.items) {
   if (it.page && hidden.has(it.page)) throw new Error(`${k}: ${it.page} is in hidden[]`);
   if (it.page && !pageExists(it.page)) throw new Error(`${k}: missing page ${it.page}`);
   if (it.listen && !pageExists(it.listen)) throw new Error(`${k}: missing listen page ${it.listen}`);
+  if (it.pdf && !fs.existsSync(path.join(ROOT, 'public', it.pdf))) throw new Error(`${k}: missing PDF public/${it.pdf}`);
   for (const a of it.also || []) if (!pageExists(a.page)) throw new Error(`${k}: missing page ${a.page}`);
   for (const p of it.strip_extra || []) if (!pageExists(p)) throw new Error(`${k}: missing page ${p}`);
   if (it.strip_as && !S[it.strip_as]) throw new Error(`${k}: strip_as names unknown section ${it.strip_as}`);
@@ -204,11 +205,16 @@ function sectionPage(k) {
     const m = monthKey(it.date);
     if (m !== month) { out += `<h2 class="ph-subhead">${m}</h2>\n`; month = m; }
     const id = it.id ? ` id="${esc(it.id)}"` : '';
-    const head = it.page
+    // Rows with an original PDF (Monthly Shareholders Reports, Steven Oct 10): plain title, then the same two links as the
+    // newsletter's Monthly section: "Original PDF Report →" · "HTML Report →".
+    const head = it.pdf
+      ? `<span class="ph-row-title">${esc(it.title)}</span>`
+      : it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
     const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
+    if (it.pdf) out += `<nav class="ph-links"><a href="${BASE}/${it.pdf}">Original PDF Report →</a><span class="ph-dot"> · </span>${it.page ? `<a href="${pageUrl(it.page)}">HTML Report →</a>` : ''}</nav>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
     if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
     if (it.external) out += `<nav class="ph-links"><a href="${esc(it.external)}">${esc(it.external_label || 'Open →')}</a></nav>\n`;
@@ -665,7 +671,7 @@ const index = {
   issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, volume: i.volume, number: i.number, issue_number: volNo(i), label: issueLabel(i), sent: i.sent, file_dated: i.file_dated, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
   sections: Object.fromEntries(SECTION_ORDER.map((k) => [k, {
     title: S[k].title, url: archUrl(`${k}.html`), email_link_label: S[k].past, page_link_label: S[k].prev,
-    items: sorted(k).map((it) => ({ date: it.date, title: it.title || it.group, url: it.page ? pageUrl(it.page) : (it.url || (it.id ? `${archUrl(`${k}.html`)}#${it.id}` : null)), listen_url: it.listen ? pageUrl(it.listen) : undefined, also: it.also ? it.also.map((a) => ({ label: a.label, url: pageUrl(a.page) })) : undefined, issues: it.issues })),
+    items: sorted(k).map((it) => ({ date: it.date, title: it.title || it.group, url: it.page ? pageUrl(it.page) : (it.url || (it.id ? `${archUrl(`${k}.html`)}#${it.id}` : null)), listen_url: it.listen ? pageUrl(it.listen) : undefined, pdf_url: it.pdf ? `${BASE}/${it.pdf}` : undefined, also: it.also ? it.also.map((a) => ({ label: a.label, url: pageUrl(a.page) })) : undefined, issues: it.issues })),
   }])),
   hidden: [...hidden].map(pageUrl),
 };
