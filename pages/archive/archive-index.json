@@ -693,14 +693,6 @@
           "issues": [
             "2026-08-11"
           ]
-        },
-        {
-          "date": "2026-07-29",
-          "title": "Jul’s Board Report on Real Estate Sales",
-          "url": "https://palmhillnews.vercel.app/pages/2026-07-29-july-s-board-report-on-real-estate-sales.html",
-          "issues": [
-            "2026-08-03"
-          ]
         }
       ]
     },
@@ -1262,6 +1254,7 @@
     }
   },
   "hidden": [
+    "https://palmhillnews.vercel.app/pages/2026-07-29-july-s-board-report-on-real-estate-sales.html",
     "https://palmhillnews.vercel.app/pages/2026-09-08-golf-advisory-committee.html",
     "https://palmhillnews.vercel.app/pages/2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
     "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
