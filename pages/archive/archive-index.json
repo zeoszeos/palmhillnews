@@ -3,6 +3,7 @@
   "generated_by": "scripts/build_archive.js",
   "base_url": "https://palmhillnews.vercel.app",
   "archive_home": "https://palmhillnews.vercel.app/pages/archive/index.html",
+  "archive_main": "https://palmhillnews.vercel.app/pages/archive/main.html",
   "issues": [
     {
       "date": "2026-10-04",

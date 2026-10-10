@@ -50,7 +50,7 @@ Inputs:   archive/archive-items.json        curated issues, section items, hidde
           pages/*.html                      existing detail pages (must exist; never renamed)
           DIR/<issues[].nas minus 02-Issues/>  (--issues-from) sent newsletter HTML, NAS 02-Issues layout
                                             (<YYYY-MM>/<send date>/sent-final/<file>); fallback DIR/<date>/<basename>
-Outputs:  pages/archive/index.html, pages/archive/<section>.html (9), pages/archive/archive-index.json,
+Outputs:  pages/archive/index.html (PHNL issues only), pages/archive/main.html (Main Archive Page), pages/archive/<section>.html (9), pages/archive/archive-index.json,
           pages/archive/issues/<date>.html (only with --issues-from; written once),
           marked nav strip in each listed detail page
 Exit:     0 ok; 1 with --check if anything is out of date; non-zero on any missing page/source
@@ -159,7 +159,11 @@ for (const k of SECTION_ORDER) if (!S[k]) throw new Error(`archive-items.json ha
 const sorted = (k) => [...S[k].items].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 const issueDates = ITEMS.issues.map((i) => i.date).sort().reverse();
 const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href="issues/${date}.html">${shortDate(date)}</a>` : shortDate(date);
-const crumbs = (title) => `<p class="ph-crumbs"><a href="index.html">Newsletter Archives</a> › ${esc(title)}</p>`;
+// Steven, Oct 9: pages/archive/index.html is the PHNL issues page ONLY. pages/archive/main.html is the Main Archive
+// Page (every archive, issues included). Section pages and detail strips go up to the Main Archive Page.
+const HUB = 'main.html';
+const HUB_LABEL = 'All Archives →';
+const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">Palm Hill Archives</a> › ${esc(title)}</p>`;
 
 // ---------- shared archive nav bar (top of page only) ----------
 // Fully inline styles so each page's own nav/a rules cannot restyle it. Large, dark, high-contrast for older eyes.
@@ -210,7 +214,7 @@ function sectionPage(k) {
     n++;
   }
   const hasPrev = sec.feature_latest && sorted(k).length > 1;
-  const topNav = navBar([hasPrev ? ['#previous', `${sec.prev.replace(/\s*→$/, '')} ↓`] : null, ['index.html', 'Newsletter Archive →']].filter(Boolean));
+  const topNav = navBar([hasPrev ? ['#previous', `${sec.prev.replace(/\s*→$/, '')} ↓`] : null, [HUB, HUB_LABEL]].filter(Boolean));
   return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl(`${k}.html`), topNav });
 }
 
@@ -227,36 +231,188 @@ function videosPage() {
   });
   out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">All recordings on the Palm Hill website (sign-in required) →</a></nav>\n`;
   out += `<p class="ph-source">Source: ${esc(sec.snapshot)}. Recordings open in Google Drive.</p>\n`;
-  const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], ['index.html', 'Newsletter Archive →']]);
+  const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], [HUB, HUB_LABEL]]);
   return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
-function homePage() {
-  const tiles = SECTION_ORDER.map((k) => {
+// ---------- PHNL issues page + Main Archive Page (Steven, Oct 9) ----------
+// No masthead, no main-PHNL footer: a quiet green title band, then the content. Three-letter months (L21).
+const PA_CSS = `<style id="ph-archive-pride">
+.pa-page{max-width:660px;margin:0 auto;background:#fff;color:#2b2b2b;font:17px/1.55 Arial,Helvetica,sans-serif}
+.pa-hero{background:#2d5016;color:#fff;text-align:center;padding:26px 18px 22px;border-bottom:4px solid #b9913c}
+.pa-hero svg{display:block;margin:0 auto 14px;width:140px;height:auto}
+.pa-kicker{margin:0 0 4px;color:#e5d39c;font:bold 13px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.pa-hero h1{margin:0;font:700 clamp(28px,7vw,38px)/1.15 Georgia,'Times New Roman',serif;color:#fff;letter-spacing:.01em}
+.pa-sub{margin:8px auto 0;max-width:30em;color:#e9f1df;font:italic 17px/1.45 Georgia,'Times New Roman',serif}
+.pa-bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 14px;padding:10px 18px;background:#f3f8ee;border-bottom:1px solid #d8dfce;color:#4a5a44;font:15px/1.5 Arial,Helvetica,sans-serif}
+.pa-bar a,.pa-quiet a{color:#3a6b1a;text-decoration:underline;text-underline-offset:3px}
+.pa-main{padding:18px 18px 8px}
+.pa-label{margin:0 0 6px;color:#8b6914;font:bold 13px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.pa-latest{border:1px solid #d8dfce;border-top:4px solid #2d5016;border-radius:6px;padding:16px 18px;margin:0 0 22px;background:#fbfdf8}
+.pa-latest h2{margin:2px 0 4px;font:700 26px/1.2 Georgia,'Times New Roman',serif}
+.pa-latest h2 a{color:#1d4310;text-decoration:none}
+.pa-volno{margin:0;color:#2d5016;font:bold 16px/1.4 Arial,Helvetica,sans-serif}
+.pa-meta{margin:2px 0 0;color:#555;font:15px/1.5 Arial,Helvetica,sans-serif}
+.pa-in{margin:8px 0 0;color:#555;font:15px/1.5 Arial,Helvetica,sans-serif}
+.pa-read{display:inline-block;margin-top:12px;padding:10px 18px;border-radius:4px;background:#2d5016;color:#fff!important;font:bold 17px/1.3 Arial,Helvetica,sans-serif;text-decoration:none}
+.pa-month{margin:20px 0 6px;padding:0 0 4px;border-bottom:2px solid #2d5016;color:#2d5016;font:700 19px/1.3 Georgia,'Times New Roman',serif}
+.pa-issue{display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid #e3e8dc;color:inherit;text-decoration:none}
+.pa-issue:hover,.pa-issue:focus-visible{background:#f3f8ee}
+.pa-no{flex:0 0 58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #2d5016;border-radius:50%;color:#2d5016;background:#fff;font:700 22px/1 Georgia,'Times New Roman',serif}
+.pa-no small{display:block;margin-bottom:2px;font:bold 10px/1 Arial,Helvetica,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8b6914}
+.pa-what{flex:1;min-width:0}
+.pa-what b{display:block;color:#1d4310;font:700 19px/1.3 Georgia,'Times New Roman',serif}
+.pa-what span{display:block;color:#555;font:15px/1.45 Arial,Helvetica,sans-serif}
+.pa-go{flex:0 0 auto;color:#3a6b1a;font:bold 20px/1 Arial,Helvetica,sans-serif}
+.pa-note{margin:22px 0 8px;color:#666;font:14px/1.5 Arial,Helvetica,sans-serif}
+.pa-quiet{margin:6px 0 22px;text-align:center;color:#666;font:15px/1.5 Arial,Helvetica,sans-serif}
+.pa-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 20px}
+@media (min-width:520px){.pa-grid{grid-template-columns:1fr 1fr}}
+.pa-tile{display:block;padding:12px 14px;border:1px solid #d8dfce;border-radius:6px;background:#fff;color:inherit;text-decoration:none}
+a.pa-tile:hover,a.pa-tile:focus-visible{background:#f3f8ee}
+.pa-tile b{display:block;color:#1d4310;font:700 18px/1.3 Georgia,'Times New Roman',serif}
+.pa-tile span{display:block;color:#555;font:14px/1.45 Arial,Helvetica,sans-serif}
+.pa-tile .pa-tlinks{margin-top:4px;font:bold 15px/1.5 Arial,Helvetica,sans-serif}
+.pa-tile .pa-tlinks a{color:#3a6b1a}
+.pa-feature{display:flex;align-items:center;gap:16px;margin:0 0 22px;padding:16px 18px;border:1px solid #d8dfce;border-top:4px solid #2d5016;border-radius:6px;background:#fbfdf8;color:inherit;text-decoration:none}
+.pa-feature:hover,.pa-feature:focus-visible{background:#f3f8ee}
+.pa-feature svg{flex:0 0 64px;width:64px;height:auto}
+.pa-feature b{display:block;color:#1d4310;font:700 23px/1.2 Georgia,'Times New Roman',serif}
+.pa-feature span{display:block;color:#555;font:15px/1.45 Arial,Helvetica,sans-serif}
+@media (max-width:420px){.pa-main{padding:14px 14px 6px}.pa-no{flex-basis:50px;height:50px;font-size:19px}.pa-what b{font-size:18px}}
+</style>`;
+
+// Elegant line-art folded newspaper (gold rule work on the green band; not a cartoon).
+function newspaperIcon({ stroke = '#f3dfa2', fill = 'none', paper = 'rgba(255,255,255,0.06)', w = 140, label = '' } = {}) {
+  return `<svg viewBox="0 0 120 96" width="${w}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'} xmlns="http://www.w3.org/2000/svg">
+<g fill="${fill}" stroke="${stroke}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M22 10h80a4 4 0 0 1 4 4v66a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8V30h12" fill="${paper}"/>
+<path d="M22 10v70a8 8 0 0 1-8 8"/>
+<path d="M10 30v50a4 4 0 0 0 8 0"/>
+<path d="M32 22h64" stroke-width="3.4"/>
+<path d="M32 29h64" stroke-width="1.2"/>
+<rect x="32" y="37" width="28" height="22" rx="1.5" stroke-width="1.8"/>
+<path d="M36 55l7-8 6 5 4-4 5 7" stroke-width="1.6"/>
+<path d="M66 39h30M66 45h30M66 51h30M66 57h22M32 66h64M32 72h64M32 78h44" stroke-width="1.6"/>
+</g></svg>`;
+}
+
+function prideShell({ title, canonical, hero, body }) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>${esc(title)} — Palm Hill Country Club</title>
+<link rel="canonical" href="${canonical}">
+<link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
+${PA_CSS}
+</head>
+<body>
+<!-- Generated by scripts/build_archive.js from archive/archive-items.json. Edit the data, not this file. -->
+<div class="pa-page">
+${hero}
+${body}
+</div>
+</body>
+</html>
+`;
+}
+
+const shortWeekday = (iso) => DAYS[d(iso).getUTCDay()];
+const editionOf = (iss) => (/pdf/i.test(iss.format || '') ? 'PDF edition' : 'Email edition');
+// Section nouns for an issue's "In this issue" line (singular, plural).
+const NOUNS = {
+  'community-stories': ['Community Story', 'Community Stories'], 'presidents-message': ["President's Message", "President's Messages"],
+  meetings: ['Meeting', 'Meetings'], 'committee-reports': ['Chair Report', 'Chair Reports'], 'manager-reports': ['Manager Report', 'Manager Reports'],
+  events: ['Special Event', 'Special Events'], 'community-notices': ['Notice', 'Notices'], 'did-you-know': ['Did You Know?', 'Did You Know?'], videos: ['Video', 'Videos'],
+};
+function issueContents(iss) {
+  const parts = [];
+  for (const k of SECTION_ORDER) {
+    const c = S[k].items.filter((x) => (x.issues || []).includes(iss.date)).length;
+    if (c) parts.push(`${c} ${NOUNS[k][c === 1 ? 0 : 1]}`);
+  }
+  return parts.join(' · ');
+}
+const issuesDesc = () => [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date));
+
+// pages/archive/index.html — PHNL issues ONLY. Nothing else is listed here; one quiet link up to the Main Archive Page.
+function issuesPage() {
+  const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
+  const hero = `<header class="pa-hero">
+${newspaperIcon({ label: 'The Palm Hill Newsletter' })}
+<p class="pa-kicker">Palm Hill Country Club</p>
+<h1>The Palm Hill Newsletter</h1>
+<p class="pa-sub">Every issue we have published for our community, as it was sent.</p>
+</header>
+<nav class="pa-bar" aria-label="Archive"><span>${all.length} issues · ${shortDate(first.date)} – ${midDate(latest.date)}</span><a href="${HUB}">${esc(HUB_LABEL)}</a></nav>`;
+  let body = `<main class="pa-main">
+<section class="pa-latest" aria-label="Latest issue">
+<p class="pa-label">Latest Issue</p>
+<p class="pa-volno">${volNo(latest)}</p>
+<h2><a href="issues/${latest.date}.html">${esc(issueLabel(latest))}</a></h2>
+<p class="pa-meta">Sent ${longDate(latest.date)} · ${editionOf(latest)}</p>
+${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(latest))}</p>\n` : ''}<a class="pa-read" href="issues/${latest.date}.html">Read this issue →</a>
+</section>
+`;
+  let month = null;
+  for (const iss of all.slice(1)) {
+    const m = monthKey(iss.date);
+    if (m !== month) { body += `<h2 class="pa-month">${m}</h2>\n`; month = m; }
+    const what = issueContents(iss);
+    body += `<a class="pa-issue" href="issues/${iss.date}.html" aria-label="${esc(`${volNo(iss)}, ${issueLabel(iss)}`)}"><span class="pa-no"><small>No.</small>${iss.number}</span><span class="pa-what"><b>${esc(issueLabel(iss))}</b><span>Vol. ${iss.volume} · Sent ${shortWeekday(iss.date)}, ${shortDate(iss.date)} · ${editionOf(iss)}</span>${what ? `<span>${esc(what)}</span>` : ''}</span><span class="pa-go" aria-hidden="true">→</span></a>\n`;
+  }
+  body += `<p class="pa-note">Volume 1 began ${midDate(first.date)} with our first issue for residents. Each archive copy is the issue as it was sent that week; private meeting links, download links and unsubscribe links are removed. Early issues went out as a PDF from palmhillcountryclub.net.</p>
+<p class="pa-quiet">Looking for stories, reports or notices? <a href="${HUB}">${esc(HUB_LABEL)}</a></p>
+</main>`;
+  return prideShell({ title: 'The Palm Hill Newsletter — Every Issue', canonical: archUrl('index.html'), hero, body });
+}
+
+// pages/archive/main.html — Main Archive Page: every archive we keep, the Newsletter issues first.
+const HUB_GROUPS = [
+  ['From the Newsletter', ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'community-notices', 'did-you-know']],
+  ['Meetings, Events & Activities', ['meetings', 'events', 'recurring', 'videos']],
+];
+function mainPage() {
+  const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
+  const R = ITEMS.recurring;
+  if (!R || !pageExists(R.by_date) || !pageExists(R.by_name)) throw new Error('archive-items.json recurring.by_date / by_name must name existing pages');
+  const tile = (k) => {
+    if (k === 'recurring') {
+      return `<div class="pa-tile"><b>Recurring Activities</b><span>${esc(R.note)}</span><div class="pa-tlinks"><a href="${pageUrl(R.by_date)}">By Date →</a> · <a href="${pageUrl(R.by_name)}">By Name →</a></div></div>`;
+    }
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
     const noun = k === 'videos' ? 'recording' : 'item';
-    return `<a class="ph-tile" href="${k}.html"><b>${esc(S[k].hub_label || S[k].title)} →</b><span>${esc(S[k].title)} · ${items.length} ${noun}${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
-  }).join('\n');
-  let rows = ''; let n = 0;
-  for (const iss of [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date))) {
-    const parts = [];
-    for (const k of SECTION_ORDER) {
-      const c = S[k].items.filter((x) => (x.issues || []).includes(iss.date)).length;
-      if (c) parts.push(`${c} ${S[k].title.replace('?', '')}`);
-    }
-    rows += `<div class="ph-row${n++ % 2 ? ' ph-alt' : ''}"><a class="ph-row-title" href="issues/${iss.date}.html">${esc(issueLabel(iss))} →</a>\n<div class="ph-row-meta"><b>${volNo(iss)}</b> · Sent ${longDate(iss.date)} at ${sentTimeET(iss.sent)} ET${iss.file_dated ? ` · file dated ${fileDated(iss.file_dated)}` : ''} · ${esc(iss.format)}</div>\n<div class="ph-row-meta">${esc(parts.join(' · '))}</div></div>\n`;
-  }
-  const body = `<h1 class="ph-section">Palm Hill Newsletter Archives</h1>
-<p class="ph-lead">Everything the Palm Hill weekly newsletter has carried, in one place: an archive for each section, and every back issue as it was sent.</p>
-<h2 class="ph-subhead" id="sections">Section Archives</h2>
-<div class="ph-grid">
-${tiles}
-</div>
-<h2 class="ph-subhead" id="issues">Newsletter Back Issues</h2>
-${rows}<p class="ph-source">The archive starts with the first resident issue, sent Jul 21, 2026. Issues before Oct 4 were sent as a PDF from palmhillcountryclub.net; their archive pages are made from the exact HTML build of that PDF. Private meeting links, download links and unsubscribe links are removed.</p>
+    return `<a class="pa-tile" href="${k}.html"><b>${esc(S[k].title)} →</b><span>${items.length} ${noun}${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
+  };
+  const hero = `<header class="pa-hero">
+<p class="pa-kicker">Palm Hill Country Club</p>
+<h1>Palm Hill Archives</h1>
+<p class="pa-sub">Everything our newsletter has carried, kept in one place.</p>
+</header>`;
+  let body = `<main class="pa-main">
+<a class="pa-feature" href="index.html">${newspaperIcon({ stroke: '#2d5016', paper: '#ffffff', w: 64 })}<span><b>The Palm Hill Newsletter →</b><span>Every issue · ${volNo(first).replace(/, No\. \d+$/, '')}, No. ${first.number}–${latest.number} · ${shortDate(first.date)} – ${midDate(latest.date)}</span></span></a>
 `;
-  const topNav = navBar([['#sections', 'Section Archives ↓'], ['#issues', 'Back Issues ↓']]);
-  return shell({ title: 'Palm Hill Newsletter Archives', issuedate: 'Newsletter Archives', body, canonical: archUrl('index.html'), topNav });
+  for (const [label, keys] of HUB_GROUPS) {
+    body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
+  }
+  body += `</main>`;
+  return prideShell({ title: 'Palm Hill Archives', canonical: archUrl(HUB), hero, body });
+}
+// Fail closed: the issues page lists PHNL issues only (plus the one link up to the Main Archive Page), carries no
+// masthead, and every month is three letters (L21).
+const FULL_MONTH = /\b(January|February|March|April|June|July|August|September|October|November|December)\b/;
+function checkPride(name, html, issuesOnly) {
+  if (/ph-masthead|ph-wordmark/.test(html)) throw new Error(`${name}: masthead must not appear`);
+  const vis = html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
+  const fm = vis.match(FULL_MONTH); if (fm) throw new Error(`${name}: full month name "${fm[0]}" (L21: three letters)`);
+  if (issuesOnly) {
+    const bad = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]).filter((h) => !/^issues\/\d{4}-\d{2}-\d{2}\.html$/.test(h) && h !== HUB);
+    if (bad.length) throw new Error(`${name}: issues-only page links to non-issue pages: ${bad.join(', ')}`);
+  }
+  return html;
 }
 
 // ---------- issue pages (immutable) ----------
@@ -334,7 +490,7 @@ function stripFor(k, page, headerText = '') {
   const it = DATED.has(k) ? pageItem.get(page) : null;
   const dateline = it && it.date && !headerText.includes(midDate(it.date)) ? `\n<p class="ph-dateline" style="display:block;margin:0;padding:10px 14px 0;box-sizing:border-box;background:none;border:0;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none">${fullDate(it)}</p>` : '';
   if (sec.story_nav && it) return `<!-- ph-archive-nav:start -->\n${storyNav(k, page, it, !headerText.includes(midDate(it.date)))}\n<!-- ph-archive-nav:end -->`;
-  return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}${dateline}\n<!-- ph-archive-nav:end -->`;
+  return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl(HUB), HUB_LABEL]])}${dateline}\n<!-- ph-archive-nav:end -->`;
 }
 // "story_nav" sections (Community Stories), Steven Oct 9: under the header, the full date with Listen (or, on the
 // listen page, Read the Story) right-aligned on the same row; below it ONE line: Story Archives → · Newsletter Archive →
@@ -347,7 +503,7 @@ function storyNav(k, page, it, showDate) {
   const row1 = `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${showDate ? fullDate(it) : ''}</span>${side ? `<a href="${side[0]}" style="${A};margin-left:auto">${esc(side[1])}</a>` : ''}</div>`;
   // Short labels (Story Archives) stay on one line even on phones; longer ones (President Message Archives) stack
   // one per line at <=480px with the dot hidden, so nothing runs off the screen.
-  const long = (sec.prev.length + 'Newsletter Archive →'.length) > 36;
+  const long = (sec.prev.length + HUB_LABEL.length) > 36;
   const L = `${A};font-size:min(17px,4.3vw)`;
   const css = long ? '<style>@media (max-width:480px){.ph-story-links-long .ph-sep{display:none!important}.ph-story-links-long a{display:block!important;width:max-content}}</style>' : '';
   // "story_nav_back" (Community Stories, Steven Oct 9 — archive-structure pattern): no Story Archives · Newsletter
@@ -357,7 +513,7 @@ function storyNav(k, page, it, showDate) {
     const back = `<div class="ph-story-back" style="margin:6px 0 0"><a href="${archUrl(`${k}.html`)}" onclick="if(document.referrer&&history.length>1){history.back();return false}" style="${A}">← Back</a></div>`;
     return `<div class="ph-story-nav" role="navigation" aria-label="Story date and back" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none">${row1}${back}</div>`;
   }
-  const row2 = `${css}<div class="${long ? 'ph-story-links-long' : 'ph-story-links'}" style="margin:6px 0 0;white-space:nowrap;overflow-wrap:normal;color:#1a1a1a;font:bold min(17px,4.3vw)/1.5 ${F}"><a href="${archUrl(`${k}.html`)}" style="${L}">${esc(sec.prev)}</a><span class="ph-sep" aria-hidden="true" style="padding:0 6px"> · </span><a href="${archUrl('index.html')}" style="${L}">Newsletter Archive →</a></div>`;
+  const row2 = `${css}<div class="${long ? 'ph-story-links-long' : 'ph-story-links'}" style="margin:6px 0 0;white-space:nowrap;overflow-wrap:normal;color:#1a1a1a;font:bold min(17px,4.3vw)/1.5 ${F}"><a href="${archUrl(`${k}.html`)}" style="${L}">${esc(sec.prev)}</a><span class="ph-sep" aria-hidden="true" style="padding:0 6px"> · </span><a href="${archUrl(HUB)}" style="${L}">${esc(HUB_LABEL)}</a></div>`;
   return `<div class="ph-story-nav" role="navigation" aria-label="Story date and newsletter archive" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none">${row1}${row2}</div>`;
 }
 function addStrip(page, k) {
@@ -394,7 +550,8 @@ function writeHub(file, html) {
   write(file, html);
 }
 for (const k of SECTION_ORDER) writeHub(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
-writeHub(path.join(OUT, 'index.html'), homePage());
+writeHub(path.join(OUT, 'index.html'), checkPride('index.html', issuesPage(), true));
+writeHub(path.join(OUT, HUB), checkPride(HUB, mainPage(), false));
 
 const stripped = new Map();
 for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stripped.has(it.page)) stripped.set(it.page, it.strip_as || k);
@@ -424,6 +581,7 @@ const index = {
   generated_by: 'scripts/build_archive.js',
   base_url: BASE,
   archive_home: archUrl('index.html'),
+  archive_main: archUrl(HUB),
   issues: [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date)).map((i) => ({ date: i.date, volume: i.volume, number: i.number, issue_number: volNo(i), label: issueLabel(i), sent: i.sent, file_dated: i.file_dated, format: i.format, url: archUrl(`issues/${i.date}.html`) })),
   sections: Object.fromEntries(SECTION_ORDER.map((k) => [k, {
     title: S[k].title, url: archUrl(`${k}.html`), email_link_label: S[k].past, page_link_label: S[k].prev,

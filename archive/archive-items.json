@@ -29,6 +29,12 @@
     "2026-06-30-golf-advisory-committee-meeting-summary.html",
     "2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html"
   ],
+  "recurring": {
+    "_about": "Main Archive Page tile. Point at the newest SENT issue's recurring pages each week.",
+    "by_date": "2026-10-04-recurring-activities-by-date.html",
+    "by_name": "2026-10-04-recurring-activities-by-name.html",
+    "note": "Regular clubs, classes and get-togethers from the latest issue"
+  },
   "sections": {
     "community-stories": {"title": "Community Stories", "hub_label": "Story Archives", "prev": "Story Archives →", "past": "Past Stories →", "lead": "Stories about Palm Hill neighbors and park life. The current story comes first, then earlier stories, newest first. Each story has a read-aloud version.", "strip_listen": true, "plain_rows": true, "story_nav": true, "story_nav_back": true, "feature_latest": true, "feature_label": "Current Story", "feature_read": "Read the story →", "feature_rest": "Story Archives", "items": [
       {"date": "2026-10-04", "title": "97½ and Still Chasing Birdies Instead of Birthdays", "byline": "Carolyn M. Story, as told by Mary Leslie", "summary": "Mary Leslie, 97½, on nearly four decades at Palm Hill, eleven holes-in-one here, and why she counts fairways, not years.", "page": "2026-10-04-mary-leslie-chasing-birdies.html", "listen": "2026-10-04-listen-mary-leslie-story.html", "source": "Palm Hill Link, Oct 2026 (pages 9–10)", "issues": ["2026-10-04"]},
