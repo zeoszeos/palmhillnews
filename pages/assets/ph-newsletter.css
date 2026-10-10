@@ -163,6 +163,67 @@ img { border: 0; max-width: 100%; height: auto; }
   color: #2d5016;
 }
 
+/* Recurring pages: By Date / By Name title sits just above the list, a few points larger (Steven, Oct 10). */
+/* Steven, Oct 10 (~12:55 AM): By Date / By Name title = white text on a dark-green band like the section title bar,
+   for separation from the list (L23e). */
+.ph-view-title {
+  margin: 14px 0 4px;
+  padding: 7px 12px;
+  border-radius: 3px;
+  background: #2d5016;
+  color: #ffffff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.25;
+}
+
+/* Recurring pages (Steven, Oct 10 ~12:55 AM): window line inside the green title bar as an italic subtitle,
+   same pattern as Events - This Week ("Oct 11 through Oct 17") in the newsletter (L23e). */
+.ph-section-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: normal;
+  color: #ffffff;
+}
+
+/* Recurring pages (Steven, Oct 10): issue date under the green section title (masthead removed),
+   and location right-justified on the title line like Meetings / Events Upcoming. */
+/* Steven, Oct 10 (~1:20 AM, L23g): that line is now plain small print — "Vol. 1, No. N" LEFT (issue these pages
+   were published in), issue date RIGHT. Replaces the centred bold green 15px date. */
+.ph-section-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 4px 2px 2px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.4;
+  color: #555555;
+}
+.ph-section-volno { text-align: left; }
+.ph-section-issuedate { text-align: right; white-space: nowrap; }
+
+.ph-row-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ph-row-line .ph-row-title { min-width: 0; }
+
+.ph-row-loc {
+  flex: 0 1 auto;
+  font-size: 14px;
+  color: #666666;
+  text-align: right;
+}
+
 .ph-lead {
   margin: 8px 0;
   font-size: 15px;
@@ -303,3 +364,6 @@ img { border: 0; max-width: 100%; height: auto; }
 .ph-feature-title { margin: 0 0 2px; font: bold 20px/1.3 Georgia, serif; color: #2d5016; }
 .ph-feature-title a { color: #2d5016; text-decoration: underline; }
 .ph-feature .ph-links { margin: 6px 0 2px; }
+
+/* Steven, Oct 10 (~1:27 AM, L23i): Recurring pages — "Times and rooms are subject to change..." line centred. */
+.ph-lead-center { text-align: center; }
