@@ -365,30 +365,25 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
     body += `<a class="pa-issue" href="issues/${iss.date}.html" aria-label="${esc(`${volNo(iss)}, ${issueLabel(iss)}`)}"><span class="pa-no"><small>No.</small>${iss.number}</span><span class="pa-what"><b>${esc(issueLabel(iss))}</b><span>Vol. ${iss.volume} · Sent ${shortWeekday(iss.date)}, ${shortDate(iss.date)} · ${editionOf(iss)}</span>${what ? `<span>${esc(what)}</span>` : ''}</span><span class="pa-go" aria-hidden="true">→</span></a>\n`;
   }
   body += `<p class="pa-note">Volume 1 began ${midDate(first.date)} with our first issue for residents. Each archive copy is the issue as it was sent that week; private meeting links, download links and unsubscribe links are removed. Early issues went out as a PDF from palmhillcountryclub.net.</p>
-<p class="pa-quiet">Looking for stories, reports or notices? <a href="${HUB}">${esc(HUB_LABEL)}</a></p>
+<p class="pa-quiet">Looking for stories or reports? <a href="${HUB}">${esc(HUB_LABEL)}</a></p>
 </main>`;
   return prideShell({ title: 'The Palm Hill Newsletter — Every Issue', canonical: archUrl('index.html'), hero, body });
 }
 
-// pages/archive/main.html — Main Archive Page: every archive we keep, the Newsletter issues first.
-// Steven, Oct 9: no Community Notices or Did You Know? tiles on the Main Archive Page. Their section pages stay
-// (detail pages still link "Previous Notices →" etc.); they are just not listed here.
-const HUB_EXCLUDE = ['community-notices', 'did-you-know'];
+// pages/archive/main.html — Main Archive Page: newsletter archives ONLY, the Newsletter issues first.
+// Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
+// (Committee & Board Meetings, Special Events, Recurring Activities, Meeting Videos). Those section pages stay
+// (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
+const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports'];
+const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_KEEP.includes(k));
 const HUB_GROUPS = [
-  ['From the Newsletter', ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports']],
-  ['Meetings, Events & Activities', ['meetings', 'events', 'recurring', 'videos']],
+  ['From the Newsletter', HUB_KEEP],
 ];
 function mainPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
-  const R = ITEMS.recurring;
-  if (!R || !pageExists(R.by_date) || !pageExists(R.by_name)) throw new Error('archive-items.json recurring.by_date / by_name must name existing pages');
   const tile = (k) => {
-    if (k === 'recurring') {
-      return `<div class="pa-tile"><b>Recurring Activities</b><span>${esc(R.note)}</span><div class="pa-tlinks"><a href="${pageUrl(R.by_date)}">By Date →</a> · <a href="${pageUrl(R.by_name)}">By Name →</a></div></div>`;
-    }
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
-    const noun = k === 'videos' ? 'recording' : 'item';
-    return `<a class="pa-tile" href="${k}.html"><b>${esc(S[k].title)} →</b><span>${items.length} ${noun}${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
+    return `<a class="pa-tile" href="${k}.html"><b>${esc(S[k].title)} →</b><span>${items.length} item${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
   };
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
@@ -414,6 +409,11 @@ function checkPride(name, html, issuesOnly) {
   if (name === HUB) {
     const hit = HUB_EXCLUDE.filter((k) => html.includes(`href="${k}.html"`) || html.includes(esc(S[k].title)));
     if (hit.length) throw new Error(`${name}: Main Archive Page must not list ${hit.join(', ')}`);
+    const links = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]);
+    const allowed = ['index.html', ...HUB_KEEP.map((k) => `${k}.html`)];
+    const extra = links.filter((h) => !allowed.includes(h));
+    if (extra.length) throw new Error(`${name}: Main Archive Page is newsletter archives only; unexpected links: ${extra.join(', ')}`);
+    if (/Meetings, Events|Recurring Activities|Meeting Videos|Special Events/.test(html)) throw new Error(`${name}: Meetings, Events & Activities must not appear`);
   }
   if (issuesOnly) {
     const bad = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]).filter((h) => !/^issues\/\d{4}-\d{2}-\d{2}\.html$/.test(h) && h !== HUB);
