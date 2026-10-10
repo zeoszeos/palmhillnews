@@ -50,7 +50,7 @@ Inputs:   archive/archive-items.json        curated issues, section items, hidde
           pages/*.html                      existing detail pages (must exist; never renamed)
           DIR/<issues[].nas minus 02-Issues/>  (--issues-from) sent newsletter HTML, NAS 02-Issues layout
                                             (<YYYY-MM>/<send date>/sent-final/<file>); fallback DIR/<date>/<basename>
-Outputs:  pages/archive/index.html (PHNL issues only), pages/archive/main.html (Main Archive Page), pages/archive/<section>.html (9), pages/archive/archive-index.json,
+Outputs:  pages/archive/index.html (PHNL issues only), pages/archive/main.html (Main Archive Page), pages/archive/<section>.html (10), pages/archive/archive-index.json,
           pages/archive/issues/<date>.html (only with --issues-from; written once),
           marked nav strip in each listed detail page
 Exit:     0 ok; 1 with --check if anything is out of date; non-zero on any missing page/source
@@ -59,7 +59,7 @@ See archive/RUNBOOK-archive.md.`);
 }
 const changed = [];
 
-const SECTION_ORDER = ['community-stories', 'presidents-message', 'meetings', 'committee-reports', 'manager-reports', 'events', 'community-notices', 'did-you-know', 'videos'];
+const SECTION_ORDER = ['community-stories', 'presidents-message', 'meetings', 'committee-reports', 'manager-reports', 'weekly-manager-updates', 'events', 'community-notices', 'did-you-know', 'videos'];
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // L21 code policy (Steven, Oct 9, 2026): every user-visible month is three letters (Jan … Dec), phones especially.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -156,6 +156,9 @@ for (const [k, sec] of Object.entries(S)) for (const it of sec.items) {
   if (it.strip_as && !S[it.strip_as]) throw new Error(`${k}: strip_as names unknown section ${it.strip_as}`);
 }
 for (const k of SECTION_ORDER) if (!S[k]) throw new Error(`archive-items.json has no section ${k}`);
+if (S['manager-reports'].title !== 'Monthly Shareholders Reports') throw new Error('manager-reports must be titled Monthly Shareholders Reports (Steven, Oct 9)');
+for (const it of S['manager-reports'].items) if (/weekly/i.test(it.title || '')) throw new Error(`manager-reports (monthly) lists a weekly item: ${it.title}`);
+for (const it of S['weekly-manager-updates'].items) if (!/weekly/i.test(it.title || '')) throw new Error(`weekly-manager-updates lists a non-weekly item: ${it.title}`);
 const sorted = (k) => [...S[k].items].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 const issueDates = ITEMS.issues.map((i) => i.date).sort().reverse();
 const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href="issues/${date}.html">${shortDate(date)}</a>` : shortDate(date);
@@ -325,7 +328,8 @@ const editionOf = (iss) => (/pdf/i.test(iss.format || '') ? 'PDF edition' : 'Ema
 // Section nouns for an issue's "In this issue" line (singular, plural).
 const NOUNS = {
   'community-stories': ['Community Story', 'Community Stories'], 'presidents-message': ["President's Message", "President's Messages"],
-  meetings: ['Meeting', 'Meetings'], 'committee-reports': ['Chair Report', 'Chair Reports'], 'manager-reports': ['Manager Report', 'Manager Reports'],
+  meetings: ['Meeting', 'Meetings'], 'committee-reports': ['Chair Report', 'Chair Reports'], 'manager-reports': ['Shareholders Report', 'Shareholders Reports'],
+  'weekly-manager-updates': ['Weekly Manager Update', 'Weekly Manager Updates'],
   events: ['Special Event', 'Special Events'], 'community-notices': ['Notice', 'Notices'], 'did-you-know': ['Did You Know?', 'Did You Know?'], videos: ['Video', 'Videos'],
 };
 function issueContents(iss) {
@@ -374,7 +378,10 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
 // (Committee & Board Meetings, Special Events, Recurring Activities, Meeting Videos). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
-const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports'];
+// Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
+// (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
+// section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
+const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'weekly-manager-updates'];
 const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_KEEP.includes(k));
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
@@ -488,7 +495,7 @@ function cleanIssue(raw, iss) {
 // ---------- detail-page strip ----------
 // Story and report sections: each item page (and its listen page) also gets a full-date line under the bar,
 // and loses its bottom <footer> (Steven, Oct 9: no footer on archive/story/report pages).
-const DATED = new Set(['community-stories', 'presidents-message', 'committee-reports', 'manager-reports']);
+const DATED = new Set(['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'weekly-manager-updates']);
 const pageItem = new Map();
 for (const k of DATED) for (const it of S[k].items) for (const pg of [it.page, it.listen]) if (pg && !pageItem.has(pg)) pageItem.set(pg, it);
 // No dateline when the page's own <header> already shows that full date (e.g. chair-report pages).
