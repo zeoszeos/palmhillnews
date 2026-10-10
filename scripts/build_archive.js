@@ -595,6 +595,39 @@ for (const k of SECTION_ORDER) for (const it of S[k].items) for (const p of [...
 for (const k of SECTION_ORDER) if (S[k].strip_listen) for (const it of S[k].items) if (it.listen && !stripped.has(it.listen)) stripped.set(it.listen, k);
 for (const [p, k] of stripped) addStrip(p, k);
 
+// ---------- Listen pages: start reading on arrival (Steven, Oct 11) ----------
+// Every read-aloud page (pages/*listen*.html with the speechSynthesis player) gets ONE shared autoplay trigger
+// between "// ph-listen-autoplay:start" / "// ph-listen-autoplay:end" inside its player script:
+//   - reading starts as soon as the page has loaded, no ?autoplay=1 needed (?autoplay=0 opts out);
+//   - if the browser's autoplay policy refuses (iPhone/iPad Safari, or Chrome opened cold from the email),
+//     nothing pops up: the controls stay ready and the status line says "Tap Read … Aloud to begin."
+// Legacy pages (opt-in ?autoplay=1 block) are upgraded in place; fail closed if a player has neither.
+const LISTEN_AUTOPLAY = `  // ph-listen-autoplay:start (scripts/build_archive.js; Steven Oct 11: Listen link starts reading right away)
+  // Start reading on arrival; ?autoplay=0 opts out. If the browser blocks it (iPhone/Safari, or no tap yet on
+  // this site), the controls stay ready and the status line simply says "Tap ... to begin". No error popups.
+  if (new URLSearchParams(location.search).get('autoplay') !== '0') {
+    const autoStart = () => { if (state === 'idle') beginReading(true); };
+    if (document.readyState === 'complete') window.setTimeout(autoStart, 0);
+    else window.addEventListener('load', autoStart, {once: true});
+  }
+  // ph-listen-autoplay:end
+`;
+const LEGACY_AUTOPLAY = "  if (new URLSearchParams(location.search).get('autoplay') === '1') {\n    window.addEventListener('load', () => beginReading(true), {once: true});\n  }\n";
+const ERR_OLD = 'status.textContent = `Reading could not start. Tap ${startLabel} to try again, or read the text below.`;';
+const ERR_NEW = "status.textContent = event.error === 'not-allowed' ? `Tap ${startLabel} to begin.` : `Reading could not start. Tap ${startLabel} to try again, or read the text below.`;";
+for (const f of fs.readdirSync(PAGES).filter((n) => /listen.*\.html$/.test(n)).sort()) {
+  const file = path.join(PAGES, f);
+  const src = fs.readFileSync(file, 'utf8');
+  if (!src.includes('speechSynthesis')) continue;
+  let next = src.replace(/  \/\/ ph-listen-autoplay:start[\s\S]*?\/\/ ph-listen-autoplay:end\n/, () => LISTEN_AUTOPLAY);
+  if (next === src && !src.includes('// ph-listen-autoplay:start')) {
+    if (!src.includes(LEGACY_AUTOPLAY)) throw new Error(`pages/${f}: read-aloud player has no autoplay trigger to upgrade`);
+    next = src.replace(LEGACY_AUTOPLAY, () => LISTEN_AUTOPLAY);
+  }
+  next = next.replace(ERR_OLD, () => ERR_NEW);
+  write(file, next);
+}
+
 const issuesFrom = argVal('--issues-from');
 const report = {};
 if (issuesFrom) {
