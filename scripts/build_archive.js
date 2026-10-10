@@ -504,7 +504,17 @@ function stripFor(k, page, headerText = '') {
   const it = DATED.has(k) ? pageItem.get(page) : null;
   const dateline = it && it.date && !headerText.includes(midDate(it.date)) ? `\n<p class="ph-dateline" style="display:block;margin:0;padding:10px 14px 0;box-sizing:border-box;background:none;border:0;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none">${fullDate(it)}</p>` : '';
   if (sec.story_nav && it) return `<!-- ph-archive-nav:start -->\n${storyNav(k, page, it, !headerText.includes(midDate(it.date)))}\n<!-- ph-archive-nav:end -->`;
+  if (sec.dateline_listen && it && it.date && page === it.page) return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl(HUB), HUB_LABEL]])}\n${listenDateline(it)}\n<!-- ph-archive-nav:end -->`;
   return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl(HUB), HUB_LABEL]])}${dateline}\n<!-- ph-archive-nav:end -->`;
+}
+// "dateline_listen" sections (Committee Chair Reports), Steven Oct 10: the full date LEFT-justified and the
+// newsletter's green/gold speaker icon + "Listen" RIGHT-justified on the same row (links to the item's listen page).
+// No listen page -> date alone, still left-justified. Row is the width of the content card.
+const LISTEN_ICON = 'https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png';
+function listenDateline(it) {
+  const F = 'Arial,Helvetica,sans-serif';
+  const link = it.listen ? `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>` : '';
+  return `<div class="ph-dateline" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;width:min(780px,100%);margin:0 auto;padding:10px 18px 0;box-sizing:border-box;background:none;border:0;text-align:left;letter-spacing:0;text-transform:none"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${fullDate(it)}</span>${link}</div>`;
 }
 // "story_nav" sections (Community Stories), Steven Oct 9: under the header, the full date with Listen (or, on the
 // listen page, Read the Story) right-aligned on the same row; below it ONE line: Story Archives → · Newsletter Archive →
