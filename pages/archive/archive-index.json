@@ -711,29 +711,33 @@
       "page_link_label": "Previous Shareholders Reports →",
       "items": [
         {
-          "date": "2026-07-15",
-          "title": "Monthly Management and Maintenance Report",
-          "url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
-          "issues": [
-            "2026-08-11",
-            "2026-08-17",
-            "2026-09-21"
-          ]
+          "date": "2026-09-30",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-30-shareholders-report.html",
+          "issues": []
         },
         {
-          "date": "2026-07-12",
-          "title": "Monthly Management Report — Week of Jul 12",
-          "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html#2026-07-12-monthly-report",
-          "issues": [
-            "2026-08-03"
-          ]
+          "date": "2026-08-26",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-26-shareholders-report.html",
+          "issues": []
+        },
+        {
+          "date": "2026-07-29",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-29-shareholders-report.html",
+          "issues": []
         },
         {
           "date": "2026-06-24",
           "title": "Shareholders Report",
-          "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html#2026-06-24-shareholders-report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
           "issues": [
-            "2026-07-21"
+            "2026-07-21",
+            "2026-08-03",
+            "2026-08-11",
+            "2026-08-17",
+            "2026-09-21"
           ]
         }
       ]
@@ -745,6 +749,12 @@
       "page_link_label": "Previous Weekly Updates →",
       "items": [
         {
+          "date": "2026-10-09",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-09-weekly-manager-update.html",
+          "issues": []
+        },
+        {
           "date": "2026-09-18",
           "title": "Weekly Manager Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-09-18-weekly-manager-report.html",
@@ -753,25 +763,24 @@
           ]
         },
         {
-          "date": "2026-08-24",
-          "title": "Weekly Manager Update",
-          "url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
-          "issues": [
-            "2026-08-30",
-            "2026-09-08"
-          ]
-        },
-        {
           "date": "2026-08-21",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-21-weekly-manager-update-2026-08-21.html",
           "issues": [
+            "2026-08-30",
+            "2026-09-08",
             "2026-09-13",
             "2026-09-21"
           ]
         },
         {
-          "date": "2026-07-27",
+          "date": "2026-07-31",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-31-weekly-manager-update.html",
+          "issues": []
+        },
+        {
+          "date": "2026-07-22",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-07-27-weekly-manager-update-2026-07-27.html",
           "issues": [
@@ -779,12 +788,6 @@
             "2026-08-11",
             "2026-08-17"
           ]
-        },
-        {
-          "date": "2026-07-22",
-          "title": "Weekly Shareholders Report",
-          "url": "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
-          "issues": []
         }
       ]
     },
@@ -1263,6 +1266,8 @@
     "https://palmhillnews.vercel.app/pages/2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
     "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
     "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary.html",
-    "https://palmhillnews.vercel.app/pages/2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html"
+    "https://palmhillnews.vercel.app/pages/2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html",
+    "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
+    "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html"
   ]
 }

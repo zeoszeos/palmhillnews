@@ -27,7 +27,9 @@
     "2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
     "2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
     "2026-06-30-golf-advisory-committee-meeting-summary.html",
-    "2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html"
+    "2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html",
+    "undated-weekly-weekly-update-2026-7-22.html",
+    "2026-08-24-weekly-manager-update-2026-08-24.html"
   ],
   "sections": {
     "community-stories": {"title": "Community Stories", "hub_label": "Story Archives", "prev": "Story Archives →", "past": "Past Stories →", "lead": "Stories about Palm Hill neighbors and park life. The current story comes first, then earlier stories, newest first. Each story has a read-aloud version.", "strip_listen": true, "plain_rows": true, "story_nav": true, "story_nav_back": true, "feature_latest": true, "feature_label": "Current Story", "feature_read": "Read the story →", "feature_rest": "Story Archives", "items": [
@@ -102,17 +104,18 @@
       {"date": "2026-07-29", "title": "Real Estate Committee Report", "page": "2026-07-29-real-estate-committee-report.html", "issues": ["2026-08-11"]},
       {"date": "2026-07-29", "title": "Jul’s Board Report on Real Estate Sales", "page": "2026-07-29-july-s-board-report-on-real-estate-sales.html", "issues": ["2026-08-03"]}
     ]},
-    "manager-reports": {"title": "Monthly Shareholders Reports", "hub_label": "Shareholders Report Archives", "prev": "Previous Shareholders Reports →", "past": "Past Reports →", "lead": "Megan Leftwich's monthly report to shareholders, prepared for each Board meeting, newest first. Her weekly office updates are under Weekly Manager Updates.", "items": [
-      {"date": "2026-07-15", "title": "Monthly Management and Maintenance Report", "page": "2026-07-15-monthly-management-and-maintenance-report-2026-07-.html", "issues": ["2026-08-11", "2026-08-17", "2026-09-21"]},
-      {"date": "2026-06-24", "id": "2026-06-24-shareholders-report", "title": "Shareholders Report", "text": "The Jun 24, 2026 Shareholders Report, linked in the first resident newsletter.", "external": "https://palmhillnews.vercel.app/shareholders-report/2026-06-24-Shareholders-Report.pdf", "external_label": "Open the report (PDF) →", "issues": ["2026-07-21"]},
-      {"date": "2026-07-12", "id": "2026-07-12-monthly-report", "title": "Monthly Management Report — Week of Jul 12", "external": "https://palmhillnews.vercel.app/reports/undated-monthly-palm-hill-country-club-week-of-july-12-202.pdf", "external_label": "Open the report (PDF) →", "issues": ["2026-08-03"]}
+    "manager-reports": {"title": "Monthly Shareholders Reports", "hub_label": "Shareholders Report Archives", "prev": "Previous Shareholders Reports →", "past": "Past Reports →", "lead": "Megan Leftwich's monthly report to shareholders, prepared for each Board meeting, newest first. Her weekly office updates are under Weekly Manager Updates.", "story_nav": true, "story_nav_back": true, "items": [
+      {"date": "2026-09-30", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-09-30-shareholders-report.html", "issues": []},
+      {"date": "2026-08-26", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-08-26-shareholders-report.html", "issues": []},
+      {"date": "2026-07-29", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-29-shareholders-report.html", "issues": []},
+      {"date": "2026-06-24", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-15-monthly-management-and-maintenance-report-2026-07-.html", "issues": ["2026-07-21", "2026-08-03", "2026-08-11", "2026-08-17", "2026-09-21"]}
     ]},
-    "weekly-manager-updates": {"title": "Weekly Manager Updates", "hub_label": "Weekly Update Archives", "prev": "Previous Weekly Updates →", "past": "Past Updates →", "lead": "Megan Leftwich's weekly updates from the Palm Hill office, newest first. Her monthly report to shareholders is under Monthly Shareholders Reports.", "items": [
+    "weekly-manager-updates": {"title": "Weekly Manager Updates", "hub_label": "Weekly Update Archives", "prev": "Previous Weekly Updates →", "past": "Past Updates →", "lead": "Megan Leftwich's weekly updates from the Palm Hill office, newest first. Her monthly report to shareholders is under Monthly Shareholders Reports.", "story_nav": true, "story_nav_back": true, "items": [
+      {"date": "2026-10-09", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-10-09-weekly-manager-update.html", "issues": []},
       {"date": "2026-09-18", "title": "Weekly Manager Report", "byline": "Megan Leftwich", "page": "2026-09-18-weekly-manager-report.html", "issues": ["2026-09-27"]},
-      {"date": "2026-08-24", "title": "Weekly Manager Update", "page": "2026-08-24-weekly-manager-update-2026-08-24.html", "issues": ["2026-08-30", "2026-09-08"]},
-      {"date": "2026-08-21", "title": "Weekly Manager Update", "page": "2026-08-21-weekly-manager-update-2026-08-21.html", "issues": ["2026-09-13", "2026-09-21"]},
-      {"date": "2026-07-27", "title": "Weekly Manager Update", "page": "2026-07-27-weekly-manager-update-2026-07-27.html", "issues": ["2026-08-03", "2026-08-11", "2026-08-17"]},
-      {"date": "2026-07-22", "title": "Weekly Shareholders Report", "page": "undated-weekly-weekly-update-2026-7-22.html", "issues": []}
+      {"date": "2026-08-21", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-08-21-weekly-manager-update-2026-08-21.html", "issues": ["2026-08-30", "2026-09-08", "2026-09-13", "2026-09-21"]},
+      {"date": "2026-07-31", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-07-31-weekly-manager-update.html", "issues": []},
+      {"date": "2026-07-22", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-07-27-weekly-manager-update-2026-07-27.html", "issues": ["2026-08-03", "2026-08-11", "2026-08-17"]}
     ]},
     "events": {"title": "Special Events", "hub_label": "Event Archives", "prev": "Previous Events →", "past": "Past Events →", "lead": "Special events from past newsletters, newest event date first. Always confirm times on the official Palm Hill calendar.", "items": [
       {"date": "2026-08-13", "title": "Card Game (North Clubhouse)", "page": "2026-08-13-card-game-n.html", "issues": ["2026-08-03"]},
