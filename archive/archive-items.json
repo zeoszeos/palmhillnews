@@ -105,10 +105,10 @@
       {"date": "2026-07-29", "title": "Real Estate Committee Report", "page": "2026-07-29-real-estate-committee-report.html", "issues": ["2026-08-11"]}
     ]},
     "manager-reports": {"title": "Monthly Shareholders Reports", "hub_label": "Shareholders Report Archives", "prev": "Previous Shareholders Reports →", "past": "Past Reports →", "lead": "Megan Leftwich's monthly report to shareholders, prepared for each Board meeting, newest first. Her weekly office updates are under Weekly Manager Updates.", "story_nav": true, "story_nav_back": true, "items": [
-      {"date": "2026-09-30", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-09-30-shareholders-report.html", "issues": []},
-      {"date": "2026-08-26", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-08-26-shareholders-report.html", "issues": []},
-      {"date": "2026-07-29", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-29-shareholders-report.html", "issues": []},
-      {"date": "2026-06-24", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-15-monthly-management-and-maintenance-report-2026-07-.html", "issues": ["2026-07-21", "2026-08-03", "2026-08-11", "2026-08-17", "2026-09-21"]}
+      {"date": "2026-09-30", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-09-30-shareholders-report.html", "pdf": "shareholders-report/2026-09-30-Shareholders-Report.pdf", "issues": []},
+      {"date": "2026-08-26", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-08-26-shareholders-report.html", "pdf": "shareholders-report/2026-08-26-Shareholders-Report.pdf", "issues": []},
+      {"date": "2026-07-29", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-29-shareholders-report.html", "pdf": "shareholders-report/2026-07-29-Shareholders-Report.pdf", "issues": []},
+      {"date": "2026-06-24", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-15-monthly-management-and-maintenance-report-2026-07-.html", "pdf": "shareholders-report/2026-06-24-Shareholders-Report.pdf", "issues": ["2026-07-21", "2026-08-03", "2026-08-11", "2026-08-17", "2026-09-21"]}
     ]},
     "weekly-manager-updates": {"title": "Weekly Manager Updates", "hub_label": "Weekly Update Archives", "prev": "Previous Weekly Updates →", "past": "Past Updates →", "lead": "Megan Leftwich's weekly updates from the Palm Hill office, newest first. Her monthly report to shareholders is under Monthly Shareholders Reports.", "story_nav": true, "story_nav_back": true, "items": [
       {"date": "2026-10-09", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-10-09-weekly-manager-update.html", "issues": []},
