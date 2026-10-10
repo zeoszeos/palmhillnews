@@ -177,6 +177,15 @@
       "page_link_label": "President Message Archives →",
       "items": [
         {
+          "date": "2026-10-10",
+          "title": "President's Message — October 2026",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-10-henry-klain-presidents-message-october.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-10-listen-henry-klain-presidents-message-october.html",
+          "issues": [
+            "2026-10-11"
+          ]
+        },
+        {
           "date": "2026-10-04",
           "title": "Status Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-04-henry-klain-status-update.html",
