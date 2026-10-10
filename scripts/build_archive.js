@@ -61,12 +61,13 @@ const changed = [];
 
 const SECTION_ORDER = ['community-stories', 'presidents-message', 'meetings', 'committee-reports', 'manager-reports', 'events', 'community-notices', 'did-you-know', 'videos'];
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+// L21 code policy (Steven, Oct 9, 2026): every user-visible month is three letters (Jan … Dec), phones especially.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 function d(iso) { const [y, m, dd] = iso.slice(0, 10).split('-').map(Number); return new Date(Date.UTC(y, m - 1, dd)); }
 const longDate = (iso) => { const x = d(iso); return `${DAYS[x.getUTCDay()]}, ${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
 const midDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
-// Every listed item shows a full date. Link items (date_label, month-only issues) show "Month D, YYYY" from their
+// Every listed item shows a full date. Link items (date_label, month-only issues) show "Mon D, YYYY" from their
 // date field (1st of the issue month unless a real day is known) without a weekday.
 const fullDate = (it) => (it.date_label ? midDate(it.date) : longDate(it.date));
 const shortDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()].slice(0, 3)} ${x.getUTCDate()}`; };
@@ -252,7 +253,7 @@ function homePage() {
 ${tiles}
 </div>
 <h2 class="ph-subhead" id="issues">Newsletter Back Issues</h2>
-${rows}<p class="ph-source">The archive starts with the first resident issue, sent July 21, 2026. Issues before October 4 were sent as a PDF from palmhillcountryclub.net; their archive pages are made from the exact HTML build of that PDF. Private meeting links, download links and unsubscribe links are removed.</p>
+${rows}<p class="ph-source">The archive starts with the first resident issue, sent Jul 21, 2026. Issues before Oct 4 were sent as a PDF from palmhillcountryclub.net; their archive pages are made from the exact HTML build of that PDF. Private meeting links, download links and unsubscribe links are removed.</p>
 `;
   const topNav = navBar([['#sections', 'Section Archives ↓'], ['#issues', 'Back Issues ↓']]);
   return shell({ title: 'Palm Hill Newsletter Archives', issuedate: 'Newsletter Archives', body, canonical: archUrl('index.html'), topNav });

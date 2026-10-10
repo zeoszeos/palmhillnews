@@ -18,7 +18,7 @@ main{padding-top:14px}
 .controls input[type=range]{width:120px;min-height:32px}
 #status{font-size:14px;font-weight:400;line-height:1.4;min-height:0;margin:10px 0 0}
 @media(max-width:540px){header{padding:12px 16px}.controls{padding:12px}.audio-heading h1{font-size:23px}.controls label{margin-right:12px}.buttons{gap:7px}}
-</style></head><body data-read-kind="Message"><header><div class="audio-heading"><p class="audio-kicker">PHNEWS · October 4, 2026 · Read aloud</p><h1>Message from Board President Henry Klain</h1></div></header>
+</style></head><body data-read-kind="Message"><header><div class="audio-heading"><p class="audio-kicker">PHNEWS · Oct 4, 2026 · Read aloud</p><h1>Message from Board President Henry Klain</h1></div></header>
 <!-- ph-archive-nav:start -->
 <div class="ph-story-nav" role="navigation" aria-label="Story date and newsletter archive" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif"></span><a href="https://palmhillnews.vercel.app/pages/2026-10-04-henry-klain-status-update.html" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap;margin-left:auto">Read the Message →</a></div><style>@media (max-width:480px){.ph-story-links-long .ph-sep{display:none!important}.ph-story-links-long a{display:block!important;width:max-content}}</style><div class="ph-story-links-long" style="margin:6px 0 0;white-space:nowrap;overflow-wrap:normal;color:#1a1a1a;font:bold min(17px,4.3vw)/1.5 Arial,Helvetica,sans-serif"><a href="https://palmhillnews.vercel.app/pages/archive/presidents-message.html" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap;font-size:min(17px,4.3vw)">President Message Archives →</a><span class="ph-sep" aria-hidden="true" style="padding:0 6px"> · </span><a href="https://palmhillnews.vercel.app/pages/archive/index.html" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap;font-size:min(17px,4.3vw)">Newsletter Archive →</a></div></div>
 <!-- ph-archive-nav:end -->
@@ -73,7 +73,9 @@ main{padding-top:14px}
     stop.hidden = state === 'idle';
   }
   function chunks(text) {
-    const clean = text.replace(/\s+/g, ' ').trim();
+    // L21: pages show 3-letter months; say the full month aloud.
+    const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
     if (!clean) return [];
     // Let the voice finish a sentence. A character limit must never split it.
     // Segmenter handles abbreviations, initials, decimals, and quotation marks.

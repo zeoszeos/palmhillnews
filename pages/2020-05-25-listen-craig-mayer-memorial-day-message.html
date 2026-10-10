@@ -59,7 +59,9 @@ main{padding-top:14px}
     stop.hidden = state === 'idle';
   }
   function chunks(text) {
-    const clean = text.replace(/\s+/g, ' ').trim();
+    // L21: pages show 3-letter months; say the full month aloud.
+    const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
     if (!clean) return [];
     // Let the voice finish a sentence. A character limit must never split it.
     // Segmenter handles abbreviations, initials, decimals, and quotation marks.
