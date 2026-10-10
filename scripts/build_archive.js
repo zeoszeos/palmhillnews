@@ -371,8 +371,11 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
 }
 
 // pages/archive/main.html — Main Archive Page: every archive we keep, the Newsletter issues first.
+// Steven, Oct 9: no Community Notices or Did You Know? tiles on the Main Archive Page. Their section pages stay
+// (detail pages still link "Previous Notices →" etc.); they are just not listed here.
+const HUB_EXCLUDE = ['community-notices', 'did-you-know'];
 const HUB_GROUPS = [
-  ['From the Newsletter', ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'community-notices', 'did-you-know']],
+  ['From the Newsletter', ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports']],
   ['Meetings, Events & Activities', ['meetings', 'events', 'recurring', 'videos']],
 ];
 function mainPage() {
@@ -408,6 +411,10 @@ function checkPride(name, html, issuesOnly) {
   if (/ph-masthead|ph-wordmark/.test(html)) throw new Error(`${name}: masthead must not appear`);
   const vis = html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
   const fm = vis.match(FULL_MONTH); if (fm) throw new Error(`${name}: full month name "${fm[0]}" (L21: three letters)`);
+  if (name === HUB) {
+    const hit = HUB_EXCLUDE.filter((k) => html.includes(`href="${k}.html"`) || html.includes(esc(S[k].title)));
+    if (hit.length) throw new Error(`${name}: Main Archive Page must not list ${hit.join(', ')}`);
+  }
   if (issuesOnly) {
     const bad = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]).filter((h) => !/^issues\/\d{4}-\d{2}-\d{2}\.html$/.test(h) && h !== HUB);
     if (bad.length) throw new Error(`${name}: issues-only page links to non-issue pages: ${bad.join(', ')}`);
