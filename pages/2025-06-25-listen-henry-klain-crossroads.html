@@ -140,7 +140,7 @@ main{padding-top:14px}
       if (thisRun !== run || event.error === 'canceled' || event.error === 'interrupted') return;
       state = 'idle';
       updateControls();
-      status.textContent = `Reading could not start. Tap ${startLabel} to try again, or read the text below.`;
+      status.textContent = event.error === 'not-allowed' ? `Tap ${startLabel} to begin.` : `Reading could not start. Tap ${startLabel} to try again, or read the text below.`;
     };
     synth.speak(utterance);
   }
@@ -218,9 +218,15 @@ main{padding-top:14px}
   });
   window.addEventListener('pagehide', stopReading);
   updateControls();
-  if (new URLSearchParams(location.search).get('autoplay') === '1') {
-    window.addEventListener('load', () => beginReading(true), {once: true});
+  // ph-listen-autoplay:start (scripts/build_archive.js; Steven Oct 11: Listen link starts reading right away)
+  // Start reading on arrival; ?autoplay=0 opts out. If the browser blocks it (iPhone/Safari, or no tap yet on
+  // this site), the controls stay ready and the status line simply says "Tap ... to begin". No error popups.
+  if (new URLSearchParams(location.search).get('autoplay') !== '0') {
+    const autoStart = () => { if (state === 'idle') beginReading(true); };
+    if (document.readyState === 'complete') window.setTimeout(autoStart, 0);
+    else window.addEventListener('load', autoStart, {once: true});
   }
+  // ph-listen-autoplay:end
 })();
 </script>
 </body></html>
