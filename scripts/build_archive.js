@@ -337,7 +337,8 @@ function stripFor(k, page, headerText = '') {
   return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl('index.html'), 'Newsletter Archive →']])}${dateline}\n<!-- ph-archive-nav:end -->`;
 }
 // "story_nav" sections (Community Stories), Steven Oct 9: under the header, the full date with Listen (or, on the
-// listen page, Read the Story) right-aligned on the same row; below it ONE line: Story Archives → · Newsletter Archive →.
+// listen page, Read the Story) right-aligned on the same row; below it ONE line: Story Archives → · Newsletter Archive →
+// (or, with story_nav_back, a single ← Back link).
 function storyNav(k, page, it, showDate) {
   const sec = S[k];
   const F = 'Arial,Helvetica,sans-serif';
@@ -349,6 +350,13 @@ function storyNav(k, page, it, showDate) {
   const long = (sec.prev.length + 'Newsletter Archive →'.length) > 36;
   const L = `${A};font-size:min(17px,4.3vw)`;
   const css = long ? '<style>@media (max-width:480px){.ph-story-links-long .ph-sep{display:none!important}.ph-story-links-long a{display:block!important;width:max-content}}</style>' : '';
+  // "story_nav_back" (Community Stories, Steven Oct 9 — archive-structure pattern): no Story Archives · Newsletter
+  // Archive pair on the detail page; ONE "← Back" link instead. It goes back in browser history when the reader came
+  // from another page, and falls back to the section archive (href) when opened fresh (e.g. from the email).
+  if (sec.story_nav_back) {
+    const back = `<div class="ph-story-back" style="margin:6px 0 0"><a href="${archUrl(`${k}.html`)}" onclick="if(document.referrer&&history.length>1){history.back();return false}" style="${A}">← Back</a></div>`;
+    return `<div class="ph-story-nav" role="navigation" aria-label="Story date and back" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none">${row1}${back}</div>`;
+  }
   const row2 = `${css}<div class="${long ? 'ph-story-links-long' : 'ph-story-links'}" style="margin:6px 0 0;white-space:nowrap;overflow-wrap:normal;color:#1a1a1a;font:bold min(17px,4.3vw)/1.5 ${F}"><a href="${archUrl(`${k}.html`)}" style="${L}">${esc(sec.prev)}</a><span class="ph-sep" aria-hidden="true" style="padding:0 6px"> · </span><a href="${archUrl('index.html')}" style="${L}">Newsletter Archive →</a></div>`;
   return `<div class="ph-story-nav" role="navigation" aria-label="Story date and newsletter archive" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none">${row1}${row2}</div>`;
 }
