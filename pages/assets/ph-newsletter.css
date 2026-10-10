@@ -191,13 +191,22 @@ img { border: 0; max-width: 100%; height: auto; }
 
 /* Recurring pages (Steven, Oct 10): issue date under the green section title (masthead removed),
    and location right-justified on the title line like Meetings / Events Upcoming. */
+/* Steven, Oct 10 (~1:20 AM, L23g): that line is now plain small print — "Vol. 1, No. N" LEFT (issue these pages
+   were published in), issue date RIGHT. Replaces the centred bold green 15px date. */
 .ph-section-date {
-  margin: 4px 0 2px;
-  text-align: center;
-  font-size: 15px;
-  font-weight: bold;
-  color: #2d5016;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 4px 2px 2px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.4;
+  color: #555555;
 }
+.ph-section-volno { text-align: left; }
+.ph-section-issuedate { text-align: right; white-space: nowrap; }
 
 .ph-row-line {
   display: flex;
@@ -355,3 +364,6 @@ img { border: 0; max-width: 100%; height: auto; }
 .ph-feature-title { margin: 0 0 2px; font: bold 20px/1.3 Georgia, serif; color: #2d5016; }
 .ph-feature-title a { color: #2d5016; text-decoration: underline; }
 .ph-feature .ph-links { margin: 6px 0 2px; }
+
+/* Steven, Oct 10 (~1:27 AM, L23i): Recurring pages — "Times and rooms are subject to change..." line centred. */
+.ph-lead-center { text-align: center; }
