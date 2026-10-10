@@ -170,6 +170,30 @@ img { border: 0; max-width: 100%; height: auto; }
   line-height: 1.25;
 }
 
+/* Recurring pages (Steven, Oct 10): issue date under the By Date / By Name title (masthead removed),
+   and location right-justified on the title line like Meetings / Events Upcoming. */
+.ph-view-date {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #666666;
+}
+
+.ph-row-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ph-row-line .ph-row-title { min-width: 0; }
+
+.ph-row-loc {
+  flex: 0 1 auto;
+  font-size: 14px;
+  color: #666666;
+  text-align: right;
+}
+
 .ph-lead {
   margin: 8px 0;
   font-size: 15px;
