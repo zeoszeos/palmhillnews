@@ -163,6 +163,13 @@ img { border: 0; max-width: 100%; height: auto; }
   color: #2d5016;
 }
 
+/* Recurring pages: By Date / By Name title sits just above the list, a few points larger (Steven, Oct 10). */
+.ph-view-title {
+  margin: 12px 0 4px;
+  font-size: 19px;
+  line-height: 1.25;
+}
+
 .ph-lead {
   margin: 8px 0;
   font-size: 15px;
