@@ -164,10 +164,29 @@ img { border: 0; max-width: 100%; height: auto; }
 }
 
 /* Recurring pages: By Date / By Name title sits just above the list, a few points larger (Steven, Oct 10). */
+/* Steven, Oct 10 (~12:55 AM): By Date / By Name title = white text on a dark-green band like the section title bar,
+   for separation from the list (L23e). */
 .ph-view-title {
-  margin: 12px 0 4px;
+  margin: 14px 0 4px;
+  padding: 7px 12px;
+  border-radius: 3px;
+  background: #2d5016;
+  color: #ffffff;
+  text-align: center;
+  font-family: Arial, sans-serif;
   font-size: 19px;
   line-height: 1.25;
+}
+
+/* Recurring pages (Steven, Oct 10 ~12:55 AM): window line inside the green title bar as an italic subtitle,
+   same pattern as Events - This Week ("Oct 11 through Oct 17") in the newsletter (L23e). */
+.ph-section-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: normal;
+  color: #ffffff;
 }
 
 /* Recurring pages (Steven, Oct 10): issue date under the green section title (masthead removed),
