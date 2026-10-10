@@ -385,8 +385,16 @@ function addStrip(page, k) {
 }
 
 // ---------- run ----------
-for (const k of SECTION_ORDER) write(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
-write(path.join(OUT, 'index.html'), homePage());
+// Hub + section archive pages never carry the main PHNL footer (Vantaca box, calendar disclaimer, bottom <footer>).
+// Steven, Oct 9: "page does not need the footer from the main phnl page." Fail closed if one sneaks back in.
+const NO_FOOTER = /<footer\b|class="ph-footer|class="ph-urgent-line|class="ph-fineprint|VANTACA Service Request System|always confirm event times and updates on the/i;
+function writeHub(file, html) {
+  const m = html.match(NO_FOOTER);
+  if (m) throw new Error(`${path.relative(ROOT, file)}: main-newsletter footer must not appear on archive hub/section pages (found ${m[0]})`);
+  write(file, html);
+}
+for (const k of SECTION_ORDER) writeHub(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
+writeHub(path.join(OUT, 'index.html'), homePage());
 
 const stripped = new Map();
 for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stripped.has(it.page)) stripped.set(it.page, it.strip_as || k);
