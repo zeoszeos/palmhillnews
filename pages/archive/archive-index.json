@@ -3,13 +3,14 @@
   "generated_by": "scripts/build_archive.js",
   "base_url": "https://palmhillnews.vercel.app",
   "archive_home": "https://palmhillnews.vercel.app/pages/archive/index.html",
+  "archive_main": "https://palmhillnews.vercel.app/pages/archive/main.html",
   "issues": [
     {
       "date": "2026-10-04",
       "volume": 1,
       "number": 12,
       "issue_number": "Vol. 1, No. 12",
-      "label": "Week of October 4, 2026",
+      "label": "Week of Oct 4, 2026",
       "sent": "2026-10-04T14:24:00-04:00",
       "file_dated": "2026-10-04T14:24:00-04:00",
       "format": "Email newsletter",
@@ -20,7 +21,7 @@
       "volume": 1,
       "number": 11,
       "issue_number": "Vol. 1, No. 11",
-      "label": "Week of September 27, 2026",
+      "label": "Week of Sep 27, 2026",
       "sent": "2026-09-27T10:38:00-04:00",
       "file_dated": "2026-09-26T22:09:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -31,7 +32,7 @@
       "volume": 1,
       "number": 10,
       "issue_number": "Vol. 1, No. 10",
-      "label": "Week of September 21, 2026",
+      "label": "Week of Sep 21, 2026",
       "sent": "2026-09-21T17:59:00-04:00",
       "file_dated": "2026-09-21T09:13:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -42,7 +43,7 @@
       "volume": 1,
       "number": 9,
       "issue_number": "Vol. 1, No. 9",
-      "label": "Week of September 13, 2026",
+      "label": "Week of Sep 13, 2026",
       "sent": "2026-09-13T10:12:00-04:00",
       "file_dated": "2026-09-13T09:39:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -53,7 +54,7 @@
       "volume": 1,
       "number": 8,
       "issue_number": "Vol. 1, No. 8",
-      "label": "Week of September 6, 2026",
+      "label": "Week of Sep 6, 2026",
       "sent": "2026-09-08T16:41:00-04:00",
       "file_dated": "2026-09-06T22:09:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -64,7 +65,7 @@
       "volume": 1,
       "number": 7,
       "issue_number": "Vol. 1, No. 7",
-      "label": "Week of August 30, 2026",
+      "label": "Week of Aug 30, 2026",
       "sent": "2026-08-30T12:24:00-04:00",
       "file_dated": "2026-08-29T15:09:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -75,7 +76,7 @@
       "volume": 1,
       "number": 6,
       "issue_number": "Vol. 1, No. 6",
-      "label": "Week of August 23, 2026",
+      "label": "Week of Aug 23, 2026",
       "sent": "2026-08-24T11:24:00-04:00",
       "file_dated": "2026-08-24T10:47:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -86,7 +87,7 @@
       "volume": 1,
       "number": 5,
       "issue_number": "Vol. 1, No. 5",
-      "label": "Week of August 16, 2026",
+      "label": "Week of Aug 16, 2026",
       "sent": "2026-08-17T12:21:00-04:00",
       "file_dated": "2026-08-16T16:28:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -97,7 +98,7 @@
       "volume": 1,
       "number": 4,
       "issue_number": "Vol. 1, No. 4",
-      "label": "Week of August 9, 2026",
+      "label": "Week of Aug 9, 2026",
       "sent": "2026-08-11T11:45:00-04:00",
       "file_dated": "2026-08-09T21:25:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -108,7 +109,7 @@
       "volume": 1,
       "number": 3,
       "issue_number": "Vol. 1, No. 3",
-      "label": "Week of August 2, 2026",
+      "label": "Week of Aug 2, 2026",
       "sent": "2026-08-03T17:48:00-04:00",
       "file_dated": "2026-08-02T23:18:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -119,7 +120,7 @@
       "volume": 1,
       "number": 2,
       "issue_number": "Vol. 1, No. 2",
-      "label": "Week of July 26, 2026",
+      "label": "Week of Jul 26, 2026",
       "sent": "2026-07-26T23:33:00-04:00",
       "file_dated": "2026-07-26T20:21:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -130,7 +131,7 @@
       "volume": 1,
       "number": 1,
       "issue_number": "Vol. 1, No. 1",
-      "label": "Week of July 19, 2026",
+      "label": "Week of Jul 19, 2026",
       "sent": "2026-07-21T16:59:00-04:00",
       "file_dated": "2026-07-21T14:48:00-04:00",
       "format": "PDF on palmhillcountryclub.net",
@@ -142,7 +143,7 @@
       "title": "Community Stories",
       "url": "https://palmhillnews.vercel.app/pages/archive/community-stories.html",
       "email_link_label": "Past Stories →",
-      "page_link_label": "Previous Stories →",
+      "page_link_label": "Story Archives →",
       "items": [
         {
           "date": "2026-10-04",
@@ -173,7 +174,7 @@
       "title": "President's Message",
       "url": "https://palmhillnews.vercel.app/pages/archive/presidents-message.html",
       "email_link_label": "Past Messages →",
-      "page_link_label": "Previous President Messages →",
+      "page_link_label": "President Message Archives →",
       "items": [
         {
           "date": "2026-10-04",
@@ -183,6 +184,279 @@
           "issues": [
             "2026-10-04"
           ]
+        },
+        {
+          "date": "2026-08-21",
+          "title": "Looking Forward",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-21-henry-klain-looking-forward.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-08-21-listen-henry-klain-looking-forward.html",
+          "issues": []
+        },
+        {
+          "date": "2026-04-11",
+          "title": "Community Update on Property Management Review",
+          "url": "https://palmhillnews.vercel.app/pages/2026-04-11-henry-klain-property-management-review.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-04-11-listen-henry-klain-property-management-review.html",
+          "issues": []
+        },
+        {
+          "date": "2026-03-15",
+          "title": "Attention Shareholders: Value of Co-operative Shares",
+          "url": "https://palmhillnews.vercel.app/pages/2026-03-15-henry-klain-share-value.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-03-15-listen-henry-klain-share-value.html",
+          "issues": []
+        },
+        {
+          "date": "2026-01-23",
+          "title": "Interest in Chairing Committees",
+          "url": "https://palmhillnews.vercel.app/pages/2026-01-23-henry-klain-interest-in-chairing-committees.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-01-23-listen-henry-klain-interest-in-chairing-committees.html",
+          "issues": []
+        },
+        {
+          "date": "2026-01-20",
+          "title": "Message from the President of the HOPH",
+          "url": "https://palmhillnews.vercel.app/pages/2026-01-20-henry-klain-message-from-the-president.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-01-20-listen-henry-klain-message.html",
+          "issues": []
+        },
+        {
+          "date": "2025-12-07",
+          "title": "From our Board of Directors: Holiday Greetings",
+          "url": "https://palmhillnews.vercel.app/pages/2025-12-07-henry-klain-holiday-greetings.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-12-07-listen-henry-klain-holiday-greetings.html",
+          "issues": []
+        },
+        {
+          "date": "2025-08-12",
+          "title": "Important Letter from President Henry Klain",
+          "url": "https://palmhillnews.vercel.app/pages/2025-08-12-henry-klain-solar-panels-letter.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-08-12-listen-henry-klain-solar-panels-letter.html",
+          "issues": []
+        },
+        {
+          "date": "2025-06-26",
+          "title": "Revised Notice from the President Henry Klain",
+          "url": "https://palmhillnews.vercel.app/pages/2025-06-26-henry-klain-revised-notice-lease-amendment.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-06-26-listen-henry-klain-revised-notice.html",
+          "issues": []
+        },
+        {
+          "date": "2025-06-25",
+          "title": "Palm Hill: A Community at a Crossroads",
+          "url": "https://palmhillnews.vercel.app/pages/2025-06-25-henry-klain-community-at-a-crossroads.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-06-25-listen-henry-klain-crossroads.html",
+          "issues": []
+        },
+        {
+          "date": "2025-06-20",
+          "title": "Notice from President Henry Klain: Board Resolves Land Lease and Approves Revised Budget",
+          "url": "https://palmhillnews.vercel.app/pages/2025-06-20-henry-klain-land-lease-resolved.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-06-20-listen-henry-klain-land-lease-resolved.html",
+          "issues": []
+        },
+        {
+          "date": "2025-06-06",
+          "title": "Pleased to Share Some Positive News Regarding Land Lease",
+          "url": "https://palmhillnews.vercel.app/pages/2025-06-06-henry-klain-land-lease-news.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-06-06-listen-henry-klain-land-lease-news.html",
+          "issues": []
+        },
+        {
+          "date": "2025-06-04",
+          "title": "Announcement: Land Lease Reduction and Budget Update",
+          "url": "https://palmhillnews.vercel.app/pages/2025-06-04-henry-klain-land-lease-reduction.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-06-04-listen-henry-klain-land-lease-reduction.html",
+          "issues": []
+        },
+        {
+          "date": "2025-01-24",
+          "title": "President’s Message: 2025 Officers and Committees",
+          "url": "https://palmhillnews.vercel.app/pages/2025-01-24-henry-klain-presidents-message.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2025-01-24-listen-henry-klain-presidents-message.html",
+          "issues": []
+        },
+        {
+          "date": "2024-12-20",
+          "title": "Message of our HOPH Board President: Happy Holidays",
+          "url": "https://palmhillnews.vercel.app/pages/2024-12-20-henry-klain-holiday-message.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-12-20-listen-henry-klain-holiday-message.html",
+          "issues": []
+        },
+        {
+          "date": "2024-11-28",
+          "title": "Message from our Palm Hill Board of Director’s President: Happy Thanksgiving",
+          "url": "https://palmhillnews.vercel.app/pages/2024-11-28-henry-klain-thanksgiving.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-11-28-listen-henry-klain-thanksgiving.html",
+          "issues": []
+        },
+        {
+          "date": "2024-10-11",
+          "title": "Message from Home Owners of Palm Hill, Inc - President’s Message - Post Hurricane Milton",
+          "url": "https://palmhillnews.vercel.app/pages/2024-10-11-henry-klain-post-hurricane-milton.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-10-11-listen-henry-klain-post-hurricane-milton.html",
+          "issues": []
+        },
+        {
+          "date": "2024-10-07",
+          "title": "President’s Message - Hurricane Milton",
+          "url": "https://palmhillnews.vercel.app/pages/2024-10-07-henry-klain-hurricane-milton.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-10-07-listen-henry-klain-hurricane-milton.html",
+          "issues": []
+        },
+        {
+          "date": "2024-06-24",
+          "title": "Message from the President of the HOPH: Jun 2024",
+          "url": "https://palmhillnews.vercel.app/pages/2024-06-24-henry-klain-june-2024-message.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-06-24-listen-henry-klain-june-2024-message.html",
+          "issues": []
+        },
+        {
+          "date": "2024-01-28",
+          "title": "Welcome to 2024: Message from the President of the HOPH",
+          "url": "https://palmhillnews.vercel.app/pages/2024-01-28-henry-klain-welcome-to-2024.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-01-28-listen-henry-klain-welcome-to-2024.html",
+          "issues": []
+        },
+        {
+          "date": "2024-01-10",
+          "title": "President’s Report: Election Ballots and South Rec Hall Camera",
+          "url": "https://palmhillnews.vercel.app/pages/2024-01-10-pat-foor-presidents-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2024-01-10-listen-pat-foor-presidents-report.html",
+          "issues": []
+        },
+        {
+          "date": "2023-12-30",
+          "title": "President’s Corner: Looking Ahead to 2024",
+          "url": "https://palmhillnews.vercel.app/pages/2023-12-30-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2023-12-30-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2023-12-20",
+          "title": "Important Information from President Pat Foor",
+          "url": "https://palmhillnews.vercel.app/pages/2023-12-20-pat-foor-important-information.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2023-12-20-listen-pat-foor-important-information.html",
+          "issues": []
+        },
+        {
+          "date": "2023-05-27",
+          "title": "President’s Corner May 2023",
+          "url": "https://palmhillnews.vercel.app/pages/2023-05-27-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2023-05-27-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2023-04-27",
+          "title": "Apr President’s Report",
+          "url": "https://palmhillnews.vercel.app/pages/2023-04-27-pat-foor-april-presidents-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2023-04-27-listen-pat-foor-april-presidents-report.html",
+          "issues": []
+        },
+        {
+          "date": "2022-12-10",
+          "title": "President’s Corner - Dec 2022",
+          "url": "https://palmhillnews.vercel.app/pages/2022-12-10-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-12-10-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2022-10-10",
+          "title": "President’s Corner - Oct 2022",
+          "url": "https://palmhillnews.vercel.app/pages/2022-10-10-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-10-10-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2022-08-27",
+          "title": "President’s Corner - Aug 2022",
+          "url": "https://palmhillnews.vercel.app/pages/2022-08-27-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-08-27-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2022-05-04",
+          "title": "President’s Corner - May 4, 2022: Insurance and Liability Facts Related to Dog Bites",
+          "url": "https://palmhillnews.vercel.app/pages/2022-05-04-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-05-04-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2022-04-14",
+          "title": "President’s Message - Apr 2022: The Dog Park Question",
+          "url": "https://palmhillnews.vercel.app/pages/2022-04-14-pat-foor-presidents-message-dog-park.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-04-14-listen-pat-foor-presidents-message-dog-park.html",
+          "issues": []
+        },
+        {
+          "date": "2022-03-27",
+          "title": "President’s Corner - Mar 2022",
+          "url": "https://palmhillnews.vercel.app/pages/2022-03-27-pat-foor-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-03-27-listen-pat-foor-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2022-01-22",
+          "title": "A Message from the New HOPH Board President",
+          "url": "https://palmhillnews.vercel.app/pages/2022-01-22-pat-foor-new-hoph-board-president.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2022-01-22-listen-pat-foor-new-hoph-board-president.html",
+          "issues": []
+        },
+        {
+          "date": "2021-06-03",
+          "title": "President’s Corner - Jun 3, 2021",
+          "url": "https://palmhillnews.vercel.app/pages/2021-06-03-dave-kohli-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2021-06-03-listen-dave-kohli-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2021-03-24",
+          "title": "President’s Corner - Mar 23, 2021",
+          "url": "https://palmhillnews.vercel.app/pages/2021-03-24-dave-kohli-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2021-03-24-listen-dave-kohli-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2021-02-17",
+          "title": "President’s Corner - Feb 2021",
+          "url": "https://palmhillnews.vercel.app/pages/2021-02-17-dave-kohli-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2021-02-17-listen-dave-kohli-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2021-02-01",
+          "title": "First President’s Corner from HOPH President-Elect Dave Kohli",
+          "url": "https://palmhillnews.vercel.app/pages/2021-02-01-dave-kohli-first-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2021-02-01-listen-dave-kohli-first-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2020-07-29",
+          "title": "The President’s Corner - Jul 29, 2020",
+          "url": "https://palmhillnews.vercel.app/pages/2020-07-29-craig-mayer-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2020-07-29-listen-craig-mayer-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2020-05-25",
+          "title": "A Message from the President: Proposed Memorial Day Service",
+          "url": "https://palmhillnews.vercel.app/pages/2020-05-25-craig-mayer-memorial-day-message.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2020-05-25-listen-craig-mayer-memorial-day-message.html",
+          "issues": []
+        },
+        {
+          "date": "2020-04-30",
+          "title": "President’s Corner - Apr 30, 2020: Covid-19 Reopening Guidelines",
+          "url": "https://palmhillnews.vercel.app/pages/2020-04-30-craig-mayer-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2020-04-30-listen-craig-mayer-presidents-corner.html",
+          "issues": []
+        },
+        {
+          "date": "2020-01-28",
+          "title": "The President’s Corner - Jan 2020",
+          "url": "https://palmhillnews.vercel.app/pages/2020-01-28-craig-mayer-presidents-corner.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2020-01-28-listen-craig-mayer-presidents-corner.html",
+          "issues": []
         }
       ]
     },
@@ -422,7 +696,7 @@
         },
         {
           "date": "2026-07-29",
-          "title": "July’s Board Report on Real Estate Sales",
+          "title": "Jul’s Board Report on Real Estate Sales",
           "url": "https://palmhillnews.vercel.app/pages/2026-07-29-july-s-board-report-on-real-estate-sales.html",
           "issues": [
             "2026-08-03"
@@ -431,11 +705,55 @@
       ]
     },
     "manager-reports": {
-      "title": "Manager Reports",
+      "title": "Monthly Shareholders Reports",
       "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html",
       "email_link_label": "Past Reports →",
-      "page_link_label": "Previous Manager Reports →",
+      "page_link_label": "Previous Shareholders Reports →",
       "items": [
+        {
+          "date": "2026-09-30",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-09-30-shareholders-report.html",
+          "issues": []
+        },
+        {
+          "date": "2026-08-26",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-08-26-shareholders-report.html",
+          "issues": []
+        },
+        {
+          "date": "2026-07-29",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-29-shareholders-report.html",
+          "issues": []
+        },
+        {
+          "date": "2026-06-24",
+          "title": "Shareholders Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
+          "issues": [
+            "2026-07-21",
+            "2026-08-03",
+            "2026-08-11",
+            "2026-08-17",
+            "2026-09-21"
+          ]
+        }
+      ]
+    },
+    "weekly-manager-updates": {
+      "title": "Weekly Manager Updates",
+      "url": "https://palmhillnews.vercel.app/pages/archive/weekly-manager-updates.html",
+      "email_link_label": "Past Updates →",
+      "page_link_label": "Previous Weekly Updates →",
+      "items": [
+        {
+          "date": "2026-10-09",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-09-weekly-manager-update.html",
+          "issues": []
+        },
         {
           "date": "2026-09-18",
           "title": "Weekly Manager Report",
@@ -445,63 +763,30 @@
           ]
         },
         {
-          "date": "2026-08-24",
-          "title": "Weekly Manager Update",
-          "url": "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html",
-          "issues": [
-            "2026-08-30",
-            "2026-09-08"
-          ]
-        },
-        {
           "date": "2026-08-21",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-21-weekly-manager-update-2026-08-21.html",
           "issues": [
+            "2026-08-30",
+            "2026-09-08",
             "2026-09-13",
             "2026-09-21"
           ]
         },
         {
-          "date": "2026-07-27",
+          "date": "2026-07-31",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-07-31-weekly-manager-update.html",
+          "issues": []
+        },
+        {
+          "date": "2026-07-22",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-07-27-weekly-manager-update-2026-07-27.html",
           "issues": [
             "2026-08-03",
             "2026-08-11",
             "2026-08-17"
-          ]
-        },
-        {
-          "date": "2026-07-22",
-          "title": "Weekly Shareholders Report",
-          "url": "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
-          "issues": []
-        },
-        {
-          "date": "2026-07-15",
-          "title": "Monthly Management and Maintenance Report",
-          "url": "https://palmhillnews.vercel.app/pages/2026-07-15-monthly-management-and-maintenance-report-2026-07-.html",
-          "issues": [
-            "2026-08-11",
-            "2026-08-17",
-            "2026-09-21"
-          ]
-        },
-        {
-          "date": "2026-07-12",
-          "title": "Monthly Management Report — Week of July 12",
-          "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html#2026-07-12-monthly-report",
-          "issues": [
-            "2026-08-03"
-          ]
-        },
-        {
-          "date": "2026-06-24",
-          "title": "Shareholders Report",
-          "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html#2026-06-24-shareholders-report",
-          "issues": [
-            "2026-07-21"
           ]
         }
       ]
@@ -656,7 +941,7 @@
         },
         {
           "date": "2026-10-04",
-          "title": "October Mowing Dates",
+          "title": "Oct Mowing Dates",
           "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-10-04-october-mowing",
           "issues": [
             "2026-10-04"
@@ -664,7 +949,7 @@
         },
         {
           "date": "2026-09-27",
-          "title": "Block Captain Needed for November & December",
+          "title": "Block Captain Needed for Nov & Dec",
           "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html#2026-09-27-block-captain-nov-dec",
           "issues": [
             "2026-09-27",
@@ -781,7 +1066,7 @@
         },
         {
           "date": "2026-08-04",
-          "title": "Palm Hill Community Notices — August 2026",
+          "title": "Palm Hill Community Notices — Aug 2026",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-04-palm-hill-community-notices-august-2026.html",
           "issues": [
             "2026-08-17",
@@ -790,7 +1075,7 @@
         },
         {
           "date": "2026-08-03",
-          "title": "Spectrum Outage — August 3",
+          "title": "Spectrum Outage — Aug 3",
           "url": "https://palmhillnews.vercel.app/pages/2026-08-03-spectrum-outage-aug-3.html",
           "issues": [
             "2026-08-11",
@@ -981,6 +1266,8 @@
     "https://palmhillnews.vercel.app/pages/2026-06-30-fwd-golf-advisory-committee-meeting-summary-june-3.html",
     "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary-june-30-20.html",
     "https://palmhillnews.vercel.app/pages/2026-06-30-golf-advisory-committee-meeting-summary.html",
-    "https://palmhillnews.vercel.app/pages/2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html"
+    "https://palmhillnews.vercel.app/pages/2026-06-30-re-golf-advisory-committee-meeting-summary-june-30.html",
+    "https://palmhillnews.vercel.app/pages/undated-weekly-weekly-update-2026-7-22.html",
+    "https://palmhillnews.vercel.app/pages/2026-08-24-weekly-manager-update-2026-08-24.html"
   ]
 }
