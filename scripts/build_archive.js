@@ -542,7 +542,14 @@ function storyNav(k, page, it, showDate) {
   const F = 'Arial,Helvetica,sans-serif';
   const A = `display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap`;
   const side = page === it.listen ? (it.page ? [pageUrl(it.page), sec.story_nav_read || 'Read the Story →'] : null) : (it.listen ? [pageUrl(it.listen), '🔊 Listen →'] : null);
-  const row1 = `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${showDate ? fullDate(it) : ''}</span>${side ? `<a href="${side[0]}" style="${A};margin-left:auto">${esc(side[1])}</a>` : ''}</div>`;
+  // "clean_listen" sections (President's Message, Community Stories; Steven Oct 11): the side link is the newsletter's
+  // green/gold speaker icon + "Listen" (class ph-listen, same as Chair Reports), and the listen-* page is rebuilt as a
+  // copy of this clean page (see "Clean Listen pages" below), so the Read link never appears on the listen page.
+  const cleanSide = sec.clean_listen && it.listen && page !== it.listen;
+  const sideHtml = cleanSide
+    ? `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>`
+    : (side ? `<a href="${side[0]}" style="${A};margin-left:auto">${esc(side[1])}</a>` : '');
+  const row1 = `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:${cleanSide ? 'center' : 'baseline'};gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${showDate ? fullDate(it) : ''}</span>${sideHtml}</div>`;
   // Short labels (Story Archives) stay on one line even on phones; longer ones (President Message Archives) stack
   // one per line at <=480px with the dot hidden, so nothing runs off the screen.
   const long = (sec.prev.length + HUB_LABEL.length) > 36;
@@ -600,8 +607,9 @@ for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stri
 // "also" pages (e.g. Original notice) and "strip_extra" pages (e.g. Zoom) get their item's section strip.
 for (const k of SECTION_ORDER) for (const it of S[k].items) for (const p of [...(it.also || []).map((a) => a.page), ...(it.strip_extra || [])]) if (!stripped.has(p)) stripped.set(p, k);
 // Sections with "strip_listen": true also get the strip on each item's read-aloud (listen) page.
-// (Chair Report listen pages are excepted: they are rebuilt from the clean report page below.)
-for (const k of SECTION_ORDER) if (S[k].strip_listen) for (const it of S[k].items) if (it.listen && !stripped.has(it.listen) && !(S[k].dateline_listen && it.page)) stripped.set(it.listen, k);
+// (Chair Report, President's Message and Community Story listen pages are excepted: they are rebuilt from the clean
+// item page below.)
+for (const k of SECTION_ORDER) if (S[k].strip_listen) for (const it of S[k].items) if (it.listen && !stripped.has(it.listen) && !((S[k].dateline_listen || S[k].clean_listen) && it.page)) stripped.set(it.listen, k);
 for (const [p, k] of stripped) addStrip(p, k);
 
 // ---------- Chair Report Listen: clean report page, no player (Steven, Oct 11) ----------
@@ -628,7 +636,7 @@ const CHAIR_LISTEN_JS = `<!-- ph-chair-listen:start -->
   const synth = window.speechSynthesis;
   const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
   let run = 0, playing = false, started = false;
-  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this report'); };
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
   function chunks(text) {
     const clean = text.replace(/\\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\b\\.?/g, (m, k) => MON[k]).replace(/\\s+/g, ' ').trim();
     if (!clean) return [];
@@ -683,8 +691,11 @@ const CHAIR_LISTEN_JS = `<!-- ph-chair-listen:start -->
 <!-- ph-chair-listen:end -->`;
 const CHAIR_BLOCK_RE = /\n?<!-- ph-chair-listen:start -->[\s\S]*?<!-- ph-chair-listen:end -->\n?/g;
 const chairListenPages = new Set();
-for (const k of SECTION_ORDER) if (S[k].dateline_listen) for (const it of S[k].items) {
-  if (!it.page || !it.listen) continue;
+// Steven Oct 11 (2nd pass): the SAME clean listen page for "clean_listen" sections -- President's Message (Henry
+// October etc.) and Community Stories -- so EVERY Listen link in the newsletter opens a page that starts speaking on
+// arrival, with no yellow tap bar and no Read Aloud box; if the browser blocks it, one tap on Listen or the text starts it.
+for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) for (const it of S[k].items) {
+  if (!it.page || !it.listen || chairListenPages.has(it.listen)) continue;
   const reportFile = path.join(PAGES, it.page);
   const base = (built.get(reportFile) ?? fs.readFileSync(reportFile, 'utf8')).replace(CHAIR_BLOCK_RE, '\n');
   if (!/<a class="ph-listen" href="[^"]*\/pages\/[^"]*listen[^"]*"/.test(base) || !/<article\b/.test(base)) throw new Error(`pages/${it.page}: clean report page has no date-line Listen link or <article>`);
@@ -693,9 +704,9 @@ for (const k of SECTION_ORDER) if (S[k].dateline_listen) for (const it of S[k].i
   let listen = report
     .replace(/<body([^>]*)>/i, (m, a) => `<body${a} data-ph-autoplay="1">\n${CHAIR_LISTEN_MARK}pages/${it.page} on every build; edit the report page or archive-items.json, not this file. -->`)
     .replace(/<title>([\s\S]*?)<\/title>/i, (m, t) => `<title>Listen: ${t}</title>\n<link rel="canonical" href="${pageUrl(it.page)}">`);
-  const NO_PLAYER = /class="controls"|ph-tap-hint|Read Report Aloud|id="speed"|id="volume"/;
+  const NO_PLAYER = /class="controls"|ph-tap-hint|Read Report Aloud|Read (?:Message|Story) Aloud|id="speed"|id="volume"/;
   const bad = listen.match(NO_PLAYER);
-  if (bad) throw new Error(`pages/${it.listen}: player chrome must not appear on a Chair Report listen page (found ${bad[0]})`);
+  if (bad) throw new Error(`pages/${it.listen}: player chrome must not appear on a clean listen page (found ${bad[0]})`);
   write(path.join(PAGES, it.listen), listen);
   chairListenPages.add(it.listen);
 }

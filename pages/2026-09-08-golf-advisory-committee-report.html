@@ -35,7 +35,7 @@ main { width:min(780px,100%); }
   const synth = window.speechSynthesis;
   const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
   let run = 0, playing = false, started = false;
-  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this report'); };
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
   function chunks(text) {
     const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
     if (!clean) return [];
