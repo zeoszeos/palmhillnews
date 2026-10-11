@@ -248,16 +248,17 @@ function sectionPage(k) {
 }
 
 function videosPage() {
-  // Steven Oct 11: videos.html = Latest Committee Videos ONLY (no How To section).
+  // Steven Oct 11: videos.html = Latest only (no How To). Title: Latest Committee & Board Meeting Videos.
   const sec = S.videos;
-  let out = `${crumbs('Latest Committee Videos')}\n<h1 class="ph-section">Latest Committee Videos</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
+  const pageTitle = sec.title; // Latest Committee & Board Meeting Videos
+  let out = `${crumbs(pageTitle)}\n<h1 class="ph-section">${esc(pageTitle)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
   out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${HOWTO_VIDEOS_HREF}">How To Videos →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
   const topNav = navBar([[HOWTO_VIDEOS_HREF, 'How To Videos →'], [HUB, HUB_LABEL]]);
-  return shell({ title: 'Latest Committee Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
+  return shell({ title: `${pageTitle} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
 function howToVideosPage() {
