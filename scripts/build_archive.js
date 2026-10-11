@@ -436,7 +436,7 @@ const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports'
 const HUB_VIDEO_KEYS = ['videos'];
 const HUB_LISTED = [...HUB_KEEP, ...HUB_VIDEO_KEYS];
 const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
-// Steven Oct 11: three video surfaces — How To, Latest (videos.html), Committee Video Archive (guide page).
+// Steven Oct 11: three video surfaces — Did You Know, Latest (videos.html), Committee Video Archive (guide page).
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
   ['Videos', HUB_VIDEO_KEYS],
@@ -449,7 +449,7 @@ function mainPage() {
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  const howToTile = `<a class="pa-tile" href="${HOWTO_VIDEOS_HREF}"><b>Did You Know →</b><span>VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
+  const howToTile = `<a class="pa-tile" href="${HOWTO_VIDEOS_HREF}"><b>Did You Know →</b><span>3 videos · newest Oct 4</span></a>`;
   const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee Video Archive →</b><span>All curated Board &amp; committee recordings</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
