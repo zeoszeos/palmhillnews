@@ -263,7 +263,7 @@ function videosPage() {
   });
   out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], [HUB, HUB_LABEL]]);
+  const topNav = navBar([[archUrl('videos.html'), 'Video Archives →'], [HUB, HUB_LABEL]]);
   return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
@@ -403,11 +403,11 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
   return prideShell({ title: 'The Palm Hill Newsletter — Every Issue', canonical: archUrl('index.html'), hero, body });
 }
 
-// pages/archive/main.html — Main Archive Page: newsletter archives first, then Video Archives + How-to.
+// pages/archive/main.html — Main Archive Page: newsletter archives first, then How To Videos + Latest Committee Videos.
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
 // (Committee & Board Meetings, Special Events, Recurring Activities). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
-// Steven, Oct 11: Videos group = How To Videos (videos.html#howto, all three how-tos) + Video Archives only.
+// Steven, Oct 11: Videos group = How To Videos (videos.html#howto) + Latest Committee Videos (videos.html).
 // Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
 // (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
 // section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
@@ -424,12 +424,12 @@ function mainPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
   const tile = (k) => {
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
-    // Videos use hub_label ("Video Archives"); other hub tiles keep their section title wording.
-    const label = k === 'videos' ? (S[k].hub_label || S[k].title) : S[k].title;
+    // Steven Oct 11: Videos hub tile = Latest Committee Videos (videos.html). How To Videos is separate.
+    const label = k === 'videos' ? 'Latest Committee Videos' : S[k].title;
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  // How To Videos first (all three how-tos on videos.html#howto), then Video Archives. No guide/Committees tiles.
+  // How To Videos first (videos.html#howto), then Latest Committee Videos (videos.html). No guide/Committees tiles.
   const howtoCount = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html').length;
   const howToTile = `<a class="pa-tile" href="${HOWTO_ARCHIVE_HREF}"><b>How To Videos →</b><span>${howtoCount} how-tos · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
   const hero = `<header class="pa-hero">
