@@ -173,6 +173,9 @@ const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href
 // Page (every archive, issues included). Section pages and detail strips go up to the Main Archive Page.
 const HUB = 'main.html';
 const HUB_LABEL = 'All Archives →';
+// Steven Oct 11: How To + Committee Video Archive URLs (used by videosPage / howToVideosPage / mainPage).
+const HOWTO_VIDEOS_HREF = 'how-to-videos.html';
+const COMMITTEE_VIDEO_ARCHIVE_HREF = `${BASE}/pages/2026-10-04-committee-video-guide.html`;
 const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">Palm Hill Archives</a> › ${esc(title)}</p>`;
 
 // ---------- shared archive nav bar (top of page only) ----------
@@ -245,26 +248,37 @@ function sectionPage(k) {
 }
 
 function videosPage() {
+  // Steven Oct 11: videos.html = Latest Committee Videos ONLY (no How To section).
   const sec = S.videos;
-  // Steven Oct 11: How To Videos (videos.html#howto) lists all three how-tos (guide page + Chuck VANTACA + Zoom).
-  const howto = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html');
-  let out = `${crumbs('Meeting Videos')}\n<h1 class="ph-section">Board &amp; Committee Meeting Videos</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
+  let out = `${crumbs('Latest Committee Videos')}\n<h1 class="ph-section">Latest Committee Videos</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
-  out += `<h2 class="ph-subhead" id="howto">How-To Videos</h2>\n`;
-  howto.forEach((x, n) => {
-    const href = x.external || pageUrl(x.page);
-    const meta = x.external ? 'Tutorial video' : 'Step-by-step guide';
-    const play = x.external
-      ? `<a class="ph-play" href="${esc(href)}" aria-label="Play: ${esc(x.title)}">▶</a>`
-      : `<a class="ph-play" href="${esc(href)}" aria-label="Open: ${esc(x.title)}">→</a>`;
-    out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}">${play}<div><div class="ph-row-title"><a href="${esc(href)}">${esc(x.title)}</a></div><div class="ph-row-meta">${meta}</div></div></div>\n`;
-  });
-  out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></nav>\n`;
+  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${HOWTO_VIDEOS_HREF}">How To Videos →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
+  const topNav = navBar([[HOWTO_VIDEOS_HREF, 'How To Videos →'], [HUB, HUB_LABEL]]);
+  return shell({ title: 'Latest Committee Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
+}
+
+function howToVideosPage() {
+  // Steven Oct 11: separate How To page (not mixed into videos.html).
+  const vantaca = S['did-you-know'].items.find((x) => /VANTACA/i.test(x.title));
+  const zoom = S['did-you-know'].items.find((x) => /Zoom/i.test(x.title));
+  const access = S['did-you-know'].items.find((x) => /Access Board and Committee/i.test(x.title));
+  let out = `${crumbs('How To Videos')}\n<h1 class="ph-section">How To Videos</h1>\n`;
+  out += `<p class="ph-lead">Tutorials and a short guide for watching Palm Hill Board and committee meetings from home.</p>\n`;
+  out += `<h2 class="ph-subhead">How to find committee videos</h2>\n`;
+  out += `<p class="ph-detail">${esc((access && access.text) || 'Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account.')}</p>\n`;
+  out += `<h2 class="ph-subhead">Tutorial videos</h2>\n`;
+  let n = 0;
+  for (const x of [vantaca, zoom].filter(Boolean)) {
+    out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(x.external)}" aria-label="Play: ${esc(x.title)}">▶</a><div><div class="ph-row-title"><a href="${esc(x.external)}">${esc(x.title)}</a></div><div class="ph-row-meta">Tutorial video</div></div></div>\n`;
+    n++;
+  }
+  out += `<h2 class="ph-subhead">More video pages</h2>\n`;
+  out += `<nav class="ph-links"><a href="${archUrl('videos.html')}">Latest Committee Videos →</a><span class="ph-dot"> · </span><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage →</a></nav>\n`;
   const topNav = navBar([[archUrl('videos.html'), 'Latest Committee Videos →'], [HUB, HUB_LABEL]]);
-  return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
+  return shell({ title: 'How To Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('how-to-videos.html'), topNav });
 }
 
 // ---------- PHNL issues page + Main Archive Page (Steven, Oct 9) ----------
@@ -407,7 +421,7 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
 // (Committee & Board Meetings, Special Events, Recurring Activities). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
-// Steven, Oct 11: Videos group = How To Videos (videos.html#howto) + Latest Committee Videos (videos.html).
+// Steven, Oct 11: Videos group = How To Videos + Latest Committee Videos + Committee Video Archive.
 // Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
 // (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
 // section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
@@ -415,7 +429,7 @@ const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports'
 const HUB_VIDEO_KEYS = ['videos'];
 const HUB_LISTED = [...HUB_KEEP, ...HUB_VIDEO_KEYS];
 const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
-const HOWTO_GUIDE_HREF = 'videos.html#howto'; // How To is a guide section, not a third video archive page
+// Steven Oct 11: three video surfaces — How To, Latest (videos.html), Committee Video Archive (guide page).
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
   ['Videos', HUB_VIDEO_KEYS],
@@ -424,14 +438,12 @@ function mainPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
   const tile = (k) => {
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
-    // Steven Oct 11: Videos hub tile = Latest Committee Videos (videos.html). How To Videos is separate.
     const label = k === 'videos' ? 'Latest Committee Videos' : S[k].title;
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  // How To Videos first (videos.html#howto), then Latest Committee Videos (videos.html). No guide/Committees tiles.
-  const howtoCount = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html').length;
-  const howToTile = `<a class="pa-tile" href="${HOWTO_GUIDE_HREF}"><b>How To Videos →</b><span>Guide · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
+  const howToTile = `<a class="pa-tile" href="${HOWTO_VIDEOS_HREF}"><b>How To Videos →</b><span>VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
+  const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee Video Archive →</b><span>All curated Board &amp; committee recordings</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
 <h1>Palm Hill Archives</h1>
@@ -442,7 +454,7 @@ function mainPage() {
 `;
   for (const [label, keys] of HUB_GROUPS) {
     if (label === 'Videos') {
-      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${howToTile}\n${keys.map(tile).join('\n')}\n</div>\n`;
+      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${howToTile}\n${keys.map(tile).join('\n')}\n${archiveTile}\n</div>\n`;
     } else {
       body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
     }
@@ -465,7 +477,8 @@ function checkPride(name, html, issuesOnly) {
     const allowed = [
       'index.html',
       ...HUB_LISTED.map((k) => `${k}.html`),
-      HOWTO_GUIDE_HREF,
+      HOWTO_VIDEOS_HREF,
+      COMMITTEE_VIDEO_ARCHIVE_HREF,
     ];
     const extra = links.filter((h) => !allowed.includes(h));
     if (extra.length) throw new Error(`${name}: Main Archive Page unexpected links: ${extra.join(', ')}`);
@@ -638,6 +651,7 @@ function writeHub(file, html) {
   write(file, html);
 }
 for (const k of SECTION_ORDER) writeHub(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
+writeHub(path.join(OUT, 'how-to-videos.html'), howToVideosPage());
 writeHub(path.join(OUT, 'index.html'), checkPride('index.html', issuesPage(), true));
 writeHub(path.join(OUT, HUB), checkPride(HUB, mainPage(), false));
 
