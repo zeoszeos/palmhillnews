@@ -224,7 +224,7 @@ function sectionPage(k) {
     const leftMeta = [fullDate(it), it.byline ? esc(it.byline) : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     if (sec.clean_listen && it.listen) {
       const F = 'Arial,Helvetica,sans-serif';
-      const listen = `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>`;
+      const listen = `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
       out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px">${leftMeta}${listen}</div>\n`;
     } else {
       const meta = [leftMeta, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
@@ -246,7 +246,7 @@ function sectionPage(k) {
 
 function videosPage() {
   const sec = S.videos;
-  // Steven Oct 11: How-To Videos Archive lists all three how-tos (guide page + Chuck VANTACA + Zoom).
+  // Steven Oct 11: How To Videos (videos.html#howto) lists all three how-tos (guide page + Chuck VANTACA + Zoom).
   const howto = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html');
   let out = `${crumbs('Meeting Videos')}\n<h1 class="ph-section">Board &amp; Committee Meeting Videos</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
@@ -407,7 +407,7 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
 // (Committee & Board Meetings, Special Events, Recurring Activities). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
-// Steven, Oct 11: Videos group = How-To Videos Archive (videos.html#howto, all three how-tos) + Video Archives only.
+// Steven, Oct 11: Videos group = How To Videos (videos.html#howto, all three how-tos) + Video Archives only.
 // Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
 // (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
 // section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
@@ -429,9 +429,9 @@ function mainPage() {
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  // How-To Videos Archive first (all three how-tos on videos.html#howto), then Video Archives. No guide/Committees tiles.
+  // How To Videos first (all three how-tos on videos.html#howto), then Video Archives. No guide/Committees tiles.
   const howtoCount = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html').length;
-  const howToTile = `<a class="pa-tile" href="${HOWTO_ARCHIVE_HREF}"><b>How-To Videos Archive →</b><span>${howtoCount} how-tos · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
+  const howToTile = `<a class="pa-tile" href="${HOWTO_ARCHIVE_HREF}"><b>How To Videos →</b><span>${howtoCount} how-tos · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
 <h1>Palm Hill Archives</h1>
