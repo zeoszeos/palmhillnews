@@ -209,12 +209,48 @@ main{padding-top:14px}
   window.addEventListener('pagehide', stopReading);
   updateControls();
   // ph-listen-autoplay:start (scripts/build_archive.js; Steven Oct 11: Listen link starts reading right away)
-  // Start reading on arrival; ?autoplay=0 opts out. If the browser blocks it (iPhone/Safari, or no tap yet on
-  // this site), the controls stay ready and the status line simply says "Tap ... to begin". No error popups.
+  // Start reading on arrival; ?autoplay=0 opts out. Browsers only allow speech without a tap when the visitor
+  // arrived by clicking inside palmhillnews.vercel.app; opened cold from the email (Gmail, Outlook, a saved file)
+  // Chrome/Edge/Safari refuse it ("not-allowed"). Then a large "Tap anywhere to start listening" bar appears and the
+  // FIRST tap, click or key press anywhere on the page starts reading (Steven Oct 11, Chair Report Listen links).
   if (new URLSearchParams(location.search).get('autoplay') !== '0') {
     const autoStart = () => { if (state === 'idle') beginReading(true); };
     if (document.readyState === 'complete') window.setTimeout(autoStart, 0);
     else window.addEventListener('load', autoStart, {once: true});
+    const hint = document.createElement('button');
+    hint.type = 'button';
+    hint.className = 'ph-tap-hint';
+    hint.hidden = true;
+    hint.textContent = '🔊 Tap anywhere to start listening';
+    hint.style.cssText = 'width:100%;margin:0 0 14px;padding:16px 12px;box-sizing:border-box;border:2px solid #2d5016;border-radius:10px;background:#fff6cf;color:#1a1a1a;font:bold 22px/1.3 Arial,Helvetica,sans-serif;cursor:pointer';
+    const controls = document.querySelector('.controls');
+    if (controls) controls.parentNode.insertBefore(hint, controls);
+    let armed = true;
+    const disarm = () => {
+      armed = false;
+      hint.hidden = true;
+      document.removeEventListener('click', onTap, true);
+      document.removeEventListener('keydown', onTap, true);
+    };
+    function onTap(event) {
+      if (!armed) return;
+      if (started) { disarm(); return; }
+      if (event.type === 'keydown' && ['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) return;
+      // The player's own buttons and settings keep their normal behaviour.
+      if (event.target !== hint && event.target.closest && event.target.closest('.controls, a')) { disarm(); return; }
+      disarm();
+      if (state !== 'paused') beginReading();
+    }
+    document.addEventListener('click', onTap, true);
+    document.addEventListener('keydown', onTap, true);
+    const watch = window.setInterval(() => {
+      if (!armed || started) { window.clearInterval(watch); if (started) disarm(); return; }
+      if (state === 'idle') {
+        hint.hidden = false;
+        status.textContent = 'Your browser needs one tap first. Tap anywhere on this page to start listening.';
+        window.clearInterval(watch);
+      }
+    }, 200);
   }
   // ph-listen-autoplay:end
 })();
