@@ -107,6 +107,9 @@ const pageUrl = (p) => `${BASE}/pages/${p}`;
 const archUrl = (p) => `${BASE}/pages/archive/${p}`;
 const pageExists = (p) => fs.existsSync(path.join(PAGES, p));
 
+// Newsletter green/gold speaker icon (Chair Reports / clean Listen; Steven Oct 11).
+const LISTEN_ICON = 'https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png';
+
 function write(file, content) {
   built.set(file, content);
   const prev = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
@@ -214,8 +217,17 @@ function sectionPage(k) {
       : it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    const meta = [fullDate(it), it.byline ? esc(it.byline) : null, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
-    out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
+    // President's Message archive (clean_listen): speaker icon + Listen RIGHT-justified on the date line
+    // (same control as Chair Report detail pages; Steven Oct 11). Other sections keep inline "Listen →".
+    const leftMeta = [fullDate(it), it.byline ? esc(it.byline) : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
+    if (sec.clean_listen && it.listen) {
+      const F = 'Arial,Helvetica,sans-serif';
+      const listen = `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>`;
+      out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px">${leftMeta}${listen}</div>\n`;
+    } else {
+      const meta = [leftMeta, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
+      out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
+    }
     if (it.pdf) out += `<nav class="ph-links"><a href="${BASE}/${it.pdf}">Original PDF Report →</a><span class="ph-dot"> · </span>${it.page ? `<a href="${pageUrl(it.page)}">HTML Report →</a>` : ''}</nav>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
     if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
@@ -528,7 +540,6 @@ function stripFor(k, page, headerText = '') {
 // "dateline_listen" sections (Committee Chair Reports), Steven Oct 10: the full date LEFT-justified and the
 // newsletter's green/gold speaker icon + "Listen" RIGHT-justified on the same row (links to the item's listen page).
 // No listen page -> date alone, still left-justified. Row is the width of the content card.
-const LISTEN_ICON = 'https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png';
 function listenDateline(it) {
   const F = 'Arial,Helvetica,sans-serif';
   const link = it.listen ? `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>` : '';
