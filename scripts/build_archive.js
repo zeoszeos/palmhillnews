@@ -255,9 +255,9 @@ function videosPage() {
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
-  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${HOWTO_VIDEOS_HREF}">How To Videos →</a></nav>\n`;
+  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${HOWTO_VIDEOS_HREF}">Did You Know →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  const topNav = navBar([[HOWTO_VIDEOS_HREF, 'How To Videos →'], [HUB, HUB_LABEL]]);
+  const topNav = navBar([[HOWTO_VIDEOS_HREF, 'Did You Know →'], [HUB, HUB_LABEL]]);
   return shell({ title: `${pageTitle} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
@@ -270,7 +270,7 @@ function howToVideosPage() {
   const accessHref = (access && access.external) || COMMITTEE_VIDEO_ARCHIVE_HREF;
   const accessLabel = (access && access.external_label) || 'Latest Board and committee recordings →';
   const accessSource = (access && access.source_label) || 'Palm Hill Webmaster notice, September 27';
-  let out = `${crumbs('How To Videos')}\n<h1 class="ph-section">How To Videos</h1>\n`;
+  let out = `${crumbs('Did You Know')}\n<h1 class="ph-section">Did You Know</h1>\n`;
   out += `<h2 class="ph-subhead">How to Access Board and Committee Meeting Videos</h2>\n`;
   out += `<p class="ph-detail">${esc(accessText)}</p>\n`;
   out += `<nav class="ph-links"><a href="${esc(accessHref)}">${esc(accessLabel)}</a></nav>\n`;
@@ -284,7 +284,7 @@ function howToVideosPage() {
   out += `<h2 class="ph-subhead">More video pages</h2>\n`;
   out += `<nav class="ph-links"><a href="${archUrl('videos.html')}">Latest Committee Videos →</a><span class="ph-dot"> · </span><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage →</a></nav>\n`;
   const topNav = navBar([[archUrl('videos.html'), 'Latest Committee Videos →'], [HUB, HUB_LABEL]]);
-  return shell({ title: 'How To Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('how-to-videos.html'), topNav });
+  return shell({ title: 'Did You Know — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('how-to-videos.html'), topNav });
 }
 
 
@@ -424,11 +424,11 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
   return prideShell({ title: 'The Palm Hill Newsletter — Every Issue', canonical: archUrl('index.html'), hero, body });
 }
 
-// pages/archive/main.html — Main Archive Page: newsletter archives first, then How To Videos + Latest Committee Videos.
+// pages/archive/main.html — Main Archive Page: newsletter archives first, then Did You Know + Latest Committee Videos.
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
 // (Committee & Board Meetings, Special Events, Recurring Activities). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
-// Steven, Oct 11: Videos group = How To Videos + Latest Committee Videos + Committee Video Archive.
+// Steven, Oct 11: Videos group = Did You Know + Latest Committee Videos + Committee Video Archive.
 // Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
 // (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
 // section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
@@ -449,7 +449,7 @@ function mainPage() {
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  const howToTile = `<a class="pa-tile" href="${HOWTO_VIDEOS_HREF}"><b>How To Videos →</b><span>VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
+  const howToTile = `<a class="pa-tile" href="${HOWTO_VIDEOS_HREF}"><b>Did You Know →</b><span>VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
   const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee Video Archive →</b><span>All curated Board &amp; committee recordings</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
