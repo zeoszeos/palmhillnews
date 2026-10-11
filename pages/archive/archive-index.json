@@ -1172,7 +1172,7 @@
         {
           "date": "2026-10-04",
           "title": "How to Access Board and Committee Meeting Videos",
-          "url": "https://palmhillnews.vercel.app/pages/2026-10-04-committee-video-guide.html",
+          "url": null,
           "issues": [
             "2026-10-04"
           ]
@@ -1218,7 +1218,7 @@
       ]
     },
     "videos": {
-      "title": "Meeting Videos",
+      "title": "Latest Committee Videos",
       "url": "https://palmhillnews.vercel.app/pages/archive/videos.html",
       "email_link_label": "Past Videos →",
       "page_link_label": "Previous Videos →",
