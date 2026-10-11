@@ -248,27 +248,33 @@ function sectionPage(k) {
 }
 
 function videosPage() {
-  // Steven Oct 11: videos.html = Latest Committee Videos ONLY (no How To section).
+  // Steven Oct 11: videos.html = Latest only (no How To). Title: Latest Committee & Board Meeting Videos.
   const sec = S.videos;
-  let out = `${crumbs('Latest Committee Videos')}\n<h1 class="ph-section">Latest Committee Videos</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
+  const pageTitle = sec.title; // Latest Committee & Board Meeting Videos
+  let out = `${crumbs(pageTitle)}\n<h1 class="ph-section">${esc(pageTitle)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
   out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${HOWTO_VIDEOS_HREF}">How To Videos →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
   const topNav = navBar([[HOWTO_VIDEOS_HREF, 'How To Videos →'], [HUB, HUB_LABEL]]);
-  return shell({ title: 'Latest Committee Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
+  return shell({ title: `${pageTitle} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
 function howToVideosPage() {
-  // Steven Oct 11: separate How To page (not mixed into videos.html).
+  // Steven Oct 11: separate How To page. Primary = Access article from last issue; tutorials below.
   const vantaca = S['did-you-know'].items.find((x) => /VANTACA/i.test(x.title));
   const zoom = S['did-you-know'].items.find((x) => /Zoom/i.test(x.title));
   const access = S['did-you-know'].items.find((x) => /Access Board and Committee/i.test(x.title));
+  const accessText = (access && access.text) || 'Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account; allow time after each meeting for videos to be posted.';
+  const accessHref = (access && access.external) || COMMITTEE_VIDEO_ARCHIVE_HREF;
+  const accessLabel = (access && access.external_label) || 'Latest Board and committee recordings →';
+  const accessSource = (access && access.source_label) || 'Palm Hill Webmaster notice, September 27';
   let out = `${crumbs('How To Videos')}\n<h1 class="ph-section">How To Videos</h1>\n`;
-  out += `<p class="ph-lead">Tutorials and a short guide for watching Palm Hill Board and committee meetings from home.</p>\n`;
-  out += `<h2 class="ph-subhead">How to find committee videos</h2>\n`;
-  out += `<p class="ph-detail">${esc((access && access.text) || 'Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account.')}</p>\n`;
+  out += `<h2 class="ph-subhead">How to Access Board and Committee Meeting Videos</h2>\n`;
+  out += `<p class="ph-detail">${esc(accessText)}</p>\n`;
+  out += `<nav class="ph-links"><a href="${esc(accessHref)}">${esc(accessLabel)}</a></nav>\n`;
+  out += `<p class="ph-source">Source: ${esc(accessSource)}</p>\n`;
   out += `<h2 class="ph-subhead">Tutorial videos</h2>\n`;
   let n = 0;
   for (const x of [vantaca, zoom].filter(Boolean)) {
@@ -280,6 +286,7 @@ function howToVideosPage() {
   const topNav = navBar([[archUrl('videos.html'), 'Latest Committee Videos →'], [HUB, HUB_LABEL]]);
   return shell({ title: 'How To Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('how-to-videos.html'), topNav });
 }
+
 
 // ---------- PHNL issues page + Main Archive Page (Steven, Oct 9) ----------
 // No masthead, no main-PHNL footer: a quiet green title band, then the content. Three-letter months (L21).
