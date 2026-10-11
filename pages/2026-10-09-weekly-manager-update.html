@@ -45,7 +45,7 @@ main { width:min(780px,100%); }
 </style></head><body>
 <header><div class="page-kicker">Palm Hill Country Club</div><h1>Weekly Manager Update</h1><p class="header-meta">From the Palm Hill office · Megan Leftwich, On-Site Manager</p></header>
 <!-- ph-archive-nav:start -->
-<div class="ph-story-nav" role="navigation" aria-label="Story date and back" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif">Friday, Oct 9, 2026</span></div><div class="ph-story-back" style="margin:6px 0 0"><a href="https://palmhillnews.vercel.app/pages/archive/weekly-manager-updates.html" onclick="if(document.referrer&&history.length>1){history.back();return false}" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap">← Back</a></div></div>
+<div class="ph-story-nav" role="navigation" aria-label="Story date and back" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif">Friday, Oct 9, 2026</span><a class="ph-listen" href="#" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a></div><div class="ph-story-back" style="margin:6px 0 0"><a href="https://palmhillnews.vercel.app/pages/archive/weekly-manager-updates.html" onclick="if(document.referrer&&history.length>1){history.back();return false}" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap">← Back</a></div></div>
 <!-- ph-archive-nav:end -->
 <main><section class="content-card">
 <p>Good Afternoon Everyone,</p>
@@ -69,4 +69,71 @@ main { width:min(780px,100%); }
 </section>
 <section class="content-card"><p class="source"><a href="https://palmhillnews.vercel.app/pages/2026-10-09-weekly-manager-update.html">Source</a>: Weekly Update 2026.10.9 (Fri, Oct 9, 2026)</p></section></main>
 
+<!-- ph-page-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    const h1 = document.querySelector('h1');
+    const blocks = Array.from(document.querySelectorAll('main .content-card'))
+      .filter((el) => !el.classList.contains('attachments') && !el.querySelector('p.source, .source'))
+      .map((el) => el.innerText.trim())
+      .filter(Boolean);
+    return [h1 ? h1.textContent : '', ...blocks].flatMap(chunks);
+  }
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  const q = new URLSearchParams(location.search);
+  if (q.get('listen') === '1' || q.get('autoplay') === '1') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-page-listen:end -->
 </body></html>
