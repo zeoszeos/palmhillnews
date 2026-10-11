@@ -51,7 +51,7 @@ Inputs:   archive/archive-items.json        curated issues, section items, hidde
           pages/*.html                      existing detail pages (must exist; never renamed)
           DIR/<issues[].nas minus 02-Issues/>  (--issues-from) sent newsletter HTML, NAS 02-Issues layout
                                             (<YYYY-MM>/<send date>/sent-final/<file>); fallback DIR/<date>/<basename>
-Outputs:  pages/archive/index.html (PHNL issues only), pages/archive/main.html (Main Archive Page), pages/archive/<section>.html (10), pages/archive/archive-index.json,
+Outputs:  pages/archive/index.html (PHNL issues only), pages/archive/main.html (Main Archive Page), pages/archive/<section>.html (10), pages/archive/did-you-know-videos.html, pages/archive/archive-index.json,
           pages/archive/issues/<date>.html (only with --issues-from; written once),
           marked nav strip in each listed detail page
 Exit:     0 ok; 1 with --check if anything is out of date; non-zero on any missing page/source
@@ -243,6 +243,22 @@ function videosPage() {
   out += `<p class="ph-source">Source: ${esc(sec.snapshot)}. Recordings open in Google Drive.</p>\n`;
   const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], [HUB, HUB_LABEL]]);
   return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
+}
+
+// ---------- Did You Know? videos (Steven, Oct 10) ----------
+// The how-to video tips (DYK items with "external") left the weekly email on Oct 11 and live on their own page,
+// pages/archive/did-you-know-videos.html: title, the one-line tip, and the Watch link, same light archive bar.
+const DYK_VIDEOS = 'did-you-know-videos.html';
+function dykVideosPage() {
+  const vids = S['did-you-know'].items.filter((x) => x.external);
+  if (!vids.length) throw new Error(`${DYK_VIDEOS}: no Did You Know? items with a video ("external")`);
+  let out = `${crumbs('Did You Know? Videos')}\n<h1 class="ph-section">Did You Know? Videos</h1>\n<p class="ph-lead">Short how-to videos from past newsletters. Tap a title to watch.</p>\n`;
+  vids.forEach((x, n) => {
+    const id = x.id ? ` id="${esc(x.id)}"` : '';
+    out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"${id}><a class="ph-play" href="${esc(x.external)}" aria-label="Play: ${esc(x.title)}">▶</a><div><div class="ph-row-title"><a href="${esc(x.external)}">${esc(x.title)}</a></div><div class="ph-detail">${esc(x.text)}</div><nav class="ph-links"><a href="${esc(x.external)}">${esc(x.external_label || 'Watch the tutorial video →')}</a></nav></div></div>\n`;
+  });
+  const topNav = navBar([['did-you-know.html', S['did-you-know'].prev], [HUB, HUB_LABEL]]);
+  return shell({ title: 'Did You Know? Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl(DYK_VIDEOS), topNav });
 }
 
 // ---------- PHNL issues page + Main Archive Page (Steven, Oct 9) ----------
@@ -592,6 +608,7 @@ function writeHub(file, html) {
 for (const k of SECTION_ORDER) writeHub(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
 writeHub(path.join(OUT, 'index.html'), checkPride('index.html', issuesPage(), true));
 writeHub(path.join(OUT, HUB), checkPride(HUB, mainPage(), false));
+writeHub(path.join(OUT, DYK_VIDEOS), dykVideosPage());
 
 const stripped = new Map();
 for (const k of SECTION_ORDER) for (const it of S[k].items) if (it.page && !stripped.has(it.page)) stripped.set(it.page, it.strip_as || k);
