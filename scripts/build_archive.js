@@ -395,24 +395,37 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
   return prideShell({ title: 'The Palm Hill Newsletter — Every Issue', canonical: archUrl('index.html'), hero, body });
 }
 
-// pages/archive/main.html — Main Archive Page: newsletter archives ONLY, the Newsletter issues first.
+// pages/archive/main.html — Main Archive Page: newsletter archives first, then Video Archives + How-to.
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
-// (Committee & Board Meetings, Special Events, Recurring Activities, Meeting Videos). Those section pages stay
+// (Committee & Board Meetings, Special Events, Recurring Activities). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
+// Steven, Oct 11: add Video Archives (videos.html) and How to Find Videos (committee video guide + Committees webpage).
 // Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
 // (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
 // section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
 const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports', 'manager-reports', 'weekly-manager-updates'];
-const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_KEEP.includes(k));
+const HUB_VIDEO_KEYS = ['videos'];
+const HUB_LISTED = [...HUB_KEEP, ...HUB_VIDEO_KEYS];
+const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
+const VIDEO_GUIDE_HREF = '../2026-10-04-committee-video-guide.html';
+const COMMITTEES_HREF = 'https://www.palmhillcountryclub.net/committees/';
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
+  ['Videos', HUB_VIDEO_KEYS],
 ];
 function mainPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
   const tile = (k) => {
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
-    return `<a class="pa-tile" href="${k}.html"><b>${esc(S[k].title)} →</b><span>${items.length} item${items.length === 1 ? '' : 's'} · newest ${shortDate(newest)}</span></a>`;
+    // Videos use hub_label ("Video Archives"); other hub tiles keep their section title wording.
+    const label = k === 'videos' ? (S[k].hub_label || S[k].title) : S[k].title;
+    const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
+    return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
+  const howToTiles = [
+    `<a class="pa-tile" href="${VIDEO_GUIDE_HREF}"><b>How to Find Videos →</b><span>Step-by-step guide for Board &amp; committee recordings</span></a>`,
+    `<a class="pa-tile" href="${COMMITTEES_HREF}"><b>Committees Webpage →</b><span>All recordings on the Palm Hill website (sign-in may be required)</span></a>`,
+  ].join('\n');
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
 <h1>Palm Hill Archives</h1>
@@ -422,11 +435,16 @@ function mainPage() {
 <a class="pa-feature" href="index.html">${newspaperIcon({ stroke: '#2d5016', paper: '#ffffff', w: 64 })}<span><b>The Palm Hill Newsletter →</b><span>Every issue · ${volNo(first).replace(/, No\. \d+$/, '')}, No. ${first.number}–${latest.number} · ${shortDate(first.date)} – ${midDate(latest.date)}</span></span></a>
 `;
   for (const [label, keys] of HUB_GROUPS) {
-    body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
+    if (label === 'Videos') {
+      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n${howToTiles}\n</div>\n`;
+    } else {
+      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
+    }
   }
   body += `</main>`;
   return prideShell({ title: 'Palm Hill Archives', canonical: archUrl(HUB), hero, body });
 }
+
 // Fail closed: the issues page lists PHNL issues only (plus the one link up to the Main Archive Page), carries no
 // masthead, and every month is three letters (L21).
 const FULL_MONTH = /\b(January|February|March|April|June|July|August|September|October|November|December)\b/;
@@ -438,10 +456,15 @@ function checkPride(name, html, issuesOnly) {
     const hit = HUB_EXCLUDE.filter((k) => html.includes(`href="${k}.html"`) || html.includes(esc(S[k].title)));
     if (hit.length) throw new Error(`${name}: Main Archive Page must not list ${hit.join(', ')}`);
     const links = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]);
-    const allowed = ['index.html', ...HUB_KEEP.map((k) => `${k}.html`)];
+    const allowed = [
+      'index.html',
+      ...HUB_LISTED.map((k) => `${k}.html`),
+      VIDEO_GUIDE_HREF,
+      COMMITTEES_HREF,
+    ];
     const extra = links.filter((h) => !allowed.includes(h));
-    if (extra.length) throw new Error(`${name}: Main Archive Page is newsletter archives only; unexpected links: ${extra.join(', ')}`);
-    if (/Meetings, Events|Recurring Activities|Meeting Videos|Special Events/.test(html)) throw new Error(`${name}: Meetings, Events & Activities must not appear`);
+    if (extra.length) throw new Error(`${name}: Main Archive Page unexpected links: ${extra.join(', ')}`);
+    if (/Meetings, Events|Recurring Activities|Special Events/.test(html)) throw new Error(`${name}: Meetings, Events & Activities must not appear`);
   }
   if (issuesOnly) {
     const bad = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]).filter((h) => !/^issues\/\d{4}-\d{2}-\d{2}\.html$/.test(h) && h !== HUB);
