@@ -17,4 +17,70 @@ main { width:min(780px,100%); }
 <!-- ph-archive-nav:end -->
 <main><article class="content-card"><p>Tony Ciaramitaro chaired his first meeting as the committee&#x27;s new chair, with all nine members present. The Aug 17 minutes were approved as corrected.</p><p>Webmaster: 174 email blasts have gone out to 1,357 addresses since the Jun 8 meeting.</p><p>The LINK: the committee is looking at simple ways to get reader feedback through the LINK distributors.</p><p>Community Channel: all Board and committee meeting recordings have been uploaded except the Aug 17 Communications meeting, which was too large for the upload limit.</p><p>Booking system: the new online booking system and calendar go live Oct 1. The committee will put out a short notice to residents before the switch.</p><p>e-Newsletter: Steve Leonowicz walked the committee through the weekly e-newsletter. Committee chairs are encouraged to send meeting summaries to palmhillblast@gmail.com.</p><p>Facebook: the committee voted 7 to 2 to resume the association&#x27;s Facebook page on a two-month trial as a one-way channel, with comments turned off and posting limited to Jean Stjernstrom, Gail Stott and Tony Ciaramitaro. The Board&#x27;s 2021 content policy still applies, and Nextdoor stays off. The chair will report back at the end of the trial.</p><p>Candidates Night: Elaine Winegar, Lisa Bria, Gail Stott and Tony Ciaramitaro formed a working group and set its first planning meeting for Sep 23. After the meeting, Candidates Night was scheduled for Wednesday, Jan 6, 2027, and a survey was sent to past Board candidates.</p><p>Committee-run Zoom training was discussed to ease the load on Zoom volunteers. No decision was made; the chair will return with a proposal.</p><p>Next meeting: Monday, Oct 12, 2026 at 10:00 AM, South Clubhouse Boardroom and Zoom.</p><p>Source: Communications Committee Report</p></article></main>
 
+<!-- ph-chair-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    if (document.body.dataset.phAutoplay === '1') link.hidden = true;
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this report'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    const lines = Array.from(document.querySelectorAll('article h2, article h3, article p, article li'))
+      .map((e) => e.innerText.trim()).filter((t) => t && !t.startsWith('Source:'));
+    const h1 = document.querySelector('h1');
+    return [h1 ? h1.textContent : '', ...lines].flatMap(chunks);
+  }
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  // Autoplay refused: the first tap/click on the page (not on another link) starts reading. No banner.
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  if (document.body.dataset.phAutoplay === '1' && new URLSearchParams(location.search).get('autoplay') !== '0') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-chair-listen:end -->
 </body></html>

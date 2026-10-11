@@ -22,4 +22,70 @@ main { width:min(780px,100%); }
 <!-- ph-archive-nav:end -->
 <main><article class="content-card"><p>The Golf Advisory Committee met Tuesday, Sep 8, 2026 at 2:00 PM.</p><p>Course: sprinkler piping work is ongoing; a new sandtrap was installed on hole #1; the temporary green is still growing in and grass delivery is pending; routine mowing and trimming continue.</p><p>Finances: Megan Leftwich submitted the Jul financial report. Caroline Zimmerman will follow up on an income-category breakout and separate tax-expense line. Randy requested paid membership and golf-cart records.</p><p>Code of Conduct: the Golf Code of Conduct was tabled at the Aug 30 Board meeting pending minor Violation-section edits and will be resubmitted.</p><p>Minutes and newsletter: meeting minutes were sent to Victoria Bruce for posting. Carolyn Story wrote Sep and Oct newsletter articles.</p><p>Leagues: Couples League begins Nov 5 and runs 26 weeks; Bandits continued through summer.</p><p>Golf clinic: a Nov 18 golf clinic, proposed name Taste of Golf, would have 14 host-led stations teaching the game, proposed CoEd, Men and Women grouping options, a shotgun start and a 19th-hole social.</p><p>Next meeting: Tuesday, Oct 13, 2026 at 2:00 PM.</p><p>Source: Golf Advisory Committee Report (Carolyn Story)</p></article></main>
 
+<!-- ph-chair-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    if (document.body.dataset.phAutoplay === '1') link.hidden = true;
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this report'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    const lines = Array.from(document.querySelectorAll('article h2, article h3, article p, article li'))
+      .map((e) => e.innerText.trim()).filter((t) => t && !t.startsWith('Source:'));
+    const h1 = document.querySelector('h1');
+    return [h1 ? h1.textContent : '', ...lines].flatMap(chunks);
+  }
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  // Autoplay refused: the first tap/click on the page (not on another link) starts reading. No banner.
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  if (document.body.dataset.phAutoplay === '1' && new URLSearchParams(location.search).get('autoplay') !== '0') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-chair-listen:end -->
 </body></html>
