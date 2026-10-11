@@ -222,13 +222,14 @@ function sectionPage(k) {
       : it.page
       ? `<a class="ph-row-title" href="${pageUrl(it.page)}">${esc(it.title)} →</a>`
       : `<span class="ph-row-title">${esc(it.title)}</span>`;
-    // President's Message archive (clean_listen): speaker icon + Listen RIGHT-justified on the date line
-    // (same control as Chair Report detail pages; Steven Oct 11). Other sections keep inline "Listen →".
+    // clean_listen archive rows (President's Message, Community Stories): speaker + Listen on the TITLE line,
+    // right-justified, same font size as .ph-row-title (15px bold). Date/byline stay on the meta line below.
+    // (Steven Oct 11). Other sections keep inline "Listen →".
     const leftMeta = [fullDate(it), it.byline ? esc(it.byline) : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     if (sec.clean_listen && it.listen) {
       const F = 'Arial,Helvetica,sans-serif';
-      const listen = `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
-      out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px">${leftMeta}${listen}</div>\n`;
+      const listen = `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;color:#1d4310;font:bold 15px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
+      out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}><div class="ph-row-line">${head}${listen}</div>\n<div class="ph-row-meta">${leftMeta}</div>\n`;
     } else {
       const meta = [leftMeta, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
       out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
