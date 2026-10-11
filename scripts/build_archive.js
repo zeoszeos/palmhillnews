@@ -438,6 +438,7 @@ const HUB_VIDEO_KEYS = ['videos'];
 const HUB_LISTED = [...HUB_KEEP, ...HUB_VIDEO_KEYS];
 const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
 // Steven Oct 11: three video surfaces — Did You Know, Latest (videos.html), Committee Video Archive (guide page).
+// Steven Oct 11: Did You Know tile subtitle 3 videos · newest Oct 4 (redeploy).
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
   ['Videos', HUB_VIDEO_KEYS],
