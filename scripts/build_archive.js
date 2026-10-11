@@ -188,7 +188,9 @@ function navBar(links) {
 // ---------- section pages ----------
 function sectionPage(k) {
   const sec = S[k];
-  let out = `${crumbs(sec.title)}\n<h1 class="ph-section">${esc(sec.title)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n`;
+  // Steven Oct 11: presidents-message page header is President's Message Archives (hub_label).
+  const sectionHeading = k === 'presidents-message' ? (sec.hub_label || "President's Message Archives") : sec.title;
+  let out = `${crumbs(sectionHeading)}\n<h1 class="ph-section">${esc(sectionHeading)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n`;
   let month = null; let n = 0;
   let rows = sorted(k);
   // "feature_latest": the newest item leads the page as the current one; the rest list below as previous items.
@@ -244,17 +246,23 @@ function sectionPage(k) {
 
 function videosPage() {
   const sec = S.videos;
-  const dyk = S['did-you-know'].items.filter((x) => x.external);
+  // Steven Oct 11: How-To Videos Archive lists all three how-tos (guide page + Chuck VANTACA + Zoom).
+  const howto = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html');
   let out = `${crumbs('Meeting Videos')}\n<h1 class="ph-section">Board &amp; Committee Meeting Videos</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
-  out += `<h2 class="ph-subhead">How-To Videos</h2>\n`;
-  dyk.forEach((x, n) => {
-    out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(x.external)}" aria-label="Play: ${esc(x.title)}">▶</a><div><div class="ph-row-title"><a href="${esc(x.external)}">${esc(x.title)}</a></div><div class="ph-row-meta">Tutorial video</div></div></div>\n`;
+  out += `<h2 class="ph-subhead" id="howto">How-To Videos</h2>\n`;
+  howto.forEach((x, n) => {
+    const href = x.external || pageUrl(x.page);
+    const meta = x.external ? 'Tutorial video' : 'Step-by-step guide';
+    const play = x.external
+      ? `<a class="ph-play" href="${esc(href)}" aria-label="Play: ${esc(x.title)}">▶</a>`
+      : `<a class="ph-play" href="${esc(href)}" aria-label="Open: ${esc(x.title)}">→</a>`;
+    out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}">${play}<div><div class="ph-row-title"><a href="${esc(href)}">${esc(x.title)}</a></div><div class="ph-row-meta">${meta}</div></div></div>\n`;
   });
-  out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">All recordings on the Palm Hill website (sign-in required) →</a></nav>\n`;
-  out += `<p class="ph-source">Source: ${esc(sec.snapshot)}. Recordings open in Google Drive.</p>\n`;
+  out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></nav>\n`;
+  out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
   const topNav = navBar([[pageUrl('2026-10-04-committee-video-guide.html'), 'How to Find Videos →'], [HUB, HUB_LABEL]]);
   return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
@@ -399,7 +407,7 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
 // Steven, Oct 9: no Community Notices or Did You Know? tiles, and no Meetings, Events & Activities group
 // (Committee & Board Meetings, Special Events, Recurring Activities). Those section pages stay
 // (detail pages still link "Previous Notices →", "Previous Meetings →" etc.); they are just not listed here.
-// Steven, Oct 11: add Video Archives (videos.html) and How to Find Videos (committee video guide + Committees webpage).
+// Steven, Oct 11: Videos group = How-To Videos Archive (videos.html#howto, all three how-tos) + Video Archives only.
 // Steven, Oct 9: Megan's monthly report (prepared for each Board meeting) is "Monthly Shareholders Reports"
 // (section key manager-reports kept so its URL and #anchors stay permanent); her weekly office updates are their own
 // section, Weekly Manager Updates. Fail closed if a weekly item lands in the monthly section or vice versa.
@@ -407,8 +415,7 @@ const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports'
 const HUB_VIDEO_KEYS = ['videos'];
 const HUB_LISTED = [...HUB_KEEP, ...HUB_VIDEO_KEYS];
 const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
-const VIDEO_GUIDE_HREF = '../2026-10-04-committee-video-guide.html';
-const COMMITTEES_HREF = 'https://www.palmhillcountryclub.net/committees/';
+const HOWTO_ARCHIVE_HREF = 'videos.html#howto';
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
   ['Videos', HUB_VIDEO_KEYS],
@@ -422,10 +429,9 @@ function mainPage() {
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  const howToTiles = [
-    `<a class="pa-tile" href="${VIDEO_GUIDE_HREF}"><b>How to Find Videos →</b><span>Step-by-step guide for Board &amp; committee recordings</span></a>`,
-    `<a class="pa-tile" href="${COMMITTEES_HREF}"><b>Committees Webpage →</b><span>All recordings on the Palm Hill website (sign-in may be required)</span></a>`,
-  ].join('\n');
+  // How-To Videos Archive first (all three how-tos on videos.html#howto), then Video Archives. No guide/Committees tiles.
+  const howtoCount = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html').length;
+  const howToTile = `<a class="pa-tile" href="${HOWTO_ARCHIVE_HREF}"><b>How-To Videos Archive →</b><span>${howtoCount} how-tos · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
 <h1>Palm Hill Archives</h1>
@@ -436,7 +442,7 @@ function mainPage() {
 `;
   for (const [label, keys] of HUB_GROUPS) {
     if (label === 'Videos') {
-      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n${howToTiles}\n</div>\n`;
+      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${howToTile}\n${keys.map(tile).join('\n')}\n</div>\n`;
     } else {
       body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
     }
@@ -459,8 +465,7 @@ function checkPride(name, html, issuesOnly) {
     const allowed = [
       'index.html',
       ...HUB_LISTED.map((k) => `${k}.html`),
-      VIDEO_GUIDE_HREF,
-      COMMITTEES_HREF,
+      HOWTO_ARCHIVE_HREF,
     ];
     const extra = links.filter((h) => !allowed.includes(h));
     if (extra.length) throw new Error(`${name}: Main Archive Page unexpected links: ${extra.join(', ')}`);
