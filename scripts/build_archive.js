@@ -409,6 +409,13 @@ const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_KEEP.includes(k));
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
 ];
+// Steven, Oct 11: a Videos group on the Main Archive Page — the committee/board meeting video guide and the
+// Did You Know? how-to videos, each its own tile. Fixed links (not archive sections), so the checks below allow them.
+const COMMITTEE_VIDEOS_URL = 'https://palmhillnews.vercel.app/pages/2026-10-04-committee-video-guide.html';
+const HUB_VIDEO_TILES = [
+  { href: COMMITTEE_VIDEOS_URL, title: 'Committee Videos', sub: 'Latest committee and Board meeting videos' },
+  { href: DYK_VIDEOS, title: 'Did You Know? Videos', sub: 'Short how-to videos from past newsletters' },
+];
 function mainPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
   const tile = (k) => {
@@ -426,6 +433,7 @@ function mainPage() {
   for (const [label, keys] of HUB_GROUPS) {
     body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
   }
+  body += `<p class="pa-label">Videos</p>\n<div class="pa-grid">\n${HUB_VIDEO_TILES.map((t) => `<a class="pa-tile" href="${t.href}"><b>${esc(t.title)} →</b><span>${esc(t.sub)}</span></a>`).join('\n')}\n</div>\n`;
   body += `</main>`;
   return prideShell({ title: 'Palm Hill Archives', canonical: archUrl(HUB), hero, body });
 }
@@ -437,10 +445,10 @@ function checkPride(name, html, issuesOnly) {
   const vis = html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
   const fm = vis.match(FULL_MONTH); if (fm) throw new Error(`${name}: full month name "${fm[0]}" (L21: three letters)`);
   if (name === HUB) {
-    const hit = HUB_EXCLUDE.filter((k) => html.includes(`href="${k}.html"`) || html.includes(esc(S[k].title)));
+    const hit = HUB_EXCLUDE.filter((k) => html.includes(`href="${k}.html"`) || html.includes(`<b>${esc(S[k].title)} →</b>`));
     if (hit.length) throw new Error(`${name}: Main Archive Page must not list ${hit.join(', ')}`);
     const links = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]);
-    const allowed = ['index.html', ...HUB_KEEP.map((k) => `${k}.html`)];
+    const allowed = ['index.html', ...HUB_KEEP.map((k) => `${k}.html`), ...HUB_VIDEO_TILES.map((t) => t.href)];
     const extra = links.filter((h) => !allowed.includes(h));
     if (extra.length) throw new Error(`${name}: Main Archive Page is newsletter archives only; unexpected links: ${extra.join(', ')}`);
     if (/Meetings, Events|Recurring Activities|Meeting Videos|Special Events/.test(html)) throw new Error(`${name}: Meetings, Events & Activities must not appear`);
