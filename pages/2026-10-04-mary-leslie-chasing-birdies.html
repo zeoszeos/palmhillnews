@@ -13,7 +13,7 @@ a{color:#2d5016}footer{text-align:center;padding:18px 12px 30px;font:14px Arial,
 </style></head><body>
 <header><p>Palm Hill Community Stories</p><h1>97½ and Still Chasing Birdies Instead of Birthdays</h1></header>
 <!-- ph-archive-nav:start -->
-<div class="ph-story-nav" role="navigation" aria-label="Story date and back" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif">Sunday, Oct 4, 2026</span><a href="https://palmhillnews.vercel.app/pages/2026-10-04-listen-mary-leslie-story.html" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap;margin-left:auto">🔊 Listen →</a></div><div class="ph-story-back" style="margin:6px 0 0"><a href="https://palmhillnews.vercel.app/pages/archive/community-stories.html" onclick="if(document.referrer&&history.length>1){history.back();return false}" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap">← Back</a></div></div>
+<div class="ph-story-nav" role="navigation" aria-label="Story date and back" style="display:block;max-width:790px;margin:0 auto;padding:12px 20px 10px;box-sizing:border-box;background:none;border:0;border-bottom:2px solid #2d5016;text-align:left;letter-spacing:0;text-transform:none"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif">Sunday, Oct 4, 2026</span><a class="ph-listen" href="https://palmhillnews.vercel.app/pages/2026-10-04-listen-mary-leslie-story.html" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a></div><div class="ph-story-back" style="margin:6px 0 0"><a href="https://palmhillnews.vercel.app/pages/archive/community-stories.html" onclick="if(document.referrer&&history.length>1){history.back();return false}" style="display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap">← Back</a></div></div>
 <!-- ph-archive-nav:end -->
 <main><p class="byline">Written by Carolyn M. Story, as told by Mary Leslie · Golf Advisory Committee</p>
 <figure><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/mary-leslie-portrait-october-2026.png" width="451" height="580" alt="Mary Leslie smiling in a yellow shirt while seated at a table"><figcaption>Mary Leslie</figcaption></figure>
@@ -30,4 +30,70 @@ a{color:#2d5016}footer{text-align:center;padding:18px 12px 30px;font:14px Arial,
 </article>
 <p class="source">First published in the Palm Hill Link, Oct 2026 (pages 9–10).</p>
 </main>
+<!-- ph-chair-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    if (document.body.dataset.phAutoplay === '1') link.hidden = true;
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    const lines = Array.from(document.querySelectorAll('article h2, article h3, article p, article li'))
+      .map((e) => e.innerText.trim()).filter((t) => t && !t.startsWith('Source:'));
+    const h1 = document.querySelector('h1');
+    return [h1 ? h1.textContent : '', ...lines].flatMap(chunks);
+  }
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  // Autoplay refused: the first tap/click on the page (not on another link) starts reading. No banner.
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  if (document.body.dataset.phAutoplay === '1' && new URLSearchParams(location.search).get('autoplay') !== '0') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-chair-listen:end -->
 </body></html>
