@@ -263,7 +263,7 @@ function videosPage() {
   });
   out += `<nav class="ph-links"><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  const topNav = navBar([[archUrl('videos.html'), 'Video Archives →'], [HUB, HUB_LABEL]]);
+  const topNav = navBar([[archUrl('videos.html'), 'Latest Committee Videos →'], [HUB, HUB_LABEL]]);
   return shell({ title: 'Meeting Videos — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
@@ -415,7 +415,7 @@ const HUB_KEEP = ['community-stories', 'presidents-message', 'committee-reports'
 const HUB_VIDEO_KEYS = ['videos'];
 const HUB_LISTED = [...HUB_KEEP, ...HUB_VIDEO_KEYS];
 const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
-const HOWTO_ARCHIVE_HREF = 'videos.html#howto';
+const HOWTO_GUIDE_HREF = 'videos.html#howto'; // How To is a guide section, not a third video archive page
 const HUB_GROUPS = [
   ['From the Newsletter', HUB_KEEP],
   ['Videos', HUB_VIDEO_KEYS],
@@ -431,7 +431,7 @@ function mainPage() {
   };
   // How To Videos first (videos.html#howto), then Latest Committee Videos (videos.html). No guide/Committees tiles.
   const howtoCount = S['did-you-know'].items.filter((x) => x.external || x.page === '2026-10-04-committee-video-guide.html').length;
-  const howToTile = `<a class="pa-tile" href="${HOWTO_ARCHIVE_HREF}"><b>How To Videos →</b><span>${howtoCount} how-tos · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
+  const howToTile = `<a class="pa-tile" href="${HOWTO_GUIDE_HREF}"><b>How To Videos →</b><span>Guide · VANTACA, Zoom &amp; finding meeting recordings</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
 <h1>Palm Hill Archives</h1>
@@ -465,7 +465,7 @@ function checkPride(name, html, issuesOnly) {
     const allowed = [
       'index.html',
       ...HUB_LISTED.map((k) => `${k}.html`),
-      HOWTO_ARCHIVE_HREF,
+      HOWTO_GUIDE_HREF,
     ];
     const extra = links.filter((h) => !allowed.includes(h));
     if (extra.length) throw new Error(`${name}: Main Archive Page unexpected links: ${extra.join(', ')}`);
