@@ -175,7 +175,12 @@ const HUB = 'main.html';
 const HUB_LABEL = 'All Archives →';
 // Steven Oct 11: How To + Committee Video Archive URLs (used by videosPage / howToVideosPage / mainPage).
 const HOWTO_VIDEOS_HREF = 'how-to-videos.html';
-const COMMITTEE_VIDEO_ARCHIVE_HREF = `${BASE}/pages/2026-10-04-committee-video-guide.html`;
+// Steven Oct 14: archive = Committee & Board Meeting Video Archives hub (built by build_meeting_video_archive.py).
+const COMMITTEE_VIDEO_ARCHIVE_HREF = `${BASE}/pages/archive/meeting-videos.html`;
+// Steven Oct 14: Main Archive Did You Know tile goes to the Did You Know section archive.
+const DYK_TILE_HREF = 'did-you-know.html';
+// Steven Oct 14: DYK "Latest Board and committee recordings" goes to Latest (videos.html).
+const LATEST_VIDEOS_HREF = `${BASE}/pages/archive/videos.html`;
 const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">Palm Hill Archives</a> › ${esc(title)}</p>`;
 
 // ---------- shared archive nav bar (top of page only) ----------
@@ -268,7 +273,7 @@ function howToVideosPage() {
   const zoom = S['did-you-know'].items.find((x) => /Zoom/i.test(x.title));
   const access = S['did-you-know'].items.find((x) => /Access Board and Committee/i.test(x.title));
   const accessText = (access && access.text) || 'Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account; allow time after each meeting for videos to be posted.';
-  const accessHref = (access && access.external) || COMMITTEE_VIDEO_ARCHIVE_HREF;
+  const accessHref = (access && access.external) || LATEST_VIDEOS_HREF;
   const accessLabel = (access && access.external_label) || 'Latest Board and committee recordings →';
   const accessSource = (access && access.source_label) || 'Palm Hill Webmaster notice, September 27';
   let out = `${crumbs('Did You Know')}\n<h1 class="ph-section">Did You Know</h1>\n`;
@@ -451,8 +456,8 @@ function mainPage() {
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  const howToTile = `<a class="pa-tile" href="${HOWTO_VIDEOS_HREF}"><b>Did You Know →</b><span>3 videos · newest Oct 4</span></a>`;
-  const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee Video Archive →</b><span>All curated Board &amp; committee recordings</span></a>`;
+  const howToTile = `<a class="pa-tile" href="${DYK_TILE_HREF}"><b>Did You Know →</b><span>3 videos · newest Oct 4</span></a>`;
+  const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee and Board Meeting Video Archives →</b><span>All Board &amp; committee recordings, by committee</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
 <h1>Palm Hill Archives</h1>
@@ -480,13 +485,14 @@ function checkPride(name, html, issuesOnly) {
   const vis = html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
   const fm = vis.match(FULL_MONTH); if (fm) throw new Error(`${name}: full month name "${fm[0]}" (L21: three letters)`);
   if (name === HUB) {
-    const hit = HUB_EXCLUDE.filter((k) => html.includes(`href="${k}.html"`) || html.includes(esc(S[k].title)));
+    const hit = HUB_EXCLUDE.filter((k) => (html.includes(`href="${k}.html"`) && `${k}.html` !== DYK_TILE_HREF) || html.includes(esc(S[k].title)));
     if (hit.length) throw new Error(`${name}: Main Archive Page must not list ${hit.join(', ')}`);
     const links = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((m) => m[1]);
     const allowed = [
       'index.html',
       ...HUB_LISTED.map((k) => `${k}.html`),
       HOWTO_VIDEOS_HREF,
+      DYK_TILE_HREF,
       COMMITTEE_VIDEO_ARCHIVE_HREF,
     ];
     const extra = links.filter((h) => !allowed.includes(h));
