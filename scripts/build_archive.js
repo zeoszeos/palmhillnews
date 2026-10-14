@@ -445,14 +445,15 @@ const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
 // Steven Oct 11: three video surfaces — Did You Know, Latest (videos.html), Committee Video Archive (guide page).
 // Steven Oct 11: Did You Know tile subtitle 3 videos · newest Oct 4 (redeploy).
 const HUB_GROUPS = [
-  ['From the Newsletter', HUB_KEEP],
-  ['Videos', HUB_VIDEO_KEYS],
+  // Steven Oct 14: exact headings.
+  ['From the Newsletter — Reports & Stories', HUB_KEEP],
+  ['Video Archives', HUB_VIDEO_KEYS],
 ];
 function mainPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
   const tile = (k) => {
     const items = S[k].items; const newest = items.map((x) => x.date).sort().pop();
-    const label = k === 'videos' ? 'Latest Committee Videos' : S[k].title;
+    const label = k === 'videos' ? 'Latest Board and Committee Meeting Videos' : S[k].title;
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
@@ -467,7 +468,7 @@ function mainPage() {
 <a class="pa-feature" href="index.html">${newspaperIcon({ stroke: '#2d5016', paper: '#ffffff', w: 64 })}<span><b>The Palm Hill Newsletter →</b><span>Every issue · ${volNo(first).replace(/, No\. \d+$/, '')}, No. ${first.number}–${latest.number} · ${shortDate(first.date)} – ${midDate(latest.date)}</span></span></a>
 `;
   for (const [label, keys] of HUB_GROUPS) {
-    if (label === 'Videos') {
+    if (label === 'Video Archives') {
       body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${howToTile}\n${keys.map(tile).join('\n')}\n${archiveTile}\n</div>\n`;
     } else {
       body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
