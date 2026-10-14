@@ -446,7 +446,7 @@ const HUB_EXCLUDE = SECTION_ORDER.filter((k) => !HUB_LISTED.includes(k));
 // Steven Oct 11: Did You Know tile subtitle 3 videos · newest Oct 4 (redeploy).
 const HUB_GROUPS = [
   // Steven Oct 14: exact headings.
-  ['From the Newsletter — Reports & Stories', HUB_KEEP],
+  ['From the Newsletter — Reports & Stories Archives', HUB_KEEP],
   ['Video Archives', HUB_VIDEO_KEYS],
 ];
 function mainPage() {
