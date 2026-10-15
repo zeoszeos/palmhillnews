@@ -1,4 +1,7 @@
 {
   "buildCommand": "mkdir -p public/pages public/events public/reports && cp -r pages/. public/pages/ && cp -r events/. public/events/ && cp -r reports/. public/reports/",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "redirects": [
+    { "source": "/", "destination": "/pages/archive/", "permanent": false }
+  ]
 }
