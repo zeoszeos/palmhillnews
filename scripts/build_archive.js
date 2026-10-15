@@ -465,7 +465,7 @@ function mainPage() {
 <p class="pa-sub">Everything our newsletter has carried, kept in one place.</p>
 </header>`;
   let body = `<main class="pa-main">
-<a class="pa-feature" href="index.html">${newspaperIcon({ stroke: '#2d5016', paper: '#ffffff', w: 64 })}<span><b>The Palm Hill Newsletter →</b><span>Every issue · ${volNo(first).replace(/, No\. \d+$/, '')}, No. ${first.number}–${latest.number} · ${shortDate(first.date)} – ${midDate(latest.date)}</span></span></a>
+<a class="pa-feature" href="index.html">${newspaperIcon({ stroke: '#2d5016', paper: '#ffffff', w: 64 })}<span><b>The Palm Hill Newsletter Archives →</b><span>Every issue · ${volNo(first).replace(/, No\. \d+$/, '')}, No. ${first.number}–${latest.number} · ${shortDate(first.date)} – ${midDate(latest.date)}</span></span></a>
 `;
   for (const [label, keys] of HUB_GROUPS) {
     if (label === 'Video Archives') {
