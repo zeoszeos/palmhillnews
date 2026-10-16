@@ -1,0 +1,31 @@
+"""Publish Oct 18 (Vol.1 No.14) to the Vercel archive (no email). Copies preview pages to permanent homes (preview URLs stay valid),
+writes ../PHNEWS-2026-10-18-FINAL.html and the NAS-layout copy for build_archive --issues-from."""
+import re, sys, shutil
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md
+from pathlib import Path
+REPO = Path(sys.argv[1]); ROOT = Path(__file__).resolve().parent.parent
+PV = REPO / "pages/previews/2026-10-18"; L = "https://palmhillnews.vercel.app/pages/"
+ISSUE = L + "archive/issues/2026-10-18.html"
+(REPO / "pages/assets/phnews/2026-10-18").mkdir(parents=True, exist_ok=True)
+shutil.copy(PV / "assets/fb-group-qr.png", REPO / "pages/assets/phnews/2026-10-18/fb-group-qr.png")
+MAP = {"facebook-group-notice.html": "2026-10-18-facebook-group-notice.html",
+       "facebook-group-did-you-know.html": "2026-10-18-did-you-know-facebook-group.html"}
+for f in sorted((PV / "notices").glob("*.html")): MAP["notices/" + f.name] = f"2026-10-18-notice-{f.name}"
+def clean(t):
+    t = t.replace('<meta name="robots" content="noindex,nofollow">\n', "").replace('<meta name="robots" content="noindex,nofollow">', "")
+    t = t.replace(" (Oct 18 preview)", "").replace(" (October 18 preview)", "")
+    t = re.sub(r"<!-- ph-archive-nav:none \(PREVIEW-ONLY[^>]*-->", "<!-- ph-archive-nav:none (Oct 18, 2026 issue page) -->", t)
+    t = t.replace("/pages/previews/2026-10-18/assets/fb-group-qr.png", "/pages/assets/phnews/2026-10-18/fb-group-qr.png")
+    t = t.replace(L + "previews/2026-10-18/assets/fb-group-qr.png", L + "assets/phnews/2026-10-18/fb-group-qr.png")
+    t = t.replace("/pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html", "/pages/archive/issues/2026-10-18.html")
+    for a, b in MAP.items(): t = t.replace(L + "previews/2026-10-18/" + a, L + b)
+    return t
+for a, b in MAP.items(): (REPO / "pages" / b).write_text(_sr.enforce_title_months(clean((PV / a).read_text(encoding="utf-8"))), encoding="utf-8")
+s = clean((PV / "PHNEWS-2026-10-18-preview.html").read_text(encoding="utf-8"))
+s = s.replace("PHNEWS October 18, 2026 — DRAFT (not sent)", "PHNEWS October 18, 2026")
+assert "previews/2026-10-18" not in s and "DRAFT" not in s and "noindex" not in s
+s = _sr.listen_fix(_sr.enforce_title_months(s))
+(ROOT / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
+nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
+(nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
+print(len(MAP), "pages"); [print(" ", b) for b in MAP.values()]
