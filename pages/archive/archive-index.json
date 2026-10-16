@@ -6,6 +6,17 @@
   "archive_main": "https://palmhillnews.vercel.app/pages/archive/main.html",
   "issues": [
     {
+      "date": "2026-10-11",
+      "volume": 1,
+      "number": 13,
+      "issue_number": "Vol. 1, No. 13",
+      "label": "Week of Oct 11, 2026",
+      "sent": "2026-10-11T13:44:00-04:00",
+      "file_dated": "2026-10-11T13:03:00-04:00",
+      "format": "Email newsletter",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-10-11.html"
+    },
+    {
       "date": "2026-10-04",
       "volume": 1,
       "number": 12,
@@ -1170,6 +1181,14 @@
       "page_link_label": "Previous Tips →",
       "items": [
         {
+          "date": "2026-10-18",
+          "title": "Palm Hill Residents Facebook Group",
+          "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#facebook-residents-group",
+          "issues": [
+            "2026-10-18"
+          ]
+        },
+        {
           "date": "2026-10-04",
           "title": "How to Access Board and Committee Meeting Videos",
           "url": null,
@@ -1225,34 +1244,34 @@
       "page_link_label": "Previous Videos →",
       "items": [
         {
+          "date": "2026-10-14",
+          "title": "Buildings & Grounds Committee",
+          "url": "https://drive.google.com/file/d/1uwwQUXaqttWHMbvDwc7pwJPnAPGuEyDt/view?usp=sharing"
+        },
+        {
+          "date": "2026-10-14",
+          "title": "Planning & Environmental Committee",
+          "url": "https://drive.google.com/file/d/1_pPyrdSvFmLzkLnyGZmH65feploxqyOd/view?usp=sharing"
+        },
+        {
+          "date": "2026-10-13",
+          "title": "Golf Committee",
+          "url": "https://drive.google.com/file/d/1K70lWKX21ZJJoIdtdKPDnZ4DdiNAQq7o/view?usp=sharing"
+        },
+        {
+          "date": "2026-10-12",
+          "title": "Communications Committee",
+          "url": "https://drive.google.com/file/d/1EPqasR9YOUbZjQ9D-GbBJ1HEr6zprBSw/view?usp=sharing"
+        },
+        {
           "date": "2026-09-30",
           "title": "Board Meeting",
           "url": "https://drive.google.com/file/d/1QSk27sDMe9p9EdnI_AX3RkGf0j_vN-g-/view?usp=sharing"
         },
         {
-          "date": "2026-09-21",
-          "title": "Communications Committee",
-          "url": "https://drive.google.com/file/d/1sQGMYpqgUVOR4RdYh7O-08zWxRxnltR9/view?usp=sharing"
-        },
-        {
           "date": "2026-09-17",
           "title": "Finance Committee",
           "url": "https://drive.google.com/file/d/1PpzIv83WA6l69DA2Up95vcJikbXbZVmV/view?usp=sharing"
-        },
-        {
-          "date": "2026-09-09",
-          "title": "Buildings & Grounds Committee",
-          "url": "https://drive.google.com/file/d/14bwCpe_mMuanR6ZcZ0hTfvSLGYYm1ut7/view?usp=sharing"
-        },
-        {
-          "date": "2026-09-09",
-          "title": "Planning & Environmental Committee",
-          "url": "https://drive.google.com/file/d/1JsvM4j5MM9x_UTdNU-n5BwUYUjeLclrT/view?usp=sharing"
-        },
-        {
-          "date": "2026-09-08",
-          "title": "Golf Committee",
-          "url": "https://drive.google.com/file/d/1wXfk8PKMJMEs7A9MtY4sgTy5eyeqrPaW/view?usp=sharing"
         },
         {
           "date": "2026-08-10",
