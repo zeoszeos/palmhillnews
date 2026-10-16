@@ -6,6 +6,17 @@
   "archive_main": "https://palmhillnews.vercel.app/pages/archive/main.html",
   "issues": [
     {
+      "date": "2026-10-18",
+      "volume": 1,
+      "number": 14,
+      "issue_number": "Vol. 1, No. 14",
+      "label": "Week of Oct 18, 2026",
+      "sent": "2026-10-16T17:30:00-04:00",
+      "file_dated": "2026-10-16T17:30:00-04:00",
+      "format": "Web issue (published to palmhillnews.vercel.app; no email blast)",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-10-18.html"
+    },
+    {
       "date": "2026-10-11",
       "volume": 1,
       "number": 13,
@@ -193,7 +204,8 @@
           "url": "https://palmhillnews.vercel.app/pages/2026-10-10-henry-klain-presidents-message-october.html",
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-10-listen-henry-klain-presidents-message-october.html",
           "issues": [
-            "2026-10-11"
+            "2026-10-11",
+            "2026-10-18"
           ]
         },
         {
@@ -634,7 +646,8 @@
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-04-listen-communications-committee-report.html",
           "issues": [
             "2026-09-27",
-            "2026-10-04"
+            "2026-10-04",
+            "2026-10-18"
           ]
         },
         {
@@ -727,7 +740,9 @@
           "title": "Shareholders Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-09-30-shareholders-report.html",
           "pdf_url": "https://palmhillnews.vercel.app/shareholders-report/2026-09-30-Shareholders-Report.pdf",
-          "issues": []
+          "issues": [
+            "2026-10-18"
+          ]
         },
         {
           "date": "2026-08-26",
@@ -768,7 +783,9 @@
           "date": "2026-10-16",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-16-weekly-manager-update.html",
-          "issues": []
+          "issues": [
+            "2026-10-18"
+          ]
         },
         {
           "date": "2026-10-09",
@@ -858,7 +875,8 @@
           "title": "Halloween Dance",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-31-halloween-dance.html",
           "issues": [
-            "2026-09-27"
+            "2026-09-27",
+            "2026-10-18"
           ]
         },
         {
