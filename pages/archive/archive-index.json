@@ -765,10 +765,18 @@
       "page_link_label": "Previous Weekly Updates →",
       "items": [
         {
+          "date": "2026-10-16",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-16-weekly-manager-update.html",
+          "issues": []
+        },
+        {
           "date": "2026-10-09",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-09-weekly-manager-update.html",
-          "issues": []
+          "issues": [
+            "2026-10-11"
+          ]
         },
         {
           "date": "2026-09-18",
