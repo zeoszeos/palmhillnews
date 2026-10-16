@@ -102,7 +102,11 @@ def mtg_rows():
         if d:  # Oct 11 meeting-entry style (Communications/Golf): date under title, (also on Zoom) right, Agenda/Zoom row
             nu = BASE + d["notice_page"]
             srcx = (f'Source: <a href="{CAL}" style="color:{G};">Calendar</a>,&nbsp;&nbsp; ' if e.get("from_calendar", True) else 'Source: ') + f'<a href="{nu}" style="color:{G};">Webmaster</a>'
-            e = dict(e, also=d["also"], agenda=nu, zoom=d["zoom"])
+            # STYLE-RULES.md R13 (Steven Oct 16 6:51 PM, Oct 11 precedent): Zoom → goes to the Vercel Zoom page, never zoom.us
+            assert d.get("zoom_page"), f"{d['name']}: webmaster notice needs zoom_page (Vercel) - never link zoom.us directly"
+            sys.path.insert(0, "/workspace/oct18-batch/scripts"); import meeting_zoom_page as _mzp
+            (Path("/workspace/oct18-batch/pages") / d["zoom_page"]).write_text(_mzp.render(d), encoding="utf-8")
+            e = dict(e, also=d["also"], agenda=nu, zoom=BASE + d["zoom_page"])
             L='style="font-size:14px;color:#666666;text-align:right;line-height:1.35;padding-top:1px;'
             out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:4px 8px;border-bottom:1px solid #ddd;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">'
                 f'<tr><td valign="top" align="left" style="font-size:15px;line-height:1.3;font-weight:bold;color:#333333;text-align:left;padding-right:10px;">{escape(e["name"])}</td><td valign="top" align="right" style="font-size:14px;line-height:1.3;color:#666666;text-align:right;padding-top:1px;">{escape(e["venue"])}</td></tr>'

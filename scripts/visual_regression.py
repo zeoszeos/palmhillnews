@@ -48,6 +48,11 @@ def rule_checks(html, page):
     if re.search(r"<img\b[^>]*(qr|QR)[^>]*>", html): fails.append("R7 QR code image on the main newsletter page (QR belongs on the notice page)")
     for s in re.findall(r"Source:(?:(?!</).){0,120}", html):
         if re.search(r"Palm Hill (Calendar|Webmaster)", s): fails.append(f"R5 long source label: {re.sub('<[^>]+>','',s)[:80]}")
+    # R13: meeting Agenda →/Zoom → (and any Zoom link on the newsletter page) must be palmhillnews Vercel pages
+    for h, t in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>((?:(?!</a>).)*?)</a>', html, re.S):
+        txt = re.sub(r"<[^>]+>", "", t).strip()
+        if (re.match(r"(Agenda|Zoom)\b", txt) or "zoom.us" in h) and not h.startswith(("https://palmhillnews.vercel.app/", "/pages/")) and not re.match(r"^[\w./-]+\.html$", h):
+            fails.append(f"R13 meeting link '{txt[:20]}' goes outside Vercel: {h.split('?')[0]}")
     return fails
 
 def listen_checks(listens, view):

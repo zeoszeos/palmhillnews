@@ -23,6 +23,7 @@ Where each rule is enforced:
 | R10 | **Archived past issues stay exactly as sent.** Format fixes apply only to the current issue and current pages. After any `node scripts/build_archive.js` run, revert `pages/2026-09-30-shareholders-report.html` and `pages/2026-10-09-weekly-manager-update.html` with `git checkout`. | process |
 | R11 | **Process for every change:** branch, then PR, then `gh pr merge --squash --delete-branch` (retry on "Base branch was modified"). No email, no Vantaca blast, and never email residents, unless Steven explicitly asks. | process |
 | R12 | **Content decisions (Oct 16):** keep the short weekly summary, keep the fiduciary item; the birthday note is removed. | builder content |
+| R13 | **Meeting links go to Vercel pages:** `Agenda →` and `Zoom →` in meeting entries link to palmhillnews.vercel.app pages, never straight to zoom.us or an outside agenda. This follows the Oct 11 precedent (`2026-10-12-communications-committee-zoom.html`, `2026-10-13-golf-committee-zoom.html`). The Zoom page shows the join link, the full URL, the webinar ID, the passcode and the dial-ins. The Zoom page comes from `scripts/meeting_zoom_page.py`, using the `zoom_page` field in `webmaster-meeting-notices.json`. The builder stops if a notice has a Zoom link but no `zoom_page`. | builder + `meeting_zoom_page.py`; visual_regression R13 |
 
 ## Visual regression (Friday/Saturday builds)
 
