@@ -65,6 +65,7 @@ const SECTION_ORDER = ['community-stories', 'presidents-message', 'meetings', 'c
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // L21 code policy (Steven, Oct 9, 2026): every user-visible month is three letters (Jan … Dec), phones especially.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS_FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; // STYLE-RULES.md: full months in titles/headings
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 function d(iso) { const [y, m, dd] = iso.slice(0, 10).split('-').map(Number); return new Date(Date.UTC(y, m - 1, dd)); }
 const longDate = (iso) => { const x = d(iso); return `${DAYS[x.getUTCDay()]}, ${MONTHS[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
@@ -76,7 +77,9 @@ const shortDate = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]
 const etParts = (iso) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).formatToParts(new Date(iso)).map((p) => [p.type, p.value]));
 const fileDated = (iso) => { const p = etParts(iso); return `${p.month} ${p.day}, ${p.year} ${p.hour}:${p.minute} ${p.dayPeriod}`; };
 const sentTimeET = (iso) => new Date(iso).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
-const issueLabel = (iss) => iss.label || `Week of ${midDate(iss.date)}`;
+const fullMid = (iso) => { const x = d(iso); return `${MONTHS_FULL[x.getUTCMonth()]} ${x.getUTCDate()}, ${x.getUTCFullYear()}`; };
+const issueLabel = (iss) => iss.label || `Week of ${midDate(iss.date)}`; // entry lines: abbreviated
+const issueTitle = (iss) => (iss.label || `Week of ${midDate(iss.date)}`).replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g, (m) => MONTHS_FULL[MONTHS.indexOf(m)]); // titles/headings: full (STYLE-RULES.md)
 // ---------- issue numbering: "Vol. V, No. N" ----------
 // Vol. 1, No. 1 = first resident issue (numbering.first_issue). Each sent issue is the next No.; the volume goes up on
 // every numbering.volume_anniversary (MM-DD) and No. restarts at 1. Stored issues[].volume/number are checked against
@@ -102,7 +105,7 @@ const volumeOf = (iso) => {
   }
 }
 const volNo = (iss) => `Vol. ${iss.volume}, No. ${iss.number}`;
-const monthKey = (iso) => { const x = d(iso); return `${MONTHS[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
+const monthKey = (iso) => { const x = d(iso); return `${MONTHS_FULL[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
 const pageUrl = (p) => `${BASE}/pages/${p}`;
 const archUrl = (p) => `${BASE}/pages/archive/${p}`;
 const pageExists = (p) => fs.existsSync(path.join(PAGES, p));
@@ -412,7 +415,7 @@ ${newspaperIcon({ label: 'The Palm Hill Newsletter' })}
 <section class="pa-latest" aria-label="Latest issue">
 <p class="pa-label">Latest Issue</p>
 <p class="pa-volno">${volNo(latest)}</p>
-<h2><a href="issues/${latest.date}.html">${esc(issueLabel(latest))}</a></h2>
+<h2><a href="issues/${latest.date}.html">${esc(issueTitle(latest))}</a></h2>
 <p class="pa-meta">Sent ${longDate(latest.date)} · ${editionOf(latest)}</p>
 ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(latest))}</p>\n` : ''}<a class="pa-read" href="issues/${latest.date}.html">Read this issue →</a>
 </section>
@@ -483,8 +486,9 @@ function mainPage() {
 const FULL_MONTH = /\b(January|February|March|April|June|July|August|September|October|November|December)\b/;
 function checkPride(name, html, issuesOnly) {
   if (/ph-masthead|ph-wordmark/.test(html)) throw new Error(`${name}: masthead must not appear`);
-  const vis = html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
-  const fm = vis.match(FULL_MONTH); if (fm) throw new Error(`${name}: full month name "${fm[0]}" (L21: three letters)`);
+  // STYLE-RULES.md (Steven Oct 16 2026): titles/headings use FULL months; body/entry lines stay three letters.
+  const vis = html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<title>[\s\S]*?<\/title>/g, '').replace(/<h[1-4]\b[\s\S]*?<\/h[1-4]>/g, '').replace(/<[^>]+>/g, ' ');
+  const fm = vis.match(FULL_MONTH); if (fm) throw new Error(`${name}: full month name "${fm[0]}" (L21: three letters outside titles/headings)`);
   if (name === HUB) {
     const hit = HUB_EXCLUDE.filter((k) => (html.includes(`href="${k}.html"`) && `${k}.html` !== DYK_TILE_HREF) || html.includes(esc(S[k].title)));
     if (hit.length) throw new Error(`${name}: Main Archive Page must not list ${hit.join(', ')}`);
@@ -568,7 +572,7 @@ function cleanIssue(raw, iss) {
     }
     linkStats.kept++; return m;
   });
-  const head = `<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="robots" content="noindex">\n<title>Palm Hill Newsletter — ${esc(issueLabel(iss))}, ${volNo(iss)} (archive copy)</title>\n<link rel="canonical" href="${archUrl(`issues/${iss.date}.html`)}">\n${ISSUE_CSS}`;
+  const head = `<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="robots" content="noindex">\n<title>Palm Hill Newsletter — ${esc(issueTitle(iss))}, ${volNo(iss)} (archive copy)</title>\n<link rel="canonical" href="${archUrl(`issues/${iss.date}.html`)}">\n${ISSUE_CSS}`;
   if (/<head[^>]*>/i.test(h)) {
     h = h.replace(/<meta[^>]*name="viewport"[^>]*>/gi, '').replace(/<title>[\s\S]*?<\/title>/i, '');
     h = h.replace(/<head([^>]*)>/i, `<head$1>\n<meta charset="utf-8">\n${head}`);

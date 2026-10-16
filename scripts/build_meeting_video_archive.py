@@ -129,7 +129,7 @@ def main(args):
     if not rs: continue
     out=[];month=None
     for i,r in enumerate(rs):
-      m=datetime.date.fromisoformat(r['date']).strftime('%b %Y')
+      m=datetime.date.fromisoformat(r['date']).strftime('%B %Y')  # STYLE-RULES.md: full months in headings
       if m!=month: out.append(f'<h2 class="ph-subhead">{m}</h2>'); month=m
       name=r['meeting'] or ('Board Meeting' if s=='board' else l+' Meeting')
       note=r['note']
