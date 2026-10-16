@@ -329,7 +329,8 @@ const PA_CSS = `<style id="ph-archive-pride">
 .pa-what span{display:block;color:#555;font:15px/1.45 Arial,Helvetica,sans-serif}
 .pa-go{flex:0 0 auto;color:#3a6b1a;font:bold 20px/1 Arial,Helvetica,sans-serif}
 .pa-note{margin:22px 0 8px;color:#666;font:14px/1.5 Arial,Helvetica,sans-serif}
-.pa-quiet{margin:6px 0 22px;text-align:center;color:#666;font:15px/1.5 Arial,Helvetica,sans-serif}
+.pa-quiet{margin:28px 0 22px;padding:16px 18px;text-align:center;color:#1a1a1a;background:#eef6e8;border-top:3px solid #2d5016;border-bottom:1px solid #c9dcbc;border-radius:6px;font:17px/1.5 Arial,Helvetica,sans-serif} /* STYLE-RULES R16: All Archives band */
+.pa-quiet a{font-weight:bold;white-space:nowrap}
 .pa-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 20px}
 @media (min-width:520px){.pa-grid{grid-template-columns:1fr 1fr}}
 .pa-tile{display:block;padding:12px 14px;border:1px solid #d8dfce;border-radius:6px;background:#fff;color:inherit;text-decoration:none}
