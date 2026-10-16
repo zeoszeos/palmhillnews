@@ -44,6 +44,7 @@ def render(n):
 <p class="ph-meta">{d:%A}, {MON3[d.month-1]} {d.day}, {d.year} • {tm} • {e(n["place"])}</p>
 <p class="ph-lead">Attend in person or join the Zoom webinar.</p>
 <nav class="ph-links" aria-label="Meeting links"><a href="{e(n["notice_page"])}">View Meeting Agenda →</a><span class="ph-dot"> · </span><a href="{e(n["zoom_page"])}">Join on Zoom →</a></nav>
+<p style="text-align:center;margin:18px 0 22px;"><a href="{e(n["zoom"])}" style="display:inline-block;background:#2D5016;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;font-size:22px;font-weight:bold;text-decoration:none;padding:14px 32px;border-radius:8px;white-space:nowrap;">Join Zoom Meeting</a><br><span style="display:inline-block;margin-top:10px;font-size:18px;">Webinar ID: <b>{e(n["webinar_id"])}</b> &nbsp;·&nbsp; Passcode: <b>{e(n["passcode"])}</b></span></p>
 <div class="ph-row"><div class="ph-row-title">Join from PC, Mac, iPad, or Android</div><div class="ph-detail"><a href="{e(n["zoom"])}">Join the Zoom webinar →</a><br><span style="overflow-wrap:anywhere;font-size:15px;"><a href="{e(n["zoom"])}">{e(n["zoom"])}</a></span></div></div>
 <div class="ph-row ph-alt"><div class="ph-row-title">Webinar ID and passcode</div><div class="ph-detail">Webinar ID: {e(n["webinar_id"])}<br>Passcode: {e(n["passcode"])}</div></div>
 <div class="ph-row"><div class="ph-row-title">Phone one-tap</div><div class="ph-detail">{tap}</div></div>
