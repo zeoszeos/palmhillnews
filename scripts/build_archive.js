@@ -182,6 +182,8 @@ const HOWTO_VIDEOS_HREF = 'how-to-videos.html';
 const COMMITTEE_VIDEO_ARCHIVE_HREF = `${BASE}/pages/archive/meeting-videos.html`;
 // Steven Oct 14: Main Archive Did You Know tile goes to the Did You Know section archive.
 const DYK_TILE_HREF = 'did-you-know.html';
+const LINK_ARCHIVE_HREF = 'palm-hill-link.html'; // STYLE-RULES.md R14 (scripts/build_link_archive.py)
+const LINK_ARCHIVE_FROM = '2026-10-18';
 // Steven Oct 14: DYK "Latest Board and committee recordings" goes to Latest (videos.html).
 const LATEST_VIDEOS_HREF = `${BASE}/pages/archive/videos.html`;
 const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">Palm Hill Archives</a> › ${esc(title)}</p>`;
@@ -461,6 +463,7 @@ function mainPage() {
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
   const howToTile = `<a class="pa-tile" href="${DYK_TILE_HREF}"><b>Did You Know →</b><span>3 videos · newest Oct 4</span></a>`;
+  const linkTile = `<a class="pa-tile" href="${LINK_ARCHIVE_HREF}"><b>Palm Hill Link Archives →</b><span>Monthly magazine PDFs · current issue first</span></a>`;
   const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee and Board Meeting Video Archives →</b><span>All Board &amp; committee recordings, by committee</span></a>`;
   const hero = `<header class="pa-hero">
 <p class="pa-kicker">Palm Hill Country Club</p>
@@ -474,7 +477,7 @@ function mainPage() {
     if (label === 'Video Archives') {
       body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${howToTile}\n${keys.map(tile).join('\n')}\n${archiveTile}\n</div>\n`;
     } else {
-      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n</div>\n`;
+      body += `<p class="pa-label">${esc(label)}</p>\n<div class="pa-grid">\n${keys.map(tile).join('\n')}\n${linkTile}\n</div>\n`;
     }
   }
   body += `</main>`;
@@ -498,6 +501,7 @@ function checkPride(name, html, issuesOnly) {
       ...HUB_LISTED.map((k) => `${k}.html`),
       HOWTO_VIDEOS_HREF,
       DYK_TILE_HREF,
+      LINK_ARCHIVE_HREF,
       COMMITTEE_VIDEO_ARCHIVE_HREF,
     ];
     const extra = links.filter((h) => !allowed.includes(h));
@@ -544,7 +548,10 @@ function cleanIssue(raw, iss) {
   h = h.replace(/<a\b[^>]*href="[^"]*zoom\.us[^"]*"[^>]*>[\s\S]*?<\/a>/gi, '');
   h = h.replace(/https?:\/\/[\w.-]*zoom\.us\/\S*/gi, '');
   h = h.replace(/(?:Passcode|Meeting ID|Password)\s*:?\s*[\w\s-]{3,20}?(?=<|$)/gi, '');
-  h = h.replace(/<a\b[^>]*href="[^"]*newsletter_download\.php[^"]*"[^>]*>([\s\S]*?)<\/a>/gi, '<span>$1</span>');
+  // STYLE-RULES.md R14 (Steven Oct 16 2026): Oct 18+ web copies link the Link download to the Palm Hill Link Archives page;
+  // older issues keep the plain text as archived.
+  h = h.replace(/<a\b([^>]*?)href="[^"]*newsletter_download\.php[^"]*"([^>]*)>([\s\S]*?)<\/a>/gi, (m, pre, post, inner) =>
+    (iss.date >= LINK_ARCHIVE_FROM ? `<a${pre}href="${archUrl(LINK_ARCHIVE_HREF)}"${post}>${inner}</a>` : `<span>${inner}</span>`));
   // review-only banners
   h = h.replace(/<(div|p)[^>]*>[^<]*LOCAL REVIEW[^<]*<\/\1>/gi, '');
   for (const name of iss.remove_sections || []) {

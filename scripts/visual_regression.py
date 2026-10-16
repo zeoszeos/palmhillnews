@@ -48,6 +48,10 @@ def rule_checks(html, page):
     if re.search(r"<img\b[^>]*(qr|QR)[^>]*>", html): fails.append("R7 QR code image on the main newsletter page (QR belongs on the notice page)")
     for s in re.findall(r"Source:(?:(?!</).){0,120}", html):
         if re.search(r"Palm Hill (Calendar|Webmaster)", s): fails.append(f"R5 long source label: {re.sub('<[^>]+>','',s)[:80]}")
+    # R14: Helpful Webpages links the Palm Hill Link Archives page; web copies never leave Link Monthly unlinked
+    if "Palm Hill Link Monthly" in html:
+        if "archive/palm-hill-link.html" not in html: fails.append("R14 Helpful Webpages missing 'Palm Hill Link Archives' link")
+        if "<span>Palm Hill Link Monthly</span>" in html: fails.append("R14 'Palm Hill Link Monthly' has no link (web copy should point to the Link Archives page)")
     # R13: meeting Agenda →/Zoom → (and any Zoom link on the newsletter page) must be palmhillnews Vercel pages
     for h, t in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>((?:(?!</a>).)*?)</a>', html, re.S):
         txt = re.sub(r"<[^>]+>", "", t).strip()
