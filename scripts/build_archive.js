@@ -521,7 +521,12 @@ body>div:not(.pha-banner){max-width:660px;margin-left:auto!important;margin-righ
 // One short line at the top of every archived issue (Steven, Oct 10): "Vol. 1, No. 12 · Sent Oct 4, 2026 ·
 // Newsletter Archive →" in the light archive-bar style, the width of the newsletter column. The caveat (if any)
 // stays as a small second line.
+// Steven, Oct 16 2026: no top strip on issues from Oct 18 onward (redundant with the masthead; the issue's own
+// footer/Helpful Webpages already link to the archives). Older archived issues keep their strip as sent.
+const NO_BANNER_FROM = '2026-10-18';
+const hasBanner = (iss) => iss.date < NO_BANNER_FROM;
 function issueBanner(iss) {
+  if (!hasBanner(iss)) return '';
   return `<div class="pha-banner" role="note"><b>${volNo(iss)} · Sent ${midDate(iss.date)}</b> · <a href="${archUrl('index.html')}">Newsletter Archive →</a>${iss.caveat ? `<span class="pha-note">${esc(iss.caveat)}</span>` : ''}</div>`;
 }
 function cleanIssue(raw, iss) {
@@ -874,7 +879,7 @@ for (const iss of ITEMS.issues) {
   const prev = fs.readFileSync(target, 'utf8');
   const styleRe = /<style id="ph-archive-issue">[\s\S]*?<\/style>/;
   const bannerRe = /<div class="pha-banner" role="note">[\s\S]*?<\/div>/;
-  if (!styleRe.test(prev) || !bannerRe.test(prev)) throw new Error(`${iss.date}: archive frame markers not found`);
+  if (!styleRe.test(prev) || (hasBanner(iss) && !bannerRe.test(prev))) throw new Error(`${iss.date}: archive frame markers not found`);
   write(target, prev.replace(styleRe, () => ISSUE_CSS).replace(bannerRe, () => issueBanner(iss)));
 }
 
