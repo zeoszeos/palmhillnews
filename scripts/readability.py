@@ -23,7 +23,7 @@ SKIP = {"2026-10-04-complete-calendar.html": "interactive calendar app", "palm-h
         "2026-10-04-regularly-scheduled-activities-by-date.html": "activity schedule grid",
         "regularly-scheduled-activities-by-activity.html": "activity schedule grid", "regularly-scheduled-activities.html": "activity schedule grid",
         "2026-07-15-monthly-management-and-maintenance-report-2026-07-.html": "PDF page-image viewer"}
-REFLOW = {"early", "card", "simple"}          # email-derived text (webmaster/manager emails)
+REFLOW = {"early", "card", "simple", "message"}          # email-derived text (webmaster/manager emails)
 def template(name, s):
     if name in SKIP: return None
     head = s[: s.find("</head>")] if "</head>" in s else s[:4000]
@@ -102,6 +102,8 @@ def apply(s, name):
             if re.search(r'\bclass="', attrs): attrs = re.sub(r'\bclass="', f'class="{cls} ', attrs, 1)
             else: attrs += f' class="{cls}"'
             s = s[:m.start()] + f"<body{attrs}>" + s[m.end():]
+    # RD10: the "Sent to Palm Hill residents by email on …" footnote is a meta line (16px #555), not body text
+    s = re.sub(r'<p style="(font:15px/1\.5 Arial,sans-serif;color:#53604e;[^"]*)">(?=Sent to Palm Hill residents)', r'<p class="ph-rd-meta" style="\1">', s)
     if tpl in REFLOW:
         a = s.find("<body"); s = s[:a] + reflow(s[a:])
     if text_of(s) != before:  # RD12 wording lock

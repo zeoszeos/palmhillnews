@@ -29,6 +29,7 @@ body.ph-rd-early .summary div[style*="grid-template-columns"] p { margin: 0; }
 body.ph-rd-message.ph-rd-small { font-size: 18px; }   /* story pages were 17px; President pages stay 19px */
 body.ph-rd-message article { box-sizing: content-box; max-width: 29em; margin-left: auto; margin-right: auto; }
 body.ph-rd-message footer { font-size: 16px; }
+body.ph-rd .ph-rd-meta, body.ph-rd-message p.source { font-size: 16px !important; line-height: 1.5 !important; color: #555 !important; max-width: 32em; margin-left: auto; margin-right: auto; }
 body.ph-rd-message header p { font-size: 16px; }
 
 /* ---- report / update cards (Chair Reports, Manager Updates, Shareholders Reports, event cards) ---- */
