@@ -81,6 +81,33 @@ fbpage("facebook-group-did-you-know.html", "Did You Know? Palm Hill Residents Fa
        'Did you know Palm Hill has a private, residents-only Facebook group? Park news, events and photos. Search &quot;Palm Hill Country Club - Residents Only Group&quot; on Facebook and answer all 3 questions.',
        'Source: Tony Ciaramitaro, Communications Chair · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a>')
 
+# ---- Steven, Oct 17 1:40 PM: Did You Know rule of the week from David Bates (palmhillblast "Park Rule for Newsletter",
+# Sat Oct 17 1:17 PM ET, his corrected resend). Full narrative in his wording (whitespace-only fixes); Listen like the FB page.
+DYK_RULES_PARAS = [
+    "A space has been provided in this newsletter for a discussion on the rules and regulations in Palm Hill. It is felt that having a review and discussion on specific rules we all will have a better understanding and appreciation for the rule.",
+    "<strong>XI. TRAFFIC RULES</strong>",
+    "Let&#x27;s face it - we have all seen certain rules completely ignored and the rule violated.",
+    "This week we would like to focus on traffic rules. The very first sentence in the rule states that the speed limit in the park is 15 MPH. We have all seen the rat race to get to the Seminole entrance or the 8th Ave entrance. Perhaps leaving home 5-10 minutes earlier or getting home a few minutes later would be okay.",
+    "Sections of the rule: The speed limit in the park is 15 mph. It&#x27;s okay to go 15 mph and make a full stop at a stop sign. Further - Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights. Golf carts and licensed mopeds shall not be operated by anyone under 16. Motorcycles are prohibited anywhere on Palm Hill property.. Please, all golf carts must be registered with the office. Most of all, be safe and be sure to follow the rules that are in place to protect us and follow a standard for the Park.",
+]
+_dyk = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Did You Know? Traffic Rules — Palm Hill Country Club (Oct 18 preview)</title>
+<link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
+<style>main{{max-width:780px;margin:0 auto;padding:16px;font:18px/1.6 Arial,Helvetica,sans-serif}}.content-card{{background:#fff;border:1px solid #d7d1bd;border-radius:12px;padding:16px;margin:12px 0}}.hd{{display:flex;align-items:center;gap:12px;flex-wrap:wrap}}</style>
+</head><body>
+<!-- ph-archive-nav:none (PREVIEW-ONLY page for the unsent Oct 18, 2026 draft) -->
+<main><div class="hd"><h1 class="ph-section" style="margin:0">Did You Know? Traffic Rules</h1>{btn}</div>
+<div class="content-card">{"".join(f"<p>{x}</p>" for x in DYK_RULES_PARAS)}</div>
+<p class="source" style="font-size:14px;color:#666">Source: David Bates · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>
+<p style="font-size:15px"><a href="/pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html" style="color:{G}">← Back to the newsletter</a></p>
+</main>
+{script}
+</body></html>
+"""
+(OUT / "did-you-know-traffic-rules.html").write_text(_sr.enforce_title_months(_dyk), encoding="utf-8")
+
 print("rows", len(rows), "->", OUT)
 
 # STYLE-RULES.md format guard (Friday/Saturday builds report diffs; never blocks the write above)

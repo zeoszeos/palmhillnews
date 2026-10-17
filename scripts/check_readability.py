@@ -61,7 +61,11 @@ def main():
     a = ap.parse_args()
     files = [pathlib.Path(x).resolve() for x in a.files] or R.scope(ROOT)
     files = [f for f in files if "/archive/" not in str(f) and "/previews/" not in str(f)]
-    fails, warns, skipped, tpls = {}, {}, {}, {}
+    fails, warns, skipped, tpls, notes = {}, {}, {}, {}, {}
+    # RD12 content updates: approved source-driven text changes (e.g. an R21 calendar re-pull moving a time) are listed in
+    # data/rd12-content-updates.json {page: reason}; they are reported as notes, not as layout changes. Everything else fails.
+    _u = ROOT / "data/rd12-content-updates.json"
+    RD12_UPDATES = json.loads(_u.read_text(encoding="utf-8")) if _u.exists() else {}
     for f in files:
         s = f.read_text(encoding="utf-8"); rel = str(f.relative_to(ROOT)); ff = []
         if f.name in R.SKIP: skipped[rel] = R.SKIP[f.name]; continue
@@ -69,7 +73,9 @@ def main():
         if not tpl or 'id="ph-read-css"' not in s: ff.append("RD1 not on the shared readability style (run scripts/readability.py)")
         try: base = subprocess.run(["git", "show", f"{a.base}:{rel}"], cwd=ROOT, capture_output=True, text=True, check=True).stdout
         except subprocess.CalledProcessError: base = None
-        if base is not None and R.text_of(base) != R.text_of(s): ff.append(f"RD12 wording changed vs {a.base} (layout-only rule)")
+        if base is not None and R.text_of(base) != R.text_of(s):
+            if rel in RD12_UPDATES: notes.setdefault(rel, []).append(f"RD12 content update (not a layout change): {RD12_UPDATES[rel]}")
+            else: ff.append(f"RD12 wording changed vs {a.base} (layout-only rule)")
         ff += html_fails(s); w = warn(s)
         if ff: fails[rel] = ff
         if w: warns[rel] = w
@@ -109,6 +115,7 @@ def main():
     fails = {k: sorted(set(v)) for k, v in fails.items() if v}
     print(f"PHNEWS readability guard (RD1-RD13): {len(tpls)} pages checked, {len(skipped)} skipped tool pages, {len(fails)} failing, {len(warns)} with warnings")
     for k, v in sorted(fails.items()): print("  FAIL", k); [print("     ", x) for x in v[:6]]
-    if a.json: json.dump({"fails": fails, "warns": {k: sorted(set(v)) for k, v in warns.items()}, "skipped": skipped, "templates": tpls}, open(a.json, "w"), indent=1)
+    for k, v in sorted(notes.items()): print("  NOTE", k); [print("     ", x) for x in v]
+    if a.json: json.dump({"fails": fails, "notes": notes, "warns": {k: sorted(set(v)) for k, v in warns.items()}, "skipped": skipped, "templates": tpls}, open(a.json, "w"), indent=1)
     sys.exit(1 if fails else 0)
 if __name__ == "__main__": main()
