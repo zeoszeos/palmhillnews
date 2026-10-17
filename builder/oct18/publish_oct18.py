@@ -22,6 +22,8 @@ def clean(t):
     return t
 for a, b in MAP.items(): (REPO / "pages" / b).write_text(_sr.enforce_title_months(clean((PV / a).read_text(encoding="utf-8"))), encoding="utf-8")
 s = clean((PV / "PHNEWS-2026-10-18-preview.html").read_text(encoding="utf-8"))
+s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)  # R22: review-only stamp never published
+assert "ph-review-stamp" not in s and "Calendar checked:" not in s
 s = s.replace("PHNEWS October 18, 2026 — DRAFT (not sent)", "PHNEWS October 18, 2026")
 assert "previews/2026-10-18" not in s and "DRAFT" not in s and "noindex" not in s
 import summary_trim as _st
