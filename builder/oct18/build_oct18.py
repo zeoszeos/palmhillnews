@@ -333,6 +333,7 @@ _conf = re.compile(r'<p style="font-size:12px;color:#666666;font-style:italic;te
 assert len(_conf.findall(s)) == 1, "R25: footer calendar-confirm sentence not found exactly once"
 s = _conf.sub(lambda m: CALCHECK_P, s)
 assert "All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1, "R25 footer"
+s = _sr.service_box_fit(s)  # STYLE-RULES R27: footer service-request lines on one line at desktop width
 Path("/workspace/oct18-batch/builder/calendar-pull").mkdir(exist_ok=True)
 Path("/workspace/oct18-batch/builder/calendar-pull/2026-10-18.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
 OUTF.write_text(s, encoding="utf-8")
