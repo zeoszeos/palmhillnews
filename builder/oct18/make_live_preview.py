@@ -90,6 +90,9 @@ DYK_RULES_PARAS = [
     "This week we would like to focus on traffic rules. The very first sentence in the rule states that the speed limit in the park is 15 MPH. We have all seen the rat race to get to the Seminole entrance or the 8th Ave entrance. Perhaps leaving home 5-10 minutes earlier or getting home a few minutes later would be okay.",
     "Sections of the rule: The speed limit in the park is 15 mph. It&#x27;s okay to go 15 mph and make a full stop at a stop sign. Further - Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights. Golf carts and licensed mopeds shall not be operated by anyone under 16. Motorcycles are prohibited anywhere on Palm Hill property.. Please, all golf carts must be registered with the office. Most of all, be safe and be sure to follow the rules that are in place to protect us and follow a standard for the Park.",
 ]
+# STYLE-RULES R33 (Steven, Oct 17 2:22 PM): a Did You Know piece ends with the contributor's name as a plain byline,
+# exactly as given ("David Bates"), no title (he is Board VP; no title unless he asks). Guarded in style_rules.dyk_byline_ok.
+DYK_RULES_BYLINE = "David Bates"
 _dyk = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
@@ -99,13 +102,14 @@ _dyk = f"""<!DOCTYPE html>
 </head><body>
 <!-- ph-archive-nav:none (PREVIEW-ONLY page for the unsent Oct 18, 2026 draft) -->
 <main><div class="hd"><h1 class="ph-section" style="margin:0">Did You Know? Traffic Rules</h1>{btn}</div>
-<div class="content-card">{"".join(f"<p>{x}</p>" for x in DYK_RULES_PARAS)}</div>
+<div class="content-card">{"".join(f"<p>{x}</p>" for x in DYK_RULES_PARAS)}<p class="dyk-byline">{DYK_RULES_BYLINE}</p></div>
 <p class="source" style="font-size:14px;color:#666">Source: David Bates · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>
 <p style="font-size:15px"><a href="/pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html" style="color:{G}">← Back to the newsletter</a></p>
 </main>
 {script}
 </body></html>
 """
+assert _sr.dyk_byline_ok(_dyk, DYK_RULES_BYLINE), "R33: Did You Know piece must end with the plain byline"
 (OUT / "did-you-know-traffic-rules.html").write_text(_sr.enforce_title_months(_dyk), encoding="utf-8")
 
 print("rows", len(rows), "->", OUT)
