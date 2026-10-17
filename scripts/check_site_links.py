@@ -19,5 +19,14 @@ for d in roots:
         if not ok: bad.append((rel,u))
 print('internal links',n,'broken',len(bad)); [print(' ',a,b) for a,b in sorted(set(bad))[:40]]
 print('live pages linking how-to-videos:',howto)
+# STYLE-RULES R40: no review/test stamp on any served page
+stamped=[]
+for d in roots:
+  for dp,_,fs in os.walk(os.path.join(R,d)):
+    for f in fs:
+      if f.endswith('.html'):
+        t=open(os.path.join(dp,f),errors='ignore').read()
+        if 'ph-review-stamp' in t or 'Review copy' in t or 'Calendar checked:' in t or re.search(r'cal-\d{8}(?:-\d{4})?\.json',t): stamped.append(os.path.relpath(os.path.join(dp,f),R))
+print('R40 stamped pages:',stamped)
 KNOWN = {('/pages/assets/ph-newsletter-shell.html', '/pages/assets/2026-10-04-recurring-activities-by-date.html')}  # design template, not served as a page link
-sys.exit(1 if howto or (set(bad) - KNOWN) else 0)
+sys.exit(1 if stamped or howto or (set(bad) - KNOWN) else 0)

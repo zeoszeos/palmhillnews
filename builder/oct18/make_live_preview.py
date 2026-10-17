@@ -137,3 +137,5 @@ if _os.path.exists(_VR) and _os.path.exists(_G) and not _os.environ.get("PHNEWS_
     print({0: "FORMAT GUARD: clean", 1: "FORMAT GUARD: RULE FAILURES - fix before sending", 2: "FORMAT GUARD: visual diffs - review DIFF pngs"}.get(_r.returncode, f"FORMAT GUARD error {_r.returncode}"))
 else:
     print("FORMAT GUARD skipped (venv or golden missing)")
+# STYLE-RULES R40: no review/test stamp on any preview output
+for _f in OUT.rglob("*.html"): _sr.assert_no_stamp(_f.read_text(encoding="utf-8"), str(_f.relative_to(REPO)))
