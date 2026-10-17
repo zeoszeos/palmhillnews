@@ -306,11 +306,10 @@ t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + DYK_ITEMS[0][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div></td></tr>', 1) + s[e:]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
-              f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Videos - Archives</a></div>')
-foot = (f'<p style="font-size:13px;text-align:center;margin:12px 0 0 0;"><a href="{ARCH}main.html" style="color:{G};">All Newsletter Archives →</a>'
-        f'<span style="color:#999999;"> · </span><a href="{ARCH}videos.html" style="color:{G};">Latest Meeting Videos →</a>'
-        f'<span style="color:#999999;"> · </span><a href="{ARCH}meeting-videos.html" style="color:{G};">Meeting Video Archives →</a></p>')
-s = s.replace('    <p style="font-size:12px;color:#666666;font-style:italic;text-align:center;margin-top:16px;">', foot + '\n    <p style="font-size:12px;color:#666666;font-style:italic;text-align:center;margin-top:16px;">', 1)
+              f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
+# STYLE-RULES R25 (Steven, Oct 17 12:20 AM): footer archive-links row removed (links stay in Helpful Webpages);
+# Helpful Webpages label is 'Committee Meeting Video Archives' (never 'Committee Meeting Videos - Archives')
+assert 'Videos - Archives' not in s, 'R25 label'
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md (shared)
 s = _sr.enforce_title_months(s)  # full months in titles/bands
 import link_archive_bullet as _lab; s = _lab.add(s)
@@ -326,11 +325,14 @@ _b = s.find(">", s.find("<body")) + 1
 s = s[:_b] + STAMP + s[_b:]
 # STYLE-RULES R24 (Steven, Oct 16 11:54 PM): resident-facing footer line "Calendar check - October 16, 11:38 PM" from the pull this build used
 CALCHECK = f"Calendar check - {FULL[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}:{_ct:%M} {'AM' if _ct.hour<12 else 'PM'}"
-CALCHECK_P = f'<p class="ph-cal-check" style="font-size:11px;color:#888888;text-align:center;margin:4px 0 0 0;">{CALCHECK}</p>'
+# STYLE-RULES R25 (Steven, Oct 17 12:20 AM): simplified footer -- no archive-links row, no "For the latest details, always confirm
+# ... official Palm Hill calendar." sentence; the Calendar check line alone, right-aligned, where that sentence was.
+CALCHECK_P = f'<p class="ph-cal-check" style="font-size:11px;color:#888888;text-align:right;margin:12px 0 0 0;">{CALCHECK}</p>'
 s = re.sub(r'\n?\s*<p class="ph-cal-check"[^>]*>[^<]*</p>', "", s)
-_fi = s.find('official Palm Hill calendar</a>.'); _fe = s.find("</p>", _fi) + 4
-assert _fi > 0, "R24: footer calendar sentence not found"
-s = s[:_fe] + "\n    " + CALCHECK_P + s[_fe:]
+_conf = re.compile(r'<p style="font-size:12px;color:#666666;font-style:italic;text-align:center;margin-top:16px;">\s*For the latest details, always confirm event times and updates on the\s*<a [^>]*>official Palm Hill calendar</a>\.\s*</p>')
+assert len(_conf.findall(s)) == 1, "R25: footer calendar-confirm sentence not found exactly once"
+s = _conf.sub(lambda m: CALCHECK_P, s)
+assert "All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1, "R25 footer"
 Path("/workspace/oct18-batch/builder/calendar-pull").mkdir(exist_ok=True)
 Path("/workspace/oct18-batch/builder/calendar-pull/2026-10-18.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
 OUTF.write_text(s, encoding="utf-8")

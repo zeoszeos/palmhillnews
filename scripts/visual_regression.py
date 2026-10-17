@@ -37,6 +37,15 @@ LISTEN_JS = r"""() => [...document.querySelectorAll('a')].filter(a => a.textCont
   let box = a.closest('table') || a.parentElement; const br = box.getBoundingClientRect();
   return {ws: cs.whiteSpace, h: r.height, lh, inset: Math.round(br.right - r.right), href: a.href}; })"""
 
+CALCHECK_JS = r"""() => { const p = document.querySelector('p.ph-cal-check'); if (!p) return null;
+  const r = document.createRange(); r.selectNodeContents(p); const t = r.getBoundingClientRect(), b = p.getBoundingClientRect(), cs = getComputedStyle(p);
+  return {align: cs.textAlign, gap: Math.round(b.right - parseFloat(cs.paddingRight) - t.right), left: Math.round(t.left - b.left)}; }"""
+
+def calcheck_checks(c, view):
+    if c is None: return []
+    if c["align"] != "right" or c["gap"] > 2 or c["left"] < 20: return [f"R25 [{view}] Calendar check line not at the right side of the footer ({c})"]
+    return []
+
 SUMMARY_JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'summary_lines.js')).read()
 
 def slug(t): return re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")[:50] or "section"
@@ -59,6 +68,20 @@ def rule_checks(html, page):
                 _cp = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "builder/calendar-pull", _iso + ".json")
                 if os.path.exists(_cp) and _j2.load(open(_cp))["footer"] != _fl[0]:
                     fails.append(f"R24 footer '{_fl[0]}' does not match the build's calendar pull ({_j2.load(open(_cp))['footer']})")
+            # R25 (Steven, Oct 17): simplified footer -- no archive-links row, no "always confirm ... official Palm Hill calendar" sentence,
+            # and the Calendar check line is right-aligned
+            if re.search(r"All Newsletter Archives →|Latest Meeting Videos →|Meeting Video Archives →", html):
+                fails.append("R25 footer archive-links row present (All Newsletter Archives → · Latest Meeting Videos → · Meeting Video Archives →)")
+            if re.search(r"always confirm event times and updates", html):
+                fails.append("R25 footer calendar-confirm sentence present ('For the latest details, always confirm ...')")
+            _cs = re.findall(r'<p class="ph-cal-check" style="([^"]*)"', html)
+            if len(_cs) != 1 or "text-align:right" not in _cs[0].replace(" ", ""):
+                fails.append(f"R25 Calendar check line not right-aligned: {_cs}")
+    # R25 (Oct 17): Helpful Webpages label 'Committee Meeting Video Archives', never 'Committee Meeting Videos - Archives'
+    if re.search(r"Videos\s*-\s*Archives", html): fails.append("R25 label 'Committee Meeting Videos - Archives' (use 'Committee Meeting Video Archives')")
+    # R25 (Oct 17): one More → per item (no inline More → plus a second More → row to the same page)
+    for m in re.finditer(r'<a href="([^"]+)"[^>]*>More →</a></div>\s*<div[^>]*><a href="\1"[^>]*>More →</a>', html):
+        fails.append(f"R25 duplicate More → for {m.group(1).split('/')[-1]}")
     # R23: event/notice items link with "More →" only (report/message labels Read Full Report/Message/Update are allowed)
     for v in re.findall(r'>\s*((?:Read (?:Full )?(?:Details|More|more|Notice|Event)|Details|Full Details|Learn More)\s*→?)\s*</a>', html):
         fails.append(f"R23 event/notice link label '{v}' (use 'More →')")
@@ -129,6 +152,7 @@ def main():
             if html is None: html = pg.content()
             pg.evaluate(MASK_JS)
             fails += listen_checks(pg.evaluate(LISTEN_JS), view)
+            fails += calcheck_checks(pg.evaluate(CALCHECK_JS), view)
             if view == "mobile":  # R18: item summaries max 3 lines at 390px (and 660px below)
                 fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3]
             for s in pg.evaluate(SECTIONS_JS):
