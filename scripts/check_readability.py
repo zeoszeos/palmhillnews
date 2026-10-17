@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import readabili
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 JS = r"""(tpl) => {
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
-  const skip = e => e.closest('.ph-archive-bar,.ph-story-nav,header,nav,footer,.badge,.ph-rd-meta,.source,p.sources,p.note,script,style');
+  const skip = e => e.closest('.ph-archive-bar,.ph-story-nav,header,nav,footer,.badge,.ph-rd-meta,.source,p.sources,p.note,.meta,.ph-meta,.sx-note,script,style');
   const blocks = [...document.querySelectorAll('p,li,.ph-detail,.summary,td,.ph-row-title')].filter(e => vis(e) && !skip(e) && (e.innerText||'').trim().length >= 40
      && ![...e.children].some(c => ['P','DIV','LI','UL','OL','TABLE'].includes(c.tagName) && (c.innerText||'').trim().length > 30));
   const res = {blocks: [], meta: [], taps: []};
@@ -42,13 +42,14 @@ def html_fails(s):
     for inner in re.findall(r"<p(?: [^>]*)?>((?:(?!</?p[ >]).)*?)</p>", body, flags=re.S):
         n = len(re.findall(R.BR, inner))
         if n >= 4: f.append(f"RD4 paragraph with {n} <br> (email wall): {R.plain(inner)[:60]}")
-        segs = [R.plain(x) for x in re.split(R.BR, inner)]
-        for a, b in zip(segs, segs[1:]):
+        raw = re.split(R.BR, inner); segs = [R.plain(x) for x in raw]
+        for i, (a, b) in enumerate(zip(segs, segs[1:])):
+            after_button = not R.plain(re.sub(r"<a\b.*?</a>", "", raw[i], flags=re.S)).strip()   # caption under a Join button, already its own line
             if R.ABBR.search(a): f.append(f"RD5 hard break after abbreviation: '…{a[-20:]}⏎{b[:20]}…'")
             elif re.match(r"[a-z]", b) and re.search(r"[a-z,]$", a): f.append(f"RD5 hard break mid-sentence: '…{a[-20:]}⏎{b[:20]}…'")
             if R.LIST.match(b): f.append(f"RD7 list line left as text: '{b[:30]}'")
             m = R.LABEL.match(b)
-            if m and len(m.group(1).split()) <= 6: f.append(f"RD6 topic lead-in buried after <br>: '{m.group(1)}:'")
+            if m and len(m.group(1).split()) <= 6 and not after_button: f.append(f"RD6 topic lead-in buried after <br>: '{m.group(1)}:'")
     return f
 def warn(s):
     t = R.text_of(s); w = []
