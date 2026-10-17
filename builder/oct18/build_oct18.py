@@ -391,8 +391,18 @@ _m = re.search(r'("id": "traffic-rules", "title": "Traffic Rules", "text": )"((?
 _new = _m.group(1) + json.dumps(DYK_RULES_SUMMARY, ensure_ascii=False)
 if _m.group(0) != _new: _AI.write_text(_ai.replace(_m.group(0), _new), encoding="utf-8")
 DYK_RULES_PV = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/did-you-know-traffic-rules.html"
+# R39 (Steven, Oct 17 6:32 PM): teaser mode per item -- "framing" (topic/source description, no author name, no rule quotes) or
+# "distilled" (<= 3 verbatim source sentences). Traffic Rules = framing on the main page; the archive row keeps the distilled summary.
+DYK_RULES_TEASER_MODE = "framing"
+DYK_RULES_TEASER = "A look at traffic rules from the park's official Rules and Regulations."   # Steven's wording, 6:32 PM
+DYK_CONTRIBUTOR_NAMES = ["Dave", "David", "Bates", "Board VP"]
+if DYK_RULES_TEASER_MODE == "framing":
+    assert _sr_dyk.dyk_framing_ok(DYK_RULES_TEASER, DYK_CONTRIBUTOR_NAMES, _DYK_SRC), "R39: framing teaser has a name, quotes a rule, or is over 3 lines"
+    _DYK_MAIN = DYK_RULES_TEASER
+else:
+    _DYK_MAIN = DYK_RULES_SUMMARY
 DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
-    f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(DYK_RULES_SUMMARY)} '
+    f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(_DYK_MAIN)} '
     f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = [("2026-10-18", DYK_RULES), ("2026-10-16", DYK_FB)]   # newest first; add new items at the top
 t0 = s.find("<table", a)

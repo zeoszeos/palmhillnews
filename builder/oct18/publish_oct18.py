@@ -30,6 +30,7 @@ s = s.replace("PHNEWS October 18, 2026 — DRAFT (not sent)", "PHNEWS October 18
 assert "previews/2026-10-18" not in s and "DRAFT" not in s and "noindex" not in s
 import summary_trim as _st
 s = _st.trim(_sr.listen_fix(_sr.enforce_title_months(s)))  # R18
+assert _sr.dyk_more_link_ok(s, "2026-10-18-did-you-know-traffic-rules.html"), "R39: DYK More -> must link the item page"
 (ROOT / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
