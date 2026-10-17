@@ -58,6 +58,18 @@ def rule_checks(html, page):
     MD = r"(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.? (\d{1,2}\b|\d{4})"
     for m in re.finditer(r'font-weight:bold[^>]*>([^<]{3,120})</td>(.{0,2500}?)</table>\s*<div style="font-size:14px;color:#666666;margin-top:2px;">((Sun|Mon|Tues|Wednes|Thurs|Fri|Satur)day, [^<]+)</div>', html, re.S):
         if re.search(MD, m.group(1)): fails.append(f"R19 title repeats a date above its date line: '{m.group(1)[:60]}' / '{m.group(3)}'")
+    # R20: the issue links to its own week's Recurring pages, whose range starts on the publication date
+    import datetime as _dt
+    mm = re.search(r"(?:Sun|Mon|Tues|Wednes|Thurs|Fri|Satur)day, (January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})", html)
+    if mm:
+        iso = _dt.datetime.strptime(" ".join(mm.groups()), "%B %d %Y").date().isoformat()
+        for d, k in re.findall(r'href="[^"]*?/pages/(\d{4}-\d{2}-\d{2})-recurring-activities-by-(date|name|location)\.html', html):
+            if d != iso: fails.append(f"R20 Recurring link by-{k} points to the {d} pages, not this issue's {iso} pages"); continue
+            pg = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "pages", f"{d}-recurring-activities-by-{k}.html")
+            if not os.path.exists(pg): fails.append(f"R20 missing page pages/{d}-recurring-activities-by-{k}.html"); continue
+            sub = re.search(r'ph-section-sub">([A-Z][a-z]+) (\d{1,2}) through', open(pg, encoding="utf-8").read())
+            if not sub or _dt.datetime.strptime(f"{sub.group(1)[:3]} {sub.group(2)} {mm.group(3)}", "%b %d %Y").date().isoformat() != iso:
+                fails.append(f"R20 {d}-recurring-activities-by-{k}.html range does not start on the issue date {iso}")
     # R13: meeting Agenda →/Zoom → (and any Zoom link on the newsletter page) must be palmhillnews Vercel pages
     for h, t in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>((?:(?!</a>).)*?)</a>', html, re.S):
         txt = re.sub(r"<[^>]+>", "", t).strip()

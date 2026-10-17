@@ -244,6 +244,8 @@ s = s[:r0] + tw + s[r0:]   # L03: This Week sits between Chair Reports and Recur
 replace_table("Events - This Week", ev_rows(this_week), f"{md(THIS_WEEK[0])} through {md(THIS_WEEK[1])}")
 # Recurring: window text; Oct 18 recurring pages don't exist yet -> keep live Oct 11 pages (flagged)
 s = s.replace("Oct 11 through Nov 9, 2026", f"{md(RECURRING[0])} through {md(RECURRING[1])}, 2026")
+# STYLE-RULES R20: the issue links to its own week's Recurring pages (recurring_oct18.py + recurring_grouped.py ... 2026-10-18)
+s = s.replace("2026-10-11-recurring-activities-by-", f"{RECURRING[0]}-recurring-activities-by-")
 
 # Weekly Manager Update Oct 16 (Megan, palmhillblast Oct 16 3:59 PM ET) replaces Oct 9 (retention rule)
 _W_OLD = s[s.find('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'):]
