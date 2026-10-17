@@ -316,7 +316,7 @@ s = s.replace("<title>", "<title>", 1)
 s = re.sub(r"<title>.*?</title>", "<title>PHNEWS October 18, 2026 — DRAFT (not sent)</title>", s, count=1, flags=re.S)
 s = s.replace('color:#e5f1d1;">October 18, 2026<', 'color:#e5f1d1;">Sunday, October 18, 2026<')  # batch item 1: weekday in masthead
 s = s.replace("October 11, 2026", "October 18, 2026").replace("Vol. 1, No. 13", "Vol. 1, No. 14")
-stamp = datetime.now(ZoneInfo("America/New_York")).strftime("%-I:%M %p")
+stamp = os.environ.get("PHNEWS_BUILD_STAMP") or datetime.now(ZoneInfo("America/New_York")).strftime("%-I:%M %p")  # override only for byte-identical re-renders
 s = s.replace(">3:07 PM<", f">{stamp}<")
 
 def section_span(s, heading):
@@ -417,15 +417,9 @@ sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr 
 s = _sr.enforce_title_months(s)  # full months in titles/bands
 import link_archive_bullet as _lab; s = _lab.add(s)
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
-# STYLE-RULES R22 (Steven, Oct 16 11:38 PM): review-only stamp on preview/proof/FINAL-REVIEW copies; publish_oct18.py strips it,
-# so it never reaches the live issue, the archive or the Vantaca send file.
+# STYLE-RULES R40 (Steven, Oct 17 7:23 PM; replaces R22): NO review/test stamp on any copy (previews and test copies included).
 _ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))
-STAMP = (f'<!-- ph-review-stamp:start --><div class="ph-review-stamp" style="font:12px/1.4 Arial,Helvetica,sans-serif;color:#7a5c00;background:#fff4cc;'
-         f'border:1px dashed #c9a227;text-align:center;padding:3px 8px;margin:0 auto 6px;max-width:660px;">Review copy · Calendar checked: '
-         f'{_ct:%A}, {MON3[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}:{_ct:%M} {"AM" if _ct.hour<12 else "PM"} ET ({os.path.basename(CALF)})</div><!-- ph-review-stamp:end -->')
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)
-_b = s.find(">", s.find("<body")) + 1
-s = s[:_b] + STAMP + s[_b:]
 # STYLE-RULES R24 (Steven, Oct 16 11:54 PM): resident-facing footer line "Calendar check - October 16, 11:38 PM" from the pull this build used
 CALCHECK = f"Calendar check - {FULL[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}:{_ct:%M} {'AM' if _ct.hour<12 else 'PM'}"
 # STYLE-RULES R25 (Steven, Oct 17 12:20 AM): simplified footer -- no archive-links row, no "For the latest details, always confirm
@@ -439,6 +433,7 @@ assert "All Newsletter Archives →" not in s and "always confirm event times" n
 s = _sr.service_box_fit(s)  # STYLE-RULES R27: footer service-request lines on one line at desktop width
 Path("/workspace/oct18-batch/builder/calendar-pull").mkdir(exist_ok=True)
 Path("/workspace/oct18-batch/builder/calendar-pull/2026-10-18.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
+_sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
 OUTF.write_text(s, encoding="utf-8")
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])

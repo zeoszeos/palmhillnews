@@ -139,3 +139,14 @@ def dyk_more_link_ok(issue_html, page_name):
     sec = issue_html[issue_html.find("Did You Know?"):]
     m = _re.search(r'<a href="([^"]+)"[^>]*>More →</a>', sec)
     return bool(m) and m.group(1).endswith(page_name)
+
+
+# STYLE-RULES R40 (Steven, Oct 17 7:23 PM): every copy -- live issue, SEND, previews, test copies -- is clean: no review/test
+# stamp or banner. Fails the build on stamp markup, "Review copy", "Calendar checked:" or a cal-*.json snapshot filename.
+# (The R24 resident footer line "Calendar check - October 17, 6:33 PM" is allowed.) Returns the html for chaining.
+def assert_no_stamp(html, name):
+    import re as _re
+    bad = [m for m in ("ph-review-stamp", "Review copy", "Calendar checked:") if m in html]
+    if _re.search(r"cal-\d{8}(?:-\d{4})?\.json", html): bad.append("cal-*.json filename")
+    if bad: raise SystemExit(f"R40: {name} carries a review/test stamp: {bad}")
+    return html
