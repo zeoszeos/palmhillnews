@@ -1,0 +1,3 @@
+# Not part of the website (STYLE-RULES.md R29). Vercel only serves public/ after the build copy.
+/tests
+/pages/archive/link/*.pdf
