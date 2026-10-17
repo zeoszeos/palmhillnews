@@ -82,10 +82,13 @@ EVENT_LINK = {"Halloween Dance Party": ("Read Full Details →", BASE + "2026-10
               "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
               "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html")}
-# R21: full calendar listing text for the More → page (personal phone numbers are not printed: see the club calendar)
+# R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
+# has explicitly OK'd (PHONE_OK_PAGES; Bocce Party approved Oct 16 11:37 PM). Issue summaries never carry them.
+PHONE_OK_PAGES = {"Bocce Party"}
 EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
-    ["Sign up at either clubhouse or by calling Pat Foor or Joe Cothran (their phone numbers are on the club calendar). Join us for the fellowship and fun!",
+    ["Sign up at either clubhouse or by calling Pat Foor (727-631-3372) or Joe Cothran (727-512-1185). Join us for the fellowship and fun!",  # PHONE_OK_PAGES
      "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."])}
+assert not any(re.search(r"\d{3}-\d{3}-\d{4}", v) for v in EVENT_DETAIL.values() if v), "phone rule: no phone numbers in issue summaries"
 # R21: events whose summary already carries the whole calendar listing (checked by hand Oct 16) - no More → page needed
 INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
                 "Veterans Day Program", "Bookclub:Foster by Claire Keegan"}
@@ -138,6 +141,7 @@ def ev_rows(evs):
             raise SystemExit(f"R21: {e['date']} {e['name']} has calendar listing text but no More → page (add EVENT_PAGE/EVENT_LINK or INFO_COVERED)")
         if e["name"] in EVENT_PAGE:
             import event_page as _ep; fn, paras = EVENT_PAGE[e["name"]]
+            if e["name"] not in PHONE_OK_PAGES and any(re.search(r"\d{3}-\d{3}-\d{4}", x) for x in paras): raise SystemExit(f"phone rule: {e['name']} page has a phone number without Steven's OK (PHONE_OK_PAGES)")
             dl = f"{pdate(e['date'])} • {ptime(e['start'])}" + (f" to {ptime(e['end'])}" if e.get("end") else "") + f" • {VENUE.get(e['venue'], e['venue'])}"
             (Path("/workspace/oct18-batch/pages") / fn).write_text(_ep.render(e["name"], dl, paras), encoding="utf-8")
     for i, e in enumerate(evs):
