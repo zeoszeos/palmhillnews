@@ -640,6 +640,15 @@
       "page_link_label": "Previous Chair Reports →",
       "items": [
         {
+          "date": "2026-10-13",
+          "title": "Golf Advisory Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-13-golf-advisory-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-18-listen-golf-advisory-committee-report.html",
+          "issues": [
+            "2026-10-18"
+          ]
+        },
+        {
           "date": "2026-09-21",
           "title": "Communications Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-09-21-communications-committee-report.html",
@@ -1208,11 +1217,17 @@
       "items": [
         {
           "date": "2026-10-18",
-          "title": "Palm Hill Residents Facebook Group",
-          "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#facebook-residents-group",
+          "title": "Traffic Rules",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-18-did-you-know-traffic-rules.html",
           "issues": [
             "2026-10-18"
           ]
+        },
+        {
+          "date": "2026-10-18",
+          "title": "Palm Hill Residents Facebook Group",
+          "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html#facebook-residents-group",
+          "issues": []
         },
         {
           "date": "2026-10-04",

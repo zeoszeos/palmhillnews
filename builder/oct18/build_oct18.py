@@ -87,7 +87,10 @@ EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween
 PHONE_OK_PAGES = {"Bocce Party"}
 EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
     ["Sign up at either clubhouse or by calling Pat Foor (727-631-3372) or Joe Cothran (727-512-1185). Join us for the fellowship and fun!",  # PHONE_OK_PAGES
-     "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."])}
+     "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."]),
+    # R21 calendar re-pull Sat Oct 17 1:47 PM: start moved 4:00 PM -> 5:00 PM; the More → page date line now comes from the calendar
+    "MESCO Spaghetti Dinner Fundraiser": ("2026-11-14-mesco-spaghetti-dinner-fundraiser.html",
+    ["Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door."])}
 assert not any(re.search(r"\d{3}-\d{3}-\d{4}", v) for v in EVENT_DETAIL.values() if v), "phone rule: no phone numbers in issue summaries"
 # R21: events whose summary already carries the whole calendar listing (checked by hand Oct 16) - no More → page needed
 INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
@@ -218,6 +221,52 @@ CHAIR = [  # newest first; no Source line; no word "Report" in titles; 17px summ
     ("Golf Advisory Committee", "2026-09-08", "Sprinkler work continues and hole #1 has a new sand trap. Golf clinic proposed for Nov 18.",
      BASE + "2026-09-08-golf-advisory-committee-report.html", BASE + "2026-10-04-listen-golf-advisory-committee-report.html"),
 ]
+# Steven, Oct 17 1:40 PM (post-proof addition): Golf Advisory Committee summary from Carolyn Story (nystory11@gmail.com),
+# palmhillblast "Golf Advisory Committee", Sat Oct 17 1:20 PM ET. Meeting date: not stated in the email; Tuesday Oct 13, 2026
+# per the calendar-confirmed Golf Committee meeting (agenda: Board liaison Carolyn Story, Communications request, next meeting
+# Nov 10) and "Finances (as of 10/13)". Full text = Carolyn's wording, block by block (scripts/chair_report_page.py).
+GOLF_1013_PAGE = "2026-10-13-golf-advisory-committee-report.html"
+GOLF_1013_LISTEN = "2026-10-18-listen-golf-advisory-committee-report.html"
+GOLF_1013 = [
+    ("p", "Please find the summary of our recent meeting notes below:"),
+    ("h2", "Finances (as of 10/13) – Megan Leftwich"),
+    ("ul", ["Budget: $2,534.31 over budget for the month; $5,519.89 over YTD.",
+            "Activity: 76 paid memberships, 46 paid cart fees, and 8 ten-packs sold."]),
+    ("h2", "Golf Course Update – Joe Clay, Superintendent"),
+    ("ul", ["Course Conditions: Weather is currently affecting growth, but normal conditions are expected in about a week.",
+            "Projects: Pro Shop plantings are complete, sod green work is ongoing, and new sand traps were added."]),
+    ("h2", "Board Liaison Update – Carolyn Story"),
+    ("ul", ["The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",
+            "Commended the team on the upcoming Golf Clinic."]),
+    ("h2", "Code of Conduct & Accountability – Caroline Zimmerman, Chair"),
+    ("ul", ["Posting: The approved Code of Conduct will be posted in the Link, Pro Shop, and sign-up area, and included in membership packets.",
+            "Accountability: Members must pay before play each season. The membership list is available to the Pro Shop."]),
+    ("h2", "Fiscal Year"),
+    ("ul", ["The Golf Committee is currently processing a request to move the fiscal year start from July to April."]),
+    ("h2", "Associations & Leagues"),
+    ("ul", ["Women's League (Sue Waldecker): Friday morning slot is reserved; league starts Nov 6, with the first meeting on Nov 13. Volunteer/chair sign-ups are in the Pro Shop. First year using an online handicap system managed by K. Kummer and D. Southward.",
+            "Couples League (Mike McCarthy): Hosting sign-up is available at the Pro Shop. Thanksgiving, Christmas Eve, and New Year's Eve will be open play.",
+            "Bandits (Chuck Silcox): Members are slowly returning."]),
+    ("h2", "Pro Shop & Events"),
+    ("ul", ["Deep cleaning is complete, and two large artificial ferns are on order for the patio.",
+            "Golf Clinic: 15 people signed up so far. Sign-up sheets are in the Pro Shop and North/South Clubhouses."]),
+    ("h2", "Communication Committee"),
+    ("ul", ["Approved minutes will be sent after each meeting for posting on the PHCC website."]),
+    ("h2", "Next Meeting"),
+    ("ul", ["Date & Time: November 10, 2026, at 2:00 PM EST", "Location: SCH"]),
+]
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import chair_report_page as _crp
+(Path("/workspace/oct18-batch/pages") / GOLF_1013_PAGE).write_text(
+    _crp.render("Golf Advisory Committee Report", GOLF_1013, "Source: Golf Advisory Committee Report (Carolyn Story)", GOLF_1013_PAGE), encoding="utf-8")
+# seed the listen-* page once; build_archive.js (dateline_listen) rebuilds it from the report page on every run
+_lp = Path("/workspace/oct18-batch/pages") / GOLF_1013_LISTEN
+if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / GOLF_1013_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
+CHAIR.insert(0, ("Golf Advisory Committee", "2026-10-13",
+    "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",  # Carolyn's wording
+    BASE + GOLF_1013_PAGE, BASE + GOLF_1013_LISTEN))
+# Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
+# attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
+# already published -- so none is added to the Oct 18 Chair Reports section without Steven's decision.
 def chair_cards():
     out = []
     # RETENTION (Steven, Oct 16): latest report per committee, shown only if dated within 30 days of the issue; older -> archive only
@@ -301,7 +350,14 @@ DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:a
     f'<div style="font-size:14px;margin-top:4px;"><a href="{FBURL}" style="color:{G};">{FBURL}</a></div>'
     f'<div style="font-size:14px;margin-top:4px;"><a href="{FBPAGE_DYK}" style="color:{G};">Full item with QR code to scan →</a></div></td></tr>')
 # Steven's rule (Oct 16): main issue shows ONLY the newest Did You Know; older items live on archive/did-you-know.html
-DYK_ITEMS = [("2026-10-16", DYK_FB)]   # newest first; add new items at the top
+# Steven, Oct 17 1:40 PM (post-proof addition): Rule of the week from David Bates (david.palmhill@gmail.com), palmhillblast
+# "Park Rule for Newsletter", Sat Oct 17 1:17 PM ET (his corrected resend of "Rule for Newsletter", 12:53 PM). Summary = his
+# wording; full narrative on the Did You Know page (make_live_preview.py dykpage -> publish 2026-10-18-did-you-know-traffic-rules.html).
+DYK_RULES_PV = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/did-you-know-traffic-rules.html"
+DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
+    f'<div style="font-size:15px;color:#333333;margin-top:3px;">The speed limit in the park is 15 mph. It&#x27;s okay to go 15 mph and make a full stop at a stop sign. '
+    f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
+DYK_ITEMS = [("2026-10-18", DYK_RULES), ("2026-10-16", DYK_FB)]   # newest first; add new items at the top
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + DYK_ITEMS[0][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div></td></tr>', 1) + s[e:]
 # Helpful Webpages + archive footer links -> live /pages/ URLs

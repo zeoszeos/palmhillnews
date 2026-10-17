@@ -9,7 +9,8 @@ ISSUE = L + "archive/issues/2026-10-18.html"
 (REPO / "pages/assets/phnews/2026-10-18").mkdir(parents=True, exist_ok=True)
 shutil.copy(PV / "assets/fb-group-qr.png", REPO / "pages/assets/phnews/2026-10-18/fb-group-qr.png")
 MAP = {"facebook-group-notice.html": "2026-10-18-facebook-group-notice.html",
-       "facebook-group-did-you-know.html": "2026-10-18-did-you-know-facebook-group.html"}
+       "facebook-group-did-you-know.html": "2026-10-18-did-you-know-facebook-group.html",
+       "did-you-know-traffic-rules.html": "2026-10-18-did-you-know-traffic-rules.html"}  # Steven Oct 17: David Bates rule
 for f in sorted((PV / "notices").glob("*.html")): MAP["notices/" + f.name] = f"2026-10-18-notice-{f.name}"
 def clean(t):
     t = t.replace('<meta name="robots" content="noindex,nofollow">\n', "").replace('<meta name="robots" content="noindex,nofollow">', "")

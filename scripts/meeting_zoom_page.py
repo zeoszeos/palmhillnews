@@ -9,7 +9,10 @@ from html import escape as e
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 def tel(s): return "tel:" + re.sub(r"[^\d+,*#]", "", s.split(" US")[0].split(" Canada")[0]).replace("#", "%23")
-def render(n):
+def render(n):  # STYLE-RULES RD1-RD13: every caller (builder too) gets the readability layout
+    import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import readability as _rd
+    return _rd.apply(_render(n), n.get("zoom_page", ""))[0]
+def _render(n):
     d = date.fromisoformat(n["date"]); t = datetime.strptime(n["start"], "%H:%M")
     tm = f"{(t.hour % 12) or 12}:{t:%M} {'AM' if t.hour < 12 else 'PM'}"
     title = f'{n["name"]} — Join on Zoom'
