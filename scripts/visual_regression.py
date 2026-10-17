@@ -54,6 +54,10 @@ def rule_checks(html, page):
     if "Palm Hill Link Monthly" in html:
         if "archive/palm-hill-link.html" not in html: fails.append("R14 Helpful Webpages missing 'Palm Hill Link Archives' link")
         if "<span>Palm Hill Link Monthly</span>" in html: fails.append("R14 'Palm Hill Link Monthly' has no link (web copy should point to the Link Archives page)")
+    # R19: no dates in item titles when a date line sits beneath
+    MD = r"(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.? (\d{1,2}\b|\d{4})"
+    for m in re.finditer(r'font-weight:bold[^>]*>([^<]{3,120})</td>(.{0,2500}?)</table>\s*<div style="font-size:14px;color:#666666;margin-top:2px;">((Sun|Mon|Tues|Wednes|Thurs|Fri|Satur)day, [^<]+)</div>', html, re.S):
+        if re.search(MD, m.group(1)): fails.append(f"R19 title repeats a date above its date line: '{m.group(1)[:60]}' / '{m.group(3)}'")
     # R13: meeting Agenda →/Zoom → (and any Zoom link on the newsletter page) must be palmhillnews Vercel pages
     for h, t in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>((?:(?!</a>).)*?)</a>', html, re.S):
         txt = re.sub(r"<[^>]+>", "", t).strip()
