@@ -96,3 +96,18 @@ def dyk_byline_ok(html, name):
     if not card: return False
     paras = _re.findall(r'<p[^>]*>(.*?)</p>', card.group(1), _re.S)
     return bool(paras) and _re.sub(r"<[^>]+>|\s+", " ", paras[-1]).strip() == name
+
+
+# STYLE-RULES R34 (Steven, Oct 17): a Did You Know piece that cites a park rule links to the official club Rules & Regulations PDF
+# on palmhillcountryclub.net (never a copy hosted on palmhillnews/Vercel/CDN), on its own line outside the piece card.
+def dyk_rule_link_ok(html):
+    import re as _re
+    links = _re.findall(r'<p class="dyk-rules-link"[^>]*><a href="([^"]+)"', html)
+    if len(links) != 1: return False
+    u = links[0].replace("&#x27;", "'").replace("&amp;", "&")
+    if not (u.startswith("https://www.palmhillcountryclub.net/") and u.lower().endswith(".pdf")): return False
+    card = _re.search(r'<div class="content-card">(.*?)</div>', html, _re.S)
+    if not (bool(card) and "dyk-rules-link" not in card.group(1) and html.find("dyk-rules-link") > card.end()): return False
+    # R34 (Steven, Oct 17 2:40 PM): the cited rule's heading inside the piece links to the same official PDF
+    heads = _re.findall(r'<a class="dyk-rule-heading" href="([^"]+)"', card.group(1))
+    return len(heads) >= 1 and all(h == links[0] for h in heads)
