@@ -30,6 +30,10 @@ def trim(s, base=B):
         tail = inner[inner.index("<br><a"):] if "<br><a" in inner else ""
         new = short + ((" " + MORE.format(u=url.replace(B, base))) if url else "") + tail
         s = s[:a] + new + s[b:]
+        if url:  # inline More → replaces the row's own More → div (one More → per item; STYLE-RULES R25)
+            dup = f'<div style="font-size:14px;margin-top:4px;"><a href="{url.replace(B, base)}" style="color:#3A6B1A;">More →</a></div>'
+            e = a + len(new) + len("</div>")
+            if s.startswith(dup, e): s = s[:e] + s[e + len(dup):]
     return s
 if __name__ == "__main__":
     for f in sys.argv[1:]:
