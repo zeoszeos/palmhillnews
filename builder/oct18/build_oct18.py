@@ -5,13 +5,18 @@ Input: ../source/PHNEWS-2026-10-11-FINAL-REVIEW-as-sent-omen.html (Oct 11 as sen
 Saturday refresh: re-fetch calendar (fetch_calendar.sh), update NOTICES / MANAGER / Tony FB wording, rerun.
 Output: ../PHNEWS-2026-10-18-preview.html
 """
-import json, re, sys, glob
+import json, os, re, sys, glob
 from datetime import date, datetime
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent; ROOT = HERE.parent
 SEED = ROOT / "source/PHNEWS-2026-10-18-seed-20261014.html"
+# STYLE-RULES R21 (Steven, Oct 16 11:32 PM): re-pull the calendar right before every proof/publish build (prints the diff).
+# PHNEWS_CAL_OFFLINE=1 only for re-renders that must reproduce an already-pulled snapshot.
+if os.environ.get("PHNEWS_CAL_OFFLINE") != "1":
+    sys.path.insert(0, "/workspace/oct18-batch/scripts"); import pull_calendar as _pc
+    _pc.pull(str(ROOT / "data"), "2026-10-18", "2026-12-17")
 CALF = sorted(glob.glob(str(ROOT / "data/cal-*.json")))[-1]
 OUTF = ROOT / "PHNEWS-2026-10-18-preview.html"
 ISSUE = "2026-10-18"
@@ -69,10 +74,21 @@ EVENT_DETAIL = {
     "MESCO Spaghetti Dinner Fundraiser": "Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door.",
     "Fall Festival": "Music and food trucks on the South Lawn and Patio.",
     "Bookclub:Foster by Claire Keegan": "Book club discussion of Foster by Claire Keegan.",
+    "Bocce Party": "Sign up at either clubhouse or by calling Pat Foor or Joe Cothran. Join us for the fellowship and fun!",
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html"}
-EVENT_LINK = {"Halloween Dance Party": ("Read Full Details →", BASE + "2026-10-31-halloween-dance.html")}
+EVENT_LINK = {"Halloween Dance Party": ("Read Full Details →", BASE + "2026-10-31-halloween-dance.html"),
+              "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
+              "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
+              "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html")}
+# R21: full calendar listing text for the More → page (personal phone numbers are not printed: see the club calendar)
+EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
+    ["Sign up at either clubhouse or by calling Pat Foor or Joe Cothran (their phone numbers are on the club calendar). Join us for the fellowship and fun!",
+     "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."])}
+# R21: events whose summary already carries the whole calendar listing (checked by hand Oct 16) - no More → page needed
+INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
+                "Veterans Day Program", "Bookclub:Foster by Claire Keegan"}
 TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan"}
 
 def bg(i): return "#EAF4E4" if i % 2 else "#FFFFFF"
@@ -117,6 +133,13 @@ def mtg_rows():
     return "".join(out)
 def ev_rows(evs):
     out = []
+    for e in evs:  # STYLE-RULES R21 guard
+        if (e.get("info") or "").strip() and e["name"] not in EVENT_LINK and e["name"] not in INFO_COVERED:
+            raise SystemExit(f"R21: {e['date']} {e['name']} has calendar listing text but no More → page (add EVENT_PAGE/EVENT_LINK or INFO_COVERED)")
+        if e["name"] in EVENT_PAGE:
+            import event_page as _ep; fn, paras = EVENT_PAGE[e["name"]]
+            dl = f"{pdate(e['date'])} • {ptime(e['start'])}" + (f" to {ptime(e['end'])}" if e.get("end") else "") + f" • {VENUE.get(e['venue'], e['venue'])}"
+            (Path("/workspace/oct18-batch/pages") / fn).write_text(_ep.render(e["name"], dl, paras), encoding="utf-8")
     for i, e in enumerate(evs):
         det = EVENT_DETAIL.get(e["name"]); lk = EVENT_LINK.get(e["name"])
         loc = "Mount Dora" if e["name"] == "Mount Dora Trip" else VENUE.get(e["venue"], e["venue"])
