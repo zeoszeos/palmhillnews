@@ -382,10 +382,14 @@ DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:a
 import html as _html
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr_dyk
 DYK_RULES_SUMMARY = ("The speed limit in the park is 15 mph. It's okay to go 15 mph and make a full stop at a stop sign. "
-    "Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights. "
-    "Motorcycles are prohibited anywhere on Palm Hill property.")
+    "Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights.")  # Steven 6:28 PM: 3 sentences max
 _DYK_SRC = json.load(open(ROOT / "data/dyk-traffic-rules-source.json"))
-assert _sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC), "R39: DYK summary must be 2-3 lines of Dave's verbatim sentences"
+assert _sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC), "R39: DYK summary must be at most 3 of Dave's verbatim sentences"
+# R39: the Did You Know archive row shows the same summary (archive/archive-items.json, id traffic-rules)
+_AI = Path("/workspace/oct18-batch/archive/archive-items.json"); _ai = _AI.read_text(encoding="utf-8")
+_m = re.search(r'("id": "traffic-rules", "title": "Traffic Rules", "text": )"((?:[^"\\]|\\.)*)"', _ai); assert _m, "R39: traffic-rules archive row not found"
+_new = _m.group(1) + json.dumps(DYK_RULES_SUMMARY, ensure_ascii=False)
+if _m.group(0) != _new: _AI.write_text(_ai.replace(_m.group(0), _new), encoding="utf-8")
 DYK_RULES_PV = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/did-you-know-traffic-rules.html"
 DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
     f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(DYK_RULES_SUMMARY)} '

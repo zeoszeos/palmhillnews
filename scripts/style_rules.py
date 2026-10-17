@@ -113,12 +113,12 @@ def dyk_rule_link_ok(html):
     return len(heads) >= 1 and all(h == links[0] for h in heads)
 
 
-# STYLE-RULES R39 (Steven, Oct 17): the issue's Did You Know summary is 2-3 lines at desktop (about 150-300 characters at
-# 15px in the 640px column) and every sentence is the contributor's own sentence, verbatim, from the source text (light trims
+# STYLE-RULES R39 (Steven, Oct 17; 6:28 PM: at most 3 source sentences): the issue's Did You Know summary is at most 3 sentences
+# (and <= 300 characters) and every sentence is the contributor's own sentence, verbatim, from the source text (light trims
 # only: a leading connector like "Further - " may be dropped and a doubled period collapsed).
 def dyk_summary_ok(summary, source_paras):
     import re as _re
     src = " ".join(source_paras).replace("..", ".")
     src = _re.sub(r"\s+", " ", src)
     sents = [x.strip() for x in _re.split(r"(?<=[.!?])\s+", summary.strip()) if x.strip()]
-    return 150 <= len(summary) <= 300 and len(sents) >= 2 and all(x in src for x in sents)
+    return len(summary) <= 300 and 1 <= len(sents) <= 3 and all(x in src for x in sents)  # Steven 6:28 PM: at most 3 source sentences
