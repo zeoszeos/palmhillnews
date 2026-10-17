@@ -78,7 +78,7 @@ EVENT_DETAIL = {
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html"}
-EVENT_LINK = {"Halloween Dance Party": ("Read Full Details →", BASE + "2026-10-31-halloween-dance.html"),
+EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween-dance.html"),
               "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
               "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html")}
@@ -136,6 +136,7 @@ def mtg_rows():
     return "".join(out)
 def ev_rows(evs):
     out = []
+    assert all(v[0] == "More →" for v in EVENT_LINK.values()), "STYLE-RULES R23: event/notice links say More →"
     for e in evs:  # STYLE-RULES R21 guard
         if (e.get("info") or "").strip() and e["name"] not in EVENT_LINK and e["name"] not in INFO_COVERED:
             raise SystemExit(f"R21: {e['date']} {e['name']} has calendar listing text but no More → page (add EVENT_PAGE/EVENT_LINK or INFO_COVERED)")

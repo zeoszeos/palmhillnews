@@ -46,6 +46,9 @@ def rule_checks(html, page):
     for ln, t in title_month_violations(html): fails.append(f"R3 abbreviated month in title/heading line {ln}: {t}")
     if not re.search(r"(Sunday|Saturday|Monday|Tuesday|Wednesday|Thursday|Friday), (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}", html):
         fails.append("R2 masthead weekday + full date missing (e.g. 'Sunday, October 18, 2026')")
+    # R23: event/notice items link with "More →" only (report/message labels Read Full Report/Message/Update are allowed)
+    for v in re.findall(r'>\s*((?:Read (?:Full )?(?:Details|More|more|Notice|Event)|Details|Full Details|Learn More)\s*→?)\s*</a>', html):
+        fails.append(f"R23 event/notice link label '{v}' (use 'More →')")
     if re.search(r'class="[^"]*\bpha-banner', html): fails.append("R6 provenance/banner strip present (pha-banner) on an Oct 18+ issue")
     if re.search(r"<img\b[^>]*(qr|QR)[^>]*>", html): fails.append("R7 QR code image on the main newsletter page (QR belongs on the notice page)")
     for s in re.findall(r"Source:(?:(?!</).){0,120}", html):
