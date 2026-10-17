@@ -267,6 +267,30 @@ CHAIR.insert(0, ("Golf Advisory Committee", "2026-10-13",
 # Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
 # attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
 # already published -- so none is added to the Oct 18 Chair Reports section without Steven's decision.
+# Steven, Oct 17 (answer t839s3231): "Add March and May to the Chair Reports archive only". Full report + listen-* seed pages
+# from Bob's own wording (Word files "Rules Mtg. March 23 26.docx", "Rules Meeting May 2026.docx"; R30), block by block, typos kept.
+# ARCHIVE ONLY: not added to CHAIR (the Oct 18 issue / SEND are unchanged); archive rows live in archive/archive-items.json
+# (committee-reports, issues: []) and build_archive.js adds the date line + R28 bottom-right speaker Listen. Aug 10 stays as published.
+RULES_ARCHIVE_ONLY = [
+    ("2026-03-23-rules-and-regulations-committee-report.html", "2026-03-23-listen-rules-regulations-committee-report.html", [
+        ("p", "Rules and Regulation Committee"),
+        ("p", "March 23, 2026 11 am"),
+        ("p", "Boardroom, Zoom, and Ch.732"),
+        ("p", "The Rules and Regulation Committee held a meeting on 23 March. 2026 at 11 am. Since this was the first meeting of the committee, the agenda was just topics for future actions, and discussions on Park issues. Also to allow the committee to meet each other."),
+        ("p", "Topics for future actions and discussion are, Replacement of trees that are removed, ESA animals and the responsibility of them trespassing on others property, (especially where they toilet), Guns and Weapons Policy, Possible Speed Bump Locations, and Increasing the Application fee."),
+        ("p", "There was Discussion of Rule Enforcement in the park, and this will be a subject for future discussion. The meeting was adjourned at 11:40 am.")]),
+    ("2026-05-11-rules-and-regulations-committee-report.html", "2026-05-11-listen-rules-regulations-committee-report.html", [
+        ("p", "Rules and Regulation Committee"),
+        ("p", "May 11, 2026 1 pm"),
+        ("p", "Boardroom, Zoom, and Ch.732"),
+        ("p", "The Rules and Regulations Meeting was called to order at 1pm, and adjourned at 2:30pm. Although the length of the meeting was fairly long the number of Topics was limited. Discussion of a Firearms rule was briefly discussed but was tabled until further input could be accessed. There was also a brief discussion on Speed bumps but was tabled for future discussion. There was a lot of discussion on ESA dogs, but it is to be further reviewed in a Future meeting. The Committee reviewed the proposed Violations Policy, and made adjustments to it. It was then approved to be sent to the Board for adoption. The next meeting was set for August 10, 2026, at 1pm. Then the meeting was adjourned"),
+        ("p", "Submitted by Bob Newport, Committee Laison")]),
+]
+for _pg, _ls, _blocks in RULES_ARCHIVE_ONLY:
+    (Path("/workspace/oct18-batch/pages") / _pg).write_text(
+        _crp.render("Rules and Regulations Committee Report", _blocks, "Source: Rules and Regulations Committee Report (Bob Newport)", _pg), encoding="utf-8")
+    _lp = Path("/workspace/oct18-batch/pages") / _ls
+    if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / _pg).read_text(encoding="utf-8"), encoding="utf-8")
 def chair_cards():
     out = []
     # RETENTION (Steven, Oct 16): latest report per committee, shown only if dated within 30 days of the issue; older -> archive only

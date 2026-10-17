@@ -1,5 +1,5 @@
 """Oct 18 Recurring pages (Steven Oct 16 11:16 PM, STYLE-RULES R20): window starts on the issue date and matches the
-issue's Recurring band; Vol 1 No 14; data = current calendar (data/cal-20261015.json) with build_oct18's AS_RECURRING.
+issue's Recurring band; Vol 1 No 14; data = newest calendar snapshot (data/cal-*.json, R21) with build_oct18's AS_RECURRING.
 Writes ungrouped pages to source/recurring-oct18-orig/ (gen.py format); recurring_grouped.py then applies Option B."""
 import json, re, sys
 from datetime import date, datetime
@@ -22,7 +22,9 @@ def place(e):
 def md(iso): d = date.fromisoformat(iso); return f"{MON3[d.month-1]} {d.day}"
 def longd(iso): d = date.fromisoformat(iso); return f"{MON3[d.month-1]} {d.day}, {d.year}"
 CM = re.compile(r"\bcommittee\b.*\bmeeting\b|\bboard of directors\b", re.I)
-events = json.load(open(ROOT / "data/cal-20261015.json"))["events"]
+# STYLE-RULES R21 (Oct 17 additions-2): use the newest calendar re-pull snapshot, not the Oct 15 one (Nov 4 Coffee 8:00-9:00)
+CALSNAP = sorted((ROOT / "data").glob("cal-2*.json"))[-1]; print("recurring_oct18: calendar", CALSNAP.name)
+events = json.load(open(CALSNAP))["events"]
 k = lambda e: (e["date"], e.get("start") or "99:99", e["name"])
 rec = sorted([e for e in events if e.get("status") == "CONFIRMED" and e.get("name") != "Private Event"
               and RECURRING[0] <= e["date"] <= RECURRING[1] and (e.get("recurring") or e["name"] in AS_RECURRING)

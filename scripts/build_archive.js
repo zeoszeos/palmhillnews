@@ -254,10 +254,12 @@ function sectionPage(k) {
     if (it.external) out += `<nav class="ph-links"><a href="${esc(it.external)}">${esc(it.external_label || 'Open →')}</a></nav>\n`;
     if (it.source && !sec.plain_rows) out += `<div class="ph-row-meta">Source: ${esc(it.source)}</div>\n`;
     const inNl = (!sec.plain_rows && it.issues && it.issues.length) ? `In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}` : '';
+    // STYLE-RULES R32 (Steven, Oct 17): an archive-only chair report (issues: []) keeps the R28 bottom line, labelled "Archive only"
+    const inNlFoot = inNl || (sec.listen_bottom && it.listen && !sec.plain_rows && Array.isArray(it.issues) && !it.issues.length ? 'In the newsletter: Archive only' : '');
     if (sec.listen_bottom && it.listen) {
       // STYLE-RULES R28 (Steven, Oct 17): Committee Chair Reports -- speaker icon + Listen on the bottom "In the newsletter" line,
       // right-justified, one line (nowrap), 14px in from the row's right edge (8px row padding + 6px), same icon as President's Message.
-      out += `<div class="ph-row-line ph-row-foot" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="ph-row-meta" style="min-width:0">${inNl}</div>${listenLink(it.listen, 'margin-right:6px')}</div>\n`;
+      out += `<div class="ph-row-line ph-row-foot" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="ph-row-meta" style="min-width:0">${inNlFoot}</div>${listenLink(it.listen, 'margin-right:6px')}</div>\n`;
     } else if (inNl) out += `<div class="ph-row-meta">${inNl}</div>\n`;
     out += `</div>\n`;
     n++;
@@ -702,6 +704,10 @@ for (const k of SECTION_ORDER) if (S[k].listen_bottom) {
   const html = fs.readFileSync(path.join(OUT, `${k}.html`), 'utf8');
   const want = S[k].items.filter((it) => it.listen && !it.hidden).length;
   const got = (html.match(/<div class="ph-row-line ph-row-foot"[^>]*><div class="ph-row-meta"[^>]*>[^\n]*?<a class="ph-listen"[^>]*><img src="[^"]*speaker-read-aloud[^"]*"/g) || []).length;
+  // R32 guard: every archive-only listen row (issues: []) carries the "Archive only" bottom line
+  const ao = S[k].items.filter((it) => it.listen && !it.hidden && Array.isArray(it.issues) && !it.issues.length).length;
+  const aoGot = (html.match(/<div class="ph-row-meta" style="min-width:0">In the newsletter: Archive only<\/div><a class="ph-listen"/g) || []).length;
+  if (aoGot !== ao) throw new Error(`${k}.html: R32 archive-only rows need "In the newsletter: Archive only" (found ${aoGot}/${ao})`);
   if (/>Listen →</.test(html) || got !== want) throw new Error(`${k}.html: R28 Listen must be the speaker icon on the bottom line (found ${got}/${want}, inline "Listen →": ${/>Listen →</.test(html)})`);
 }
 writeHub(path.join(OUT, 'how-to-videos.html'), howToVideosPage());
