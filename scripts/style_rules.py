@@ -64,3 +64,25 @@ if __name__ == "__main__":
     for f in sys.argv[1:]:
         p = open(f, encoding="utf-8").read(); n = enforce_title_months(p)
         if n != p: open(f, "w", encoding="utf-8").write(n); print("fixed", f)
+
+
+# STYLE-RULES R27 (Steven, Oct 17 12:39 AM): the two footer service-request lines fit on one line at desktop/email width.
+# 13px bold (was 14px from the box) fits the 620px box of the 660px newsletter column; <=640px viewports drop to 12px
+# (never smaller); phones may wrap. Bold, colors and the VANTACA link are unchanged. Idempotent.
+SVC_CSS = '<style id="ph-svc-r27">@media (max-width:640px){.ph-svc-line{font-size:12px !important;line-height:1.35 !important}}</style>'
+def service_box_fit(s):
+    import re as _re
+    s = s.replace(SVC_CSS, "")
+    n = 0
+    for lab in ("NON-URGENT SERVICE REQUESTS", "URGENT SERVICE REQUESTS"):
+        pat = _re.compile(r'<div (?:class="ph-svc-line" )?style="color:#2D5016;font-weight:bold;((?:margin-top:4px;)?)(?:font-size:\d+px;line-height:[\d.]+;)?">' + lab)
+        s, k = pat.subn(lambda m: f'<div class="ph-svc-line" style="color:#2D5016;font-weight:bold;{m.group(1)}font-size:13px;line-height:1.35;">' + lab, s, count=1)
+        n += k
+    assert n == 2, f"R27: service-request lines not found ({n})"
+    # phones: keep each phone number whole when the URGENT line wraps (no "(727)" / "581-8729" split)
+    a = s.find('URGENT SERVICE REQUESTS – Business Hours:'); b = s.find("</div>", a)
+    seg = _re.sub(r'(?<!nowrap;">)\((\d{3})\) (\d{3}-\d{4})', r'<span style="white-space:nowrap;">(\1) \2</span>', s[a:b])
+    s = s[:a] + seg + s[b:]
+    i = s.find('<div style="background:#FFF9E6;')
+    assert i > 0, "R27: service-request box not found"
+    return s[:i] + SVC_CSS + s[i:]
