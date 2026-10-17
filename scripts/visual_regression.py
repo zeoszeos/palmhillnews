@@ -37,6 +37,8 @@ LISTEN_JS = r"""() => [...document.querySelectorAll('a')].filter(a => a.textCont
   let box = a.closest('table') || a.parentElement; const br = box.getBoundingClientRect();
   return {ws: cs.whiteSpace, h: r.height, lh, inset: Math.round(br.right - r.right), href: a.href}; })"""
 
+SUMMARY_JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'summary_lines.js')).read()
+
 def slug(t): return re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")[:50] or "section"
 
 def rule_checks(html, page):
@@ -95,6 +97,8 @@ def main():
             if html is None: html = pg.content()
             pg.evaluate(MASK_JS)
             fails += listen_checks(pg.evaluate(LISTEN_JS), view)
+            if view == "mobile":  # R18: item summaries max 3 lines at 390px (and 660px below)
+                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3]
             for s in pg.evaluate(SECTIONS_JS):
                 name = f"{s['i']:02d}-{slug(s['title'])}-{view}.png"; manifest[name] = s["title"]
                 dst = (gold if a.capture else out) / name
@@ -105,6 +109,8 @@ def main():
                     r = compare(dst, g, out / name.replace(".png", "-DIFF.png"))
                     if r: diffs.append(f"{name}: {r}")
             pg.close()
+        p660 = br.new_page(viewport={"width": 660, "height": 900}); p660.goto(url, wait_until="networkidle", timeout=60000)
+        fails += [f"R18 [660px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in p660.evaluate(SUMMARY_JS) if x["lines"] > 3]
         br.close()
     fails = rule_checks(html, None) + fails
     if a.capture:
