@@ -77,3 +77,12 @@ body.ph-rd-simple .meta, body.ph-rd-simple .source, body.ph-rd-simple .back { fo
 body.ph-rd-card .zoom-card { font-size: 18px; line-height: 1.6; }
 body.ph-rd-card .zoom-card > p, body.ph-rd-card .zoom-card > ul { max-width: 32em; }
 body.ph-rd-card .source, body.ph-rd-card .source p, body.ph-rd-card p.sources, body.ph-rd-card p.note { font-size: 16px !important; line-height: 1.5; color: #555 !important; }
+
+/* rollout 4 fixes: shell agenda lists, source lines, recurring lead/notes, simple column width */
+body.ph-rd-shell main li, body.ph-rd-shell .ph-body li { font-size: 18px !important; line-height: 1.6 !important; }
+body.ph-rd-shell p.source, body.ph-rd-simple p.source, body.ph-rd-simple .meta { font-size: 16px !important; line-height: 1.5 !important; color: #555 !important; }
+body.ph-rd-table .ph-lead { font-size: 18px !important; line-height: 1.6 !important; max-width: 32em; }
+body.ph-rd-table .sx-note { font-size: 16px !important; line-height: 1.5 !important; }
+body.ph-rd-simple { max-width: calc(30em + 40px); }
+body.ph-rd-simple section p, body.ph-rd-simple section div { font-size: 18px; line-height: 1.6; }
+body.ph-rd-simple p.intro { font-size: 18px; line-height: 1.6; }
