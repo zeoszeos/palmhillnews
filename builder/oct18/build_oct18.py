@@ -314,6 +314,15 @@ sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr 
 s = _sr.enforce_title_months(s)  # full months in titles/bands
 import link_archive_bullet as _lab; s = _lab.add(s)
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
+# STYLE-RULES R22 (Steven, Oct 16 11:38 PM): review-only stamp on preview/proof/FINAL-REVIEW copies; publish_oct18.py strips it,
+# so it never reaches the live issue, the archive or the Vantaca send file.
+_ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))
+STAMP = (f'<!-- ph-review-stamp:start --><div class="ph-review-stamp" style="font:12px/1.4 Arial,Helvetica,sans-serif;color:#7a5c00;background:#fff4cc;'
+         f'border:1px dashed #c9a227;text-align:center;padding:3px 8px;margin:0 auto 6px;max-width:660px;">Review copy · Calendar checked: '
+         f'{_ct:%A}, {MON3[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}:{_ct:%M} {"AM" if _ct.hour<12 else "PM"} ET ({os.path.basename(CALF)})</div><!-- ph-review-stamp:end -->')
+s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)
+_b = s.find(">", s.find("<body")) + 1
+s = s[:_b] + STAMP + s[_b:]
 OUTF.write_text(s, encoding="utf-8")
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
