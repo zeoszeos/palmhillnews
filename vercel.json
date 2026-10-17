@@ -1,7 +1,56 @@
 {
-  "buildCommand": "mkdir -p public/pages public/events public/reports && cp -r pages/. public/pages/ && cp -r events/. public/events/ && cp -r reports/. public/reports/",
+  "buildCommand": "mkdir -p public/pages public/events public/reports && cp -r pages/. public/pages/ && cp -r events/. public/events/ && cp -r reports/. public/reports/ && node scripts/check_deploy_size.js public",
   "outputDirectory": "public",
+  "git": {
+    "deploymentEnabled": {
+      "link-pdf-store": false
+    }
+  },
   "redirects": [
-    { "source": "/", "destination": "/pages/archive/", "permanent": false }
+    {
+      "source": "/",
+      "destination": "/pages/archive/",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-10.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-10.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-09.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-09.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-08.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-08.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-05.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-05.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-03.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-03.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-02.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-02.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-01.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-01.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/:file",
+      "destination": "https://github.com/zeoszeos/palmhillnews/releases/download/link-pdfs/:file",
+      "permanent": false
+    }
   ]
 }

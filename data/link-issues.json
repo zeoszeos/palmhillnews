@@ -1,11 +1,11 @@
-{"_about": "Palm Hill Link (club monthly magazine) issues hosted on Vercel. Steven OK'd hosting Oct 16, 2026 7:21 PM ET. Current issue also at monthly-media NID=121.",
+{"_about": "Palm Hill Link (club monthly magazine) issues. Steven OK'd hosting Oct 16, 2026 7:21 PM ET; moved out of the Vercel deployment Oct 17, 2026 (Deployment Storage). Each PDF lives on branch link-pdf-store (served by jsDelivr as application/pdf, 'url') and as an asset of GitHub release link-pdfs; /pages/archive/link/<pdf> redirects to 'url' (vercel.json via scripts/link_store.py). Current issue also at monthly-media NID=121.",
  "current_hub": "https://monthly-media.com/mmnewsletter.php?NID=121",
  "issues": [
-  {"month": "2026-10", "pdf": "Link-2026-10.pdf", "pages": 60, "story": {"title": "97½ and Still Chasing Birdies Instead of Birthdays", "page": "2026-10-04-mary-leslie-chasing-birdies.html"}},
-  {"month": "2026-09", "pdf": "Link-2026-09.pdf", "story": {"title": "For the Love of the Game: Marge Taylor", "page": "2026-09-marge-taylor-love-of-the-game.html"}},
-  {"month": "2026-08", "pdf": "Link-2026-08.pdf"},
-  {"month": "2026-05", "pdf": "Link-2026-05.pdf"},
-  {"month": "2026-03", "pdf": "Link-2026-03.pdf"},
-  {"month": "2026-02", "pdf": "Link-2026-02.pdf"},
-  {"month": "2026-01", "pdf": "Link-2026-01.pdf", "story": {"title": "Going Strong: Couples Golf Celebrates 17 Years", "page": "2026-01-couples-golf-17-years.html"}}
+  {"month": "2026-10", "pdf": "Link-2026-10.pdf", "pages": 60, "story": {"title": "97½ and Still Chasing Birdies Instead of Birthdays", "page": "2026-10-04-mary-leslie-chasing-birdies.html"}, "bytes": 11318158, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-10.pdf"},
+  {"month": "2026-09", "pdf": "Link-2026-09.pdf", "story": {"title": "For the Love of the Game: Marge Taylor", "page": "2026-09-marge-taylor-love-of-the-game.html"}, "bytes": 10292774, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-09.pdf"},
+  {"month": "2026-08", "pdf": "Link-2026-08.pdf", "bytes": 10744418, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-08.pdf"},
+  {"month": "2026-05", "pdf": "Link-2026-05.pdf", "bytes": 12043321, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-05.pdf"},
+  {"month": "2026-03", "pdf": "Link-2026-03.pdf", "bytes": 10763734, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-03.pdf"},
+  {"month": "2026-02", "pdf": "Link-2026-02.pdf", "bytes": 10615133, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-02.pdf"},
+  {"month": "2026-01", "pdf": "Link-2026-01.pdf", "story": {"title": "Going Strong: Couples Golf Celebrates 17 Years", "page": "2026-01-couples-golf-17-years.html"}, "bytes": 10083978, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-01.pdf"}
  ]}
