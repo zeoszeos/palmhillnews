@@ -51,6 +51,11 @@
       "source": "/pages/archive/link/:file",
       "destination": "https://github.com/zeoszeos/palmhillnews/releases/download/link-pdfs/:file",
       "permanent": false
+    },
+    {
+      "source": "/pages/archive/how-to-videos.html",
+      "destination": "/pages/archive/did-you-know.html",
+      "permanent": false
     }
   ]
 }

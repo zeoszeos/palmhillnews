@@ -182,7 +182,8 @@ const issueLink = (date) => ITEMS.issues.some((i) => i.date === date) ? `<a href
 const HUB = 'main.html';
 const HUB_LABEL = 'All Archives →';
 // Steven Oct 11: How To + Committee Video Archive URLs (used by videosPage / howToVideosPage / mainPage).
-const HOWTO_VIDEOS_HREF = 'how-to-videos.html';
+// STYLE-RULES R37 (Steven, Oct 17 review batch): how-to-videos.html is retired -> stub + vercel.json redirect to did-you-know.html.
+const HOWTO_VIDEOS_HREF = 'how-to-videos.html'; // RETIRED: never link it; only the redirect stub uses this name
 // Steven Oct 14: archive = Committee & Board Meeting Video Archives hub (built by build_meeting_video_archive.py).
 const COMMITTEE_VIDEO_ARCHIVE_HREF = `${BASE}/pages/archive/meeting-videos.html`;
 // Steven Oct 14: Main Archive Did You Know tile goes to the Did You Know section archive.
@@ -277,36 +278,28 @@ function videosPage() {
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
-  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${HOWTO_VIDEOS_HREF}">Did You Know →</a></nav>\n`;
+  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${DYK_TILE_HREF}">Did You Know →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  const topNav = navBar([[HOWTO_VIDEOS_HREF, 'Did You Know →'], [HUB, HUB_LABEL]]);
+  const topNav = navBar([[DYK_TILE_HREF, 'Did You Know →'], [HUB, HUB_LABEL]]);
   return shell({ title: `${pageTitle} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
 function howToVideosPage() {
-  // Steven Oct 11: separate How To page. Primary = Access article from last issue; tutorials below.
-  const vantaca = S['did-you-know'].items.find((x) => /VANTACA/i.test(x.title));
-  const zoom = S['did-you-know'].items.find((x) => /Zoom/i.test(x.title));
-  const access = S['did-you-know'].items.find((x) => /Access Board and Committee/i.test(x.title));
-  const accessText = (access && access.text) || 'Log in to the Palm Hill website, open “Committees of Palm Hill,” then choose Board Meeting Videos or Committee Meeting Videos. Contact the webmaster if you need a site account; allow time after each meeting for videos to be posted.';
-  const accessHref = (access && access.external) || LATEST_VIDEOS_HREF;
-  const accessLabel = (access && access.external_label) || 'Latest Board and committee recordings →';
-  const accessSource = (access && access.source_label) || 'Palm Hill Webmaster notice, September 27';
-  let out = `${crumbs('Did You Know')}\n<h1 class="ph-section">Did You Know</h1>\n`;
-  out += `<h2 class="ph-subhead">How to Access Board and Committee Meeting Videos</h2>\n`;
-  out += `<p class="ph-detail">${esc(accessText)}</p>\n`;
-  out += `<nav class="ph-links"><a href="${esc(accessHref)}">${esc(accessLabel)}</a></nav>\n`;
-  out += `<p class="ph-source">Source: ${esc(accessSource)}</p>\n`;
-  out += `<h2 class="ph-subhead">Tutorial videos</h2>\n`;
-  let n = 0;
-  for (const x of [vantaca, zoom].filter(Boolean)) {
-    out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(x.external)}" aria-label="Play: ${esc(x.title)}">▶</a><div><div class="ph-row-title"><a href="${esc(x.external)}">${esc(x.title)}</a></div><div class="ph-row-meta">Tutorial video</div></div></div>\n`;
-    n++;
-  }
-  out += `<h2 class="ph-subhead">More video pages</h2>\n`;
-  out += `<nav class="ph-links"><a href="${archUrl('videos.html')}">Latest Committee Videos →</a><span class="ph-dot"> · </span><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage →</a></nav>\n`;
-  const topNav = navBar([[archUrl('videos.html'), 'Latest Committee Videos →'], [HUB, HUB_LABEL]]);
-  return shell({ title: 'Did You Know — Newsletter Archive', issuedate: 'Newsletter Archives', body: out, canonical: archUrl('how-to-videos.html'), topNav });
+  // STYLE-RULES R37: retired page. Every How To item (Access article, VANTACA + Zoom tutorials) lives on did-you-know.html.
+  // vercel.json redirects /pages/archive/how-to-videos.html (307); this stub covers any host that ignores the redirect.
+  for (const re of [/VANTACA/i, /Zoom/i, /Access Board and Committee/i])
+    if (!S['did-you-know'].items.some((x) => re.test(x.title) && !x.hidden)) throw new Error(`R37: How To item ${re} missing from did-you-know`);
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Did You Know — Newsletter Archive (moved)</title>
+<meta http-equiv="refresh" content="0; url=${DYK_TILE_HREF}">
+<link rel="canonical" href="${archUrl(DYK_TILE_HREF)}">
+<meta name="robots" content="noindex">
+</head><body style="font:18px/1.6 Arial,Helvetica,sans-serif;margin:24px">
+<!-- ph-redirect-stub (STYLE-RULES R37): How To was folded into Did You Know -->
+<p>This page has moved to <a href="${DYK_TILE_HREF}" style="color:#3A6B1A">Did You Know →</a></p>
+</body></html>
+`;
 }
 
 
@@ -316,6 +309,7 @@ const PA_CSS = `<style id="ph-archive-pride">
 .pa-page{max-width:660px;margin:0 auto;background:#fff;color:#2b2b2b;font:17px/1.55 Arial,Helvetica,sans-serif}
 .pa-hero{background:#2d5016;color:#fff;text-align:center;padding:26px 18px 22px;border-bottom:4px solid #b9913c}
 .pa-hero svg{display:block;margin:0 auto 14px;width:140px;height:auto}
+.pa-hero svg.pa-icon-sm{width:105px} /* R35: Main Archive masthead icon 25% smaller */
 .pa-kicker{margin:0 0 4px;color:#e5d39c;font:bold 13px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.14em;text-transform:uppercase}
 .pa-hero h1{margin:0;font:700 clamp(28px,7vw,38px)/1.15 Georgia,'Times New Roman',serif;color:#fff;letter-spacing:.01em}
 .pa-sub{margin:8px auto 0;max-width:30em;color:#e9f1df;font:italic 17px/1.45 Georgia,'Times New Roman',serif}
@@ -359,8 +353,8 @@ a.pa-tile:hover,a.pa-tile:focus-visible{background:#f3f8ee}
 </style>`;
 
 // Elegant line-art folded newspaper (gold rule work on the green band; not a cartoon).
-function newspaperIcon({ stroke = '#f3dfa2', fill = 'none', paper = 'rgba(255,255,255,0.06)', w = 140, label = '' } = {}) {
-  return `<svg viewBox="0 0 120 96" width="${w}" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'} xmlns="http://www.w3.org/2000/svg">
+function newspaperIcon({ stroke = '#f3dfa2', fill = 'none', paper = 'rgba(255,255,255,0.06)', w = 140, label = '', cls = '' } = {}) {
+  return `<svg viewBox="0 0 120 96" width="${w}" ${cls ? `class="${cls}" ` : ''}${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'} xmlns="http://www.w3.org/2000/svg">
 <g fill="${fill}" stroke="${stroke}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
 <path d="M22 10h80a4 4 0 0 1 4 4v66a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8V30h12" fill="${paper}"/>
 <path d="M22 10v70a8 8 0 0 1-8 8"/>
@@ -413,15 +407,17 @@ function issueContents(iss) {
   }
   return parts.join(' · ');
 }
+// STYLE-RULES R35 (Steven, Oct 17 review batch): Main Archive title carries the site's archive naming (as on the Main Archive feature tile).
+const MAIN_ARCHIVE_TITLE = 'The Palm Hill Newsletter Archives';
 const issuesDesc = () => [...ITEMS.issues].sort((a, b) => b.date.localeCompare(a.date));
 
 // pages/archive/index.html — PHNL issues ONLY. Nothing else is listed here; one quiet link up to the Main Archive Page.
 function issuesPage() {
   const all = issuesDesc(); const latest = all[0]; const first = all[all.length - 1];
   const hero = `<header class="pa-hero">
-${newspaperIcon({ label: 'The Palm Hill Newsletter' })}
+${newspaperIcon({ label: 'The Palm Hill Newsletter Archives', w: 105, cls: 'pa-icon-sm' })}
 <p class="pa-kicker">Palm Hill Country Club</p>
-<h1>The Palm Hill Newsletter</h1>
+<h1>${MAIN_ARCHIVE_TITLE}</h1>
 <p class="pa-sub">Every issue we have published for our community, as it was sent.</p>
 </header>
 <nav class="pa-bar" aria-label="Archive"><span>${all.length} issues · ${shortDate(first.date)} – ${midDate(latest.date)}</span><a href="${HUB}">${esc(HUB_LABEL)}</a></nav>`;
@@ -474,7 +470,9 @@ function mainPage() {
     const unit = k === 'videos' ? (items.length === 1 ? 'video' : 'videos') : (items.length === 1 ? 'item' : 'items');
     return `<a class="pa-tile" href="${k}.html"><b>${esc(label)} →</b><span>${items.length} ${unit} · newest ${shortDate(newest)}</span></a>`;
   };
-  const howToTile = `<a class="pa-tile" href="${DYK_TILE_HREF}"><b>Did You Know →</b><span>3 videos · newest Oct 4</span></a>`;
+  // STYLE-RULES R36: DYK tile count + newest date computed from the did-you-know archive (visible items), unit "items"
+  const dykItems = S['did-you-know'].items.filter((x) => !x.hidden); const dykNewest = dykItems.map((x) => x.date).sort().pop();
+  const howToTile = `<a class="pa-tile" href="${DYK_TILE_HREF}"><b>Did You Know →</b><span>${dykItems.length} ${dykItems.length === 1 ? 'item' : 'items'} · newest ${shortDate(dykNewest)}</span></a>`;
   const linkTile = `<a class="pa-tile" href="${LINK_ARCHIVE_HREF}"><b>Palm Hill Link Archives →</b><span>Monthly magazine PDFs · current issue first</span></a>`;
   const archiveTile = `<a class="pa-tile" href="${COMMITTEE_VIDEO_ARCHIVE_HREF}"><b>Committee and Board Meeting Video Archives →</b><span>All Board &amp; committee recordings, by committee</span></a>`;
   const hero = `<header class="pa-hero">
@@ -511,7 +509,6 @@ function checkPride(name, html, issuesOnly) {
     const allowed = [
       'index.html',
       ...HUB_LISTED.map((k) => `${k}.html`),
-      HOWTO_VIDEOS_HREF,
       DYK_TILE_HREF,
       LINK_ARCHIVE_HREF,
       COMMITTEE_VIDEO_ARCHIVE_HREF,
@@ -710,7 +707,19 @@ for (const k of SECTION_ORDER) if (S[k].listen_bottom) {
   if (aoGot !== ao) throw new Error(`${k}.html: R32 archive-only rows need "In the newsletter: Archive only" (found ${aoGot}/${ao})`);
   if (/>Listen →</.test(html) || got !== want) throw new Error(`${k}.html: R28 Listen must be the speaker icon on the bottom line (found ${got}/${want}, inline "Listen →": ${/>Listen →</.test(html)})`);
 }
-writeHub(path.join(OUT, 'how-to-videos.html'), howToVideosPage());
+fs.writeFileSync(path.join(OUT, HOWTO_VIDEOS_HREF), howToVideosPage());  // R37 stub (not a hub page)
+{ // R37: vercel.json must redirect the retired How To URL to Did You Know (idempotent)
+  const vp = path.join(ROOT, 'vercel.json'); const vj = JSON.parse(fs.readFileSync(vp, 'utf8')); vj.redirects = vj.redirects || [];
+  const src = '/pages/archive/how-to-videos.html', dst = '/pages/archive/did-you-know.html';
+  if (!vj.redirects.some((r) => r.source === src)) { vj.redirects.push({ source: src, destination: dst, permanent: false }); fs.writeFileSync(vp, JSON.stringify(vj, null, 2) + '\n'); }
+  if (!vj.redirects.some((r) => r.source === src && r.destination === dst)) throw new Error('R37: vercel.json how-to-videos redirect wrong');
+}
+{ // R35/R36 guards
+  const ip = issuesPage(); if (!ip.includes(`<h1>${MAIN_ARCHIVE_TITLE}</h1>`) || !/Archive/.test(MAIN_ARCHIVE_TITLE) || !ip.includes('class="pa-icon-sm"') || !ip.includes('Every issue we have published for our community, as it was sent.')) throw new Error('R35: Main Archive masthead title/icon/subtitle');
+  const mp = mainPage(); const m = mp.match(/href="did-you-know\.html"><b>Did You Know →<\/b><span>(\d+) items? · newest ([A-Z][a-z]{2} \d+)<\/span>/);
+  const dv = S['did-you-know'].items.filter((x) => !x.hidden);
+  if (!m || +m[1] !== dv.length || m[2] !== shortDate(dv.map((x) => x.date).sort().pop())) throw new Error('R36: Did You Know tile count/newest');
+}
 writeHub(path.join(OUT, 'index.html'), checkPride('index.html', issuesPage(), true));
 writeHub(path.join(OUT, HUB), checkPride(HUB, mainPage(), false));
 
