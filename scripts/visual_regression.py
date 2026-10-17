@@ -82,6 +82,9 @@ def rule_checks(html, page):
     # R25 (Oct 17): one More → per item (no inline More → plus a second More → row to the same page)
     for m in re.finditer(r'<a href="([^"]+)"[^>]*>More →</a></div>\s*<div[^>]*><a href="\1"[^>]*>More →</a>', html):
         fails.append(f"R25 duplicate More → for {m.group(1).split('/')[-1]}")
+    # R26 (Steven, Oct 17): no green archive band (pha-foot "Newsletter Archive → · Previous Notices → · Previous Chair Reports →") on Oct 18+ issues
+    if _m and _iso >= "2026-10-18" and re.search(r'class="pha-foot"|Previous Chair Reports →', html):
+        fails.append("R26 bottom archive band present (Newsletter Archive → · Previous Notices → · Previous Chair Reports →)")
     # R23: event/notice items link with "More →" only (report/message labels Read Full Report/Message/Update are allowed)
     for v in re.findall(r'>\s*((?:Read (?:Full )?(?:Details|More|more|Notice|Event)|Details|Full Details|Learn More)\s*→?)\s*</a>', html):
         fails.append(f"R23 event/notice link label '{v}' (use 'More →')")
