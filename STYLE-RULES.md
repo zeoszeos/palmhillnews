@@ -51,3 +51,28 @@ Where each rule is enforced:
 - Exit codes: `1` means a rule failed (fix it before sending), `2` means visual diffs only (review them; content changes every week, so diffs are expected in text-heavy sections), `0` means clean.
 - `build_oct18.py` runs the script automatically against the `email` golden after it writes the preview.
 - After Steven approves a new look, recapture the golden set with `--capture` and tag the repo `format-locked-YYYY-MM-DD`.
+
+## Readability rules RD1–RD13 (Steven, Oct 17 2026, 3:44 AM — approved READABILITY-RULES-PROPOSAL)
+
+Every reading page on palmhillnews.vercel.app is set for an over-55 audience. **These rules change layout only; the source wording is never changed.**
+- Shared style: `pages/assets/ph-read.css`. It is linked by `scripts/readability.py`, which also tags `<body class="ph-rd ph-rd-<template>">`.
+- Templates: `early` (webmaster/calendar shell), `message` (President's Message / Community Stories), `card` (Chair Reports, Manager Updates, Shareholders, event cards), `info`, `shell` (notice source copies, event/Zoom/meeting pages), `table` (Recurring), `simple`.
+- Generators call `readability.apply()`: `event_page.py`, `meeting_zoom_page.py`, `recurring_grouped.py`, `publish_oct18.py`. Chair Listen pages are rebuilt by build_archive.js from the item page, so they inherit it.
+- Pages from the legacy webmaster pipeline (outside this repo) are covered by running `python3 scripts/readability.py` after any import; it is idempotent.
+- Guard: `/workspace/.venv-vr/bin/python scripts/check_readability.py` (every page in scope, rendered at 1280px and 390px; exit 1 on any failure).
+
+| # | Rule | Enforced in |
+|---|------|-------------|
+| RD1 | **Body text 18px** (President pages keep 19px; never below 16px for any text a resident reads; 16px only for date/meta/source lines). Every reading page is on the shared style. | ph-read.css; check_readability RD1 (style present; largest text blocks ≥18px) |
+| RD2 | **Line-height 1.6** for body text (1.25 for headings). | ph-read.css; RD2 (≥1.55) |
+| RD3 | **Line length ~65–72 characters**: text column `32em` (Arial 18px) / `29em` (Georgia), centered; less side padding on phones. | ph-read.css; RD3 (≤75 characters per line at 1280px) |
+| RD4 | **Real paragraphs with space between them** (`margin:0 0 .9em`): a `<p>` holding ≥4 `<br>` (email wall) is split into paragraphs at its existing line breaks. Paragraphs grow to ~60 words and then break at the next line end. A short line with no end punctuation (sign-off, name) stays on its own. | readability.reflow (early/card/simple); RD4 (no `<p>` with ≥4 `<br>`) |
+| RD5 | **Rejoin broken email lines**: a `<br>` right after an abbreviation (Mon. Tues. Wed. Aug. St. Dr. …) or before a lowercase word becomes a space. | reflow; RD5 |
+| RD6 | **Topic lead-ins start a paragraph and are bold**: a line beginning "Short Label:" (≤6 words) starts a new paragraph, with the existing label wrapped in `<strong>`. | reflow; RD6 |
+| RD7 | **Lists**: lines starting "-", "–", "•", "*" or "1." / "1)" become a list. The marker characters stay in the text (no bullets added). | reflow; RD7 |
+| RD8 | **Long blocks**: no new splits mid-sentence and no rewriting. A block over 120 words with no email line break to split at is reported, not changed. | check_readability warning RD8 |
+| RD9 | **ALL CAPS kept exactly as written** (Steven, Oct 17): no case or `text-transform` changes. Shown in the report only. | check_readability warning RD9 |
+| RD10 | **Headings and meta**: page title 28px/1.25 on email pages, section headings 21px dark green; date/meta/source lines 16px #555 (was 13–14px #888). Text contrast ≥4.5:1 everywhere (meta ≈7:1). | ph-read.css; RD10 (meta ≥16px, contrast ≥4.5:1) |
+| RD11 | **Tap targets ≥44px tall on phones** for Back, Listen and the archive-bar links. | ph-read.css; RD11 (rendered at 390px) |
+| RD12 | **Wording lock**: `readability.apply()` raises (the build stops) if the visible text before ≠ after (whitespace-normalised). The guard also compares every page's visible text with the same page at tag `pre-readability-1`. | readability.apply; check_readability RD12 |
+| RD13 | **Scope**: `pages/*.html` and `pages/information/*.html`. Never `pages/archive/**`: archived newsletter issues (R10) and archive hubs keep their own layout. Never `pages/previews/**`, the Oct 18 issue page or the SEND file. Interactive tool pages (calendar app, street map, schedule grids, video tile guide, PDF page-image viewer) are listed in `readability.SKIP` and reported. URLs never change (pages are edited in place). | readability.SKIP / scope; check_readability skip list |

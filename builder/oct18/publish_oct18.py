@@ -20,7 +20,8 @@ def clean(t):
     t = t.replace("/pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html", "/pages/archive/issues/2026-10-18.html")
     for a, b in MAP.items(): t = t.replace(L + "previews/2026-10-18/" + a, L + b)
     return t
-for a, b in MAP.items(): (REPO / "pages" / b).write_text(_sr.enforce_title_months(clean((PV / a).read_text(encoding="utf-8"))), encoding="utf-8")
+import readability as _rd  # STYLE-RULES RD1-RD13 on the published notice pages (never on the issue / SEND file)
+for a, b in MAP.items(): (REPO / "pages" / b).write_text(_rd.apply(_sr.enforce_title_months(clean((PV / a).read_text(encoding="utf-8"))), b)[0], encoding="utf-8")
 s = clean((PV / "PHNEWS-2026-10-18-preview.html").read_text(encoding="utf-8"))
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)  # R22: review-only stamp never published
 assert "ph-review-stamp" not in s and "Calendar checked:" not in s

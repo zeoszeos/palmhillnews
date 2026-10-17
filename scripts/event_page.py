@@ -11,4 +11,5 @@ def render(title, dateline, paragraphs):
     body = f"<p><b>{escape(dateline)}</b></p>" + "".join(f"<p>{escape(p)}</p>" for p in paragraphs)
     s2 = re.sub(r'<div class="content-card">.*?</div>', lambda m: f'<div class="content-card">{body}</div>', s, count=1, flags=re.S)
     assert s2 != s and escape(title) in s2
-    return s2
+    import sys as _s; _s.path.insert(0, str(Path(__file__).resolve().parent)); import readability as _rd  # STYLE-RULES RD1-RD13 (layout only; wording lock)
+    return _rd.apply(s2, '')[0]
