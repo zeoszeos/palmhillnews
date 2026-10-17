@@ -43,5 +43,6 @@ for k in LAB:
     sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr
     s = _sr.enforce_title_months(s)
     s = re.sub(r'(ph-section-issuedate">)([A-Z][a-z]{2}) ', lambda m: m.group(1) + {k3[:3]: k3 for k3 in ("January","February","March","April","May","June","July","August","September","October","November","December")}[m.group(2)] + " ", s)
-    (REPO / "pages" / (F % k)).write_text(s, encoding="utf-8")
+    sys.path.insert(0, str(REPO / "scripts")); import readability as _rd  # STYLE-RULES RD1-RD13 (recurring tables: 15px/1.5)
+    (REPO / "pages" / (F % k)).write_text(_rd.apply(s, F % k)[0], encoding="utf-8")
     print(k, len(rows), "rows", len(groups), "groups")

@@ -2,7 +2,8 @@
 """Vercel 'Join on Zoom' page for a meeting (Oct 11 pattern: pages/2026-10-12-communications-committee-zoom.html).
 STYLE-RULES.md R13: newsletter Agenda → / Zoom → always link to palmhillnews Vercel pages, never to zoom.us directly.
 Usage: meeting_zoom_page.py NOTICES.json REPO   (writes pages/<zoom_page> for every notice that has one)"""
-import json, sys, re
+import json, sys, re, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from datetime import date, datetime
 from html import escape as e
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
@@ -59,4 +60,4 @@ if __name__ == "__main__":
     notices = json.load(open(sys.argv[1]))["notices"]
     for n in notices:
         if n.get("zoom_page"):
-            open(f'{sys.argv[2]}/pages/{n["zoom_page"]}', "w", encoding="utf-8").write(render(n)); print("wrote", n["zoom_page"])
+            open(f'{sys.argv[2]}/pages/{n["zoom_page"]}', "w", encoding="utf-8").write(__import__("readability").apply(render(n), n["zoom_page"])[0]); print("wrote", n["zoom_page"])  # STYLE-RULES RD1-RD13
