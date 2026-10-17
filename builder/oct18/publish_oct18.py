@@ -24,7 +24,8 @@ for a, b in MAP.items(): (REPO / "pages" / b).write_text(_sr.enforce_title_month
 s = clean((PV / "PHNEWS-2026-10-18-preview.html").read_text(encoding="utf-8"))
 s = s.replace("PHNEWS October 18, 2026 — DRAFT (not sent)", "PHNEWS October 18, 2026")
 assert "previews/2026-10-18" not in s and "DRAFT" not in s and "noindex" not in s
-s = _sr.listen_fix(_sr.enforce_title_months(s))
+import summary_trim as _st
+s = _st.trim(_sr.listen_fix(_sr.enforce_title_months(s)))  # R18
 (ROOT / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")

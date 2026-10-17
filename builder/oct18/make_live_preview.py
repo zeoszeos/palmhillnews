@@ -41,6 +41,7 @@ for r in rows:
 s = s[:a] + new + s[b:]
 assert "#listen-pending" not in s
 sys.path.insert(0, str(Path(__file__).resolve().parent)); _listen_fix = _sr.listen_fix
+import summary_trim as _st; s = _st.trim(s)  # STYLE-RULES.md R18: 3-line summaries (notice pages above keep full text)
 s = _sr.enforce_title_months(_listen_fix(s))  # one-line Listen, 14px in from the right (Steven Oct 16)
 s = s.replace("<head>", '<head>\n<meta name="robots" content="noindex,nofollow">', 1)
 (OUT / "PHNEWS-2026-10-18-preview.html").write_text(s, encoding="utf-8")
