@@ -86,3 +86,13 @@ def service_box_fit(s):
     i = s.find('<div style="background:#FFF9E6;')
     assert i > 0, "R27: service-request box not found"
     return s[:i] + SVC_CSS + s[i:]
+
+
+# STYLE-RULES R33 (Steven, Oct 17): Did You Know pieces end with the contributor's name as a plain byline -- the last paragraph
+# of the content card is exactly the name (no title such as "Board VP", no "By", no comma suffix) unless the contributor asks.
+def dyk_byline_ok(html, name):
+    import re as _re
+    card = _re.search(r'<div class="content-card">(.*?)</div>', html, _re.S)
+    if not card: return False
+    paras = _re.findall(r'<p[^>]*>(.*?)</p>', card.group(1), _re.S)
+    return bool(paras) and _re.sub(r"<[^>]+>|\s+", " ", paras[-1]).strip() == name
