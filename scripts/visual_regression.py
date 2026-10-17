@@ -46,6 +46,19 @@ def rule_checks(html, page):
     for ln, t in title_month_violations(html): fails.append(f"R3 abbreviated month in title/heading line {ln}: {t}")
     if not re.search(r"(Sunday|Saturday|Monday|Tuesday|Wednesday|Thursday|Friday), (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}", html):
         fails.append("R2 masthead weekday + full date missing (e.g. 'Sunday, October 18, 2026')")
+    # R24: resident-facing footer "Calendar check - <Full Month> <D>, <h:mm AM/PM>" matching the build's calendar pull (Oct 18+ issues)
+    _m = re.search(r"(?:Sun|Mon|Tues|Wednes|Thurs|Fri|Satur)day, (January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})", html)
+    if _m:
+        import datetime as _d2, json as _j2
+        _iso = _d2.datetime.strptime(" ".join(_m.groups()), "%B %d %Y").date().isoformat()
+        if _iso >= "2026-10-18":
+            _fl = re.findall(r'<p class="ph-cal-check"[^>]*>([^<]*)</p>', html)
+            if len(_fl) != 1 or not re.fullmatch(r"Calendar check - (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{1,2}:\d{2} (AM|PM)", _fl[0]):
+                fails.append(f"R24 footer 'Calendar check - Month D, h:mm AM/PM' missing or malformed: {_fl}")
+            else:
+                _cp = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "builder/calendar-pull", _iso + ".json")
+                if os.path.exists(_cp) and _j2.load(open(_cp))["footer"] != _fl[0]:
+                    fails.append(f"R24 footer '{_fl[0]}' does not match the build's calendar pull ({_j2.load(open(_cp))['footer']})")
     # R23: event/notice items link with "More →" only (report/message labels Read Full Report/Message/Update are allowed)
     for v in re.findall(r'>\s*((?:Read (?:Full )?(?:Details|More|more|Notice|Event)|Details|Full Details|Learn More)\s*→?)\s*</a>', html):
         fails.append(f"R23 event/notice link label '{v}' (use 'More →')")

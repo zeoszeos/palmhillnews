@@ -324,6 +324,15 @@ STAMP = (f'<!-- ph-review-stamp:start --><div class="ph-review-stamp" style="fon
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)
 _b = s.find(">", s.find("<body")) + 1
 s = s[:_b] + STAMP + s[_b:]
+# STYLE-RULES R24 (Steven, Oct 16 11:54 PM): resident-facing footer line "Calendar check - October 16, 11:38 PM" from the pull this build used
+CALCHECK = f"Calendar check - {FULL[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}:{_ct:%M} {'AM' if _ct.hour<12 else 'PM'}"
+CALCHECK_P = f'<p class="ph-cal-check" style="font-size:11px;color:#888888;text-align:center;margin:4px 0 0 0;">{CALCHECK}</p>'
+s = re.sub(r'\n?\s*<p class="ph-cal-check"[^>]*>[^<]*</p>', "", s)
+_fi = s.find('official Palm Hill calendar</a>.'); _fe = s.find("</p>", _fi) + 4
+assert _fi > 0, "R24: footer calendar sentence not found"
+s = s[:_fe] + "\n    " + CALCHECK_P + s[_fe:]
+Path("/workspace/oct18-batch/builder/calendar-pull").mkdir(exist_ok=True)
+Path("/workspace/oct18-batch/builder/calendar-pull/2026-10-18.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
 OUTF.write_text(s, encoding="utf-8")
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
