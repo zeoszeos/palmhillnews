@@ -122,3 +122,20 @@ def dyk_summary_ok(summary, source_paras):
     src = _re.sub(r"\s+", " ", src)
     sents = [x.strip() for x in _re.split(r"(?<=[.!?])\s+", summary.strip()) if x.strip()]
     return len(summary) <= 300 and 1 <= len(sents) <= 3 and all(x in src for x in sents)  # Steven 6:28 PM: at most 3 source sentences
+
+
+# STYLE-RULES R39 framing teaser (Steven, Oct 17 6:32 PM): a general description of the item's topic and source -- no contributor
+# name, no quoted rule (no run of 5+ consecutive source words), <= 3 lines at desktop (<= 250 characters at 15px / 640px).
+def dyk_framing_ok(teaser, names, source_paras):
+    import re as _re
+    if len(teaser) > 250 or any(_re.search(r"\b" + _re.escape(n) + r"\b", teaser, _re.I) for n in names): return False
+    w = lambda t: _re.findall(r"[a-z0-9']+", t.lower())
+    src = " " + " ".join(w(" ".join(source_paras))) + " "; tw = w(teaser)
+    return not any(" " + " ".join(tw[i:i + 5]) + " " in src for i in range(len(tw) - 4))
+
+# R39 issue check: the Did You Know "More →" links to the item's own page
+def dyk_more_link_ok(issue_html, page_name):
+    import re as _re
+    sec = issue_html[issue_html.find("Did You Know?"):]
+    m = _re.search(r'<a href="([^"]+)"[^>]*>More →</a>', sec)
+    return bool(m) and m.group(1).endswith(page_name)
