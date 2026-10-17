@@ -24,6 +24,7 @@ body.ph-rd-early .summary { font-size: 18px; line-height: 1.6; padding: 18px 22p
 body.ph-rd-early .back { font-size: 16px; }
 body.ph-rd-early .summary div[style*="grid-template-columns"] { line-height: 1.6 !important; }   /* agenda outlines */
 body.ph-rd-early .summary div[style*="grid-template-columns"] p { margin: 0; }
+body.ph-rd-card .content-card div[style*="grid-template-columns"] { line-height: 1.6 !important; }   /* agenda outlines on meeting cards */
 
 /* ---- message / story pages (President's Message, Community Stories, their Listen copies) ---- */
 body.ph-rd-message.ph-rd-small { font-size: 18px; }   /* story pages were 17px; President pages stay 19px */
@@ -71,3 +72,8 @@ body.ph-rd-simple .meta, body.ph-rd-simple .source, body.ph-rd-simple .back { fo
   body.ph-rd-early, body.ph-rd-simple { margin: 12px auto; padding: 0 14px; }
   body.ph-rd-early .summary { padding: 14px 16px; }
 }
+
+/* card template: Zoom box text, source and footnote lines (RD1/RD10) */
+body.ph-rd-card .zoom-card { font-size: 18px; line-height: 1.6; }
+body.ph-rd-card .zoom-card > p, body.ph-rd-card .zoom-card > ul { max-width: 32em; }
+body.ph-rd-card .source, body.ph-rd-card .source p, body.ph-rd-card p.sources, body.ph-rd-card p.note { font-size: 16px !important; line-height: 1.5; color: #555 !important; }
