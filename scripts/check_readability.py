@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import readabili
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 JS = r"""(tpl) => {
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
-  const skip = e => e.closest('.ph-archive-bar,.ph-story-nav,header,nav,footer,.badge,.ph-rd-meta,script,style');
+  const skip = e => e.closest('.ph-archive-bar,.ph-story-nav,header,nav,footer,.badge,.ph-rd-meta,.source,p.sources,p.note,script,style');
   const blocks = [...document.querySelectorAll('p,li,.ph-detail,.summary,td,.ph-row-title')].filter(e => vis(e) && !skip(e) && (e.innerText||'').trim().length >= 40
      && ![...e.children].some(c => ['P','DIV','LI','UL','OL','TABLE'].includes(c.tagName) && (c.innerText||'').trim().length > 30));
   const res = {blocks: [], meta: [], taps: []};
@@ -29,7 +29,7 @@ JS = r"""(tpl) => {
   }
   const lum = c => { const m = c.match(/[\d.]+/g); if (!m) return 1; const [r, g, b] = m.slice(0, 3).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * r + .7152 * g + .0722 * b; };
   const bg = e => { for (; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; const m = c.match(/[\d.]+/g); if (m && (m.length < 4 || +m[3] > .5)) return c; } return 'rgb(255,255,255)'; };
-  for (const e of document.querySelectorAll('.meta,.ph-meta,.ph-row-meta,.ph-source,p.source,.back,.header-meta,.ph-rd-meta')) if (vis(e) && (e.innerText||'').trim()) {
+  for (const e of document.querySelectorAll('.meta,.ph-meta,.ph-row-meta,.ph-source,p.source,.back,.header-meta,.ph-rd-meta,.source,p.sources,p.note')) if (vis(e) && (e.innerText||'').trim()) {
     const cs = getComputedStyle(e), a = lum(cs.color), b = lum(bg(e)); res.meta.push({t: e.innerText.trim().slice(0, 30), fs: parseFloat(cs.fontSize), cr: +((Math.max(a, b) + .05) / (Math.min(a, b) + .05)).toFixed(1)});
   }
   for (const a of document.querySelectorAll('.back a,a.ph-listen,.ph-archive-bar a,.ph-story-back a')) if (vis(a)) res.taps.push({t: a.innerText.trim().slice(0, 24), h: Math.round(a.getBoundingClientRect().height)});
