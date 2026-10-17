@@ -377,9 +377,18 @@ DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:a
 # Steven, Oct 17 1:40 PM (post-proof addition): Rule of the week from David Bates (david.palmhill@gmail.com), palmhillblast
 # "Park Rule for Newsletter", Sat Oct 17 1:17 PM ET (his corrected resend of "Rule for Newsletter", 12:53 PM). Summary = his
 # wording; full narrative on the Did You Know page (make_live_preview.py dykpage -> publish 2026-10-18-did-you-know-traffic-rules.html).
+# STYLE-RULES R39 (Steven, Oct 17 6:22 PM): DYK summary ~3 lines at desktop, built ONLY from Dave's own sentences (XI. TRAFFIC
+# RULES text, 1:17 PM email); light trimming only ("Further - " dropped, ".." -> "."). Verbatim check in style_rules.dyk_summary_ok.
+import html as _html
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr_dyk
+DYK_RULES_SUMMARY = ("The speed limit in the park is 15 mph. It's okay to go 15 mph and make a full stop at a stop sign. "
+    "Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights. "
+    "Motorcycles are prohibited anywhere on Palm Hill property.")
+_DYK_SRC = json.load(open(ROOT / "data/dyk-traffic-rules-source.json"))
+assert _sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC), "R39: DYK summary must be 2-3 lines of Dave's verbatim sentences"
 DYK_RULES_PV = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/did-you-know-traffic-rules.html"
 DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
-    f'<div style="font-size:15px;color:#333333;margin-top:3px;">The speed limit in the park is 15 mph. It&#x27;s okay to go 15 mph and make a full stop at a stop sign. '
+    f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(DYK_RULES_SUMMARY)} '
     f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = [("2026-10-18", DYK_RULES), ("2026-10-16", DYK_FB)]   # newest first; add new items at the top
 t0 = s.find("<table", a)
