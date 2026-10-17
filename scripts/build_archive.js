@@ -431,7 +431,7 @@ ${issueContents(latest) ? `<p class="pa-in">In this issue: ${esc(issueContents(l
     body += `<a class="pa-issue" href="issues/${iss.date}.html" aria-label="${esc(`${volNo(iss)}, ${issueLabel(iss)}`)}"><span class="pa-no"><small>No.</small>${iss.number}</span><span class="pa-what"><b>${esc(issueLabel(iss))}</b><span>Vol. ${iss.volume} · Sent ${shortWeekday(iss.date)}, ${shortDate(iss.date)} · ${editionOf(iss)}</span>${what ? `<span>${esc(what)}</span>` : ''}</span><span class="pa-go" aria-hidden="true">→</span></a>\n`;
   }
   body += `<p class="pa-note">Volume 1 began ${midDate(first.date)} with our first issue for residents. Each archive copy is the issue as it was sent that week; private meeting links, download links and unsubscribe links are removed. Early issues went out as a PDF from palmhillcountryclub.net.</p>
-<p class="pa-quiet">Looking for stories or reports? <a href="${HUB}">${esc(HUB_LABEL)}</a></p>
+<p class="pa-quiet">Looking for stories, reports, or videos? <a href="${HUB}">${esc(HUB_LABEL)}</a></p>
 </main>`;
   return prideShell({ title: 'The Palm Hill Newsletter — Every Issue', canonical: archUrl('index.html'), hero, body });
 }
