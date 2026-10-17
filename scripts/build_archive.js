@@ -112,6 +112,11 @@ const pageExists = (p) => fs.existsSync(path.join(PAGES, p));
 
 // Newsletter green/gold speaker icon (Chair Reports / clean Listen; Steven Oct 11).
 const LISTEN_ICON = 'https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png';
+// One speaker + Listen link for archive rows (President's Message title line, Chair Reports bottom line; STYLE-RULES R1/R28).
+function listenLink(listen, extra = '') {
+  const F = 'Arial,Helvetica,sans-serif';
+  return `<a class="ph-listen" href="${pageUrl(listen)}" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;${extra ? extra + ';' : ''}color:#1d4310;font:bold 15px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
+}
 
 function write(file, content) {
   built.set(file, content);
@@ -237,11 +242,10 @@ function sectionPage(k) {
     // (Steven Oct 11). Other sections keep inline "Listen →".
     const leftMeta = [fullDate(it), it.byline ? esc(it.byline) : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
     if (sec.clean_listen && it.listen) {
-      const F = 'Arial,Helvetica,sans-serif';
-      const listen = `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;color:#1d4310;font:bold 15px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
+      const listen = listenLink(it.listen);
       out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}><div class="ph-row-line">${head}${listen}</div>\n<div class="ph-row-meta">${leftMeta}</div>\n`;
     } else {
-      const meta = [leftMeta, it.listen ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
+      const meta = [leftMeta, it.listen && !sec.listen_bottom ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
       out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
     }
     if (it.pdf) out += `<nav class="ph-links"><a href="${BASE}/${it.pdf}">Original PDF Report →</a><span class="ph-dot"> · </span>${it.page ? `<a href="${pageUrl(it.page)}">HTML Report →</a>` : ''}</nav>\n`;
@@ -249,7 +253,12 @@ function sectionPage(k) {
     if (it.summary) out += `<div class="ph-detail">${esc(it.summary)}</div>\n`;
     if (it.external) out += `<nav class="ph-links"><a href="${esc(it.external)}">${esc(it.external_label || 'Open →')}</a></nav>\n`;
     if (it.source && !sec.plain_rows) out += `<div class="ph-row-meta">Source: ${esc(it.source)}</div>\n`;
-    if (!sec.plain_rows && it.issues && it.issues.length) out += `<div class="ph-row-meta">In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}</div>\n`;
+    const inNl = (!sec.plain_rows && it.issues && it.issues.length) ? `In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}` : '';
+    if (sec.listen_bottom && it.listen) {
+      // STYLE-RULES R28 (Steven, Oct 17): Committee Chair Reports -- speaker icon + Listen on the bottom "In the newsletter" line,
+      // right-justified, one line (nowrap), 14px in from the row's right edge (8px row padding + 6px), same icon as President's Message.
+      out += `<div class="ph-row-line ph-row-foot" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="ph-row-meta" style="min-width:0">${inNl}</div>${listenLink(it.listen, 'margin-right:6px')}</div>\n`;
+    } else if (inNl) out += `<div class="ph-row-meta">${inNl}</div>\n`;
     out += `</div>\n`;
     n++;
   }
@@ -688,6 +697,13 @@ function writeHub(file, html) {
   write(file, html);
 }
 for (const k of SECTION_ORDER) writeHub(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
+// STYLE-RULES R28 guard: listen_bottom sections carry no inline "Listen →" and one speaker Listen per listen item, on the bottom line
+for (const k of SECTION_ORDER) if (S[k].listen_bottom) {
+  const html = fs.readFileSync(path.join(OUT, `${k}.html`), 'utf8');
+  const want = S[k].items.filter((it) => it.listen && !it.hidden).length;
+  const got = (html.match(/<div class="ph-row-line ph-row-foot"[^>]*><div class="ph-row-meta"[^>]*>[^\n]*?<a class="ph-listen"[^>]*><img src="[^"]*speaker-read-aloud[^"]*"/g) || []).length;
+  if (/>Listen →</.test(html) || got !== want) throw new Error(`${k}.html: R28 Listen must be the speaker icon on the bottom line (found ${got}/${want}, inline "Listen →": ${/>Listen →</.test(html)})`);
+}
 writeHub(path.join(OUT, 'how-to-videos.html'), howToVideosPage());
 writeHub(path.join(OUT, 'index.html'), checkPride('index.html', issuesPage(), true));
 writeHub(path.join(OUT, HUB), checkPride(HUB, mainPage(), false));
