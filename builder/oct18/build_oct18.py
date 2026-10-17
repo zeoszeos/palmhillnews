@@ -283,7 +283,8 @@ foot = (f'<p style="font-size:13px;text-align:center;margin:12px 0 0 0;"><a href
 s = s.replace('    <p style="font-size:12px;color:#666666;font-style:italic;text-align:center;margin-top:16px;">', foot + '\n    <p style="font-size:12px;color:#666666;font-style:italic;text-align:center;margin-top:16px;">', 1)
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md (shared)
 s = _sr.enforce_title_months(s)  # full months in titles/bands
-import link_archive_bullet as _lab; s = _lab.add(s)  # STYLE-RULES.md R14 Helpful Webpages
+import link_archive_bullet as _lab; s = _lab.add(s)
+import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
 OUTF.write_text(s, encoding="utf-8")
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
