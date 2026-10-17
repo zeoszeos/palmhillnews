@@ -92,7 +92,8 @@ DYK_RULES_PARAS = [
 ]
 # STYLE-RULES R33 (Steven, Oct 17 2:22 PM): a Did You Know piece ends with the contributor's name as a plain byline,
 # exactly as given ("David Bates"), no title (he is Board VP; no title unless he asks). Guarded in style_rules.dyk_byline_ok.
-DYK_RULES_BYLINE = "David Bates"
+# Dave asked for "Dave Bates, Board VP" (palmhillblast "Re: Park Rule for Newsletter", Sat Oct 17 5:12 PM ET) -> R33 "unless they ask"
+DYK_RULES_BYLINE = "Dave Bates, Board VP"
 # STYLE-RULES R34 (Steven, Oct 17 2:39 PM): a Did You Know piece that cites a park rule links to the official club PDF (never a
 # hosted copy), on its own line after the piece card (byline stays the card's last paragraph, R33). URL checked 200 application/pdf,
 # "Current as of September 30, 2026". Guarded in style_rules.dyk_rule_link_ok.
@@ -116,6 +117,8 @@ _dyk = f"""<!DOCTYPE html>
 {script}
 </body></html>
 """
+import json as _json
+(ROOT / "data").mkdir(exist_ok=True); (ROOT / "data/dyk-traffic-rules-source.json").write_text(_json.dumps([H.unescape(re.sub(r"<[^>]+>", "", x)) for x in DYK_RULES_PARAS], indent=1), encoding="utf-8")  # R39 source
 assert _sr.dyk_rule_link_ok(_dyk), "R34: park-rule Did You Know must link the official club PDF"
 assert _sr.dyk_byline_ok(_dyk, DYK_RULES_BYLINE), "R33: Did You Know piece must end with the plain byline"
 (OUT / "did-you-know-traffic-rules.html").write_text(_sr.enforce_title_months(_dyk), encoding="utf-8")

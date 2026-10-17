@@ -211,6 +211,11 @@ function sectionPage(k) {
   const sectionHeading = k === 'presidents-message' ? (sec.hub_label || "President's Message Archives") : sec.title;
   let out = `${crumbs(sectionHeading)}\n<h1 class="ph-section">${esc(sectionHeading)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n`;
   let month = null; let n = 0;
+  // STYLE-RULES R38: title-band palette switch (archive-items.json "title_band": "A" | "B"; env PH_TITLE_BAND overrides for previews)
+  const band = (process.env.PH_TITLE_BAND || sec.title_band || '').toUpperCase();
+  if (band && !['A', 'B', 'C'].includes(band)) throw new Error(`R38: title_band must be A, B or C (got ${band})`);
+  const bandCls = band ? `ph-band ph-band-${band.toLowerCase()}` : '';
+  if (band) out += `<div class="${bandCls} ph-band-head" aria-hidden="true"></div>\n`;
   let rows = sorted(k);
   // "feature_latest": the newest item leads the page as the current one; the rest list below as previous items.
   if (sec.feature_latest && rows.length) {
@@ -247,7 +252,7 @@ function sectionPage(k) {
       out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}><div class="ph-row-line">${head}${listen}</div>\n<div class="ph-row-meta">${leftMeta}</div>\n`;
     } else {
       const meta = [leftMeta, it.listen && !sec.listen_bottom ? `<a href="${pageUrl(it.listen)}">Listen →</a>` : null].filter(Boolean).join(' · ');
-      out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${head}\n<div class="ph-row-meta">${meta}</div>\n`;
+      out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}>${bandCls ? `<div class="${bandCls}">${head}</div>` : head}\n<div class="ph-row-meta">${meta}</div>\n`;
     }
     if (it.pdf) out += `<nav class="ph-links"><a href="${BASE}/${it.pdf}">Original PDF Report →</a><span class="ph-dot"> · </span>${it.page ? `<a href="${pageUrl(it.page)}">HTML Report →</a>` : ''}</nav>\n`;
     if (it.text) out += `<div class="ph-detail">${esc(it.text)}</div>\n`;
@@ -267,6 +272,11 @@ function sectionPage(k) {
   }
   const hasPrev = sec.feature_latest && sorted(k).length > 1;
   const topNav = navBar([hasPrev ? ['#previous', `${sec.prev.replace(/\s*→$/, '')} ↓`] : null, [HUB, HUB_LABEL]].filter(Boolean));
+  if (band) { // R38 guard (build-time): one band per item + the header band before the first item
+    const nb = (out.match(/<div class="ph-band ph-band-[abc]">/g) || []).length;
+    if (nb !== n || out.indexOf('ph-band-head') > out.indexOf('<div class="ph-row')) throw new Error(`${k}: R38 bands ${nb}/${n} or header band misplaced`);
+    out = `<div class="ph-banded ph-banded-${band.toLowerCase()}">\n${out}</div>\n`;
+  }
   return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl(`${k}.html`), topNav });
 }
 

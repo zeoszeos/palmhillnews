@@ -175,7 +175,7 @@ def main():
             fails += calcheck_checks(pg.evaluate(CALCHECK_JS), view)
             fails += svc_checks(pg.evaluate(SVC_JS), view)
             if view == "mobile":  # R18: item summaries max 3 lines at 390px (and 660px below)
-                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3]
+                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > (6 if x["sec"].startswith("Did You Know") else 3)]  # R39: DYK may run to 6 lines at 390px (3 at 660px/desktop)
             for s in pg.evaluate(SECTIONS_JS):
                 name = f"{s['i']:02d}-{slug(s['title'])}-{view}.png"; manifest[name] = s["title"]
                 dst = (gold if a.capture else out) / name

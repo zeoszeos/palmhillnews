@@ -367,3 +367,19 @@ img { border: 0; max-width: 100%; height: auto; }
 
 /* Steven, Oct 10 (~1:27 AM, L23i): Recurring pages — "Times and rooms are subject to change..." line centred. */
 .ph-lead-center { text-align: center; }
+
+/* STYLE-RULES R38 (Steven, Oct 17 5:34 PM; palette TBD: A or B): Did You Know archive title bands.
+   Each item title sits on a full-width color band; the same band separates the header block from the first item,
+   with 20px extra margin above it. Title font size/weight unchanged (15px bold, .ph-row-title). Zebra rows off under bands. */
+.ph-banded .ph-row, .ph-banded .ph-row.ph-alt { background: #ffffff; padding-top: 0; }
+.ph-band { display: block; margin: 0 -8px 6px; padding: 6px 8px; }
+.ph-band-head { height: 10px; padding: 0; margin: 20px 0 8px; border-radius: 3px; }
+.ph-band-a { background: #2d5016; }
+.ph-band-a .ph-row-title, .ph-row .ph-band-a a.ph-row-title { color: #ffffff; }
+.ph-band-b { background: #eaf4e4; border-top: 1px solid #c9dcbc; border-bottom: 1px solid #c9dcbc; }
+.ph-band-b .ph-row-title, .ph-row .ph-band-b a.ph-row-title { color: #2d5016; }
+/* R38 option C: card per item -- light band with a dark green left accent bar, white card body, thin border */
+.ph-banded-c .ph-row { margin: 0 0 12px; border: 1px solid #c9dcbc; border-left: 6px solid #2d5016; border-radius: 6px; padding: 0 10px 8px; }
+.ph-band-c { background: #eaf4e4; margin: 0 -10px 6px; padding: 7px 10px; border-radius: 0 5px 0 0; border-bottom: 1px solid #c9dcbc; }
+.ph-band-c .ph-row-title, .ph-row .ph-band-c a.ph-row-title { color: #2d5016; }
+.ph-band-head.ph-band-c { margin: 20px 0 12px; border-left: 6px solid #2d5016; border-radius: 3px; height: 10px; padding: 0; }
