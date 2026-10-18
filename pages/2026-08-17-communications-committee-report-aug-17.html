@@ -19,8 +19,111 @@ main { width:min(780px,100%); }
 <header><div class="page-kicker">Palm Hill Country Club</div><h1>Communications Committee Report</h1></header>
 <!-- ph-archive-nav:start -->
 <div class="ph-archive-bar" role="navigation" aria-label="Newsletter archive" style="display:block;width:100%;margin:0;padding:10px 14px;box-sizing:border-box;background:#f3f8ee;border:0;border-bottom:2px solid #2d5016;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none"><style>@media (max-width:480px){.ph-archive-bar .ph-sep{display:none!important}.ph-archive-bar a{display:block!important;margin:0 auto!important;width:max-content}}</style><a href="https://palmhillnews.vercel.app/pages/archive/committee-reports.html" style="display:inline-block;background:none;border:0;border-radius:0;box-shadow:none;padding:4px 2px;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none">Committee Report Archives →</a><span class="ph-sep" style="color:#1a1a1a;font:bold 18px/1.5 Arial,Helvetica,sans-serif;padding:0 6px" aria-hidden="true">·</span><a href="https://palmhillnews.vercel.app/pages/archive/main.html" style="display:inline-block;background:none;border:0;border-radius:0;box-shadow:none;padding:4px 2px;margin:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none">All Archives →</a></div>
-<div class="ph-dateline" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;width:min(780px,100%);margin:0 auto;padding:10px 18px 0;box-sizing:border-box;background:none;border:0;text-align:left;letter-spacing:0;text-transform:none"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif">Monday, Aug 17, 2026</span></div>
+<div class="ph-dateline" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;width:min(780px,100%);margin:0 auto;padding:10px 18px 0;box-sizing:border-box;background:none;border:0;text-align:left;letter-spacing:0;text-transform:none"><span style="color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif">Monday, Aug 17, 2026</span><a class="ph-listen" href="#" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a></div>
 <!-- ph-archive-nav:end -->
 <main><article class="content-card"><p>Victoria Bruce will be stepping down as Communication Committee Chair, as she and her husband are selling their residence in Palm Hill. A new chair will need to be identified.</p><p>The committee welcomed Lisa Bria as the new editor of The Link.</p><p>Work continues on streamlining the process for uploading informational slides to the Community Channel on TV. The team will soon look into viewership data to help justify the ongoing effort.</p><p>Tony Ciaramitaro presented the new online amenity booking system, with plans to transition its administration to the Communication Committee.</p><p>Nearly all committee meeting minutes for 2025 and 2026 have been uploaded to the Palm Hill website, under the "HOPH Information" section.</p><p>A sub-committee has been formed to begin work on Candidates Night.</p><p>The team continues to produce the weekly e-newsletter and is working to streamline distribution procedures. With four issues now distributed, the committee is requesting from the Board formal approval to continue production.</p><p>Source: Communications Committee Report</p></article></main>
 
+<!-- ph-page-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    // R49 (Steven, Oct 18 12:39/12:43 AM): read ALL visible content in page order -- the h1, every content card / email
+    // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
+    // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
+    const h1 = document.querySelector('h1');
+    const sel = 'main .content-card, main .ph-row, main .ph-meta, main .source, main .ph-source, main .credit, main .byline';
+    const sent = (document.querySelector('main') || document.body).innerText;  // R49b: a .ph-meta line that only repeats the email's Sent time is the date line (skipped)
+    const all = Array.from(document.querySelectorAll(sel))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
+      .filter((el) => !(el.classList.contains('ph-meta') && sent.includes('Sent: ' + el.innerText.trim())));
+    let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
+      .map((el) => el.innerText.trim())
+      .filter(Boolean);
+    if (!blocks.length) blocks = walkAll();  // R49b (Steven, Oct 18 2:05 AM): pages without content cards
+    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
+  }
+  function walkAll() {
+    // R49b: early notice copies, simple / card pages and plain reports have no content cards -- read every visible block
+    // in <main> / <article> / <body> in page order (outermost block once; table rows, quotes, bare div text, the Source
+    // line). Skipped: header, kicker/badge, date line, navigation, archive links, the Listen button, Back links.
+    const BLOCK = 'h2,h3,h4,h5,h6,p,li,blockquote,figure,figcaption,pre,table,dl,aside';
+    const SKIP = 'h1,header,footer,script,style,noscript,nav,button,[role="navigation"],.ph-listen,.ph-listen-row,.ph-story-nav,.ph-story-links-long,.ph-archive-bar,.ph-dateline,.page-kicker,.ph-strip,.ph-links,.badge,.meta,.date,.back,.attachments,[aria-hidden="true"]';
+    const vis = (el) => el.getClientRects().length > 0;
+    const out = [];
+    const walk = (el) => {
+      let run = '';
+      const flush = () => { if (run.trim()) out.push(run.trim()); run = ''; };
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3) { run += n.textContent; continue; }
+        if (n.nodeType !== 1 || n.matches(SKIP) || !vis(n)) continue;
+        if (n.matches(BLOCK)) {
+          flush();
+          if (n.matches('table,dl')) n.querySelectorAll('caption,tr,dt,dd').forEach((r) => { const x = r.innerText.trim(); if (x) out.push(x); });
+          else if (n.matches('figure,aside,blockquote') && n.querySelector('p,li,figcaption')) walk(n);
+          else { const x = n.innerText.trim(); if (x) out.push(x); }
+        } else if (getComputedStyle(n).display.startsWith('inline')) run += n.innerText;
+        else { flush(); walk(n); }
+      }
+      flush();
+    };
+    walk(document.querySelector('main') || document.querySelector('article') || document.body);
+    return out;
+  }
+
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  const q = new URLSearchParams(location.search);
+  if (q.get('listen') === '1' || q.get('autoplay') === '1') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-page-listen:end -->
 </body></html>

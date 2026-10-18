@@ -646,26 +646,33 @@ const DATED = new Set(['community-stories', 'presidents-message', 'committee-rep
 const pageItem = new Map();
 for (const k of DATED) for (const it of S[k].items) for (const pg of [it.page, it.listen]) if (pg && !pageItem.has(pg)) pageItem.set(pg, it);
 // No dateline when the page's own <header> already shows that full date (e.g. chair-report pages).
-function stripFor(k, page, headerText = '') {
+function stripFor(k, page, headerText = '', selfListen = false) {
   const sec = S[k];
   const it = DATED.has(k) ? pageItem.get(page) : null;
   const dateline = it && it.date && !headerText.includes(midDate(it.date)) ? `\n<p class="ph-dateline" style="display:block;margin:0;padding:10px 14px 0;box-sizing:border-box;background:none;border:0;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none">${fullDate(it)}</p>` : '';
-  if (sec.story_nav && it) return `<!-- ph-archive-nav:start -->\n${storyNav(k, page, it, !headerText.includes(midDate(it.date)))}\n<!-- ph-archive-nav:end -->`;
-  if (sec.dateline_listen && it && it.date && page === it.page) return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl(HUB), HUB_LABEL]])}\n${listenDateline(it)}\n<!-- ph-archive-nav:end -->`;
+  if (sec.story_nav && it) return `<!-- ph-archive-nav:start -->\n${storyNav(k, page, it, !headerText.includes(midDate(it.date)), selfListen)}\n<!-- ph-archive-nav:end -->`;
+  if (sec.dateline_listen && it && it.date && page === it.page) return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl(HUB), HUB_LABEL]])}\n${listenDateline(it, selfListen)}\n<!-- ph-archive-nav:end -->`;
   return `<!-- ph-archive-nav:start -->\n${navBar([[archUrl(`${k}.html`), sec.prev], [archUrl(HUB), HUB_LABEL]])}${dateline}\n<!-- ph-archive-nav:end -->`;
 }
 // "dateline_listen" sections (Committee Chair Reports), Steven Oct 10: the full date LEFT-justified and the
 // newsletter's green/gold speaker icon + "Listen" RIGHT-justified on the same row (links to the item's listen page).
 // No listen page -> date alone, still left-justified. Row is the width of the content card.
-function listenDateline(it) {
+function listenDateline(it, selfListen = false) {
   const F = 'Arial,Helvetica,sans-serif';
-  const link = it.listen ? `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>` : '';
+  const link = (selfListen && !it.listen) ? SELF_LISTEN_BUTTON : it.listen ? `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>` : '';
   return `<div class="ph-dateline" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;width:min(780px,100%);margin:0 auto;padding:10px 18px 0;box-sizing:border-box;background:none;border:0;text-align:left;letter-spacing:0;text-transform:none"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${fullDate(it)}</span>${link}</div>`;
 }
 // "story_nav" sections (Community Stories), Steven Oct 9: under the header, the full date with Listen (or, on the
 // listen page, Read the Story) right-aligned on the same row; below it ONE line: Story Archives → · Newsletter Archive →
 // (or, with story_nav_back, a single ← Back link).
-function storyNav(k, page, it, showDate) {
+// Self-reading pages (Steven, Oct 18 2:05 AM): a page that carries the shared page-listen script (scripts/page_listen.py,
+// <!-- ph-page-listen:start -->) reads ITSELF -- it has no separate listen-* page -- so its date row must keep the standard
+// speaker + 'Listen' button (scripts/listen_button.html). Before this fix storyNav() / listenDateline() rebuilt the row
+// without it, which left 2026-10-16-weekly-manager-update.html with a Listen script but no button (script exits early,
+// ?listen=1 did nothing). Guarded by scripts/check_listen_coverage.py (R49b).
+const SELF_LISTEN_BUTTON = fs.readFileSync(path.join(__dirname, 'listen_button.html'), 'utf8').trim();
+const isSelfListen = (src) => src.includes('<!-- ph-page-listen:start -->');
+function storyNav(k, page, it, showDate, selfListen = false) {
   const sec = S[k];
   const F = 'Arial,Helvetica,sans-serif';
   const A = `display:inline;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;letter-spacing:0;text-transform:none;white-space:nowrap`;
@@ -673,8 +680,8 @@ function storyNav(k, page, it, showDate) {
   // "clean_listen" sections (President's Message, Community Stories; Steven Oct 11): the side link is the newsletter's
   // green/gold speaker icon + "Listen" (class ph-listen, same as Chair Reports), and the listen-* page is rebuilt as a
   // copy of this clean page (see "Clean Listen pages" below), so the Read link never appears on the listen page.
-  const cleanSide = sec.clean_listen && it.listen && page !== it.listen;
-  const sideHtml = cleanSide
+  const cleanSide = (sec.clean_listen && it.listen && page !== it.listen) || (selfListen && !it.listen);
+  const sideHtml = (selfListen && !it.listen) ? SELF_LISTEN_BUTTON : cleanSide
     ? `<a class="ph-listen" href="${pageUrl(it.listen)}" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a>`
     : (side ? `<a href="${side[0]}" style="${A};margin-left:auto">${esc(side[1])}</a>` : '');
   const row1 = `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:${cleanSide ? 'center' : 'baseline'};gap:4px 16px;margin:0"><span style="color:#1a1a1a;font:18px/1.5 ${F}">${showDate ? fullDate(it) : ''}</span>${sideHtml}</div>`;
@@ -712,7 +719,7 @@ function addStrip(page, k) {
   }
   const hs = lower.indexOf('<header');
   const headerText = h >= 0 && hs >= 0 && hs < h ? next.slice(hs, h).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ') : '';
-  next = next.slice(0, at) + '\n' + stripFor(k, page, headerText) + '\n' + next.slice(at).replace(/^\n/, '');
+  next = next.slice(0, at) + '\n' + stripFor(k, page, headerText, isSelfListen(src)) + '\n' + next.slice(at).replace(/^\n/, '');
   if (DATED.has(k)) next = next.replace(/<footer\b[\s\S]*?<\/footer>/gi, '');
   write(file, next);
 }
@@ -887,6 +894,9 @@ for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) fo
 {
   const chairFiles = [];
   for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) for (const it of S[k].items) if (it.page && it.listen) chairFiles.push(path.join(PAGES, it.page), path.join(PAGES, it.listen));
+  // R49b (Steven, Oct 18 2:05 AM): also every detail page the strip pass rewrote -- a report / notice / story / message page
+  // that has, or must have, Listen fails here if its button or script is missing (the 2026-10-16 weekly update case).
+  for (const [p] of stripped) chairFiles.push(path.join(PAGES, p));
   const py = process.env.PHNEWS_VR_PY || '/workspace/.venv-vr/bin/python';
   if (chairFiles.length) {
     if (!fs.existsSync(py)) throw new Error(`R49: Listen-coverage guard needs ${py} (playwright); it is a required step`);

@@ -39,13 +39,43 @@
     // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
     // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
     const h1 = document.querySelector('h1');
-    const sel = 'main .content-card, main .ph-row, main .source, main .ph-source, main .credit, main .byline';
+    const sel = 'main .content-card, main .ph-row, main .ph-meta, main .source, main .ph-source, main .credit, main .byline';
+    const sent = (document.querySelector('main') || document.body).innerText;  // R49b: a .ph-meta line that only repeats the email's Sent time is the date line (skipped)
     const all = Array.from(document.querySelectorAll(sel))
-      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText));
-    const blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
+      .filter((el) => !(el.classList.contains('ph-meta') && sent.includes('Sent: ' + el.innerText.trim())));
+    let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
       .map((el) => el.innerText.trim())
       .filter(Boolean);
+    if (!blocks.length) blocks = walkAll();  // R49b (Steven, Oct 18 2:05 AM): pages without content cards
     return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
+  }
+  function walkAll() {
+    // R49b: early notice copies, simple / card pages and plain reports have no content cards -- read every visible block
+    // in <main> / <article> / <body> in page order (outermost block once; table rows, quotes, bare div text, the Source
+    // line). Skipped: header, kicker/badge, date line, navigation, archive links, the Listen button, Back links.
+    const BLOCK = 'h2,h3,h4,h5,h6,p,li,blockquote,figure,figcaption,pre,table,dl,aside';
+    const SKIP = 'h1,header,footer,script,style,noscript,nav,button,[role="navigation"],.ph-listen,.ph-listen-row,.ph-story-nav,.ph-story-links-long,.ph-archive-bar,.ph-dateline,.page-kicker,.ph-strip,.ph-links,.badge,.meta,.date,.back,.attachments,[aria-hidden="true"]';
+    const vis = (el) => el.getClientRects().length > 0;
+    const out = [];
+    const walk = (el) => {
+      let run = '';
+      const flush = () => { if (run.trim()) out.push(run.trim()); run = ''; };
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3) { run += n.textContent; continue; }
+        if (n.nodeType !== 1 || n.matches(SKIP) || !vis(n)) continue;
+        if (n.matches(BLOCK)) {
+          flush();
+          if (n.matches('table,dl')) n.querySelectorAll('caption,tr,dt,dd').forEach((r) => { const x = r.innerText.trim(); if (x) out.push(x); });
+          else if (n.matches('figure,aside,blockquote') && n.querySelector('p,li,figcaption')) walk(n);
+          else { const x = n.innerText.trim(); if (x) out.push(x); }
+        } else if (getComputedStyle(n).display.startsWith('inline')) run += n.innerText;
+        else { flush(); walk(n); }
+      }
+      flush();
+    };
+    walk(document.querySelector('main') || document.querySelector('article') || document.body);
+    return out;
   }
 
   function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
