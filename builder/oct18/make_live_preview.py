@@ -151,3 +151,4 @@ else:
 # STYLE-RULES R40: no review/test stamp on any preview output
 for _f in OUT.rglob("*.html"): _sr.assert_no_stamp(_f.read_text(encoding="utf-8"), str(_f.relative_to(REPO)))
 import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
+_lc.require_nl(OUT / "PHNEWS-2026-10-18-preview.html")  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading

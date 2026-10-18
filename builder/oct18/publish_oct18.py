@@ -50,3 +50,4 @@ nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True,
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 print(len(MAP), "pages"); [print(" ", b) for b in MAP.values()]
 import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
+_lc.require_nl(ROOT / "PHNEWS-2026-10-18-FINAL.html")  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in the SEND opens a page whose Listen starts reading
