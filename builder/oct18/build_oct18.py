@@ -5,7 +5,8 @@ Input: ../source/PHNEWS-2026-10-11-FINAL-REVIEW-as-sent-omen.html (Oct 11 as sen
 Saturday refresh: re-fetch calendar (fetch_calendar.sh), update NOTICES / MANAGER / Tony FB wording, rerun.
 Output: ../PHNEWS-2026-10-18-preview.html
 """
-import json, os, re, sys, glob
+import json, os, re, sys, glob, time
+_R49_T0 = time.time() - 1  # STYLE-RULES R49: pages written by this run get the Listen-coverage check at the end
 from datetime import date, datetime
 from html import escape
 from pathlib import Path
@@ -531,6 +532,7 @@ import source_sections as _ss
 _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
 OUTF.write_text(s, encoding="utf-8")
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
 json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in meetings], "this_week": [(e["date"], e["name"]) for e in this_week],

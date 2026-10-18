@@ -1,6 +1,7 @@
 """Publish Oct 18 (Vol.1 No.14) to the Vercel archive (no email). Copies preview pages to permanent homes (preview URLs stay valid),
 writes ../PHNEWS-2026-10-18-FINAL.html and the NAS-layout copy for build_archive --issues-from."""
-import re, sys, shutil
+import re, sys, shutil, time
+_R49_T0 = time.time() - 1  # STYLE-RULES R49: Listen-coverage check on every page this run writes
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md
 from pathlib import Path
 REPO = Path(sys.argv[1]); ROOT = Path(__file__).resolve().parent.parent
@@ -48,3 +49,4 @@ s = _sr.assert_event_sources(s, "PHNEWS-2026-10-18-FINAL.html")  # R48 (Steven, 
 nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 print(len(MAP), "pages"); [print(" ", b) for b in MAP.values()]
+import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step

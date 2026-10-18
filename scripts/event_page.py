@@ -12,4 +12,5 @@ def render(title, dateline, paragraphs):
     s2 = re.sub(r'<div class="content-card">.*?</div>', lambda m: f'<div class="content-card">{body}</div>', s, count=1, flags=re.S)
     assert s2 != s and escape(title) in s2
     import sys as _s; _s.path.insert(0, str(Path(__file__).resolve().parent)); import readability as _rd  # STYLE-RULES RD1-RD13 (layout only; wording lock)
-    return _rd.apply(s2, '')[0]
+    import page_listen as _pl  # STYLE-RULES R49: the one shared page-listen script
+    return _pl.apply(_rd.apply(s2, '')[0])

@@ -1,5 +1,6 @@
 """Make the unlisted live preview of the Oct 18 draft for zeoszeos/palmhillnews (preview-only pages).
 Writes into REPO/pages/previews/2026-10-18/: PHNEWS-2026-10-18-preview.html + notices/<slug>.html (each with Listen)."""
+import time as _t49; _R49_T0 = _t49.time() - 1  # STYLE-RULES R49: Listen-coverage check on every page this run writes
 import re, sys, html as H
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md (shared)
 import source_sections as _ss  # STYLE-RULES R42
@@ -9,7 +10,7 @@ OUT = REPO / "pages/previews/2026-10-18"; (OUT / "notices").mkdir(parents=True, 
 LIVE = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/"
 s = (ROOT / "PHNEWS-2026-10-18-preview.html").read_text(encoding="utf-8")
 w = (REPO / "pages/2026-10-09-weekly-manager-update.html").read_text(encoding="utf-8")
-script = w[w.find("<!-- ph-page-listen:start -->"):w.find("<!-- ph-page-listen:end -->") + len("<!-- ph-page-listen:end -->")]
+import page_listen as _pl; script = _pl.SCRIPT.strip()  # R49: the one shared page-listen script
 btn = re.findall(r'<a class="ph-listen".*?</a>', w, re.S)[0]
 a, b = s.find(">Community Notices</span>"), s.find('<div class="canonical-section">', s.find(">Community Notices</span>"))
 sec = s[a:b]
@@ -149,3 +150,4 @@ else:
     print("FORMAT GUARD skipped (venv or golden missing)")
 # STYLE-RULES R40: no review/test stamp on any preview output
 for _f in OUT.rglob("*.html"): _sr.assert_no_stamp(_f.read_text(encoding="utf-8"), str(_f.relative_to(REPO)))
+import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step

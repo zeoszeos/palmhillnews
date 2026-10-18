@@ -60,4 +60,12 @@ for rel in ['pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html']+sorted('
     v=_SR.source_credit_violations(open(fp,errors='ignore').read())
     if v: l27.append(f"{rel}: {'; '.join(v)}")
 print('L27/L29 Source credit violations:',l27)
-sys.exit(1 if r41 or r44 or l27 or stamped or howto or (set(bad) - KNOWN) else 0)
+# STYLE-RULES R49 (Steven, Oct 18 12:41 AM): every Listen page reads all visible content (scripts/check_listen_coverage.py)
+import subprocess as _sp49
+_lc_py = os.environ.get("PHNEWS_VR_PY", "/workspace/.venv-vr/bin/python")
+if os.path.exists(_lc_py):
+  _r49 = _sp49.run([_lc_py, os.path.join(R, "scripts", "check_listen_coverage.py")], capture_output=True, text=True)
+  print((_r49.stdout or _r49.stderr).strip()[:3000]); r49 = _r49.returncode != 0
+else:
+  print("R49 Listen coverage: guard unavailable (" + _lc_py + " missing) -- FAIL, it is a required step"); r49 = True
+sys.exit(1 if r41 or r44 or l27 or r49 or stamped or howto or (set(bad) - KNOWN) else 0)

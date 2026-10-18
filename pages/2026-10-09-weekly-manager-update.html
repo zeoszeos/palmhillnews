@@ -95,13 +95,19 @@ main { width:min(780px,100%); }
     return out;
   }
   function parts() {
+    // R49 (Steven, Oct 18 12:39/12:43 AM): read ALL visible content in page order -- the h1, every content card / email
+    // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
+    // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
     const h1 = document.querySelector('h1');
-    const blocks = Array.from(document.querySelectorAll('main .content-card'))
-      .filter((el) => !el.classList.contains('attachments') && !el.querySelector('p.source, .source'))
+    const sel = 'main .content-card, main .ph-row, main .source, main .ph-source, main .credit, main .byline';
+    const all = Array.from(document.querySelectorAll(sel))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText));
+    const blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
       .map((el) => el.innerText.trim())
       .filter(Boolean);
-    return [h1 ? h1.textContent : '', ...blocks].flatMap(chunks);
+    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
   }
+
   function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
   function start(auto) {
     const list = parts(); const me = ++run; let i = 0;
