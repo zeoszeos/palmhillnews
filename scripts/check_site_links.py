@@ -34,7 +34,7 @@ for d in roots:
   for dp,_,fs in os.walk(os.path.join(R,d)):
     for f in fs:
       rel=os.path.relpath(os.path.join(dp,f),R)
-      if f.endswith('.html') and not rel.startswith('pages/archive/issues/') and 'Previous Chair Reports' in open(os.path.join(dp,f),errors='ignore').read(): r41.append(rel)
-print('R41 Previous Chair Reports pages:',r41)
+      if f.endswith('.html') and not rel.startswith('pages/archive/issues/') and re.search(r'Previous (Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b',open(os.path.join(dp,f),errors='ignore').read()): r41.append(rel)
+print('R41 Previous-X label pages:',r41)
 KNOWN = {('/pages/assets/ph-newsletter-shell.html', '/pages/assets/2026-10-04-recurring-activities-by-date.html')}  # design template, not served as a page link
 sys.exit(1 if r41 or stamped or howto or (set(bad) - KNOWN) else 0)
