@@ -259,3 +259,46 @@ def assert_community_stories(s, name, omit_approved=None):
     bad = community_stories_violations(s)
     if bad: raise SystemExit(f"R45: {name}: " + "; ".join(bad) + " (an issue without a story needs Steven's approval: COMMUNITY_STORIES_OMIT_APPROVED)")
     return s
+
+
+# STYLE-RULES R47 (Steven, Oct 18 12:23 AM): for a Webmaster-sourced item (Source line = the linked short word 'Webmaster' only,
+# L27/L29 unchanged) the 'More →' link and the Source link open the SAME full-email page, and Listen opens that page with
+# ?listen=1. The short 2026-10-18-notice-*.html summary pages stay live but are never linked from the issue. Mixed-source rows
+# (e.g. 'Source: Calendar, Webmaster', where More → is the calendar listing page, R21) are not covered.
+def webmaster_items(s):
+    """[(title, webmaster_href, more_hrefs, listen_hrefs, all_hrefs)] for every issue row whose Source is only 'Webmaster'."""
+    import re as _re, html as _h
+    out = []
+    for r in s.split('<tr style="background:')[1:]:
+        m = _re.search(r'margin-top:5px;">(Source:.*?)</div>', r, _re.S)
+        if not m: continue
+        r = r[:m.end()]  # the Source line ends the row
+        src = m.group(1)
+        if _re.sub(r"\s+", " ", _h.unescape(_re.sub(r"<[^>]+>", "", src))).strip() != "Source: Webmaster": continue
+        w = _re.search(r'<a href="([^"]+)"[^>]*>Webmaster</a>', src)
+        if not w: continue
+        t = _re.search(r'padding-right:8px;">(.*?)</td>', r, _re.S)
+        links = _re.findall(r'<a href="([^"]+)"[^>]*>(.*?)</a>', r, _re.S)
+        more = [h for h, x in links if _re.sub(r"<[^>]+>", "", x).strip() == "More →"]
+        lis = [h for h, x in links if _re.sub(r"<[^>]+>", "", x).strip().endswith("Listen")]
+        out.append((_h.unescape(_re.sub(r"<[^>]+>", "", t.group(1))).strip() if t else "?", w.group(1), more, lis, [h for h, _ in links]))
+    return out
+def webmaster_more_violations(s, repo=None):
+    bad = []
+    for title, wm, more, lis, hrefs in webmaster_items(s):
+        for h in more:
+            if h.split("?")[0] != wm: bad.append(f"{title}: More → {h} differs from the Webmaster source {wm}")
+        for h in lis:
+            if h != wm + "?listen=1": bad.append(f"{title}: Listen {h} must be {wm}?listen=1")
+        short = [h for h in hrefs if "2026-10-18-notice-" in h or "/previews/2026-10-18/notices/" in h]
+        if short: bad.append(f"{title}: links a short notice page {short}")
+        if repo is not None:
+            import os as _os
+            f = _os.path.join(str(repo), "pages", wm.split("/pages/", 1)[-1])
+            if not _os.path.exists(f) or "<!-- ph-page-listen:start -->" not in open(f, encoding="utf-8").read():
+                bad.append(f"{title}: full-email page {wm} has no Listen")
+    return bad
+def assert_webmaster_more(s, name, repo=None):
+    bad = webmaster_more_violations(s, repo)
+    if bad: raise SystemExit(f"R47: {name}: " + "; ".join(bad))
+    return s

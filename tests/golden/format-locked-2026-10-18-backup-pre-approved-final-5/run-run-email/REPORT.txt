@@ -1,0 +1,3 @@
+PHNEWS format guard — /workspace/phnews-consolidation/oct18/PHNEWS-2026-10-18-SEND.html
+rule failures: 0
+visual diffs vs run-email: 0
