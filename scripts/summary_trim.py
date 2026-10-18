@@ -5,17 +5,19 @@ the full text lives on its Vercel page. Short texts use only the source's own wo
 import re, sys
 B = "https://palmhillnews.vercel.app/pages/"
 MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
+# R47 (Steven, Oct 18 12:23 AM): a Webmaster-sourced notice's More → is the SAME full-email page as its 'Webmaster' Source link
+# (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
  ("Bus loads at 8:00 AM for the arts and crafts festival", "Bus loads at 8:00 AM for the arts and crafts festival. $35 per seat, payable at coffee.", B + "2026-10-24-mount-dora-trip.html"),
  ("Palm Hill now has a private Facebook group just for residents,", "Palm Hill now has a private Facebook group just for residents.", None),
- ("All food and beverages must be kept at least 4 feet away", "All food and beverages must be kept at least 4 feet away from the edge of the pool. No glass containers.", B + "2026-10-18-notice-swimming-pool-food-and-beverage-rules.html"),
- ("An announcing chairperson is needed for November coffees", "Volunteers are needed for November coffees and for Pancakes on Saturday, Nov 14.", B + "2026-10-18-notice-november-coffee-and-pancake-volunteers.html"),
- ("Please don&#x27;t walk on the courts;", "Please don&#x27;t walk on the courts; return discs and cue sticks; turn off lights and fans when you leave.", B + "2026-10-18-notice-shuffleboard-season-reminders.html"),
- ("New golfers and residents are welcome on Wednesday, Nov 18", "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it&#x27;s free.", B + "2026-10-18-notice-taste-of-golf-november-18.html"),
+ ("All food and beverages must be kept at least 4 feet away", "All food and beverages must be kept at least 4 feet away from the edge of the pool. No glass containers.", B + "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html"),
+ ("An announcing chairperson is needed for November coffees", "Volunteers are needed for November coffees and for Pancakes on Saturday, Nov 14.", B + "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"),
+ ("Please don&#x27;t walk on the courts;", "Please don&#x27;t walk on the courts; return discs and cue sticks; turn off lights and fans when you leave.", B + "2026-10-12-shuffleboard-information-notice.html"),
+ ("New golfers and residents are welcome on Wednesday, Nov 18", "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it&#x27;s free.", B + "2026-10-14-taste-of-golf-notice.html"),
  # R42 (Steven, Oct 17 10:29 PM): Linda's whole "Info from Linda" email is ONE notice; More → opens the existing copy of her email
  ("Halloween Dance tickets are sold out.", "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park.", B + "2026-10-08-info-from-linda-notice.html"),
- ("The Palm Hill webmaster shared the sign-up link for", '<a href="https://www.propertyfraudalert.com/select" style="color:#3A6B1A;">Property Fraud Alert</a> is a free service that notifies you when a document is recorded under your name.', B + "2026-10-18-notice-property-fraud-alert.html"),
+ ("The Palm Hill webmaster shared the sign-up link for", '<a href="https://www.propertyfraudalert.com/select" style="color:#3A6B1A;">Property Fraud Alert</a> is a free service that notifies you when a document is recorded under your name.', B + "2026-09-30-property-fraud-alert-notice.html"),
  ("58 work orders in Aug (72% done);", "58 work orders in Aug (72% done); new north clubhouse A/C; Fern St. still closed for storm-sewer repair.", None),
  ("The invoice for the transformer was paid;", "The invoice for the transformer was paid; installation will take approximately 6 weeks. Fern sewer liner expected the week of 10/26.", None),
  ("Doors open at 4:30 PM; dinner is served at 5:00 PM.", "Doors open at 4:30 PM; dinner is served at 5:00 PM. $12 donation; tickets at both coffees until Nov 9, none at the door.", B + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),

@@ -39,6 +39,10 @@ _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
 for _p, _src in _ss.SOURCES.items():  # existing source page used by a notice: standard Listen block, same URL
     if _src.get("use_existing_page") and _ss.BASE + _p in s: _nl.add(REPO, _p)
+# R47 (Steven, Oct 18 12:23 AM): every Webmaster full-email page linked from the issue carries the standard Listen block, and a
+# Webmaster-sourced item's More → / Listen open that same page (the short 2026-10-18-notice-*.html pages stay live, unlinked).
+for _wm in sorted(set(re.findall(r'<a href="' + re.escape(L) + r'([^"?#]+)"[^>]*>Webmaster</a>', s))): _nl.add(REPO, _wm)
+s = _sr.assert_webmaster_more(s, "PHNEWS-2026-10-18-FINAL.html", REPO)
 (ROOT / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
