@@ -28,5 +28,13 @@ for d in roots:
         t=open(os.path.join(dp,f),errors='ignore').read()
         if 'ph-review-stamp' in t or 'Review copy' in t or 'Calendar checked:' in t or re.search(r'cal-\d{8}(?:-\d{4})?\.json',t): stamped.append(os.path.relpath(os.path.join(dp,f),R))
 print('R40 stamped pages:',stamped)
+# STYLE-RULES R41: no 'Previous Chair Reports' label on live non-archived pages (archived issue copies exempt)
+r41=[]
+for d in roots:
+  for dp,_,fs in os.walk(os.path.join(R,d)):
+    for f in fs:
+      rel=os.path.relpath(os.path.join(dp,f),R)
+      if f.endswith('.html') and not rel.startswith('pages/archive/issues/') and 'Previous Chair Reports' in open(os.path.join(dp,f),errors='ignore').read(): r41.append(rel)
+print('R41 Previous Chair Reports pages:',r41)
 KNOWN = {('/pages/assets/ph-newsletter-shell.html', '/pages/assets/2026-10-04-recurring-activities-by-date.html')}  # design template, not served as a page link
-sys.exit(1 if stamped or howto or (set(bad) - KNOWN) else 0)
+sys.exit(1 if r41 or stamped or howto or (set(bad) - KNOWN) else 0)
