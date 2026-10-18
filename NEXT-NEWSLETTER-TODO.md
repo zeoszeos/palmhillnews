@@ -24,3 +24,6 @@
 
 ## Oct 25 batch — TODO (Steven approved Oct 18 12:32 AM)
 - [ ] Extend R47 to RPM-sourced notices (e.g. October Mowing Date): More →, Listen and the 'RPM' Source link all open the SAME full RPM email page (?listen=1 for Listen). If the full RPM email page is missing, create it verbatim from the RPM email (standard email-copy shell, with Listen). Extend style_rules.assert_webmaster_more (or a sibling check) to cover 'Source: RPM' items. Do not touch the Oct 18 SEND.
+
+## R49 (Steven Oct 18 12:39–12:44 AM) — Listen reads all visible content (required step)
+- New pages with Listen: use scripts/page_listen.py SCRIPT (email/notice/event pages) or build_archive.js (stories/reports); never copy a script from another page. Guard: scripts/check_listen_coverage.py (runs automatically in build, preview, publish, build_archive, check_site_links, check_live_archive --live).

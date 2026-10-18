@@ -802,10 +802,30 @@ const CHAIR_LISTEN_JS = `<!-- ph-chair-listen:start -->
     return out;
   }
   function parts() {
-    const lines = Array.from(document.querySelectorAll('article h2, article h3, article p, article li'))
-      .map((e) => e.innerText.trim()).filter((t) => t && !t.startsWith('Source:'));
+    // R49 (Steven, Oct 18 12:39 / 12:43 / 12:44 AM): read ALL visible content in page order -- title (h1), then everything
+    // in <main>: subtitle + byline, figure captions, headings, paragraphs, list items, blockquotes / pull quotes, table rows,
+    // bare div text, and the closing source / credit line. Outermost text block only (a <p> inside a <blockquote> or <li>
+    // is read once). Skipped: kicker, date line, navigation, archive links, the Listen and Back controls.
+    const BLOCK = 'h2,h3,h4,h5,h6,p,li,blockquote,figure,figcaption,pre,table,dl,aside';
+    const SKIP = 'h1,script,style,noscript,nav,button,[role="navigation"],.ph-listen,.ph-story-nav,.ph-story-links-long,.ph-archive-bar,.ph-dateline,.page-kicker,.ph-strip,.ph-links';
+    const lines = [];
+    const vis = (el) => el.getClientRects().length > 0;
+    const walk = (el) => {
+      let run = '';
+      const flush = () => { if (run.trim()) lines.push(run.trim()); run = ''; };
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3) { run += n.textContent; continue; }
+        if (n.nodeType !== 1 || n.matches(SKIP) || !vis(n)) continue;
+        if (n.matches(BLOCK)) { flush(); if (n.matches('table,dl')) Array.from(n.querySelectorAll('caption,tr,dt,dd')).forEach((r) => { const x = r.innerText.trim(); if (x) lines.push(x); }); else if (n.matches('figure,aside,blockquote') && n.querySelector('p,li,figcaption')) walk(n); else lines.push(n.innerText.trim()); }
+        else if (getComputedStyle(n).display.startsWith('inline')) run += n.innerText;
+        else { flush(); walk(n); }
+      }
+      flush();
+    };
+    const body = document.querySelector('main') || document.querySelector('article'); if (body) walk(body);
+    for (let k = lines.length - 1; k >= 0; k -= 1) if (!lines[k]) lines.splice(k, 1);
     const h1 = document.querySelector('h1');
-    return [h1 ? h1.textContent : '', ...lines].flatMap(chunks);
+    return [h1 ? h1.textContent : '', ...lines].flatMap((t) => t.split(/\\n+/)).flatMap(chunks);  // each visual line (subtitle, byline) its own phrase
   }
   function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
   function start(auto) {
@@ -862,6 +882,18 @@ for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) fo
   if (bad) throw new Error(`pages/${it.listen}: player chrome must not appear on a clean listen page (found ${bad[0]})`);
   write(path.join(PAGES, it.listen), listen);
   chairListenPages.add(it.listen);
+}
+// STYLE-RULES R49 (Steven, Oct 18 12:41 AM): required step -- every Listen page written above must read all visible content.
+{
+  const chairFiles = [];
+  for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) for (const it of S[k].items) if (it.page && it.listen) chairFiles.push(path.join(PAGES, it.page), path.join(PAGES, it.listen));
+  const py = process.env.PHNEWS_VR_PY || '/workspace/.venv-vr/bin/python';
+  if (chairFiles.length) {
+    if (!fs.existsSync(py)) throw new Error(`R49: Listen-coverage guard needs ${py} (playwright); it is a required step`);
+    const r = require('child_process').spawnSync(py, [path.join(__dirname, 'check_listen_coverage.py'), ...[...new Set(chairFiles)]], {encoding: 'utf8'});
+    if (r.status !== 0) throw new Error(`R49: Listen does not read all visible content\n${(r.stdout || '') + (r.stderr || '')}`);
+    console.log((r.stdout || '').trim().split('\n')[0]);
+  }
 }
 
 
