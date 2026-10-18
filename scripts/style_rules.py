@@ -154,17 +154,17 @@ def assert_no_stamp(html, name):
 
 # STYLE-RULES R41 (amended Oct 17 10:33 PM) + R43 (Steven, Oct 17 10:29 PM): archive links read '<Singular noun> Archives →'.
 # Committee reports come from the committee liaison: 'Committee Report Archives →', never 'Chair Report'. The newsletter's
-# 'Past X →' section links, 'Did You Know Archives →' (no ?), singular 'Video Archive →', the 'Palm Hill Archives' link and the
+# 'Past X →' section links, 'Did You Know? Archives →' (R44: no '?' since Oct 17 11:51 PM), singular 'Video Archive →', the 'Palm Hill Archives' link and the
 # '← (All) Video Archives' back links are retired. Archived issue copies (pages/archive/issues/, issues/) stay exactly as sent.
 EMAIL_ARCHIVE_LABELS = [
     ("Past President Messages →", "President's Message Archives →"),
     ("Past Shareholders Reports →", "Shareholders Report Archives →"),
     ("Past Weekly Manager Updates →", "Weekly Manager Report Archives →"),
     ("Chair Report Archives →", "Committee Report Archives →"),
-    ("Did You Know Archives →", "Did You Know? Archives →"),
+    ("Did You Know? Archives →", "Did You Know Archives →"),  # R44 (Steven, Oct 17 11:51 PM): no '?' in archive labels
 ]
 RETIRED_ARCHIVE_LABEL_RE = (r"Previous (?:Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b"
-    r"|Chair Report Archives|>Palm Hill Archives</a>|Did You Know Archives|Video Archive →|>← (?:All )?Video Archives<"
+    r"|Chair Report Archives|>Palm Hill Archives</a>|Did You Know\? Archives|Video Archive →|>← (?:All )?Video Archives<"
     r"|Past (?:President Messages|Shareholders Reports|Weekly Manager Updates|Stories|Messages|Meetings|Reports|Updates|Events|Notices|Tips|Videos) →")
 def archive_labels(s):
     """Apply the R41/R43 label map to a newsletter/page string (link text only)."""
@@ -177,4 +177,62 @@ def archive_label_violations(s):
 def assert_archive_labels(s, name):
     bad = archive_label_violations(s)
     if bad: raise SystemExit(f"R41/R43: {name} has retired archive label(s): {bad}")
+    return s
+
+
+# STYLE-RULES R44 (Steven, Oct 17 11:35 PM + 11:51 PM): an archive page's top area (masthead to the page title) carries exactly
+# ONE link, 'All Archives →', to the All Archives page (main.html). No second crumb line, no jump/sibling links. The address
+# strip is not a navigation link. Archived issue copies (pages/archive/issues/) keep their own frame and are not checked.
+ARCHIVE_TOP_LABEL = "All Archives →"
+def archive_top_links(s):
+    """[(href, text)] of every link between <body> and the first <h1>, address strip excluded."""
+    import re as _re, html as _h
+    body = s.split("<body", 1)[-1]
+    hero = _re.search(r'<header class="pa-hero">.*?</header>\s*(?:<nav class="pa-bar".*?</nav>)?', body, _re.S)  # archive hubs: the hero holds title + top link
+    top = hero.group(0) if hero else _re.split(r"<h1\b", body, maxsplit=1)[0]
+    top = _re.sub(r"<script.*?</script>|<style.*?</style>", "", top, flags=_re.S)
+    out = []
+    for href, txt in _re.findall(r'<a\b[^>]*?href="([^"]*)"[^>]*>(.*?)</a>', top, _re.S):
+        txt = _h.unescape(_re.sub(r"\s+", " ", _re.sub(r"<[^>]+>", "", txt))).strip()
+        if "google.com/maps" in href or "Seminole Blvd" in txt: continue
+        out.append((href, txt))
+    return out
+def archive_top_violations(s, is_hub=False):
+    links = archive_top_links(s)
+    if is_hub: return [] if not links else [f"hub page carries top links {links}"]
+    if len(links) != 1: return [f"{len(links)} top links {[t for _, t in links]} (want exactly 1 '{ARCHIVE_TOP_LABEL}')"]
+    href, txt = links[0]
+    bad = []
+    if txt != ARCHIVE_TOP_LABEL: bad.append(f"top link reads {txt!r}, want {ARCHIVE_TOP_LABEL!r}")
+    if not href.split("#")[0].endswith("main.html"): bad.append(f"top link goes to {href!r}, want main.html")
+    return bad
+def assert_archive_top(s, name, is_hub=False):
+    bad = archive_top_violations(s, is_hub)
+    if bad: raise SystemExit(f"R44: {name}: " + "; ".join(bad))
+    return s
+
+
+# STYLE-RULES L27/L29 (Steven, Oct 10 ~2:10 PM, amended Oct 11 ~8:37 AM; restated as a rule + guard Oct 17 11:51 PM):
+# a Webmaster Source credit is the linked short word 'Webmaster' (the link opens the copy of the source email) and nothing
+# else -- no date, no sender name in brackets, no 'email'/'notice', never 'Palm Hill Webmaster'. No Source credit carries a date.
+_MONTH = r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d"
+def source_credits(s):
+    """Raw HTML of every 'Source: ...' credit (up to the end of its line/cell)."""
+    import re as _re
+    return [_re.split(r"</div>|</p>|</td>|<br", s[m.start():m.start() + 900], maxsplit=1)[0]
+            for m in _re.finditer(r"Source:\s", s)]
+def source_credit_violations(s):
+    import re as _re, html as _h
+    bad = []
+    for raw in source_credits(s):
+        txt = _h.unescape(_re.sub(r"<[^>]+>", "", raw)).replace("\xa0", " ").strip()
+        if _re.search(_MONTH, txt): bad.append(f"date in Source credit: {txt!r}")
+        if "Webmaster" in txt:
+            linked = _re.findall(r"<a\b[^>]*>\s*Webmaster\s*</a>", raw)
+            if txt.count("Webmaster") != len(linked): bad.append(f"unlinked Webmaster: {txt!r}")
+            if _re.search(r"Webmaster\s*[(,]|Palm Hill Webmaster|Webmaster (?:email|notice)", txt): bad.append(f"Webmaster credit not short: {txt!r}")
+    return bad
+def assert_source_credits(s, name):
+    bad = source_credit_violations(s)
+    if bad: raise SystemExit(f"L27/L29: {name}: " + "; ".join(bad))
     return s

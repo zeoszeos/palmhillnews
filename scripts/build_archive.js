@@ -193,7 +193,24 @@ const LINK_ARCHIVE_FROM = '2026-10-18';
 // Steven Oct 14: DYK "Latest Board and committee recordings" goes to Latest (videos.html).
 const LATEST_VIDEOS_HREF = `${BASE}/pages/archive/videos.html`;
 // STYLE-RULES R43 (Steven, Oct 17 10:29 PM): the archive-hub link reads 'All Archives →' everywhere (was 'Palm Hill Archives › <page>').
-const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">All Archives →</a></p>`;
+// STYLE-RULES R44 (Steven, Oct 17 11:35 PM + 11:51 PM): the top area carries exactly ONE link, the top bar's 'All Archives →'.
+// The second crumb line under the bar is gone (it duplicated the bar), so crumbs() renders nothing.
+const crumbs = (title) => '';
+// R44 build-time guard: every archive page written here has exactly one top link, 'All Archives →' -> main.html
+// (the All Archives hub itself has none). Same rule as scripts/style_rules.py archive_top_violations.
+function r44Check(file, html) {
+  const base = path.basename(file);
+  if (base === HUB || /http-equiv="refresh"/i.test(html)) return;
+  let body = html.split('<body').slice(1).join('<body');
+  const hero = body.match(/<header class="pa-hero">[\s\S]*?<\/header>\s*(?:<nav class="pa-bar"[\s\S]*?<\/nav>)?/);
+  let top = hero ? hero[0] : body.split(/<h1\b/)[0];
+  top = top.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, '');
+  const links = [...top.matchAll(/<a\b[^>]*?href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g)]
+    .map((m) => [m[1], m[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()])
+    .filter(([h, x]) => !/google\.com\/maps/.test(h) && !/Seminole Blvd/.test(x));
+  if (links.length !== 1 || links[0][1] !== HUB_LABEL || !links[0][0].split('#')[0].endsWith(HUB))
+    throw new Error(`R44: ${base}: top area must hold exactly one '${HUB_LABEL}' link to ${HUB}; found ${JSON.stringify(links)}`);
+}
 
 // ---------- shared archive nav bar (top of page only) ----------
 // Fully inline styles so each page's own nav/a rules cannot restyle it. Large, dark, high-contrast for older eyes.
@@ -272,7 +289,7 @@ function sectionPage(k) {
     n++;
   }
   const hasPrev = sec.feature_latest && sorted(k).length > 1;
-  const topNav = navBar([hasPrev ? ['#previous', `${sec.prev.replace(/\s*→$/, '')} ↓`] : null, [HUB, HUB_LABEL]].filter(Boolean));
+  const topNav = navBar([[HUB, HUB_LABEL]]);  // R44: no '<Section> Archives ↓' jump link at the top (hasPrev keeps the lower heading)
   if (band) { // R38 guard (build-time): one band per item + the header band before the first item
     const nb = (out.match(/<div class="ph-band ph-band-[abc]">/g) || []).length;
     if (nb !== n || out.indexOf('ph-band-head') > out.indexOf('<div class="ph-row')) throw new Error(`${k}: R38 bands ${nb}/${n} or header band misplaced`);
@@ -291,7 +308,7 @@ function videosPage() {
   });
   out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Meeting Video Archives →</a><span class="ph-dot"> · </span><a href="${DYK_TILE_HREF}">Did You Know →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  const topNav = navBar([[DYK_TILE_HREF, 'Did You Know →'], [HUB, HUB_LABEL]]);
+  const topNav = navBar([[HUB, HUB_LABEL]]);  // R44: 'Did You Know →' dropped from the top bar (the lower link row keeps it)
   return shell({ title: `${pageTitle} — Newsletter Archives`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
@@ -408,7 +425,7 @@ const NOUNS = {
   'community-stories': ['Community Story', 'Community Stories'], 'presidents-message': ["President's Message", "President's Messages"],
   meetings: ['Meeting', 'Meetings'], 'committee-reports': ['Committee Report', 'Committee Reports'], 'manager-reports': ['Shareholders Report', 'Shareholders Reports'],
   'weekly-manager-updates': ['Weekly Manager Update', 'Weekly Manager Updates'],
-  events: ['Special Event', 'Special Events'], 'community-notices': ['Notice', 'Notices'], 'did-you-know': ['Did You Know?', 'Did You Know?'], videos: ['Video', 'Videos'],
+  events: ['Special Event', 'Special Events'], 'community-notices': ['Notice', 'Notices'], 'did-you-know': ['Did You Know', 'Did You Know'], videos: ['Video', 'Videos'],
 };
 function issueContents(iss) {
   const parts = [];
@@ -704,6 +721,7 @@ const NO_FOOTER = /<footer\b|class="ph-footer|class="ph-urgent-line|class="ph-fi
 function writeHub(file, html) {
   const m = html.match(NO_FOOTER);
   if (m) throw new Error(`${path.relative(ROOT, file)}: main-newsletter footer must not appear on archive hub/section pages (found ${m[0]})`);
+  r44Check(file, html);
   write(file, html);
 }
 for (const k of SECTION_ORDER) writeHub(path.join(OUT, `${k}.html`), k === 'videos' ? videosPage() : sectionPage(k));
@@ -959,8 +977,8 @@ const index = {
 // then stop the build if 'Previous Chair Reports' survives on ANY live non-archived page
 // (archived issue copies under issues/ and pages/archive/issues/ stay exactly as sent).
 // R41 amended (Steven, Oct 17 10:33 PM): committee reports come from the liaison -> 'Committee Report Archives →' (never 'Chair Report').
-const R41_MAP = [['Previous Chair Reports →', 'Committee Report Archives →'], ['Chair Report Archives →', 'Committee Report Archives →'], ['Did You Know Archives →', 'Did You Know? Archives →'], ['Previous Notices →', 'Notice Archives →'], ['Previous Events →', 'Event Archives →'], ['Previous Meetings →', 'Meeting Archives →'], ['Previous Weekly Updates →', 'Weekly Manager Report Archives →'], ['Previous Shareholders Reports →', 'Shareholders Report Archives →'], ['Previous Tips →', 'Did You Know? Archives →'], ['Previous Videos →', 'Meeting Video Archives →']];
-const R41_RE = /Previous (Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b|Chair Report Archives|>Palm Hill Archives<\/a>|Did You Know Archives|Video Archive →|>← (?:All )?Video Archives<|Past (?:President Messages|Shareholders Reports|Weekly Manager Updates|Stories|Messages|Meetings|Reports|Updates|Events|Notices|Tips|Videos) →/;
+const R41_MAP = [['Previous Chair Reports →', 'Committee Report Archives →'], ['Chair Report Archives →', 'Committee Report Archives →'], ['Did You Know? Archives →', 'Did You Know Archives →'], ['Previous Notices →', 'Notice Archives →'], ['Previous Events →', 'Event Archives →'], ['Previous Meetings →', 'Meeting Archives →'], ['Previous Weekly Updates →', 'Weekly Manager Report Archives →'], ['Previous Shareholders Reports →', 'Shareholders Report Archives →'], ['Previous Tips →', 'Did You Know? Archives →'], ['Previous Videos →', 'Meeting Video Archives →']];
+const R41_RE = /Previous (Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b|Chair Report Archives|>Palm Hill Archives<\/a>|Did You Know\? Archives|Video Archive →|>← (?:All )?Video Archives<|Past (?:President Messages|Shareholders Reports|Weekly Manager Updates|Stories|Messages|Meetings|Reports|Updates|Events|Notices|Tips|Videos) →/;
 for (const hp of hidden) {
   const f = path.join(PAGES, hp);
   if (!fs.existsSync(f)) continue;
@@ -978,7 +996,7 @@ for (const hp of hidden) {
     if (e.name.endsWith('.html')) r41.push(path.relative(ROOT, f));
   } };
   if (!CHECK) walk(PAGES);
-  if (r41.length) throw new Error(`R41/R43: retired archive label ('Previous X', 'Chair Report Archives', 'Palm Hill Archives' link, 'Did You Know Archives', singular 'Video Archive →', 'Past X →') on live page(s): ${r41.join(', ')}`);
+  if (r41.length) throw new Error(`R41/R43: retired archive label ('Previous X', 'Chair Report Archives', 'Palm Hill Archives' link, 'Did You Know? Archives', singular 'Video Archive →', 'Past X →') on live page(s): ${r41.join(', ')}`);
 }
 write(path.join(OUT, 'archive-index.json'), JSON.stringify(index, null, 2) + '\n');
 

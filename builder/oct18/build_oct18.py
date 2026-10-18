@@ -175,6 +175,50 @@ TONY_FB_TXT = ('Palm Hill now has a private Facebook group just for residents, w
     'Every request is checked against the member directory, so use the address and email the Office has for you, answer all 3 questions, or Facebook will turn the request down. '
     f'Search Facebook for &quot;Palm Hill Country Club - Residents Only Group&quot; or join here: <a href="{FBURL}" style="color:{G};">{FBURL}</a>'
     f'<br><a href="{FBPAGE_NOTICE}" style="color:{G};font-size:14px;">Full notice with QR code to scan →</a>')
+# ---------- STYLE-RULES L27/L29 (Steven, Oct 17 11:51 PM): Webmaster source copies ----------
+# Every Webmaster Source credit is the linked word "Webmaster" (no date, no sender) opening a copy of the source email.
+# These three Webmaster emails (noreply@palmhillcountryclub.net, gotwicz Gmail) had no copy page; scripts/notice_page.py renders
+# them in the info-from-linda shell, verbatim (only blank lines, &nbsp; runs, zero-width spaces and the unsubscribe footer dropped).
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import notice_page as _np
+WM_COPY_PANCAKES = "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"   # gotwicz 1a13ffdbd4141bdd
+WM_COPY_SHUFFLE = "2026-10-12-shuffleboard-information-notice.html"                   # gotwicz 1a13200e1dcdde48
+WM_COPY_GOLF = "2026-10-14-taste-of-golf-notice.html"                                  # gotwicz 1a13d9d5ef6e178f
+WM_COPIES = [
+    (WM_COPY_PANCAKES, "November Pancakes & Coffee Volunteers", "Thursday, Oct 15, 2026, 10:29 AM ET", [
+        ("p", "An announcing chairperson is needed for the month of November for the North Club House coffees."),
+        ("p", "8 volunteers are needed for November coffees in the North."),
+        ("p", "14 volunteers are needed for pancakes on November 14th - arrival time is 7:30 AM"),
+        ("p", "Please use the sign up sheets on the bulletin board at the north clubhouse."),
+        ("p", "Thank you,"),
+        ("p", "Mollie Cardon")]),
+    (WM_COPY_SHUFFLE, "Shuffleboard Information", "Monday, Oct 12, 2026, 5:24 PM ET", [
+        ("h", "With shuffleboard season approaching, just a few reminders:"),
+        ("ul", ["For safety reasons, please do not walk on the courts.",
+                "After use, return the disc to holders, and place under benches.",
+                "After use, return cue sticks to wall hangers.",
+                "When leaving the buildings, close the windows and turn off the lights and fans.",
+                "All persons under 18 years old must be accompanied by an adult.",
+                "No smoking.",
+                "For safety, wear closed toe shoes"]),
+        ("h", "Additional information for the north courts with embedded beads:"),
+        ("ul", ["Do not drop the disc directly onto the beaded surface, as that can dislodge the beads. Place the disc outside of the playing area and push them forward into the kitchen to start play."]),
+        ("p", "Thank you from the Shuffleboard Club.")]),
+    (WM_COPY_GOLF, "Taste of Golf", "Wednesday, Oct 14, 2026, 11:31 PM ET", [
+        ("h", "Palm Hill Country Club"),
+        ("h", "\u201cTaste of Golf\u201d"),
+        ("h", "November 18, 2026; 10 AM"),
+        ("p", "Welcome New Golfers & Residents for a fun filled day to learn & play golf."),
+        ("p", "Meet at Pro Shop.  Event is FREE."),
+        ("p", "Golf teachers on each hole, teaching golf basics: Golf etiquette, Warm-up, Driving, Chipping, Putting, Reading the green."),
+        ("p", "Not a golfer\u2026.Come walk & watch & enjoy the beauty of the course."),
+        ("p", "Treats on each hole & enjoy a Hot Dog on the Pro Shop patio!"),
+        ("p", "Join in on the fun and meet new friends!"),
+        ("p", "Sign Up sheets:  Pro Shop, North Clubhouse, South Clubhouse"),
+        ("p", "Questions contact:"),
+        ("p", "Caroline Zimmerman")]),
+]
+for _n, _subj, _sent, _blocks in WM_COPIES:
+    _np.write("/workspace/oct18-batch", _n, _subj, _sent, _blocks)
 LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
 NOTICES = [
     ("Swimming Pool Food and Beverage Rules",  # Webmaster, Fri Oct 16 12:29 PM ET (gotwicz 1a1458d5b589bff6); newest notice after Tony's
@@ -182,13 +226,13 @@ NOTICES = [
      "Webmaster", BASE + "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html"),
     ("November Coffee and Pancake Volunteers",
      "An announcing chairperson is needed for November coffees at the North Clubhouse, along with 8 coffee volunteers. Pancakes on Saturday, Nov 14 need 14 volunteers, arriving at 7:30 AM. Sign-up sheets are on the North Clubhouse bulletin board.",
-     "Webmaster, Oct 15", None),
+     "Webmaster", BASE + WM_COPY_PANCAKES),  # L27/L29: linked short Webmaster, no date/sender
     ("Shuffleboard Season Reminders",
      "Please don't walk on the courts; return discs to their holders under the benches and cue sticks to the wall hangers; close windows and turn off lights and fans when you leave. Anyone under 18 must be with an adult, no smoking, and wear closed-toe shoes. On the north courts with embedded beads, don't drop the disc onto the beaded surface — set it outside the playing area and push it forward into the kitchen.",
-     "Webmaster (Shuffleboard Club), Oct 12", None),
+     "Webmaster", BASE + WM_COPY_SHUFFLE),  # L27/L29: "(Shuffleboard Club)" is a sender name -> dropped
     ("Taste of Golf — November 18",
      "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it's free. Golf teachers on each hole cover etiquette, warm-up, driving, chipping, putting and reading the green, with treats on each hole and a hot dog on the Pro Shop patio. Not a golfer? Walk, watch and enjoy the course. Sign-up sheets are at the Pro Shop and both clubhouses.",
-     "Webmaster, Oct 14", None),
+     "Webmaster", BASE + WM_COPY_GOLF),  # L27/L29
     # STYLE-RULES R42 (Steven, Oct 17 10:29 PM): one source email = one notice. Linda Keehl's "Info from Linda" (Webmaster, Thu Oct 8
     # 5:25 PM ET) has three sections -- Halloween Dance, PLEASE-PLEASE-PLEASE (clubhouse courtesy), Largo Evening Market -- so it is ONE
     # notice titled with her subject, teaser in her words covering all three (scripts/source_sections.py SOURCES + guard). More → and
@@ -373,7 +417,7 @@ for t, href in [("Shareholders Report — September 30 Board Meeting", BASE + "2
 # Henry October already the President's Message (to-do #7). Did You Know: archive link (to-do, Oct 11 evening)
 old = f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and committee recordings →</a></div>'
 assert old in s
-s = s.replace(old, f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and Committee Meeting Videos →</a><span style="color:#999999;"> · </span><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know? Archives →</a></div>')
+s = s.replace(old, f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and Committee Meeting Videos →</a><span style="color:#999999;"> · </span><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div>')
 # Did You Know: Tony's FB variation (verbatim, Oct 16) appended as 2nd row
 a = s.find(">Did You Know?</span>"); e = s.find("</table></div>", a); assert a > 0 and e > 0
 DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
@@ -413,7 +457,7 @@ DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-insid
     f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = [("2026-10-18", DYK_RULES), ("2026-10-16", DYK_FB)]   # newest first; add new items at the top
 t0 = s.find("<table", a)
-s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + DYK_ITEMS[0][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know? Archives →</a></div></td></tr>', 1) + s[e:]
+s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + DYK_ITEMS[0][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div></td></tr>', 1) + s[e:]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
@@ -444,6 +488,7 @@ _sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
 # STYLE-RULES R41/R43 (Steven, Oct 17 10:29 / 10:33 PM): '<Singular noun> Archives →' on every newsletter archive link
 # (seed 'Past President Messages →' / 'Past Shareholders Reports →' -> President's Message / Shareholders Report Archives →).
 s = _sr.assert_archive_labels(_sr.archive_labels(s), OUTF.name)
+s = _sr.assert_source_credits(s, OUTF.name)  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
 # STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
 import source_sections as _ss
 _r42 = _ss.check_issue(s)

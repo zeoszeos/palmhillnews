@@ -87,7 +87,7 @@ NOTICE_BODY = ('Palm Hill now has a private Facebook group just for residents, w
 fbpage("facebook-group-notice.html", "Join the Palm Hill Residents Group on Facebook", NOTICE_BODY, "Source: Tony Ciaramitaro, Communications Chair")
 fbpage("facebook-group-did-you-know.html", "Did You Know? Palm Hill Residents Facebook Group",
        'Did you know Palm Hill has a private, residents-only Facebook group? Park news, events and photos. Search &quot;Palm Hill Country Club - Residents Only Group&quot; on Facebook and answer all 3 questions.',
-       'Source: Tony Ciaramitaro, Communications Chair · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know? Archives →</a>')
+       'Source: Tony Ciaramitaro, Communications Chair · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a>')
 
 # ---- Steven, Oct 17 1:40 PM: Did You Know rule of the week from David Bates (palmhillblast "Park Rule for Newsletter",
 # Sat Oct 17 1:17 PM ET, his corrected resend). Full narrative in his wording (whitespace-only fixes); Listen like the FB page.
@@ -119,7 +119,7 @@ _dyk = f"""<!DOCTYPE html>
 <main><div class="hd"><h1 class="ph-section" style="margin:0">Did You Know? Traffic Rules</h1>{btn}</div>
 <div class="content-card">{"".join(f"<p>{x}</p>" for x in DYK_RULES_PARAS)}<p class="dyk-byline">{DYK_RULES_BYLINE}</p></div>
 <p class="dyk-rules-link" style="max-width:38em"><a href="{H.escape(DYK_RULES_PDF)}" style="color:#3A6B1A">{DYK_RULES_PDF_LABEL}</a></p>
-<p class="source" style="font-size:14px;color:#666">Source: David Bates · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know? Archives →</a></p>
+<p class="source" style="font-size:14px;color:#666">Source: David Bates · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>
 <p style="font-size:15px"><a href="/pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html" style="color:{G}">← Back to the newsletter</a></p>
 </main>
 {script}

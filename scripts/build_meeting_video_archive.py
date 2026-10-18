@@ -3,6 +3,8 @@
 Data: archive/committee-videos.json (merged Mar 23 2026 club-page email + Oct 1 2026 latest scan).
 Usage: build_meeting_video_archive.py [--from-csv CSV] [--check]"""
 import csv, json, sys, html, datetime, re, urllib.request, collections, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import style_rules as _SR  # R44 archive top-area guard
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA=os.path.join(ROOT,'archive/committee-videos.json')
 GROUPS=[  # slug, label, matcher
@@ -82,7 +84,6 @@ def page(title,canon,crumbs,body,strip):
 </header>
 <div class="ph-archive-bar" role="navigation" aria-label="Newsletter archive" style="display:block;width:100%;margin:0;padding:10px 14px;box-sizing:border-box;background:#f3f8ee;border:0;border-bottom:2px solid #2d5016;color:#1a1a1a;font:18px/1.5 Arial,Helvetica,sans-serif;text-align:center;letter-spacing:0;text-transform:none"><style>@media (max-width:480px){{.ph-archive-bar .ph-sep{{display:none!important}}.ph-archive-bar a{{display:block!important;margin:0 auto!important;width:max-content}}}}</style>{links}</div>
 <main class="ph-body">
-<p class="ph-crumbs">{crumbs}</p>
 <h1 class="ph-section">{E(title)}</h1>
 {body}
 <p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a> (sign-in required) · List as of Mar 23, 2026, plus the newest recording per group from Oct 1, 2026. Recordings from Apr–Oct 2026 may be incomplete.</p>
@@ -120,9 +121,9 @@ def main(args):
         'For just the newest recording from each group, see <a href="videos.html">Latest Committee &amp; Board Meeting Videos</a>.</p>\n'
         '<div class="ph-hub">\n'+'\n'.join(items)+'\n</div>\n'
         '<nav class="ph-links"><a href="videos.html">Latest Committee &amp; Board Meeting Videos →</a><span class="ph-dot"> · </span><a href="did-you-know.html">How to watch (Did You Know) →</a></nav>')
-  strip=[('All Archives →','main.html'),('Latest Committee & Board Meeting Videos →','videos.html')]
-  open(os.path.join(ROOT,HUB),'w').write(page('Committee & Board Meeting Video Archives','pages/archive/meeting-videos.html',
-     '<a href="main.html">All Archives →</a>',body,strip))  # STYLE-RULES R43: 'Palm Hill Archives' link -> 'All Archives →'
+  strip=[('All Archives →','main.html')]  # R44: one top link (Latest videos stays in the lower link row)
+  open(os.path.join(ROOT,HUB),'w').write(_SR.assert_archive_top(page('Committee & Board Meeting Video Archives','pages/archive/meeting-videos.html',
+     '<a href="main.html">All Archives →</a>',body,strip),HUB))  # STYLE-RULES R43/R44: 'Palm Hill Archives' link -> 'All Archives →'
   # group pages
   for s,l,_ in GROUPS:
     rs=sorted(by.get(s,[]),key=lambda r:r['date'],reverse=True)
@@ -146,9 +147,9 @@ def main(args):
       out.append(f'<div class="ph-video{" ph-alt" if i%2 else ""}"><a class="ph-play" href="{u}" aria-label="Play the {E(name)} recording from {fdate(r["date"])}">▶</a><div><div class="ph-row-title"><a href="{u}">{E(name)}</a>{"".join(fl)}</div><div class="ph-row-meta">{fdate(r["date"])}</div></div></div>')
     body=(f'<p class="ph-row-meta" style="font-size:17px;margin-top:-6px"><b>{rng(rs)}</b></p>\n<p class="ph-lead">All {len(rs)} {E(l)} recordings we have, newest first. Tap a meeting to open it.</p>\n'+'\n'.join(out)+
       '\n<nav class="ph-links"><a href="../videos.html">Latest Committee &amp; Board Meeting Videos →</a></nav>')  # R43: one back link (strip)
-    strip=[('All Archives →','../main.html'),('← Committee Meeting Video Archives','../meeting-videos.html'),('Latest Videos →','../videos.html')]
-    open(os.path.join(ROOT,f'pages/archive/videos/{s}.html'),'w').write(page(f'{l} Video Archives',f'pages/archive/videos/{s}.html',
-      '<a href="../main.html">All Archives →</a>',body,strip))
+    strip=[('All Archives →','../main.html')]  # R44: one top link (lower row keeps Latest videos)
+    open(os.path.join(ROOT,f'pages/archive/videos/{s}.html'),'w').write(_SR.assert_archive_top(page(f'{l} Video Archives',f'pages/archive/videos/{s}.html',
+      '<a href="../main.html">All Archives →</a>',body,strip),f'videos/{s}.html'))
   for s,l,_ in GROUPS: print(f'{l}: {len(by.get(s,[]))}')
   print('other:',len(by.get('other',[])),'total',len(rows))
   print('status:',collections.Counter(r['link_status'] for r in rows))

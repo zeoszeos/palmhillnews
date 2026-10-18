@@ -28,7 +28,7 @@ for d in roots:
         t=open(os.path.join(dp,f),errors='ignore').read()
         if 'ph-review-stamp' in t or 'Review copy' in t or 'Calendar checked:' in t or re.search(r'cal-\d{8}(?:-\d{4})?\.json',t): stamped.append(os.path.relpath(os.path.join(dp,f),R))
 print('R40 stamped pages:',stamped)
-# STYLE-RULES R41/R43: no retired archive label (Previous X, Chair Report Archives, Palm Hill Archives link, Did You Know Archives,
+# STYLE-RULES R41/R43: no retired archive label (Previous X, Chair Report Archives, Palm Hill Archives link, Did You Know? Archives,
 # singular Video Archive, Past X) on live non-archived pages (archived issue copies exempt)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import style_rules as _SR
 r41=[]
@@ -39,4 +39,25 @@ for d in roots:
       if f.endswith('.html') and not rel.startswith('pages/archive/issues/') and re.search(_SR.RETIRED_ARCHIVE_LABEL_RE,open(os.path.join(dp,f),errors='ignore').read()): r41.append(rel)
 print('R41/R43 retired archive label pages:',r41)
 KNOWN = {('/pages/assets/ph-newsletter-shell.html', '/pages/assets/2026-10-04-recurring-activities-by-date.html')}  # design template, not served as a page link
-sys.exit(1 if r41 or stamped or howto or (set(bad) - KNOWN) else 0)
+# STYLE-RULES R44 (Steven, Oct 17 11:35 PM + 11:51 PM): every archive page's top area = exactly one 'All Archives →' link to
+# main.html (main.html itself: none; redirect stubs and archived issue copies are skipped).
+r44=[]
+for dp,_,fs in os.walk(os.path.join(R,'pages','archive')):
+  for f in fs:
+    rel=os.path.relpath(os.path.join(dp,f),R)
+    if not f.endswith('.html') or rel.startswith('pages/archive/issues/'): continue
+    s=open(os.path.join(dp,f),errors='ignore').read()
+    if re.search(r'http-equiv="?refresh',s,re.I): continue
+    v=_SR.archive_top_violations(s,is_hub=(rel=='pages/archive/main.html'))
+    if v: r44.append(f"{rel}: {'; '.join(v)}")
+print('R44 archive top-area violations:',r44)
+# STYLE-RULES L27/L29: Source credits on the current issue (review copy) and its generated notice pages carry no date and
+# every 'Webmaster' is the linked short word. Archived issue copies keep their sent wording and are not checked.
+l27=[]
+for rel in ['pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html']+sorted('pages/'+f for f in os.listdir(os.path.join(R,'pages')) if f.startswith('2026-10-18-notice-')):
+  fp=os.path.join(R,rel)
+  if os.path.exists(fp):
+    v=_SR.source_credit_violations(open(fp,errors='ignore').read())
+    if v: l27.append(f"{rel}: {'; '.join(v)}")
+print('L27/L29 Source credit violations:',l27)
+sys.exit(1 if r41 or r44 or l27 or stamped or howto or (set(bad) - KNOWN) else 0)

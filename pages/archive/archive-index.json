@@ -1224,10 +1224,10 @@
       ]
     },
     "did-you-know": {
-      "title": "Did You Know?",
+      "title": "Did You Know Archives",
       "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html",
-      "email_link_label": "Did You Know? Archives →",
-      "page_link_label": "Did You Know? Archives →",
+      "email_link_label": "Did You Know Archives →",
+      "page_link_label": "Did You Know Archives →",
       "items": [
         {
           "date": "2026-10-18",
