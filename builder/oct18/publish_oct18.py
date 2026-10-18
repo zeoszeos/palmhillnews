@@ -43,6 +43,7 @@ for _p, _src in _ss.SOURCES.items():  # existing source page used by a notice: s
 # Webmaster-sourced item's More → / Listen open that same page (the short 2026-10-18-notice-*.html pages stay live, unlinked).
 for _wm in sorted(set(re.findall(r'<a href="' + re.escape(L) + r'([^"?#]+)"[^>]*>Webmaster</a>', s))): _nl.add(REPO, _wm)
 s = _sr.assert_webmaster_more(s, "PHNEWS-2026-10-18-FINAL.html", REPO)
+s = _sr.assert_event_sources(s, "PHNEWS-2026-10-18-FINAL.html")  # R48 (Steven, Oct 18 12:31 AM): event rows need Calendar/RPM/Agenda
 (ROOT / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")

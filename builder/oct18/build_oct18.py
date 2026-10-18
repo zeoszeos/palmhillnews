@@ -524,7 +524,8 @@ _sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
 # (seed 'Past President Messages →' / 'Past Shareholders Reports →' -> President's Message / Shareholders Report Archives →).
 s = _sr.assert_archive_labels(_sr.archive_labels(s), OUTF.name)
 s = _sr.assert_source_credits(s, OUTF.name)
-s = _sr.assert_community_stories(s, OUTF.name, COMMUNITY_STORIES_OMIT_APPROVED)  # R45  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
+s = _sr.assert_community_stories(s, OUTF.name, COMMUNITY_STORIES_OMIT_APPROVED)  # R45
+s = _sr.assert_event_sources(s, OUTF.name)  # R48 (Steven, Oct 18 12:31 AM): event rows need Calendar/RPM/Agenda  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
 # STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
 import source_sections as _ss
 _r42 = _ss.check_issue(s)
