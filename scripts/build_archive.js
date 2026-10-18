@@ -746,7 +746,7 @@ for (const [p, k] of stripped) addStrip(p, k);
 // ---------- Chair Report Listen: clean report page, no player (Steven, Oct 11) ----------
 // "dateline_listen" sections (Committee Chair Reports): the item's listen-* page is no longer the Read Aloud player
 // (no yellow tap bar, no Read Report Aloud box, no speed/volume). It is REBUILT on every run as a copy of the clean
-// report page -- green header, Previous Chair Reports → · All Archives →, full date LEFT + 🔊 Listen RIGHT on one
+// report page -- green header, Chair Report Archives → (R41) · All Archives →, full date LEFT + 🔊 Listen RIGHT on one
 // row, then the report card -- plus one small speech script between <!-- ph-chair-listen:start/end -->:
 //   - on the report page, tapping 🔊 Listen reads the report right there (label flips to Stop); no JS -> the link
 //     still opens the listen-* page;
@@ -953,6 +953,28 @@ const index = {
   }])),
   hidden: [...hidden].map(pageUrl),
 };
+// STYLE-RULES R41 (Steven, Oct 17 7:59 PM): archive link labels read '<Singular noun> Archives →'.
+// Hidden (unlisted) live pages keep their old nav strip, so relabel the retired chair-report label there,
+// then stop the build if 'Previous Chair Reports' survives on ANY live non-archived page
+// (archived issue copies under issues/ and pages/archive/issues/ stay exactly as sent).
+for (const hp of hidden) {
+  const f = path.join(PAGES, hp);
+  if (!fs.existsSync(f)) continue;
+  const t = fs.readFileSync(f, 'utf8');
+  const u = t.replace(/>Previous Chair Reports →</g, '>Chair Report Archives →<');
+  if (u !== t) write(f, u);
+}
+{
+  const r41 = [];
+  const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+    const f = path.join(d, e.name);
+    if (e.isDirectory()) { if (f !== path.join(PAGES, 'archive', 'issues')) walk(f); continue; }
+    if (e.name.endsWith('.html') && !fs.readFileSync(f, 'utf8').includes('Previous Chair Reports')) continue;
+    if (e.name.endsWith('.html')) r41.push(path.relative(ROOT, f));
+  } };
+  if (!CHECK) walk(PAGES);
+  if (r41.length) throw new Error(`R41: 'Previous Chair Reports' on live page(s): ${r41.join(', ')}`);
+}
 write(path.join(OUT, 'archive-index.json'), JSON.stringify(index, null, 2) + '\n');
 
 if (Object.keys(report).length) console.log(JSON.stringify(report, null, 2));
