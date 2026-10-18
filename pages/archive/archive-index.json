@@ -496,7 +496,7 @@
       "title": "Committee & Board Meetings",
       "url": "https://palmhillnews.vercel.app/pages/archive/meetings.html",
       "email_link_label": "Past Meetings →",
-      "page_link_label": "Previous Meetings →",
+      "page_link_label": "Meeting Archives →",
       "items": [
         {
           "date": "2026-10-13",
@@ -756,7 +756,7 @@
       "title": "Monthly Shareholders Reports",
       "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html",
       "email_link_label": "Past Reports →",
-      "page_link_label": "Previous Shareholders Reports →",
+      "page_link_label": "Shareholders Report Archives →",
       "items": [
         {
           "date": "2026-09-30",
@@ -800,7 +800,7 @@
       "title": "Weekly Manager Updates",
       "url": "https://palmhillnews.vercel.app/pages/archive/weekly-manager-updates.html",
       "email_link_label": "Past Updates →",
-      "page_link_label": "Previous Weekly Updates →",
+      "page_link_label": "Weekly Manager Report Archives →",
       "items": [
         {
           "date": "2026-10-16",
@@ -859,7 +859,7 @@
       "title": "Special Events",
       "url": "https://palmhillnews.vercel.app/pages/archive/events.html",
       "email_link_label": "Past Events →",
-      "page_link_label": "Previous Events →",
+      "page_link_label": "Event Archives →",
       "items": [
         {
           "date": "2026-11-21",
@@ -986,7 +986,7 @@
       "title": "Community Notices",
       "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html",
       "email_link_label": "Past Notices →",
-      "page_link_label": "Previous Notices →",
+      "page_link_label": "Notice Archives →",
       "items": [
         {
           "date": "2026-10-04",
@@ -1227,7 +1227,7 @@
       "title": "Did You Know?",
       "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html",
       "email_link_label": "Past Tips →",
-      "page_link_label": "Previous Tips →",
+      "page_link_label": "Did You Know? Archives →",
       "items": [
         {
           "date": "2026-10-18",
@@ -1296,7 +1296,7 @@
       "title": "Latest Board and Committee Meeting Videos",
       "url": "https://palmhillnews.vercel.app/pages/archive/videos.html",
       "email_link_label": "Past Videos →",
-      "page_link_label": "Previous Videos →",
+      "page_link_label": "Meeting Video Archives →",
       "items": [
         {
           "date": "2026-10-14",
