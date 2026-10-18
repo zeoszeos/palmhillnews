@@ -414,6 +414,10 @@ WEBMASTER_SOURCE_LINKS = {  # Source owner -> Vercel page the "Webmaster" link m
     "Finance Committee Meeting": "2026-10-10-finance-committee-meeting-notice.html",
     "Halloween Golf Cart Parade": "2026-09-18-halloween-golf-cart-parade-notice.html",
     "Swimming Pool Food and Beverage Rules": "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html",
+    # L27/L29 (Steven, Oct 17 11:51 PM): the three dated, unlinked credits now link copies made by scripts/notice_page.py
+    "November Coffee and Pancake Volunteers": "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html",
+    "Shuffleboard Season Reminders": "2026-10-12-shuffleboard-information-notice.html",
+    "Taste of Golf — November 18": "2026-10-14-taste-of-golf-notice.html",
     "Info from Linda": "2026-10-08-info-from-linda-notice.html",
     "Property Fraud Alert": "2026-09-30-property-fraud-alert-notice.html",
     "Halloween Dance Party": "2026-10-08-info-from-linda-notice.html",
