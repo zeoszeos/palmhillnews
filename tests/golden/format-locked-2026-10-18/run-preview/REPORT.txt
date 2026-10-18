@@ -1,0 +1,3 @@
+PHNEWS format guard — pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html
+rule failures: 0
+visual diffs vs preview: 0
