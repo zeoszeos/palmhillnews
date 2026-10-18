@@ -16,7 +16,7 @@ WHITE = '-webkit-text-fill-color:#FFFFFF;">'
 SECTION_ORDER = [  # L03 (Events - This Week omitted when empty per L07, Oct 11 ~1:00 PM ET)
     "Committee &amp; Board Meeting Schedules", "Committee Chair Reports", "Events - This Week",
     "Recurring Meetings &amp; Events", "Community Notices", "Events - Upcoming",
-    "From the Board President", "Did You Know?", "Residents Reference Guide"]
+    "Community Stories", "From the Board President", "Did You Know?", "Residents Reference Guide"]
 SECTION_ORDER_NO_THIS_WEEK = [h for h in SECTION_ORDER if h != "Events - This Week"]
 MEETINGS_EXPECTED = []  # Oct 18: run_checks.py fills Meetings / This Week / Upcoming from build-audit-oct18.json (calendar pull)
 THIS_WEEK_EXPECTED = []  # L07 (Oct 11 ~10:09 AM ET, Steven item 13: Karaoke Obi-Time moved to Recurring -> This Week empty for Oct 11)
@@ -78,7 +78,9 @@ def check_email(page):
     got = [t for _, t in _headings(page)]
     expect = SECTION_ORDER if THIS_WEEK_EXPECTED else SECTION_ORDER_NO_THIS_WEEK
     L.ok("L03", got == expect, f"section order {got}")
-    L.ok("L03b", "Palm Hill Community Stories" not in page, "Community Stories section not in Oct 11 email")
+    # L03b replaced by R45 (Steven, Oct 18 12:07 AM): the Oct 11 omission was never approved; a story row is required
+    import sys as _s; _s.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr45
+    L.ok("L03b", not _sr45.community_stories_violations(page), f"R45 Community Stories section {_sr45.community_stories_violations(page) or 'present'}")
     # L04 hard exclusions
     for bad in ("Block Captain", "Test Meeting", "Private Event", "Message from Board President Henry Klain",
                 "Real Estate Committee Report", "Rules and Regulations Committee Report"):

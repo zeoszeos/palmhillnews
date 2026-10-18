@@ -236,3 +236,26 @@ def assert_source_credits(s, name):
     bad = source_credit_violations(s)
     if bad: raise SystemExit(f"L27/L29: {name}: " + "; ".join(bad))
     return s
+
+
+# STYLE-RULES R45 (Steven, Oct 18 12:07 AM): every issue carries a Community Stories section with at least one story row
+# (title, date line, teaser, More → to the story page, Listen to its listen page). Leaving it out needs Steven's approval,
+# recorded in the builder (COMMUNITY_STORIES_OMIT_APPROVED = "<who/when>"); without it the build stops.
+def community_stories_violations(s):
+    import re as _re
+    h = s.find(">Community Stories</span>")
+    if h < 0: return ["no Community Stories section"]
+    end = min([x for x in (s.find('<div class="canonical-section">', h), s.find('<div class="section04">', h)) if x > 0] or [len(s)])
+    sec = s[h:end]
+    bad = []
+    if "More →</a>" not in sec: bad.append("Community Stories row has no 'More →' link")
+    if not _re.search(r'href="[^"]*listen[^"]*"', sec): bad.append("Community Stories row has no Listen link")
+    if not _re.search(r'>(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, [A-Z][a-z]{2} \d{1,2}, \d{4}<', sec): bad.append("Community Stories row has no date line")
+    return bad
+def assert_community_stories(s, name, omit_approved=None):
+    if omit_approved:
+        if ">Community Stories</span>" in s: raise SystemExit(f"R45: {name}: omission approved ({omit_approved}) but the section is present")
+        return s
+    bad = community_stories_violations(s)
+    if bad: raise SystemExit(f"R45: {name}: " + "; ".join(bad) + " (an issue without a story needs Steven's approval: COMMUNITY_STORIES_OMIT_APPROVED)")
+    return s
