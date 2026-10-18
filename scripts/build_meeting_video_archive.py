@@ -61,7 +61,7 @@ def page(title,canon,crumbs,body,strip):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>{E(title)} — Newsletter Archive — Palm Hill Country Club</title>
+<title>{E(title)} — Newsletter Archives — Palm Hill Country Club</title>
 <link rel="canonical" href="https://palmhillnews.vercel.app/{canon}">
 <link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
 <style>.ph-flag{{display:inline-block;margin-left:6px;padding:0 6px;border-radius:4px;font:bold 13px/1.6 Arial,sans-serif}}.ph-flag-audio{{background:#e8f0fb;color:#1c4587}}.ph-flag-warn{{background:#fdecea;color:#8a1c1c}}.ph-flag-note{{background:#fff4d6;color:#6b4d00}}.ph-hub a{{font-size:17px;line-height:1.4}}.ph-hub .ph-row-meta{{font-size:14px}}</style>
@@ -115,14 +115,14 @@ def main(args):
     rs=by.get(s,[])
     if not rs: continue
     ds=sorted(r['date'] for r in rs)
-    items.append(f'<div class="ph-row{" ph-alt" if len(items)%2 else ""}"><a class="ph-row-title" href="videos/{s}.html">{E(l)} Video Archive →</a> <span class="ph-row-meta">({rng(rs)})</span></div>')
+    items.append(f'<div class="ph-row{" ph-alt" if len(items)%2 else ""}"><a class="ph-row-title" href="videos/{s}.html">{E(l)} Video Archives →</a> <span class="ph-row-meta">({rng(rs)})</span></div>')
   body=('<p class="ph-lead">Every Board and committee meeting recording we have, one list per group. '
         'For just the newest recording from each group, see <a href="videos.html">Latest Committee &amp; Board Meeting Videos</a>.</p>\n'
         '<div class="ph-hub">\n'+'\n'.join(items)+'\n</div>\n'
         '<nav class="ph-links"><a href="videos.html">Latest Committee &amp; Board Meeting Videos →</a><span class="ph-dot"> · </span><a href="did-you-know.html">How to watch (Did You Know) →</a></nav>')
   strip=[('All Archives →','main.html'),('Latest Committee & Board Meeting Videos →','videos.html')]
   open(os.path.join(ROOT,HUB),'w').write(page('Committee & Board Meeting Video Archives','pages/archive/meeting-videos.html',
-     '<a href="main.html">Palm Hill Archives</a> › Committee &amp; Board Meeting Video Archives',body,strip))
+     '<a href="main.html">All Archives →</a>',body,strip))  # STYLE-RULES R43: 'Palm Hill Archives' link -> 'All Archives →'
   # group pages
   for s,l,_ in GROUPS:
     rs=sorted(by.get(s,[]),key=lambda r:r['date'],reverse=True)
@@ -145,10 +145,10 @@ def main(args):
       u=E(r['url'])
       out.append(f'<div class="ph-video{" ph-alt" if i%2 else ""}"><a class="ph-play" href="{u}" aria-label="Play the {E(name)} recording from {fdate(r["date"])}">▶</a><div><div class="ph-row-title"><a href="{u}">{E(name)}</a>{"".join(fl)}</div><div class="ph-row-meta">{fdate(r["date"])}</div></div></div>')
     body=(f'<p class="ph-row-meta" style="font-size:17px;margin-top:-6px"><b>{rng(rs)}</b></p>\n<p class="ph-lead">All {len(rs)} {E(l)} recordings we have, newest first. Tap a meeting to open it.</p>\n'+'\n'.join(out)+
-      '\n<nav class="ph-links"><a href="../meeting-videos.html">← All Video Archives</a><span class="ph-dot"> · </span><a href="../videos.html">Latest Committee &amp; Board Meeting Videos →</a></nav>')
-    strip=[('All Archives →','../main.html'),('← Video Archives','../meeting-videos.html'),('Latest Videos →','../videos.html')]
-    open(os.path.join(ROOT,f'pages/archive/videos/{s}.html'),'w').write(page(f'{l} Video Archive',f'pages/archive/videos/{s}.html',
-      f'<a href="../main.html">Palm Hill Archives</a> › <a href="../meeting-videos.html">Video Archives</a> › {E(l)}',body,strip))
+      '\n<nav class="ph-links"><a href="../videos.html">Latest Committee &amp; Board Meeting Videos →</a></nav>')  # R43: one back link (strip)
+    strip=[('All Archives →','../main.html'),('← Committee Meeting Video Archives','../meeting-videos.html'),('Latest Videos →','../videos.html')]
+    open(os.path.join(ROOT,f'pages/archive/videos/{s}.html'),'w').write(page(f'{l} Video Archives',f'pages/archive/videos/{s}.html',
+      '<a href="../main.html">All Archives →</a>',body,strip))
   for s,l,_ in GROUPS: print(f'{l}: {len(by.get(s,[]))}')
   print('other:',len(by.get('other',[])),'total',len(rows))
   print('status:',collections.Counter(r['link_status'] for r in rows))

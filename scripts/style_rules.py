@@ -150,3 +150,31 @@ def assert_no_stamp(html, name):
     if _re.search(r"cal-\d{8}(?:-\d{4})?\.json", html): bad.append("cal-*.json filename")
     if bad: raise SystemExit(f"R40: {name} carries a review/test stamp: {bad}")
     return html
+
+
+# STYLE-RULES R41 (amended Oct 17 10:33 PM) + R43 (Steven, Oct 17 10:29 PM): archive links read '<Singular noun> Archives →'.
+# Committee reports come from the committee liaison: 'Committee Report Archives →', never 'Chair Report'. The newsletter's
+# 'Past X →' section links, 'Did You Know Archives →' (no ?), singular 'Video Archive →', the 'Palm Hill Archives' link and the
+# '← (All) Video Archives' back links are retired. Archived issue copies (pages/archive/issues/, issues/) stay exactly as sent.
+EMAIL_ARCHIVE_LABELS = [
+    ("Past President Messages →", "President's Message Archives →"),
+    ("Past Shareholders Reports →", "Shareholders Report Archives →"),
+    ("Past Weekly Manager Updates →", "Weekly Manager Report Archives →"),
+    ("Chair Report Archives →", "Committee Report Archives →"),
+    ("Did You Know Archives →", "Did You Know? Archives →"),
+]
+RETIRED_ARCHIVE_LABEL_RE = (r"Previous (?:Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b"
+    r"|Chair Report Archives|>Palm Hill Archives</a>|Did You Know Archives|Video Archive →|>← (?:All )?Video Archives<"
+    r"|Past (?:President Messages|Shareholders Reports|Weekly Manager Updates|Stories|Messages|Meetings|Reports|Updates|Events|Notices|Tips|Videos) →")
+def archive_labels(s):
+    """Apply the R41/R43 label map to a newsletter/page string (link text only)."""
+    for a, b in EMAIL_ARCHIVE_LABELS:
+        s = s.replace(f">{a}<", f">{b}<")
+    return s
+def archive_label_violations(s):
+    import re as _re
+    return sorted(set(_re.findall(RETIRED_ARCHIVE_LABEL_RE, s)))
+def assert_archive_labels(s, name):
+    bad = archive_label_violations(s)
+    if bad: raise SystemExit(f"R41/R43: {name} has retired archive label(s): {bad}")
+    return s

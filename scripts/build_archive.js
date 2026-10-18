@@ -192,7 +192,8 @@ const LINK_ARCHIVE_HREF = 'palm-hill-link.html'; // STYLE-RULES.md R14 (scripts/
 const LINK_ARCHIVE_FROM = '2026-10-18';
 // Steven Oct 14: DYK "Latest Board and committee recordings" goes to Latest (videos.html).
 const LATEST_VIDEOS_HREF = `${BASE}/pages/archive/videos.html`;
-const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">Palm Hill Archives</a> › ${esc(title)}</p>`;
+// STYLE-RULES R43 (Steven, Oct 17 10:29 PM): the archive-hub link reads 'All Archives →' everywhere (was 'Palm Hill Archives › <page>').
+const crumbs = (title) => `<p class="ph-crumbs"><a href="${HUB}">All Archives →</a></p>`;
 
 // ---------- shared archive nav bar (top of page only) ----------
 // Fully inline styles so each page's own nav/a rules cannot restyle it. Large, dark, high-contrast for older eyes.
@@ -277,7 +278,7 @@ function sectionPage(k) {
     if (nb !== n || out.indexOf('ph-band-head') > out.indexOf('<div class="ph-row')) throw new Error(`${k}: R38 bands ${nb}/${n} or header band misplaced`);
     out = `<div class="ph-banded ph-banded-${band.toLowerCase()}">\n${out}</div>\n`;
   }
-  return shell({ title: `${sec.title} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl(`${k}.html`), topNav });
+  return shell({ title: `${sec.title} — Newsletter Archives`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl(`${k}.html`), topNav });
 }
 
 function videosPage() {
@@ -288,10 +289,10 @@ function videosPage() {
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
-  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Video Archive →</a><span class="ph-dot"> · </span><a href="${DYK_TILE_HREF}">Did You Know →</a></nav>\n`;
+  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Meeting Video Archives →</a><span class="ph-dot"> · </span><a href="${DYK_TILE_HREF}">Did You Know →</a></nav>\n`;
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
   const topNav = navBar([[DYK_TILE_HREF, 'Did You Know →'], [HUB, HUB_LABEL]]);
-  return shell({ title: `${pageTitle} — Newsletter Archive`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
+  return shell({ title: `${pageTitle} — Newsletter Archives`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 
 function howToVideosPage() {
@@ -405,7 +406,7 @@ const editionOf = (iss) => (/pdf/i.test(iss.format || '') ? 'PDF edition' : 'Ema
 // Section nouns for an issue's "In this issue" line (singular, plural).
 const NOUNS = {
   'community-stories': ['Community Story', 'Community Stories'], 'presidents-message': ["President's Message", "President's Messages"],
-  meetings: ['Meeting', 'Meetings'], 'committee-reports': ['Chair Report', 'Chair Reports'], 'manager-reports': ['Shareholders Report', 'Shareholders Reports'],
+  meetings: ['Meeting', 'Meetings'], 'committee-reports': ['Committee Report', 'Committee Reports'], 'manager-reports': ['Shareholders Report', 'Shareholders Reports'],
   'weekly-manager-updates': ['Weekly Manager Update', 'Weekly Manager Updates'],
   events: ['Special Event', 'Special Events'], 'community-notices': ['Notice', 'Notices'], 'did-you-know': ['Did You Know?', 'Did You Know?'], videos: ['Video', 'Videos'],
 };
@@ -957,8 +958,9 @@ const index = {
 // Hidden (unlisted) live pages keep their old nav strip, so relabel the retired chair-report label there,
 // then stop the build if 'Previous Chair Reports' survives on ANY live non-archived page
 // (archived issue copies under issues/ and pages/archive/issues/ stay exactly as sent).
-const R41_MAP = [['Previous Chair Reports →', 'Chair Report Archives →'], ['Previous Notices →', 'Notice Archives →'], ['Previous Events →', 'Event Archives →'], ['Previous Meetings →', 'Meeting Archives →'], ['Previous Weekly Updates →', 'Weekly Manager Report Archives →'], ['Previous Shareholders Reports →', 'Shareholders Report Archives →'], ['Previous Tips →', 'Did You Know? Archives →'], ['Previous Videos →', 'Meeting Video Archives →']];
-const R41_RE = /Previous (Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b/;
+// R41 amended (Steven, Oct 17 10:33 PM): committee reports come from the liaison -> 'Committee Report Archives →' (never 'Chair Report').
+const R41_MAP = [['Previous Chair Reports →', 'Committee Report Archives →'], ['Chair Report Archives →', 'Committee Report Archives →'], ['Did You Know Archives →', 'Did You Know? Archives →'], ['Previous Notices →', 'Notice Archives →'], ['Previous Events →', 'Event Archives →'], ['Previous Meetings →', 'Meeting Archives →'], ['Previous Weekly Updates →', 'Weekly Manager Report Archives →'], ['Previous Shareholders Reports →', 'Shareholders Report Archives →'], ['Previous Tips →', 'Did You Know? Archives →'], ['Previous Videos →', 'Meeting Video Archives →']];
+const R41_RE = /Previous (Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b|Chair Report Archives|>Palm Hill Archives<\/a>|Did You Know Archives|Video Archive →|>← (?:All )?Video Archives<|Past (?:President Messages|Shareholders Reports|Weekly Manager Updates|Stories|Messages|Meetings|Reports|Updates|Events|Notices|Tips|Videos) →/;
 for (const hp of hidden) {
   const f = path.join(PAGES, hp);
   if (!fs.existsSync(f)) continue;
@@ -976,7 +978,7 @@ for (const hp of hidden) {
     if (e.name.endsWith('.html')) r41.push(path.relative(ROOT, f));
   } };
   if (!CHECK) walk(PAGES);
-  if (r41.length) throw new Error(`R41: 'Previous X' archive label on live page(s): ${r41.join(', ')}`);
+  if (r41.length) throw new Error(`R41/R43: retired archive label ('Previous X', 'Chair Report Archives', 'Palm Hill Archives' link, 'Did You Know Archives', singular 'Video Archive →', 'Past X →') on live page(s): ${r41.join(', ')}`);
 }
 write(path.join(OUT, 'archive-index.json'), JSON.stringify(index, null, 2) + '\n');
 

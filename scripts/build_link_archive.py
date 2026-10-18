@@ -23,7 +23,7 @@ def story(it):
     s = it.get("story")
     return f'<span class="ph-dot"> · </span><a href="{B}{s["page"]}">Community Story: {e(s["title"])} →</a>' if s else ""
 body = f'''<main class="ph-body">
-<p class="ph-crumbs"><a href="main.html">Palm Hill Archives</a> › Palm Hill Link Archives</p>
+<p class="ph-crumbs"><a href="main.html">All Archives →</a></p>
 <h1 class="ph-section">Palm Hill Link Archives</h1>
 <p class="ph-lead">The Palm Hill Link is our park’s monthly magazine. The current issue comes first, then earlier issues, newest first. Each issue opens as a PDF.</p>
 <section class="ph-feature" aria-label="Current Issue">

@@ -1,0 +1,14 @@
+PHNEWS format guard — pages/archive/issues/2026-10-18.html
+rule failures: 0
+visual diffs vs issue: 11
+  DIFF 06-community-notices-desktop.png: 0.65% pixels changed
+  DIFF 07-monthly-shareholders-report-desktop.png: 0.44% pixels changed
+  DIFF 08-weekly-manager-update-desktop.png: 0.51% pixels changed
+  DIFF 10-from-the-board-president-desktop.png: 0.43% pixels changed
+  DIFF 06-community-notices-mobile.png: size (780, 1940) -> (780, 1907)
+  DIFF 07-monthly-shareholders-report-mobile.png: 5.25% pixels changed
+  DIFF 08-weekly-manager-update-mobile.png: 5.38% pixels changed
+  DIFF 09-events-upcoming-mobile.png: 6.04% pixels changed
+  DIFF 10-from-the-board-president-mobile.png: size (780, 441) -> (780, 486)
+  DIFF 11-did-you-know-mobile.png: 0.54% pixels changed
+  DIFF 12-residents-reference-guide-mobile.png: 0.73% pixels changed

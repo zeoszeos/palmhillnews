@@ -18,22 +18,17 @@ SECTION_ORDER = [  # L03 (Events - This Week omitted when empty per L07, Oct 11 
     "Recurring Meetings &amp; Events", "Community Notices", "Events - Upcoming",
     "From the Board President", "Did You Know?", "Residents Reference Guide"]
 SECTION_ORDER_NO_THIS_WEEK = [h for h in SECTION_ORDER if h != "Events - This Week"]
-MEETINGS_EXPECTED = [  # L05/L25 (snapshot-pinned, Tony feed fetched Oct 8 10:20 PM ET). Steven, Oct 10 ~2:25 AM:
-    # committee/board meetings ONLY -- Palm Hill MasterPlan Team moved to Events - Upcoming.
-    "Communications Committee Meeting", "Golf Committee Meeting",
-    "Board of Directors Meeting", "Compliance Committee Meeting"]
+MEETINGS_EXPECTED = []  # Oct 18: run_checks.py fills Meetings / This Week / Upcoming from build-audit-oct18.json (calendar pull)
 THIS_WEEK_EXPECTED = []  # L07 (Oct 11 ~10:09 AM ET, Steven item 13: Karaoke Obi-Time moved to Recurring -> This Week empty for Oct 11)
-UPCOMING_EXPECTED = [  # L08 (Oct 18 – Nov 8); MasterPlan Team added by L25 (Steven, Oct 10 ~2:25 AM)
-    "Palm Hill MasterPlan Team", "Mount Dora Trip", "Halloween Golf Cart Parade", "Halloween Dance Party",
-    "Senior Empowerment Luncheon", "North Clubhouse Craft Fair"]
+UPCOMING_EXPECTED = []  # filled by run_checks.py from build-audit-oct18.json
 TREAT_AS_RECURRING = ["Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time"]  # + Karaoke Obi-Time (Steven, Oct 11 ~10:09 AM ET, Tony item 13)
 # L09/L19 (I Got It all dates, Steven Oct 9 ~8:35 PM; on Recurring pages ~8:45 PM)
-NOTICES_EXPECTED = ["Puzzle Library Closed October 10–16", "Clubhouse Courtesy During Busy Season",
-                    "Property Fraud Alert", "October Mowing Dates"]  # L11 (full-month titles per L30, Oct 11 2026)
-CHAIR_EXPECTED = {  # L13 title -> 2-line intro
-    "Communications Committee Report": "Tony Ciaramitaro chaired his first meeting: booking system, Facebook trial, Zoom training.",
-    "Golf Advisory Committee Report": "Sprinkler work continues and hole #1 has a new sand trap. Golf clinic proposed for Nov\u00a018.",
-    "Planning and Environmental Committee Report": "The committee found buying the land HOPH rents feasible; its report is with the Board."}
+NOTICES_EXPECTED = [  # L11 refreshed for Oct 18 (Steven, Oct 17 10:29 PM): R42 -- Linda's email is ONE notice, "Info from Linda"
+    "Join the Palm Hill Residents Group on Facebook", "Swimming Pool Food and Beverage Rules", "November Coffee and Pancake Volunteers",
+    "Shuffleboard Season Reminders", "Taste of Golf — November 18", "Info from Linda", "Property Fraud Alert", "October Mowing Date"]
+CHAIR_EXPECTED = {  # L13 refreshed for Oct 18 (30-day retention): title -> intro
+    "Golf Advisory Committee": "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",
+    "Communications Committee": "Tony Ciaramitaro chaired his first meeting: booking system, Facebook trial, Zoom training."}
 FULL_MONTHS = ("January","February","March","April","May","June","July","August","September","October","November","December")
 # L21 CODE POLICY M3 (Steven, Oct 9, 2026 ~8:57 PM ET): every user-visible month is 3 letters. "May" is already 3 letters.
 FULL_MONTH_RE = re.compile(r'\b(January|February|March|April|June|July|August|September|October|November|December)\b')
@@ -140,7 +135,7 @@ def check_email(page):
          and "Source: Henry Klain, Board President, Oct 4 issue" in sec, "Board President section text + source")
     for t, u in (("Read Full Message →", "2026-10-04-henry-klain-status-update.html"),
                  ("Listen to the Message →", "2026-10-04-listen-henry-klain-message.html"),
-                 ("Past President Messages →", "archive/presidents-message.html")):
+                 ("President's Message Archives →", "archive/presidents-message.html")):
         L.ok("L12b", page.count(BASE + u) == 1 and f'href="{BASE + u}"' in sec and f'>{t}</a>' in sec, f"Board President link {t}")
     # L13–L16 Chair reports
     sec = _section(page, "Committee Chair Reports")
@@ -306,11 +301,11 @@ def check_title_months(L, docs):
     return L
 
 
-COMMUNITY_SOURCES = [  # L24 (Steven, Oct 10 ~1 AM ET): Community Notices Source lines link the notice pages
-    ("Puzzle Library Closed October 10–16", "2026-10-07-puzzle-library-notice", "Webmaster", ""),  # L27/L29
-    ("Clubhouse Courtesy During Busy Season", "2026-10-08-info-from-linda-notice", "Webmaster", ""),  # L27/L29 (no "Linda Keehl,")
-    ("Property Fraud Alert", "2026-09-30-property-fraud-alert-notice", "Webmaster", ""),  # L27/L29
-    ("October Mowing Dates", "2026-09-29-mowing-dates-notice", "Resource Property Management message", " relaying BrightView, Sep 29"),
+COMMUNITY_SOURCES = [  # L24 refreshed for Oct 18 (Steven, Oct 17 10:29 PM; R42 one source email = one notice)
+    ("Swimming Pool Food and Beverage Rules", "2026-10-16-swimming-pool-food-and-beverage-rules-notice", "Webmaster", ""),
+    ("Info from Linda", "2026-10-08-info-from-linda-notice", "Webmaster", ""),  # whole email (3 sections), no "Linda Keehl,"
+    ("Property Fraud Alert", "2026-09-30-property-fraud-alert-notice", "Webmaster", ""),
+    ("October Mowing Date", "2026-09-29-mowing-dates-notice", "RPM", ""),
 ]
 
 def check_community_sources(L, email, pages):
@@ -414,13 +409,14 @@ def check_recurring_page_layout(html_s, label, issue_long, n_rows, rows_in_order
 # L29: short form EVERYWHERE — linked word is "Webmaster", never "Palm Hill Webmaster". Same for Calendar on
 # Source lines. No "email", "notice(s)", sender names or dates on the Source credit.
 WEBMASTER_SOURCE_LINKS = {  # Source owner -> Vercel page the "Webmaster" link must open
-    "Communications Committee Meeting": "2026-10-12-communications-committee-notice.html",
-    "Golf Committee Meeting": "2026-10-13-golf-committee-notice.html",
+    # refreshed for Oct 18 (Steven, Oct 17 10:29 PM). The Halloween Dance Party row is the R42 calendar-row exception: its
+    # date/time/room come from the calendar; Linda's email is only its extra Webmaster source.
+    "Finance Committee Meeting": "2026-10-10-finance-committee-meeting-notice.html",
     "Halloween Golf Cart Parade": "2026-09-18-halloween-golf-cart-parade-notice.html",
-    "Halloween Dance Party": "2026-10-08-info-from-linda-notice.html",
-    "Puzzle Library Closed October 10–16": "2026-10-07-puzzle-library-notice.html",  # L30 full month
-    "Clubhouse Courtesy During Busy Season": "2026-10-08-info-from-linda-notice.html",
+    "Swimming Pool Food and Beverage Rules": "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html",
+    "Info from Linda": "2026-10-08-info-from-linda-notice.html",
     "Property Fraud Alert": "2026-09-30-property-fraud-alert-notice.html",
+    "Halloween Dance Party": "2026-10-08-info-from-linda-notice.html",
     # Did You Know videos Source is now "Committees of Palm Hill Webpage" (not Webmaster) — Oct 11 FINAL-REVIEW
 }
 def check_webmaster_sources(L, email):

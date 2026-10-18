@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+"""STYLE-RULES R42 (Steven, Oct 17 2026 10:29 PM): one source email = one Community Notice.
+
+SOURCES maps every Community Notice source page (pages/<date>-...-notice.html, the copy of the email as sent) to its
+sections. Guard (check_issue): FAIL when
+  (a) a source page is linked by more than one Community Notice row (a split email),
+  (b) a multi-section source's notice is not titled with the email's own subject,
+  (c) a section has none of its key words in the notice teaser and is not listed in approved_omit (Steven's OK only),
+  (d) a Community Notice links a source page that is not in SOURCES (add it before the build).
+Exception: an Events row that comes from the calendar may also link the same page as its "Webmaster" source
+(calendar_row). That row is not a notice and does not count for (a). Info emails like Linda's are never an event source of truth:
+event dates/times/rooms come only from the Palm Hill calendar, RPM calendars and agenda emails (event_source_of_truth False).
+existing_page(title) -> the source page URL when the notice should use it for More / Listen (no new notice page is generated).
+Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any failure)"""
+import re, sys, html as H
+BASE = "https://palmhillnews.vercel.app/pages/"
+SOURCES = {
+    "2026-10-08-info-from-linda-notice.html": dict(
+        subject="Info from Linda", sent="Thursday, Oct 8, 2026, 5:25 PM ET", sender="Webmaster (Linda Keehl)",
+        notice_title="Info from Linda", use_existing_page=True, event_source_of_truth=False,
+        sections=[dict(heading="Halloween Dance", keys=["Halloween Dance"], calendar_row="Halloween Dance Party"),
+                  dict(heading="PLEASE -PLEASE -PLEASE", keys=["respectful"]),
+                  dict(heading="Largo Evening Market", keys=["Largo Evening Market"])],
+        approved_omit=[]),
+    "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html": dict(
+        subject="Reminder: Swimming Pool Food and Beverage Rules", notice_title="Swimming Pool Food and Beverage Rules",
+        sections=[dict(heading="Pool food, glass and guest rules", keys=["pool"])], approved_omit=[]),
+    "2026-09-30-property-fraud-alert-notice.html": dict(
+        subject="Attention Palm Hill Residents", notice_title="Property Fraud Alert",
+        sections=[dict(heading="Property Fraud Alert link", keys=["Property Fraud Alert"])], approved_omit=[]),
+    "2026-09-29-mowing-dates-notice.html": dict(
+        subject="Mowing Dates", notice_title="October Mowing Date",
+        sections=[dict(heading="BrightView mowing dates", keys=["mowing"])], approved_omit=[]),
+    "2026-10-07-puzzle-library-notice.html": dict(
+        subject="Puzzles at 1 Thatch Palm E", notice_title="Puzzle Library Closed October 10–16",
+        sections=[dict(heading="Puzzle library closed", keys=["puzzle"])], approved_omit=[]),
+}
+
+def existing_page(title):
+    """URL of the source page a notice uses directly for More → and Listen (no generated notice page), else None."""
+    for page, s in SOURCES.items():
+        if s.get("use_existing_page") and s.get("notice_title") == H.unescape(title):
+            return BASE + page
+    return None
+
+def _section(issue, heading):
+    a = issue.find(f">{heading}</span>")
+    if a < 0: return ""
+    b = issue.find('<div class="canonical-section">', a)
+    return issue[a:b if b > 0 else len(issue)]
+
+def _rows(sec):
+    return sec.split('<tr style="background:')[1:]
+
+def notice_rows(issue):
+    out = []
+    for r in _rows(_section(issue, "Community Notices")):
+        m = re.search(r'padding-right:8px;">([^<]+)</td>', r)
+        if not m: continue
+        body = re.search(r'<div style="font-size:15px;color:#333333;margin-top:3px;">(.*?)</div>', r, re.S)
+        src = re.search(r'<div style="font-size:13px;color:#666666;margin-top:5px;">(.*?)</div>', r, re.S)
+        text = H.unescape(re.sub(r"<[^>]+>", " ", body.group(1))) if body else ""
+        srcs = re.findall(r'href="' + re.escape(BASE) + r'([^"?]+)', src.group(1)) if src else []
+        out.append(dict(title=H.unescape(m.group(1)), text=re.sub(r"\s+", " ", text), sources=srcs,
+                        links=re.findall(r'href="([^"]+)"', r)))
+    return out
+
+def check_issue(issue):
+    fails, rows = [], notice_rows(issue)
+    seen = {}
+    for r in rows:
+        for p in r["sources"]:
+            if p.endswith("-notice.html"): seen.setdefault(p, []).append(r["title"])
+    for p, titles in seen.items():
+        if len(titles) > 1: fails.append(f"R42a {p} is linked by {len(titles)} Community Notices {titles} (one source email = one notice)")
+        s = SOURCES.get(p)
+        if not s:
+            fails.append(f"R42d {p} ({titles[0]}) is not in scripts/source_sections.py SOURCES; map its sections first"); continue
+        r = next(x for x in rows if p in x["sources"])
+        multi = len(s["sections"]) > 1
+        if multi and r["title"] != s["subject"]:
+            fails.append(f"R42b {p}: multi-topic notice must be titled with the email subject {s['subject']!r}, not {r['title']!r}")
+        for sec in s["sections"]:
+            if sec["heading"] in s.get("approved_omit", []): continue
+            if not any(k.lower() in r["text"].lower() for k in sec["keys"]):
+                fails.append(f"R42c {p}: section {sec['heading']!r} missing from the {r['title']!r} teaser (keys {sec['keys']}) and not approved-omit")
+        if s.get("use_existing_page"):
+            url = BASE + p
+            if not any(l.split("?")[0] == url for l in r["links"]):
+                fails.append(f"R42e {r['title']}: More/Listen must open the existing source page {url}")
+            gen = [l for l in r["links"] if "2026-10-18-notice-" in l or "/previews/2026-10-18/notices/" in l]
+            if gen: fails.append(f"R42e {r['title']}: links a generated notice page {gen}; use_existing_page means no new page")
+    return fails
+
+if __name__ == "__main__":
+    bad = 0
+    for f in sys.argv[1:]:
+        fl = check_issue(open(f, encoding="utf-8").read())
+        print(f"R42 {f}: {'OK' if not fl else 'FAIL'}"); [print("  " + x) for x in fl]; bad += bool(fl)
+    sys.exit(1 if bad else 0)
