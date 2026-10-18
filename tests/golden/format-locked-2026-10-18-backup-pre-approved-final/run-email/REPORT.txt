@@ -1,0 +1,14 @@
+PHNEWS format guard — /workspace/phnews-consolidation/oct18/PHNEWS-2026-10-18-SEND.html
+rule failures: 0
+visual diffs vs email: 11
+  DIFF 03-committee-chair-reports-desktop.png: size (1280, 237) -> (1280, 375)
+  DIFF 06-community-notices-desktop.png: 2.48% pixels changed
+  DIFF 07-monthly-shareholders-report-desktop.png: 1.04% pixels changed
+  DIFF 08-weekly-manager-update-desktop.png: 3.29% pixels changed
+  DIFF 10-from-the-board-president-desktop.png: 1.95% pixels changed
+  DIFF 11-did-you-know-desktop.png: size (1280, 180) -> (1280, 123)
+  DIFF 03-committee-chair-reports-mobile.png: size (780, 520) -> (780, 845)
+  DIFF 07-monthly-shareholders-report-mobile.png: 6.04% pixels changed
+  DIFF 08-weekly-manager-update-mobile.png: 6.14% pixels changed
+  DIFF 11-did-you-know-mobile.png: size (780, 394) -> (780, 280)
+  DIFF 12-residents-reference-guide-mobile.png: 0.49% pixels changed
