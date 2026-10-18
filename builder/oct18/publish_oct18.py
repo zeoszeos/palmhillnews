@@ -31,6 +31,12 @@ assert "previews/2026-10-18" not in s and "DRAFT" not in s and "noindex" not in 
 import summary_trim as _st
 s = _st.trim(_sr.listen_fix(_sr.enforce_title_months(s)))  # R18
 assert _sr.dyk_more_link_ok(s, "2026-10-18-did-you-know-traffic-rules.html"), "R39: DYK More -> must link the item page"
+s = _sr.assert_archive_labels(_sr.archive_labels(s), "PHNEWS-2026-10-18-FINAL.html")  # R41/R43
+import source_sections as _ss, notice_listen as _nl  # STYLE-RULES R42
+_r42 = _ss.check_issue(s)
+if _r42: raise SystemExit("R42: " + "; ".join(_r42))
+for _p, _src in _ss.SOURCES.items():  # existing source page used by a notice: standard Listen block, same URL
+    if _src.get("use_existing_page") and _ss.BASE + _p in s: _nl.add(REPO, _p)
 (ROOT / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")
 nas = ROOT / "nas-layout/2026-10/2026-10-18/sent-final"; nas.mkdir(parents=True, exist_ok=True)
 (nas / "PHNEWS-2026-10-18-FINAL.html").write_text(s, encoding="utf-8")

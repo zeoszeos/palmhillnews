@@ -28,13 +28,15 @@ for d in roots:
         t=open(os.path.join(dp,f),errors='ignore').read()
         if 'ph-review-stamp' in t or 'Review copy' in t or 'Calendar checked:' in t or re.search(r'cal-\d{8}(?:-\d{4})?\.json',t): stamped.append(os.path.relpath(os.path.join(dp,f),R))
 print('R40 stamped pages:',stamped)
-# STYLE-RULES R41: no 'Previous Chair Reports' label on live non-archived pages (archived issue copies exempt)
+# STYLE-RULES R41/R43: no retired archive label (Previous X, Chair Report Archives, Palm Hill Archives link, Did You Know Archives,
+# singular Video Archive, Past X) on live non-archived pages (archived issue copies exempt)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import style_rules as _SR
 r41=[]
 for d in roots:
   for dp,_,fs in os.walk(os.path.join(R,d)):
     for f in fs:
       rel=os.path.relpath(os.path.join(dp,f),R)
-      if f.endswith('.html') and not rel.startswith('pages/archive/issues/') and re.search(r'Previous (Chair Reports|Notices|Events|Meetings|Weekly Updates|Shareholders Reports|Tips|Videos)\b',open(os.path.join(dp,f),errors='ignore').read()): r41.append(rel)
-print('R41 Previous-X label pages:',r41)
+      if f.endswith('.html') and not rel.startswith('pages/archive/issues/') and re.search(_SR.RETIRED_ARCHIVE_LABEL_RE,open(os.path.join(dp,f),errors='ignore').read()): r41.append(rel)
+print('R41/R43 retired archive label pages:',r41)
 KNOWN = {('/pages/assets/ph-newsletter-shell.html', '/pages/assets/2026-10-04-recurring-activities-by-date.html')}  # design template, not served as a page link
 sys.exit(1 if r41 or stamped or howto or (set(bad) - KNOWN) else 0)

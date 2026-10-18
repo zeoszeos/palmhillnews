@@ -13,7 +13,8 @@ SHORT = [
  ("An announcing chairperson is needed for November coffees", "Volunteers are needed for November coffees and for Pancakes on Saturday, Nov 14.", B + "2026-10-18-notice-november-coffee-and-pancake-volunteers.html"),
  ("Please don&#x27;t walk on the courts;", "Please don&#x27;t walk on the courts; return discs and cue sticks; turn off lights and fans when you leave.", B + "2026-10-18-notice-shuffleboard-season-reminders.html"),
  ("New golfers and residents are welcome on Wednesday, Nov 18", "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it&#x27;s free.", B + "2026-10-18-notice-taste-of-golf-november-18.html"),
- ("Classes and groups are starting up for the season.", "When you stop at a clubhouse, please don&#x27;t disrupt a group meeting in the room, and follow posted signs.", B + "2026-10-18-notice-clubhouse-courtesy-during-busy-season.html"),
+ # R42 (Steven, Oct 17 10:29 PM): Linda's whole "Info from Linda" email is ONE notice; More → opens the existing copy of her email
+ ("Halloween Dance tickets are sold out.", "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park.", B + "2026-10-08-info-from-linda-notice.html"),
  ("The Palm Hill webmaster shared the sign-up link for", '<a href="https://www.propertyfraudalert.com/select" style="color:#3A6B1A;">Property Fraud Alert</a> is a free service that notifies you when a document is recorded under your name.', B + "2026-10-18-notice-property-fraud-alert.html"),
  ("58 work orders in Aug (72% done);", "58 work orders in Aug (72% done); new north clubhouse A/C; Fern St. still closed for storm-sewer repair.", None),
  ("The invoice for the transformer was paid;", "The invoice for the transformer was paid; installation will take approximately 6 weeks. Fern sewer liner expected the week of 10/26.", None),

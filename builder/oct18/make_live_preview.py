@@ -2,6 +2,7 @@
 Writes into REPO/pages/previews/2026-10-18/: PHNEWS-2026-10-18-preview.html + notices/<slug>.html (each with Listen)."""
 import re, sys, html as H
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md (shared)
+import source_sections as _ss  # STYLE-RULES R42
 from pathlib import Path
 REPO = Path(sys.argv[1]); ROOT = Path(__file__).resolve().parent.parent
 OUT = REPO / "pages/previews/2026-10-18"; (OUT / "notices").mkdir(parents=True, exist_ok=True)
@@ -19,6 +20,13 @@ for r in rows:
     body = re.search(r'<div style="font-size:15px;color:#333333;margin-top:3px;">(.*?)</div>', r, re.S).group(1)
     src = re.search(r'<div style="font-size:13px;color:#666666;margin-top:5px;">(.*?)</div>', r, re.S).group(1)
     slug = re.sub(r"[^a-z0-9]+", "-", H.unescape(t).lower()).strip("-")
+    # STYLE-RULES R42: a notice that uses its existing source page (scripts/source_sections.py use_existing_page) gets NO generated
+    # notice page; its Listen (and the R18 More →) open that page, e.g. Info from Linda -> 2026-10-08-info-from-linda-notice.html.
+    _ex = _ss.existing_page(t)
+    if _ex:
+        url = _ex + "?listen=1"
+        r2 = re.sub(r'(<td valign="top" align="right" style="font-size:13px;line-height:18px;text-align:right;white-space:nowrap;width:1%;"><a href=")[^"]*(")', lambda m: m.group(1) + url + m.group(2), r, count=1)
+        new = new.replace(r, r2); continue
     page = f'''<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
@@ -79,7 +87,7 @@ NOTICE_BODY = ('Palm Hill now has a private Facebook group just for residents, w
 fbpage("facebook-group-notice.html", "Join the Palm Hill Residents Group on Facebook", NOTICE_BODY, "Source: Tony Ciaramitaro, Communications Chair")
 fbpage("facebook-group-did-you-know.html", "Did You Know? Palm Hill Residents Facebook Group",
        'Did you know Palm Hill has a private, residents-only Facebook group? Park news, events and photos. Search &quot;Palm Hill Country Club - Residents Only Group&quot; on Facebook and answer all 3 questions.',
-       'Source: Tony Ciaramitaro, Communications Chair · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a>')
+       'Source: Tony Ciaramitaro, Communications Chair · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know? Archives →</a>')
 
 # ---- Steven, Oct 17 1:40 PM: Did You Know rule of the week from David Bates (palmhillblast "Park Rule for Newsletter",
 # Sat Oct 17 1:17 PM ET, his corrected resend). Full narrative in his wording (whitespace-only fixes); Listen like the FB page.
@@ -111,7 +119,7 @@ _dyk = f"""<!DOCTYPE html>
 <main><div class="hd"><h1 class="ph-section" style="margin:0">Did You Know? Traffic Rules</h1>{btn}</div>
 <div class="content-card">{"".join(f"<p>{x}</p>" for x in DYK_RULES_PARAS)}<p class="dyk-byline">{DYK_RULES_BYLINE}</p></div>
 <p class="dyk-rules-link" style="max-width:38em"><a href="{H.escape(DYK_RULES_PDF)}" style="color:#3A6B1A">{DYK_RULES_PDF_LABEL}</a></p>
-<p class="source" style="font-size:14px;color:#666">Source: David Bates · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>
+<p class="source" style="font-size:14px;color:#666">Source: David Bates · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know? Archives →</a></p>
 <p style="font-size:15px"><a href="/pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html" style="color:{G}">← Back to the newsletter</a></p>
 </main>
 {script}

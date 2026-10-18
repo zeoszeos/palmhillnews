@@ -164,7 +164,7 @@
     "community-stories": {
       "title": "Community Stories",
       "url": "https://palmhillnews.vercel.app/pages/archive/community-stories.html",
-      "email_link_label": "Past Stories →",
+      "email_link_label": "Story Archives →",
       "page_link_label": "Story Archives →",
       "items": [
         {
@@ -195,7 +195,7 @@
     "presidents-message": {
       "title": "President's Message",
       "url": "https://palmhillnews.vercel.app/pages/archive/presidents-message.html",
-      "email_link_label": "Past Messages →",
+      "email_link_label": "President's Message Archives →",
       "page_link_label": "President's Message Archives →",
       "items": [
         {
@@ -495,7 +495,7 @@
     "meetings": {
       "title": "Committee & Board Meetings",
       "url": "https://palmhillnews.vercel.app/pages/archive/meetings.html",
-      "email_link_label": "Past Meetings →",
+      "email_link_label": "Meeting Archives →",
       "page_link_label": "Meeting Archives →",
       "items": [
         {
@@ -634,10 +634,10 @@
       ]
     },
     "committee-reports": {
-      "title": "Committee Chair Reports",
+      "title": "Committee Report Archives",
       "url": "https://palmhillnews.vercel.app/pages/archive/committee-reports.html",
-      "email_link_label": "Past Reports →",
-      "page_link_label": "Chair Report Archives →",
+      "email_link_label": "Committee Report Archives →",
+      "page_link_label": "Committee Report Archives →",
       "items": [
         {
           "date": "2026-10-13",
@@ -755,7 +755,7 @@
     "manager-reports": {
       "title": "Monthly Shareholders Reports",
       "url": "https://palmhillnews.vercel.app/pages/archive/manager-reports.html",
-      "email_link_label": "Past Reports →",
+      "email_link_label": "Shareholders Report Archives →",
       "page_link_label": "Shareholders Report Archives →",
       "items": [
         {
@@ -799,7 +799,7 @@
     "weekly-manager-updates": {
       "title": "Weekly Manager Updates",
       "url": "https://palmhillnews.vercel.app/pages/archive/weekly-manager-updates.html",
-      "email_link_label": "Past Updates →",
+      "email_link_label": "Weekly Manager Report Archives →",
       "page_link_label": "Weekly Manager Report Archives →",
       "items": [
         {
@@ -858,7 +858,7 @@
     "events": {
       "title": "Special Events",
       "url": "https://palmhillnews.vercel.app/pages/archive/events.html",
-      "email_link_label": "Past Events →",
+      "email_link_label": "Event Archives →",
       "page_link_label": "Event Archives →",
       "items": [
         {
@@ -985,7 +985,7 @@
     "community-notices": {
       "title": "Community Notices",
       "url": "https://palmhillnews.vercel.app/pages/archive/community-notices.html",
-      "email_link_label": "Past Notices →",
+      "email_link_label": "Notice Archives →",
       "page_link_label": "Notice Archives →",
       "items": [
         {
@@ -1226,7 +1226,7 @@
     "did-you-know": {
       "title": "Did You Know?",
       "url": "https://palmhillnews.vercel.app/pages/archive/did-you-know.html",
-      "email_link_label": "Past Tips →",
+      "email_link_label": "Did You Know? Archives →",
       "page_link_label": "Did You Know? Archives →",
       "items": [
         {
@@ -1295,7 +1295,7 @@
     "videos": {
       "title": "Latest Board and Committee Meeting Videos",
       "url": "https://palmhillnews.vercel.app/pages/archive/videos.html",
-      "email_link_label": "Past Videos →",
+      "email_link_label": "Meeting Video Archives →",
       "page_link_label": "Meeting Video Archives →",
       "items": [
         {

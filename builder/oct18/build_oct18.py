@@ -66,7 +66,7 @@ this_week, upcoming = evsel(THIS_WEEK), evsel(UPCOMING)
 EVENT_DETAIL = {
     "Mount Dora Trip": "Bus loads at 8:00 AM for the arts and crafts festival, with an optional boat ride on the lake. $35 per seat, payable at coffee; the calendar shows about 12 seats left.",
     "Halloween Golf Cart Parade": "Line up at the North Clubhouse at 6:30 PM for the 7:00 PM parade to the South Clubhouse; it takes about 1½ hours. Charge golf-cart batteries fully.",
-    "Halloween Dance Party": "Doors open at 6:15 PM with no assigned seating. Bring a treat to share for table-to-table trick-or-treating.",
+    "Halloween Dance Party": "Doors open at 6:15 PM with no assigned seating. The tickets are sold out as of now. Bring a treat to share for table-to-table trick-or-treating.",  # Steven Oct 17 10:29 PM: sold-out wording restored (Linda, Oct 8)
     "Senior Empowerment Luncheon": "The luncheon runs 10:00 AM to 1:00 PM; the room is booked from 9:15 AM for set-up. Pre-registration is required.",
     "North Clubhouse Craft Fair": "Crafters can rent a table for $20, 9:00 AM to 1:00 PM. See the club calendar for who to contact to book.",
     "Veterans Day Program": "Program at the South Clubhouse; check the club calendar for later details.",
@@ -175,6 +175,7 @@ TONY_FB_TXT = ('Palm Hill now has a private Facebook group just for residents, w
     'Every request is checked against the member directory, so use the address and email the Office has for you, answer all 3 questions, or Facebook will turn the request down. '
     f'Search Facebook for &quot;Palm Hill Country Club - Residents Only Group&quot; or join here: <a href="{FBURL}" style="color:{G};">{FBURL}</a>'
     f'<br><a href="{FBPAGE_NOTICE}" style="color:{G};font-size:14px;">Full notice with QR code to scan →</a>')
+LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
 NOTICES = [
     ("Swimming Pool Food and Beverage Rules",  # Webmaster, Fri Oct 16 12:29 PM ET (gotwicz 1a1458d5b589bff6); newest notice after Tony's
      "All food and beverages must be kept at least 4 feet away from the edge of the pool (the \"wet deck\" area). No glass containers of any kind are permitted inside the fenced pool area; please use plastic or other non-breakable containers. Residents are responsible for ensuring that their guests comply with all pool rules and regulations.",
@@ -188,8 +189,14 @@ NOTICES = [
     ("Taste of Golf — November 18",
      "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it's free. Golf teachers on each hole cover etiquette, warm-up, driving, chipping, putting and reading the green, with treats on each hole and a hot dog on the Pro Shop patio. Not a golfer? Walk, watch and enjoy the course. Sign-up sheets are at the Pro Shop and both clubhouses.",
      "Webmaster, Oct 14", None),
-    ("Clubhouse Courtesy During Busy Season",
-     "Classes and groups are starting up for the season. When you stop at a clubhouse for ice or other errands, please don't disrupt a group meeting in the room you are entering, and follow posted signs.",
+    # STYLE-RULES R42 (Steven, Oct 17 10:29 PM): one source email = one notice. Linda Keehl's "Info from Linda" (Webmaster, Thu Oct 8
+    # 5:25 PM ET) has three sections -- Halloween Dance, PLEASE-PLEASE-PLEASE (clubhouse courtesy), Largo Evening Market -- so it is ONE
+    # notice titled with her subject, teaser in her words covering all three (scripts/source_sections.py SOURCES + guard). More → and
+    # Listen open the existing copy of her email (use_existing_page: no generated notice page). The old 2026-10-18-notice-clubhouse-
+    # courtesy-during-busy-season.html stays live (URL valid) but is no longer linked from the issue. Her email is not an event source of
+    # truth: the Halloween Dance Party row's date/time/room come from the calendar.
+    ("Info from Linda",
+     LINDA_TEASER,
      "Webmaster", BASE + "2026-10-08-info-from-linda-notice.html"),
     ("Property Fraud Alert",
      f'The Palm Hill webmaster shared the sign-up link for <a href="https://www.propertyfraudalert.com/select" style="color:{G};">Property Fraud Alert</a>, a free service that notifies you when a document is recorded under your name.',
@@ -355,7 +362,7 @@ assert "Duke Energy Waiver" in _W_OLD
 _W_NEW = ('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 16</div>'
     '<div style="font-size:14px;color:#666666;margin-top:2px;">Friday, Oct 16, 2026</div>'
     '<div style="font-size:15px;color:#333333;margin-top:3px;">The invoice for the transformer was paid; installation will take approximately 6 weeks. The sewer liner along Fern was ordered, with installation expected the week of 10/26. New sign with office hours installed at the south clubhouse.</div>'
-    f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{BASE}2026-10-16-weekly-manager-update.html" style="color:{G};white-space:nowrap;">Read Full Update →</a><span style="color:#999999;"> · </span><a href="{ARCH}weekly-manager-updates.html" style="color:{G};white-space:nowrap;">Past Weekly Manager Updates →</a></div>'
+    f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{BASE}2026-10-16-weekly-manager-update.html" style="color:{G};white-space:nowrap;">Read Full Update →</a><span style="color:#999999;"> · </span><a href="{ARCH}weekly-manager-updates.html" style="color:{G};white-space:nowrap;">Weekly Manager Report Archives →</a></div>'
     f'<div style="font-size:13px;color:#666666;margin-top:5px;"><a href="{BASE}2026-10-16-weekly-manager-update.html" style="color:{G};">Source</a>: Weekly Manager Update</div>')
 s = s.replace(_W_OLD, _W_NEW)
 # Manager reports: Listen icon on the title line (pages have built-in Listen; ?listen=1 autostarts)
@@ -366,7 +373,7 @@ for t, href in [("Shareholders Report — September 30 Board Meeting", BASE + "2
 # Henry October already the President's Message (to-do #7). Did You Know: archive link (to-do, Oct 11 evening)
 old = f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and committee recordings →</a></div>'
 assert old in s
-s = s.replace(old, f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and Committee Meeting Videos →</a><span style="color:#999999;"> · </span><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div>')
+s = s.replace(old, f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and Committee Meeting Videos →</a><span style="color:#999999;"> · </span><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know? Archives →</a></div>')
 # Did You Know: Tony's FB variation (verbatim, Oct 16) appended as 2nd row
 a = s.find(">Did You Know?</span>"); e = s.find("</table></div>", a); assert a > 0 and e > 0
 DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
@@ -406,7 +413,7 @@ DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-insid
     f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = [("2026-10-18", DYK_RULES), ("2026-10-16", DYK_FB)]   # newest first; add new items at the top
 t0 = s.find("<table", a)
-s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + DYK_ITEMS[0][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div></td></tr>', 1) + s[e:]
+s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + DYK_ITEMS[0][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know? Archives →</a></div></td></tr>', 1) + s[e:]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
@@ -434,6 +441,13 @@ s = _sr.service_box_fit(s)  # STYLE-RULES R27: footer service-request lines on o
 Path("/workspace/oct18-batch/builder/calendar-pull").mkdir(exist_ok=True)
 Path("/workspace/oct18-batch/builder/calendar-pull/2026-10-18.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
 _sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
+# STYLE-RULES R41/R43 (Steven, Oct 17 10:29 / 10:33 PM): '<Singular noun> Archives →' on every newsletter archive link
+# (seed 'Past President Messages →' / 'Past Shareholders Reports →' -> President's Message / Shareholders Report Archives →).
+s = _sr.assert_archive_labels(_sr.archive_labels(s), OUTF.name)
+# STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
+import source_sections as _ss
+_r42 = _ss.check_issue(s)
+if _r42: raise SystemExit("R42: " + "; ".join(_r42))
 OUTF.write_text(s, encoding="utf-8")
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
