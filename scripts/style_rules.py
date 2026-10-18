@@ -302,3 +302,41 @@ def assert_webmaster_more(s, name, repo=None):
     bad = webmaster_more_violations(s, repo)
     if bad: raise SystemExit(f"R47: {name}: " + "; ".join(bad))
     return s
+
+
+# STYLE-RULES R48 (Steven, Oct 18 12:31 AM): every event row (Committee & Board Meeting Schedules, Events - This Week,
+# Events - Upcoming, any other Events/Meetings section) has an OFFICIAL date source: the Palm Hill club calendar ('Calendar'),
+# an RPM calendar ('RPM'), or a committee agenda email (the row's 'Agenda →' opens the same email page its Source links).
+# Date, time and place come from that source. A Webmaster email (incl. Linda's Info from Linda) may be added as a second
+# 'Webmaster' source and lend description wording, but an event found ONLY in a Webmaster/Linda email is never an event row;
+# it stays inside that email's Community Notice (e.g. the Largo Evening Market in Info from Linda).
+R48_OFFICIAL = ("Calendar", "RPM", "RPM Calendar", "Agenda")
+def _r48_sections(s):
+    import re as _re
+    heads = [(m.start(), m.group(1)) for m in _re.finditer(r'-webkit-text-fill-color:#FFFFFF;">([^<]+)</span>', s)]
+    for i, (a, hd) in enumerate(heads):
+        if not (hd.startswith("Events") or "Meeting Schedules" in hd or hd.startswith("Meetings")): continue
+        yield hd, s[a:heads[i + 1][0] if i + 1 < len(heads) else len(s)]
+def event_source_violations(s):
+    import re as _re, html as _h
+    bad = []
+    for hd, sec in _r48_sections(s):
+        for r in sec.split('<tr style="background:')[1:]:
+            t = _re.search(r'padding-right:8px;">(.*?)</td>', r, _re.S) or _re.search(r'font-weight:bold[^>]*>(.*?)</', r, _re.S)
+            title = _h.unescape(_re.sub(r"<[^>]+>", "", t.group(1))).strip() if t else "?"
+            i = r.find("Source:")
+            if i < 0: bad.append(f"{_h.unescape(hd)} / {title}: no Source line"); continue
+            src = r[i:]
+            labels = [_re.sub(r"<[^>]+>", "", x).strip() for _, x in _re.findall(r'<a href="([^"]+)"[^>]*>(.*?)</a>', src, _re.S)]
+            labels += [x.strip() for x in _re.split(r"[,;]", _h.unescape(_re.sub(r"<a .*?</a>|<[^>]+>", "", src[len("Source:"):]).replace("\xa0", " "))) if x.strip()]
+            srch = [h.split("?")[0] for h, _ in _re.findall(r'<a href="([^"]+)"[^>]*>(.*?)</a>', src, _re.S)]
+            agenda = [h.split("?")[0] for h, x in _re.findall(r'<a href="([^"]+)"[^>]*>(.*?)</a>', r[:i], _re.S) if _re.sub(r"<[^>]+>", "", x).strip().startswith("Agenda")]
+            official = any(l in R48_OFFICIAL for l in labels) or any(h in srch for h in agenda)
+            if not official:
+                why = "only source is Webmaster" if labels and all(l == "Webmaster" for l in labels) else f"Source {labels} has no Calendar/RPM/Agenda"
+                bad.append(f"{_h.unescape(hd)} / {title}: {why} (R48: event rows need an official date source)")
+    return bad
+def assert_event_sources(s, name):
+    bad = event_source_violations(s)
+    if bad: raise SystemExit(f"R48: {name}: " + "; ".join(bad))
+    return s
