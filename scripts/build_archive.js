@@ -306,9 +306,12 @@ function videosPage() {
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
-  out += `<nav class="ph-links"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Meeting Video Archives →</a><span class="ph-dot"> · </span><a href="${DYK_TILE_HREF}">Did You Know →</a></nav>\n`;
+  // R46 (Steven, Oct 18 12:07 AM): no lower cross-links on videos.html ('Committee Meeting Video Archives →', 'Did You Know →' removed);
+  // the page keeps only the top 'All Archives →' (R44) and its Source line. Guarded below.
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  const topNav = navBar([[HUB, HUB_LABEL]]);  // R44: 'Did You Know →' dropped from the top bar (the lower link row keeps it)
+  if (/class="ph-links"/.test(out) || out.includes('meeting-videos.html') || out.includes(`href="${DYK_TILE_HREF}"`))
+    throw new Error('videos.html: R46 lower cross-links (meeting-videos / did-you-know) must not appear');
+  const topNav = navBar([[HUB, HUB_LABEL]]);  // R44: one 'All Archives →' at the top only
   return shell({ title: `${pageTitle} — Newsletter Archives`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
 

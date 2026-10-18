@@ -399,6 +399,41 @@ s = s.replace("Oct 11 through Nov 9, 2026", f"{md(RECURRING[0])} through {md(REC
 # STYLE-RULES R20: the issue links to its own week's Recurring pages (recurring_oct18.py + recurring_grouped.py ... 2026-10-18)
 s = s.replace("2026-10-11-recurring-activities-by-", f"{RECURRING[0]}-recurring-activities-by-")
 
+# ---------- STYLE-RULES R45 (Steven, Oct 18 12:07 AM): Community Stories section ----------
+# The section ran once (Oct 4, Mary Leslie). The Oct 11 builder dropped it ("no new story", drop_section) and the Oct 18 builder,
+# cloned from Oct 11, never had it. Oct 18 carries Carolyn M. Story's Marge Taylor profile (Palm Hill Link Sep 2026, pp. 10-12;
+# confirmed in Carolyn's Sep 28 email to palmhillblast; story + listen pages built Oct 9, PR #10; never in a newsletter before).
+# Placed where Oct 4 had it: right before From the Board President. Teaser = verbatim sentence from the story page.
+STORY = dict(title="For the Love of the Game: Marge Taylor",                 # archive title (no date in the title, R19)
+             date="2026-09-01",                                            # the story page's date line (Sep 1, 2026)
+             teaser="Her first hole-in-one came on our Palm Hill Golf Course, and she followed that success 16 additional times.",
+             page="2026-09-marge-taylor-love-of-the-game.html", listen="2026-09-listen-marge-taylor-story.html",
+             source="Carolyn M. Story, Palm Hill Link", archive_title="For the Love of the Game: Marge Taylor")
+COMMUNITY_STORIES_OMIT_APPROVED = None   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
+_story_page = (Path("/workspace/oct18-batch/pages") / STORY["page"]).read_text(encoding="utf-8")
+assert STORY["teaser"].replace("'", "\u2019") in _story_page or STORY["teaser"] in _story_page, "R45: story teaser must be verbatim from the story page"
+assert (Path("/workspace/oct18-batch/pages") / STORY["listen"]).exists(), "R45: story listen page missing"
+if STORY:
+    _d = date.fromisoformat(STORY["date"])
+    _row = (f'<tr style="background:#FFFFFF;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
+            + title_row(escape(STORY["title"]), listen(BASE + STORY["listen"] + "?listen=1"))
+            + f'<div style="font-size:14px;color:#666666;margin-top:2px;">{_d.strftime("%A, %b %-d, %Y")}</div>'
+            + f'<div style="font-size:15px;color:#333333;margin-top:3px;">{escape(STORY["teaser"])} <a href="{BASE + STORY["page"]}" style="color:{G};white-space:nowrap;">More →</a></div>'
+            + f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{ARCH}community-stories.html" style="color:{G};white-space:nowrap;">Story Archives →</a></div>'
+            + f'<div style="font-size:13px;color:#666666;margin-top:5px;">Source: {escape(STORY["source"])}</div></td></tr>')
+    a, b = section_span(s, "From the Board President"); _pres = s[a:b]
+    _cs = _pres[:_pres.find('<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">')]
+    _cs = (_cs.replace(">From the Board President</span>", ">Community Stories</span>")
+              .replace("2026-10-04/board-president-message-scroll-512-v1.png", "v3/residents-reference-guide-detailed-512-v1.png"))  # Oct 4 icon
+    _cs += '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + _row + "</table></div>"
+    s = s[:a] + _cs + s[a:]
+    # the community-stories archive row records this issue ("In the newsletter: Oct 18")
+    _ai = _AI.read_text(encoding="utf-8") if "_AI" in globals() else Path("/workspace/oct18-batch/archive/archive-items.json").read_text(encoding="utf-8")
+    _mi = re.search(r'(\{"date": "' + STORY["date"] + r'"[^\n]*?"title": "' + re.escape(STORY["archive_title"]) + r'"[^\n]*?"issues": \[)([^\]]*)(\])', _ai)
+    assert _mi, "R45: story row not in archive-items.json community-stories"
+    if '"2026-10-18"' not in _mi.group(2):
+        _iss = (_mi.group(2) + ', "2026-10-18"') if _mi.group(2).strip() else '"2026-10-18"'
+        Path("/workspace/oct18-batch/archive/archive-items.json").write_text(_ai.replace(_mi.group(0), _mi.group(1) + _iss + _mi.group(3)), encoding="utf-8")
 # Weekly Manager Update Oct 16 (Megan, palmhillblast Oct 16 3:59 PM ET) replaces Oct 9 (retention rule)
 _W_OLD = s[s.find('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'):]
 _W_OLD = _W_OLD[:_W_OLD.find('</td></tr>')]
@@ -488,7 +523,8 @@ _sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
 # STYLE-RULES R41/R43 (Steven, Oct 17 10:29 / 10:33 PM): '<Singular noun> Archives →' on every newsletter archive link
 # (seed 'Past President Messages →' / 'Past Shareholders Reports →' -> President's Message / Shareholders Report Archives →).
 s = _sr.assert_archive_labels(_sr.archive_labels(s), OUTF.name)
-s = _sr.assert_source_credits(s, OUTF.name)  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
+s = _sr.assert_source_credits(s, OUTF.name)
+s = _sr.assert_community_stories(s, OUTF.name, COMMUNITY_STORIES_OMIT_APPROVED)  # R45  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
 # STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
 import source_sections as _ss
 _r42 = _ss.check_issue(s)

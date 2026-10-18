@@ -32,7 +32,8 @@ import summary_trim as _st
 s = _st.trim(_sr.listen_fix(_sr.enforce_title_months(s)))  # R18
 assert _sr.dyk_more_link_ok(s, "2026-10-18-did-you-know-traffic-rules.html"), "R39: DYK More -> must link the item page"
 s = _sr.assert_archive_labels(_sr.archive_labels(s), "PHNEWS-2026-10-18-FINAL.html")  # R41/R43
-s = _sr.assert_source_credits(s, "PHNEWS-2026-10-18-FINAL.html")  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
+s = _sr.assert_source_credits(s, "PHNEWS-2026-10-18-FINAL.html")
+s = _sr.assert_community_stories(s, "PHNEWS-2026-10-18-FINAL.html", None)  # R45 (omission needs Steven's approval in the builder)  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
 import source_sections as _ss, notice_listen as _nl  # STYLE-RULES R42
 _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
