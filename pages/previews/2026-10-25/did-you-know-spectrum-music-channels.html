@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Did You Know? Spectrum Music Channels — Palm Hill Country Club (October 25 preview)</title>
+<link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
+<style>main{max-width:780px;margin:0 auto;padding:16px;font:18px/1.6 Arial,Helvetica,sans-serif}.content-card{background:#fff;border:1px solid #d7d1bd;border-radius:12px;padding:16px;margin:12px 0}.hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap}</style>
+</head><body>
+<!-- ph-archive-nav:none (PREVIEW-ONLY page for the unsent Oct 25, 2026 draft) -->
+<main><div class="hd"><h1 class="ph-section" style="margin:0">Did You Know? Spectrum Music Channels</h1><a class="ph-listen" href="#" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a></div>
+<div class="content-card"><p>Did you know with our new Spectrum set up we have access to several music channels? Simply turn on your TV then select the Spectrum app. Press the right navigation button on your remote to open the TV guide. Type in the number &quot;400&quot; and wait. That will take you to the start of 50 music channels from classical, easy listening, blues, jazz, 60s, 70s, 80s, country and many more. Enjoy!</p><p class="dyk-byline">Tony Ciaramitaro, Chair Communications Committee</p></div>
+<p class="source" style="font-size:14px;color:#666">Source: Palm Hill Link, October 2026 (page 4) · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>
+</main>
+<!-- ph-page-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    // R49 (Steven, Oct 18 12:39/12:43 AM): read ALL visible content in page order -- the h1, every content card / email
+    // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
+    // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
+    const h1 = document.querySelector('h1');
+    const sel = 'main .content-card, main .ph-row, main .source, main .ph-source, main .credit, main .byline';
+    const all = Array.from(document.querySelectorAll(sel))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText));
+    const blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
+      .map((el) => el.innerText.trim())
+      .filter(Boolean);
+    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
+  }
+
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  const q = new URLSearchParams(location.search);
+  if (q.get('listen') === '1' || q.get('autoplay') === '1') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-page-listen:end -->
+</body></html>
