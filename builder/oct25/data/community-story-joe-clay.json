@@ -15,13 +15,14 @@
   "Thank you, Mr. Clay, for proudly serving our country and serving Palm Hill!"
  ],
  "photo": {
-  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-10/joe-clay-portrait-october-2026.jpg",
-  "w": 518,
-  "h": 650,
+  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-10/joe-clay-cover-clean-october-2026.jpg",
+  "w": 850,
+  "h": 926,
   "alt": "Joe Clay in a blue polo shirt, standing by golf course equipment",
   "caption": "Joe Clay",
-  "thumbnail": "https://palmhillnews.vercel.app/assets/images/phnews/2026-10/joe-clay-portrait-october-2026.jpg",
-  "note": "Clean photo cropped from the Oct 2026 cover, no magazine print (Steven Oct 19 5:48 PM). joe-clay-cover-full-october-2026.jpg kept in assets but not used."
+  "thumbnail": "https://palmhillnews.vercel.app/assets/images/phnews/2026-10/joe-clay-cover-clean-october-2026.jpg",
+  "note": "Full Oct 2026 cover photo with magazine print removed (inpainted; bottom cropped below belt where text crossed his legs). Steven approved Oct 19, 2026 5:54 PM. Portrait crop kept as fallback; full-cover-with-print kept, unused.",
+  "fallback": "https://palmhillnews.vercel.app/assets/images/phnews/2026-10/joe-clay-portrait-october-2026.jpg"
  },
  "credit_line": "First published in the Palm Hill Link, October 2026 (cover story, pages 2 and 4)",
  "tagline": "From the Palm Hill Link Magazine Archives - October 2026",
