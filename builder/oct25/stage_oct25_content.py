@@ -79,3 +79,27 @@ assert _sr.dyk_byline_ok(_out, d3["byline"]), "R33"
 print(_fn)
 
 for _f in made + [_fn]: _sr.assert_no_link_name((PV / _f).read_text(encoding="utf-8"), _f)  # R52 on every written article/DYK page
+
+# ---- Steven Oct 20 4:33 PM: the Joe Clay More → was dead (it pointed at an undeployed preview URL). Preview builds now also write
+# the LIVE story page + its listen page, in the standard Community Stories shell (the published Marge Taylor page is the template:
+# build_archive.js requires <article> + a date-line Listen link to a listen-* page). Story text, photo and date line from the data;
+# no source/credit line (R52: no Palm Hill Link name; credit TBD from Steven).
+def _jc_page(_T):
+    _LIVE = story["live_page_planned"]; _LST = "2026-10-listen-joe-clay-story.html"
+    _h = html.escape(story["title"])
+    _main = (f'<main><p class="byline">{html.escape(story["kicker"])}<br>{html.escape(story["subtitle"])}</p>\n'
+             f'<figure><img src="{img["src"]}" width="{img["w"]}" height="{img["h"]}" alt="{html.escape(img["alt"])}"><figcaption>{html.escape(img["caption"])}</figcaption></figure>\n'
+             f'<article>\n' + "\n".join(f"<p>{html.escape(p)}</p>" for p in story["paragraphs"]) + '\n</article>\n</main>')
+    _live = re.sub(r"<title>.*?</title>", f"<title>{_h} — Palm Hill Community Stories</title>", _T, count=1)
+    _live = re.sub(r"<h1>.*?</h1>", f"<h1>{_h}</h1>", _live, count=1)
+    _live = re.sub(r"<main>[\s\S]*?</main>", lambda m: _main, _live, count=1)
+    _live = (_live.replace("2026-09-listen-marge-taylor-story.html", _LST).replace("2026-09-marge-taylor-love-of-the-game.html", _LIVE)
+                  .replace("Sep 1, 2026", story["date_line"]).replace("September 1, 2026", "October 1, 2026"))
+    assert "Marge" not in _live.split("<main>")[1].split("</main>")[0] and "<article>" in _live
+    _sr.assert_no_link_name(_live, _LIVE)  # R52
+
+    return _live
+_LIVE = story["live_page_planned"]; _LST = "2026-10-listen-joe-clay-story.html"
+_OUT = {_LIVE: _jc_page((ROOT / "pages/2026-09-marge-taylor-love-of-the-game.html").read_text(encoding="utf-8")),
+        _LST: _jc_page((ROOT / "pages/2026-09-listen-marge-taylor-story.html").read_text(encoding="utf-8"))}   # listen shell (?listen=1 autoplay)
+for _f, _live in _OUT.items(): _sr.assert_no_link_name(_live, _f); (ROOT / "pages" / _f).write_text(_live, encoding="utf-8"); print(_f)

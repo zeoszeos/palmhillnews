@@ -191,7 +191,8 @@ def main(args, live=None, nl=None, nl_only=False):
                     t = blk["text"].strip()
                     if not t or INTENTIONAL.match(t) or not re.search(r"[A-Za-z0-9]", t): continue
                     if norm(t) not in spoken: miss.append(f"{blk['tag']}: {re.sub(r'\s+', ' ', t)[:90]}")
-                    elif len(norm(t)) > 60 and spoken.count(norm(t)) > 1 and sum(norm(x["text"]) == norm(t) for x in blocks) == 1:
+                    elif len(norm(t)) > 60 and spoken.count(norm(t)) > 1 and sum(norm(x["text"]) == norm(t) for x in blocks) == 1 \
+                            and spoken.count(norm(t)) > sum(norm(t) in norm(x["text"]) for x in blocks):  # Oct 20: text quoted again inside another visible block (DYK email line + full rule) is read once per block, not a double read
                         miss.append(f"double-read {blk['tag']}: {re.sub(r'\s+', ' ', t)[:90]}")
                 if not spoken: miss.insert(0, "nothing spoken")
                 if rel in targets:  # R49b: ?listen=1 must start reading by itself, title first

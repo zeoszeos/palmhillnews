@@ -118,6 +118,15 @@ MTG_EXTRA = [dict(  # Oct 25: Finance Oct 22 (agenda email) is past -> dropped; 
 MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to be confirmed)",
             ("2026-11-10", "Planning and Environmental Committee Meeting"): "(date to be confirmed)"}
 meetings = sorted(meetings + MTG_EXTRA, key=lambda e: (e["date"], e["start"]))
+# R54 (Steven Oct 20 4:33 PM): no meeting listed twice -- one row per committee/board, the NEXT instance only. MTG_EXTRA rows
+# (agenda/TBC additions) were appended after the calendar's one-per-committee pass, so Board Oct 28 (calendar) + Board Nov 18 (TBC) both showed.
+def _mkey(e): return CANON.get(e["name"], e["name"]).lower().replace(" meeting", "").strip()
+_seen = set(); _dropped = []
+for _e in list(meetings):
+    if _mkey(_e) in _seen: meetings.remove(_e); _dropped.append((_e["date"], _e["name"]))
+    else: _seen.add(_mkey(_e))
+print("R54 meetings dropped (already listed):", _dropped)
+assert len({_mkey(e) for e in meetings}) == len(meetings), "R54: a committee/board meeting is listed twice"
 # RESTORED from build_oct11_final.py MEETING_DETAIL (Oct 9-11 rules L27): Webmaster agenda/Zoom notices drive the Oct 11 layout.
 import urllib.parse as _up
 def _nopwd(u):
@@ -424,7 +433,7 @@ _JC = json.load(open("/workspace/oct18-batch/builder/oct25/data/community-story-
 # Oct 25 (PR #130, Steven Oct 19): Joe Clay - Keeper of The Course; date line Oct 1, 2026; credit line TBD (no source credit printed;
 # new rule Oct 20: no Palm Hill Link name inside articles). Preview pages until publish creates the live page (_JC live_page_planned).
 STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_JC["teaser_candidate"],
-             page="previews/2026-10-25/" + _JC["preview_page"], listen="previews/2026-10-25/" + _JC["preview_page"],
+             page=_JC["live_page_planned"], listen="2026-10-listen-joe-clay-story.html",   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
              source=None, archive_title=_JC["title"])
 COMMUNITY_STORIES_OMIT_APPROVED = None   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
 _story_page = (Path("/workspace/oct18-batch/pages") / STORY["page"]).read_text(encoding="utf-8")
@@ -447,7 +456,14 @@ if STORY:
     # the community-stories archive row records this issue ("In the newsletter: Oct 18")
     _ai = _AI.read_text(encoding="utf-8") if "_AI" in globals() else Path("/workspace/oct18-batch/archive/archive-items.json").read_text(encoding="utf-8")
     _mi = re.search(r'(\{"date": "' + STORY["date"] + r'"[^\n]*?"title": "' + re.escape(STORY["archive_title"]) + r'"[^\n]*?"issues": \[)([^\]]*)(\])', _ai)
-    if not _mi: print("R45 NOTE: no community-stories archive row yet for", STORY["archive_title"], "- added at publish with the live page")
+    if not _mi:  # Steven Oct 20 4:33 PM: preview builds add the archive row too (was deferred to publish)
+        _row = json.dumps({"date": STORY["date"], "date_label": "Oct 2026", "title": STORY["archive_title"], "summary": STORY["teaser"],
+                           "page": STORY["page"], "listen": STORY["listen"], "issues": ["2026-10-25"]}, ensure_ascii=False)
+        _k = _ai.find('"community-stories": {'); _i = _ai.find('"items": [', _k); assert _k > 0 and _i > 0, "R45: community-stories items list"
+        _i += len('"items": [')
+        _ai = _ai[:_i] + "\n      " + _row + "," + _ai[_i:]
+        Path("/workspace/oct18-batch/archive/archive-items.json").write_text(_ai, encoding="utf-8")
+        json.loads(_ai)
     elif '"2026-10-25"' not in _mi.group(2):
         _iss = (_mi.group(2) + ', "2026-10-25"') if _mi.group(2).strip() else '"2026-10-25"'
         Path("/workspace/oct18-batch/archive/archive-items.json").write_text(_ai.replace(_mi.group(0), _mi.group(1) + _iss + _mi.group(3)), encoding="utf-8")
@@ -573,3 +589,19 @@ json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in m
            "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp}, open(ROOT / "build-audit-oct25.json", "w"), indent=1)
 print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week), "| upcoming", len(upcoming))
 
+# Steven Oct 20 4:33 PM: preview builds refresh the archive pages too (the story row shows on Community Stories before publish)
+import subprocess as _sp3
+_ba = _sp3.run(["node", "scripts/build_archive.js"], cwd="/workspace/oct18-batch", capture_output=True, text=True)
+print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
+_ca = Path("/workspace/oct18-batch/pages/archive/community-stories.html").read_text(encoding="utf-8")
+assert STORY["page"] in _ca, "R45: the issue's story is not on the Community Stories archive page"
+# Local review copy (D:\PHNEWS\<week>\, fixed names): the story More → / Listen and Story Archives → point to sibling files in the
+# same folder so they open from disk; the repo/Vercel copy keeps absolute URLs that resolve after publish.
+LOCAL = ROOT / "local-oct25"; LOCAL.mkdir(exist_ok=True)
+_loc = (s.replace(BASE + STORY["page"], STORY["page"]).replace(ARCH + "community-stories.html", "community-stories.html"))
+(LOCAL / "PHNEWS-2026-10-25-preview.html").write_text(_loc, encoding="utf-8")
+import shutil as _sh
+_sh.copy("/workspace/oct18-batch/pages/" + STORY["page"], LOCAL / STORY["page"])
+(LOCAL / "community-stories.html").write_text(_ca.replace('href="/pages/' + STORY["page"], 'href="' + STORY["page"]).replace('href="' + BASE + STORY["page"], 'href="' + STORY["page"]), encoding="utf-8")
+assert STORY["page"] in (LOCAL / "community-stories.html").read_text(encoding="utf-8")
+print("local review copy:", sorted(p.name for p in LOCAL.iterdir()))
