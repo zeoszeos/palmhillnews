@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Joe Clay - Keeper of The Course — Palm Hill Country Club (October 25 preview)</title>
+<link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
+<style>main{max-width:780px;margin:0 auto;padding:16px;font:18px/1.6 Arial,Helvetica,sans-serif}.content-card{background:#fff;border:1px solid #d7d1bd;border-radius:12px;padding:16px;margin:12px 0}.hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap}</style>
+</head><body>
+<!-- ph-archive-nav:none (PREVIEW-ONLY page for the unsent Oct 25, 2026 draft) -->
+<main><div class="hd"><h1 class="ph-section" style="margin:0">Joe Clay - Keeper of The Course</h1><a class="ph-listen" href="#" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a></div>
+<p class="byline">Oct 1, 2026</p>
+<p class="byline">Cover Photo<br>Palm Hill Country Club Golf Course Superintendent</p>
+<figure style="margin:12px 0"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10/joe-clay-cover-clean-october-2026.jpg" width="850" height="926" alt="Joe Clay in a blue polo shirt, standing by golf course equipment" style="max-width:100%;height:auto"><figcaption>Joe Clay</figcaption></figure>
+<div class="content-card"><p>I was grateful to spend time with Joe Clay before the busy Palm Hill golfing season arrived. Being new here, I had no idea all the responsibility that belongs to a Country Club Golf Course Superintendent. I knew that someone was mowing our course, before light, 6 out of 7 days, and I could clearly see that someone was making sure that our course was well managed and remained beautiful!</p>
+<p>Joe started his life in St Louis, Missouri, and dutifully served in The United States Air Force. Upon leaving the military, he earned his college degree in Golf Course Operations. Joe was ready to put his knowledge to work and has continued to manicure golf courses since 1977.</p>
+<p>As unpredictable as Florida weather can be, Joe has learned to be a controller of the elements. Every day presents a new equation by balancing the irrigation required, with the chemical applications required, with the weather conditions and with the City of Largo’s water restrictions. Joe was kind enough to take the time to explain that throughout the year the ground temperature determines the need for weed control, insect control, sprays and applications. He added that protecting golfers from anything applied to the grass, demanded that all applications were made late in the day. Nightly irrigation “waters down the course” and nothing is left behind by morning Tee-Off Times.</p>
+<p>Joe also explained the benefits and difficulties of being an independent contractor. Maintaining a positive relationship with the suppliers of needed materials and equipment is a top priority. Keeping machines in the best working order when they are needed continuously is highly challenging. All of Joe’s days have a strict schedule, but many days are reworked due to broken or damaged hole cups, damaged greens, aging equipment or broken irrigation pipes. Fixing everything takes time and money, patience, skill and cooperation from Joe’s team. Butch and Andy work alongside Joe two days each week; these three men, with varying professional skills, work smoothly and efficiently together. Dealing with the unexpected has become the team’s greatest strength.</p>
+<p>Every piece of this puzzle is essential to every day. Joe is always balancing the time it takes to manage all elements of the job by carefully coordinating rising costs with tasks that need to be accomplished.</p>
+<p>Six days a week, each day begins between 6:20 and 6:30 am on the lawn mower. Leaving by 2:30 pm allows Joe to return to complete various course applications that need the overnight irrigation. Controlling start and stop times through a program on Joe’s phone ensures that all fine details of this well-managed course are regulated with precision. Joe clarified that his years in the job have earned him the greatest rewards. He gladly shares his passion for Golf Course Management with everyone. Joe’s dedication to Palm Hill Country Club is obvious.</p>
+<p>Thank you, Mr. Clay, for proudly serving our country and serving Palm Hill!</p></div>
+<p class="source" style="font-size:14px;color:#666"><a href="/pages/archive/community-stories.html" style="color:#3A6B1A">Story Archives →</a></p>
+</main>
+<!-- ph-page-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    // R49 (Steven, Oct 18 12:39/12:43 AM): read ALL visible content in page order -- the h1, every content card / email
+    // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
+    // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
+    const h1 = document.querySelector('h1');
+    const sel = 'main .content-card, main .ph-row, main .source, main .ph-source, main .credit, main .byline';
+    const all = Array.from(document.querySelectorAll(sel))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText));
+    const blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
+      .map((el) => el.innerText.trim())
+      .filter(Boolean);
+    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
+  }
+
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  const q = new URLSearchParams(location.search);
+  if (q.get('listen') === '1' || q.get('autoplay') === '1') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-page-listen:end -->
+</body></html>
