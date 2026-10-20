@@ -1,5 +1,5 @@
 {
- "_about": "Oct 25, 2026 Did You Know candidates, supplied by Steven Oct 19, 2026 5:4x PM ET from the Palm Hill Link (October 2026, page 4). Exact wording; PDF line breaks rejoined only. R31: the issue shows only DYK_ITEMS[0]; placement of the second item awaits Steven.",
+ "_about": "Oct 25, 2026 Did You Know candidates, supplied by Steven Oct 19, 2026 5:4x PM ET from the Palm Hill Link (October 2026, page 4). Exact wording; PDF line breaks rejoined only. R50: both items show in the Oct 25 issue (Spectrum Information first, then Spectrum Music Channels).",
  "items": [
   {
    "id": "2026-10-25-spectrum-information",
@@ -25,5 +25,6 @@
    "source": "Palm Hill Link, October 2026 (page 4)",
    "preview_page": "did-you-know-spectrum-music-channels.html"
   }
- ]
+ ],
+ "dyk_multi_approved": "Steven Leonowicz, Oct 19 2026 9:25 PM ET"
 }

@@ -18,6 +18,8 @@ def verbatim(p):
     if t in SRC or t[1:] in SRC: return True
     # paragraphs that cross the p.2 -> p.4 jump: every sentence must still be verbatim
     return all(x in SRC or x[1:] in SRC for x in re.split(r"(?<=[.!?])\s+", t) if x)
+import sys; sys.path.insert(0, str(ROOT / "scripts")); import style_rules as _sr
+_sr.assert_dyk_items(dyk["items"], dyk.get("dyk_multi_approved"))  # R50
 for it in dyk["items"]:
     for p in it["paragraphs"]: assert verbatim(p), ("DYK not verbatim", p[:60])
 for p in story["paragraphs"]: assert verbatim(p), ("story not verbatim", p[:60])
@@ -38,9 +40,10 @@ for it in dyk["items"]:
     made.append(page("Did You Know? " + it["title_display"], inner, it["preview_page"]))
 img = story["photo"]
 ps = "\n".join(f"<p>{html.escape(p)}</p>" for p in story["paragraphs"])
-inner = (f'<p class="byline">{html.escape(story["kicker"])}<br>{html.escape(story["subtitle"])}</p>\n'
+inner = (f'<p class="byline">{html.escape(story["date_line"])}</p>\n<p class="byline">{html.escape(story["kicker"])}<br>{html.escape(story["subtitle"])}</p>\n'
          f'<figure style="margin:12px 0"><img src="{img["src"]}" width="{img["w"]}" height="{img["h"]}" alt="{html.escape(img["alt"])}" style="max-width:100%;height:auto"><figcaption>{html.escape(img["caption"])}</figcaption></figure>\n'
-         f'<div class="content-card">{ps}</div>\n<p class="source" style="font-size:14px;color:#666">{html.escape(story["credit_line"])} · '
+         f'<div class="content-card">{ps}</div>\n<p class="source" style="font-size:14px;color:#666">{(html.escape(story["credit_line"]) + " · ") if story.get("credit_line") else ""}'
          f'<a href="/pages/archive/community-stories.html" style="color:#3A6B1A">Story Archives →</a></p>\n')
+assert "First published" not in inner, "credit line removed until Steven gives it"
 made.append(page(story["title"], inner, story["preview_page"]))
 print("\n".join(made))

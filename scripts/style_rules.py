@@ -340,3 +340,16 @@ def assert_event_sources(s, name):
     bad = event_source_violations(s)
     if bad: raise SystemExit(f"R48: {name}: " + "; ".join(bad))
     return s
+
+
+# R50 (Steven, Oct 19 2026 9:25 PM): amends R31 newest-only Did You Know.
+def dyk_items_ok(items, multi_approved=None):
+    """Issue shows DYK_ITEMS[0] only unless Steven approved several for this issue.
+    multi_approved: '<who/when>' string recorded in the builder/data. Each item needs id + paragraphs."""
+    if not items: return False
+    if len(items) > 1 and not (isinstance(multi_approved, str) and multi_approved.strip()):
+        return False
+    return all(i.get("id") and i.get("paragraphs") for i in items)
+
+def assert_dyk_items(items, multi_approved=None):
+    assert dyk_items_ok(items, multi_approved), "R50: more than one Did You Know in the issue needs Steven's recorded approval (DYK_MULTI_APPROVED)"
