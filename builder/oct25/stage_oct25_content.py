@@ -29,13 +29,15 @@ LISTEN = re.search(r'<a class="ph-listen"[\s\S]*?</a>', T).group(0)
 def page(title, inner, fname):
     h = re.sub(r"<title>.*?</title>", f"<title>{html.escape(title)} — Palm Hill Country Club (October 25 preview)</title>", head)
     h = h.replace("unsent Oct 18, 2026 draft", "unsent Oct 25, 2026 draft")
+    _sr.assert_no_link_name(inner, fname)  # R52
     out = h + f'<main><div class="hd"><h1 class="ph-section" style="margin:0">{html.escape(title)}</h1>{LISTEN}</div>\n' + inner + tail
     (PV / fname).write_text(out, encoding="utf-8"); return fname
 made = []
 for it in dyk["items"]:
     ps = "".join(f"<p>{html.escape(p)}</p>" for p in it["paragraphs"])
     if it.get("byline"): ps += f'<p class="dyk-byline">{html.escape(it["byline"])}</p>'
-    inner = (f'<div class="content-card">{ps}</div>\n<p class="source" style="font-size:14px;color:#666">Source: {html.escape(it["source"])} · '
+    _src = it.get("source") if it.get("source") and "Palm Hill Link" not in it["source"] else None   # R52 (Steven Oct 20 3:03 PM): no Link name -> no source line
+    inner = (f'<div class="content-card">{ps}</div>\n<p class="source" style="font-size:14px;color:#666">' + (f'Source: {html.escape(_src)} · ' if _src else '') +
              f'<a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>\n')
     made.append(page("Did You Know? " + it["title_display"], inner, it["preview_page"]))
 img = story["photo"]
@@ -75,3 +77,5 @@ _out = (PV / _fn).read_text(encoding="utf-8")
 assert _sr.dyk_rule_link_ok(_out), "R34"
 assert _sr.dyk_byline_ok(_out, d3["byline"]), "R33"
 print(_fn)
+
+for _f in made + [_fn]: _sr.assert_no_link_name((PV / _f).read_text(encoding="utf-8"), _f)  # R52 on every written article/DYK page

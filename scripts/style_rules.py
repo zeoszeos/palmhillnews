@@ -353,3 +353,12 @@ def dyk_items_ok(items, multi_approved=None):
 
 def assert_dyk_items(items, multi_approved=None):
     assert dyk_items_ok(items, multi_approved), "R50: more than one Did You Know in the issue needs Steven's recorded approval (DYK_MULTI_APPROVED)"
+
+
+# STYLE-RULES R52 (Steven, Oct 20 2026 3:03 PM): no "Palm Hill Link" name inside any article / story / Did You Know page
+# (body, source line or credit). Site navigation in the newsletter (Palm Hill Link Archives etc.) is not an article page.
+def assert_no_link_name(html, name):
+    import re as _re
+    body = _re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<title>[\s\S]*?</title>", "", html)
+    if _re.search(r"Palm\s+Hill\s+Link", body, _re.I): raise SystemExit(f"R52: {name} contains 'Palm Hill Link' (no Link name inside articles)")
+    return html

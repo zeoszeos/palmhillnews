@@ -259,6 +259,11 @@ NOTICES = [
      "Reminder: BrightView's next tentative resident mowing date is Tuesday, Oct 27. The schedule may change.",
      "RPM", BASE + "2026-09-29-mowing-dates-notice.html"),
 ]
+# Steven Oct 20 3:03 PM: drop stale carried-over notices (Linda's Oct 24 market email, Oct 27 mowing date, Taste of Golf notice --
+# Taste of Golf stays as an event row). Guard: none of these titles may appear in Community Notices.
+NOTICES_DROPPED_OCT25 = {"Info from Linda", "October Mowing Date", "Taste of Golf — November 18"}
+NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
+assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
 def notice_rows():
     rows, items = [], [(TONY_FB[0], TONY_FB_TXT, "Tony Ciaramitaro, Communications Chair", None)] + NOTICES
     for i, (t, txt, sl, sh) in enumerate(items):
@@ -517,7 +522,7 @@ for _it in _DYK25["items"]:
     DYK_ITEMS.append((_it["id"], _dyk_row(_TEASE[_it["id"]], _PV25 + _it["preview_page"])))
 _d3src = _DYK3["email_paragraphs"] + [x for _, x in _DYK3["rule_items"]]
 assert _sr_dyk.dyk_framing_ok(_DYK3["teaser"], DYK_CONTRIBUTOR_NAMES, _d3src), "R39: DYK #3 framing teaser"
-DYK_ITEMS.append((_DYK3["id"], _dyk_row(_DYK3["teaser"], _PV25 + _DYK3["preview_page"])))
+DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["teaser"], _PV25 + _DYK3["preview_page"])))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
 DYK_MULTI_APPROVED = _DYK25["dyk_multi_approved"] + "; " + _DYK3["multi_approved"]
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
 t0 = s.find("<table", a)
