@@ -187,6 +187,8 @@ def ev_rows(evs):
             _u = MATCHED_NOTICE[e["name"]]; _lp = Path("/workspace/oct18-batch/pages") / _u.rsplit("/", 1)[1]
             assert _lp.exists(), f"R56: notice page missing {_lp}"
             _sr56.assert_matched_event_card(row, e["name"], _u, CAL, _lp.read_text(encoding="utf-8")); print("R56 matched:", e["date"], e["name"], "->", _lp.name)
+    for _n, _u in MATCHED_NOTICE.items():  # R56b (Steven Oct 21 11:20 AM): a matched event's notice must be listed in Community Notices
+        if any(e["name"] == _n for e in evs): assert any(n[3] == _u for n in NOTICES), f"R56b: {_n} links notice {_u} but it is not in Community Notices"
     return "".join(out)
 def listen(href, size=15):
     return (f'<a href="{href}" style="color:{G};white-space:nowrap;font-size:14px;"><img src="{SPK}" width="24" height="24" alt="" '
@@ -283,7 +285,7 @@ NOTICES = [
 ]
 # Steven Oct 20 3:03 PM: drop stale carried-over notices (Linda's Oct 24 market email, Oct 27 mowing date, Taste of Golf notice --
 # Taste of Golf stays as an event row). Guard: none of these titles may appear in Community Notices.
-NOTICES_DROPPED_OCT25 = {"Info from Linda", "October Mowing Date", "Taste of Golf — November 18"}
+NOTICES_DROPPED_OCT25 = {"October Mowing Date"}  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
 def notice_rows():
@@ -542,20 +544,28 @@ _PV25 = "https://palmhillnews.vercel.app/pages/previews/2026-10-25/"
 # R39 distilled teasers: at most 3 verbatim sentences from each item (ALL CAPS kept, RD9)
 _TEASE = {"2026-10-25-spectrum-information": "SPECTRUM SUPPORT PHONE NUMBER: 877-647-7732 is the Community Solutions Line for Bulk Owners Customer Support. This phone number is setup for Communities like Palm Hill.",
           "2026-10-25-spectrum-music-channels": "Did you know with our new Spectrum set up we have access to several music channels? Simply turn on your TV then select the Spectrum app."}
-def _dyk_row(text, href):
-    return (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
-            f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(text)} <a href="{href}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
+# R57 (Steven Oct 21 11:22 AM): each Did You Know item is its own block -- bold title (the item's source heading), teaser, then
+# More → on its own line; a white gap + green left bar separates items. Guard: style_rules.assert_dyk_blocks.
+def _dyk_row(title, text, href):
+    return (f'<tr class="ph-dyk-item" style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-left:4px solid #2D5016;border-bottom:10px solid #FFFFFF;">'
+            f'<div class="ph-dyk-title" style="font-size:16px;font-weight:bold;color:#333333;">{_html.escape(title)}</div>'
+            f'<div style="font-size:15px;color:#333333;margin-top:4px;">{_html.escape(text)}</div>'
+            f'<div class="ph-dyk-more" style="font-size:14px;margin-top:6px;"><a href="{href}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = []
 for _it in _DYK25["items"]:
     assert _sr_dyk.dyk_summary_ok(_TEASE[_it["id"]], _it["paragraphs"]), ("R39 distilled teaser not verbatim", _it["id"])
-    DYK_ITEMS.append((_it["id"], _dyk_row(_TEASE[_it["id"]], _PV25 + _it["preview_page"])))
+    DYK_ITEMS.append((_it["id"], _dyk_row(_it["title_display"], _TEASE[_it["id"]], _PV25 + _it["preview_page"])))
 _d3src = _DYK3["email_paragraphs"] + [x for _, x in _DYK3["rule_items"]]
-assert _sr_dyk.dyk_framing_ok(_DYK3["teaser"], DYK_CONTRIBUTOR_NAMES, _d3src), "R39: DYK #3 framing teaser"
-DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["teaser"], _PV25 + _DYK3["preview_page"])))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
+# Steven Oct 21 11:22 AM: teaser = distilled summary in the official rule's own words (R39 distilled: verbatim sentences, <= 300 chars)
+_DYK3_TEASER = ("A $50.00 transfer fee and a $50.00 administrative fee for a total of $100.00 is required to transfer records, issue documents, etc., when a home/unit is transferred. "
+                "Maintenance fees and payments on notes are due on the first day of the month.")
+assert _sr_dyk.dyk_summary_ok(_DYK3_TEASER, [x for _, x in _DYK3["rule_items"]]), "R39: DYK #3 distilled teaser must be the rule's verbatim sentences"
+DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, _PV25 + _DYK3["preview_page"])))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
 DYK_MULTI_APPROVED = _DYK25["dyk_multi_approved"] + "; " + _DYK3["multi_approved"]
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
 t0 = s.find("<table", a)
-s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS[:-1]) + DYK_ITEMS[-1][1].replace('</td></tr>', f'<div style="font-size:14px;margin-top:4px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div></td></tr>', 1) + s[e:]  # R50: one archive link after the last item
+s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
+_sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')

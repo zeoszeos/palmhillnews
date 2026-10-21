@@ -26,10 +26,11 @@
  "rule_pdf_label": "Palm Hill Rules and Regulations (September 30, 2026) →",
  "byline": "Dave Bates, Board VP",
  "source": "David Bates",
- "teaser_mode": "framing",
- "teaser": "A look at transfer fees and monthly due dates from the park's official Rules and Regulations.",
- "teaser_status": "APPROVED by Steven Oct 20 2026 3:03 PM ET (as is)",
+ "teaser_mode": "distilled",
+ "teaser": "A $50.00 transfer fee and a $50.00 administrative fee for a total of $100.00 is required to transfer records, issue documents, etc., when a home/unit is transferred. Maintenance fees and payments on notes are due on the first day of the month.",
+ "teaser_status": "Steven Oct 21 11:22 AM: replace framing teaser with a summary in the rule's own words (R39 distilled; the 'delinquent by the tenth' sentence would exceed the 300-char/3-line limit)",
  "preview_page": "did-you-know-assessments-due-to-the-corporation.html",
  "multi_approved": "Steven Leonowicz, Oct 20 2026 (t1022u): third Did You Know for Oct 25",
- "position": "first (Steven Oct 20 3:03 PM, per R31)"
+ "position": "first (Steven Oct 20 3:03 PM, per R31)",
+ "teaser_previous": "A look at transfer fees and monthly due dates from the park's official Rules and Regulations."
 }

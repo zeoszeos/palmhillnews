@@ -380,3 +380,18 @@ def assert_matched_event_card(row, name, notice_url, cal_url, notice_html):
     hit = [" ".join(cw[i:i+6]) for i in range(len(cw) - 5) if tuple(cw[i:i+6]) in grams]
     if hit: raise SystemExit(f"R56: {name} event card copies email text: {hit[0]!r}")
     return row
+
+
+# STYLE-RULES R57 (Steven, Oct 21 2026 11:22 AM): each Did You Know item on the newsletter is its own block (tr.ph-dyk-item) with a
+# non-empty bold title, a teaser, and More → on its own line; blocks are visibly separated.
+def assert_dyk_blocks(html, n):
+    import re as _re
+    a = html.find(">Did You Know?</span>"); seg = html[a:html.find("Did You Know Archives →", a)]
+    blocks = _re.findall(r'<tr class="ph-dyk-item"[\s\S]*?</td></tr>', seg)
+    if len(blocks) != n: raise SystemExit(f"R57: {len(blocks)} Did You Know blocks, expected {n}")
+    for b in blocks:
+        t = _re.search(r'<div class="ph-dyk-title"[^>]*>([^<]+)</div>', b)
+        if not t or not t.group(1).strip() or "font-weight:bold" not in b: raise SystemExit("R57: Did You Know block without a bold title")
+        if not _re.search(r'<div class="ph-dyk-more"[^>]*><a href="[^"]+"[^>]*>More →</a></div>', b): raise SystemExit(f"R57: {t.group(1)}: More → not on its own line")
+        if "border-bottom:10px solid #FFFFFF" not in b: raise SystemExit(f"R57: {t.group(1)}: no separation between items")
+    return html
