@@ -552,20 +552,41 @@ def _dyk_row(title, text, href):
             f'<div style="font-size:15px;color:#333333;margin-top:4px;">{_html.escape(text)}</div>'
             f'<div class="ph-dyk-more" style="font-size:14px;margin-top:6px;"><a href="{href}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = []
+# Steven Oct 21 11:25 AM: final page URLs (Oct 18 pattern pages/<issue>-did-you-know-<slug>.html, written by the stage script)
+def _dyk_final(pp): return "2026-10-25-" + pp
+_DYK_TITLE = {"2026-10-25-spectrum-information": "Spectrum Support Phone Number"}   # Steven Oct 21: short block title (source wording)
 for _it in _DYK25["items"]:
     assert _sr_dyk.dyk_summary_ok(_TEASE[_it["id"]], _it["paragraphs"]), ("R39 distilled teaser not verbatim", _it["id"])
-    DYK_ITEMS.append((_it["id"], _dyk_row(_it["title_display"], _TEASE[_it["id"]], _PV25 + _it["preview_page"])))
+    DYK_ITEMS.append((_it["id"], _dyk_row(_DYK_TITLE.get(_it["id"], _it["title_display"]), _TEASE[_it["id"]], BASE + _dyk_final(_it["preview_page"]))))
 _d3src = _DYK3["email_paragraphs"] + [x for _, x in _DYK3["rule_items"]]
 # Steven Oct 21 11:22 AM: teaser = distilled summary in the official rule's own words (R39 distilled: verbatim sentences, <= 300 chars)
-_DYK3_TEASER = ("A $50.00 transfer fee and a $50.00 administrative fee for a total of $100.00 is required to transfer records, issue documents, etc., when a home/unit is transferred. "
-                "Maintenance fees and payments on notes are due on the first day of the month.")
-assert _sr_dyk.dyk_summary_ok(_DYK3_TEASER, [x for _, x in _DYK3["rule_items"]]), "R39: DYK #3 distilled teaser must be the rule's verbatim sentences"
-DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, _PV25 + _DYK3["preview_page"])))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
+# Steven Oct 21 11:39 AM: teaser in the rule's own words (his wording). Guard: every content word is in the official rule text.
+_DYK3_TEASER = ("$100.00 total ($50.00 transfer + $50.00 administrative) is required when a home/unit is transferred; "
+                "maintenance fees are due on the first day of the month, delinquent if not received by the tenth.")
+_rw = set(re.findall(r"[a-z0-9$.]+", " ".join(x for _, x in _DYK3["rule_items"]).lower().replace("home/unit", "home unit")))
+_tw = [w.strip(".") for w in re.findall(r"[a-z0-9$.]+", _DYK3_TEASER.lower().replace("home/unit", "home unit"))]
+_bad = [w for w in _tw if w and w not in _rw and w.rstrip(".") not in {x.rstrip(".") for x in _rw} and w not in {"if", "are", "total"}]
+assert not _bad, f"R39: DYK #3 teaser words not in the official rule: {_bad}"
+DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, BASE + _dyk_final(_DYK3["preview_page"]))))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
 DYK_MULTI_APPROVED = _DYK25["dyk_multi_approved"] + "; " + _DYK3["multi_approved"]
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
 _sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
+# R59 (Steven Oct 21 11:25 AM): preview builds add archive rows for every archive-backed issue item (DYK here; story above),
+# newest first, existing row format; build_archive.js (run at the end) renders them. Guard at the end: each item is on its archive page.
+_ai = _AI.read_text(encoding="utf-8")
+_DYK_ROWS = [dict(date="2026-10-25", id=_DYK3["id"].replace("2026-10-25-", ""), title=_DYK3["title_display"], text=_DYK3_TEASER,
+                  page=_dyk_final(_DYK3["preview_page"]), source_label=_DYK3["source"], issues=["2026-10-25"])]
+for _it in _DYK25["items"]:
+    _r = dict(date="2026-10-25", id=_it["id"].replace("2026-10-25-", ""), title=_DYK_TITLE.get(_it["id"], _it["title_display"]), text=_TEASE[_it["id"]],
+              page=_dyk_final(_it["preview_page"]), issues=["2026-10-25"])
+    if _it.get("byline"): _r["source_label"] = _it["byline"]
+    _DYK_ROWS.append(_r)
+_k = _ai.find('"did-you-know": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
+_new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _DYK_ROWS if f'"page": "{r["page"]}"' not in _ai)
+if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
+ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
@@ -617,14 +638,45 @@ import subprocess as _sp3
 _ba = _sp3.run(["node", "scripts/build_archive.js"], cwd="/workspace/oct18-batch", capture_output=True, text=True)
 print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
 _ca = Path("/workspace/oct18-batch/pages/archive/community-stories.html").read_text(encoding="utf-8")
+ARCHIVE_BACKED.append(("community-stories.html", STORY["page"]))
+for _ap, _pg in ARCHIVE_BACKED:  # R59 guard: every archive-backed issue item is on its archive page and the page exists
+    assert (Path("/workspace/oct18-batch/pages") / _pg).exists(), f"R59: {_pg} missing"
+    assert _pg in Path("/workspace/oct18-batch/pages/archive/" + _ap).read_text(encoding="utf-8"), f"R59: {_pg} not on archive/{_ap}"
+    assert (BASE + _pg) in s, f"R59: issue does not link the final URL {_pg}"
+print("R59 archive-backed items OK:", ARCHIVE_BACKED)
 assert STORY["page"] in _ca, "R45: the issue's story is not on the Community Stories archive page"
 # Local review copy (D:\PHNEWS\<week>\, fixed names): the story More → / Listen and Story Archives → point to sibling files in the
 # same folder so they open from disk; the repo/Vercel copy keeps absolute URLs that resolve after publish.
-LOCAL = ROOT / "local-oct25"; LOCAL.mkdir(exist_ok=True)
-_loc = (s.replace(BASE + STORY["page"], STORY["page"]).replace(ARCH + "community-stories.html", "community-stories.html"))
+# R58 (Steven Oct 21 11:24 AM): Story Archives → = the canonical live archive page (the one Oct 18 + Main Archive use).
+STORY_ARCHIVE_URL = ARCH + "community-stories.html"   # https://palmhillnews.vercel.app/pages/archive/community-stories.html
+_sa = re.findall(r'href="([^"]+)"[^>]*>Story Archives →', s)
+assert _sa and all(u == STORY_ARCHIVE_URL for u in _sa), f"R58: Story Archives → must link {STORY_ARCHIVE_URL}, got {_sa}"
+assert 'href="community-stories.html"' in Path("/workspace/oct18-batch/pages/archive/main.html").read_text(encoding="utf-8"), "R58: Main Archive no longer links community-stories.html"
+# Local review copy (D:\PHNEWS\<week>\, fixed names). The issue's story + Story Archives links open local copies that mirror the
+# live paths: <story>.html and archive/community-stories.html (the canonical page, incl. this issue's story); every other
+# root-relative link/asset in the local archive copy is made absolute to palmhillnews.vercel.app so it renders like the live page.
+LOCAL = ROOT / "local-oct25"; LOCAL.mkdir(exist_ok=True); (LOCAL / "archive").mkdir(exist_ok=True)
+_loc = s.replace(BASE + STORY["page"], STORY["page"]).replace(STORY_ARCHIVE_URL, "archive/community-stories.html")
 (LOCAL / "PHNEWS-2026-10-25-preview.html").write_text(_loc, encoding="utf-8")
 import shutil as _sh
 _sh.copy("/workspace/oct18-batch/pages/" + STORY["page"], LOCAL / STORY["page"])
-(LOCAL / "community-stories.html").write_text(_ca.replace('href="/pages/' + STORY["page"], 'href="' + STORY["page"]).replace('href="' + BASE + STORY["page"], 'href="' + STORY["page"]), encoding="utf-8")
-assert STORY["page"] in (LOCAL / "community-stories.html").read_text(encoding="utf-8")
-print("local review copy:", sorted(p.name for p in LOCAL.iterdir()))
+_lca = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ca)
+_lca = re.sub(r'href="(?!https?:|#|mailto:)([^"/][^"]*\.html)"', r'href="https://palmhillnews.vercel.app/pages/archive/\1"', _lca)
+for _u in ("https://palmhillnews.vercel.app/pages/" + STORY["page"], "https://palmhillnews.vercel.app/pages/archive/../" + STORY["page"]):
+    _lca = _lca.replace('href="' + _u, 'href="../' + STORY["page"])
+(LOCAL / "archive/community-stories.html").write_text(_lca, encoding="utf-8")
+_old = LOCAL / "community-stories.html"
+if _old.exists(): _old.unlink()   # local review scratch copy only (box), replaced by archive/community-stories.html
+assert ('href="../' + STORY["page"]) in _lca, "R58: local archive copy must list and link this issue's story"
+_ld = Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8")
+_ld = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ld)
+_ld = re.sub(r'href="(?!https?:|#|mailto:)([^"/][^"]*\.html)"', r'href="https://palmhillnews.vercel.app/pages/archive/\1"', _ld)
+_loc = (LOCAL / "PHNEWS-2026-10-25-preview.html").read_text(encoding="utf-8").replace(ARCH + "did-you-know.html", "archive/did-you-know.html")
+for _ap, _pg in ARCHIVE_BACKED:
+    if _ap != "did-you-know.html": continue
+    _sh.copy("/workspace/oct18-batch/pages/" + _pg, LOCAL / _pg)
+    _loc = _loc.replace(BASE + _pg, _pg)
+    for _u in ("https://palmhillnews.vercel.app/pages/" + _pg, "https://palmhillnews.vercel.app/pages/archive/../" + _pg): _ld = _ld.replace('href="' + _u, 'href="../' + _pg)
+    assert 'href="../' + _pg in _ld, f"R59: local DYK archive copy missing {_pg}"
+(LOCAL / "archive/did-you-know.html").write_text(_ld, encoding="utf-8"); (LOCAL / "PHNEWS-2026-10-25-preview.html").write_text(_loc, encoding="utf-8")
+print("local review copy:", sorted(str(p.relative_to(LOCAL)) for p in LOCAL.rglob("*") if p.is_file()))

@@ -103,3 +103,17 @@ _LIVE = story["live_page_planned"]; _LST = "2026-10-listen-joe-clay-story.html"
 _OUT = {_LIVE: _jc_page((ROOT / "pages/2026-09-marge-taylor-love-of-the-game.html").read_text(encoding="utf-8")),
         _LST: _jc_page((ROOT / "pages/2026-09-listen-marge-taylor-story.html").read_text(encoding="utf-8"))}   # listen shell (?listen=1 autoplay)
 for _f, _live in _OUT.items(): _sr.assert_no_link_name(_live, _f); (ROOT / "pages" / _f).write_text(_live, encoding="utf-8"); print(_f)
+
+# ---- Steven Oct 21 11:25 AM: Did You Know items get their FINAL page URLs in preview builds (Oct 18 pattern:
+# pages/<issue>-did-you-know-<slug>.html), so the newsletter More → and the Did You Know archive rows link pages that exist
+# after publish. Same content as the preview page, without the noindex / preview markers.
+def dyk_final(preview_page): return "2026-10-25-" + preview_page
+for _pp in [it["preview_page"] for it in dyk["items"]] + [d3["preview_page"]]:
+    _t = (PV / _pp).read_text(encoding="utf-8")
+    _t = (_t.replace('<meta name="robots" content="noindex,nofollow">\n', "")
+            .replace(" — Palm Hill Country Club (October 25 preview)</title>", " — Palm Hill Country Club</title>")
+            .replace("<!-- ph-archive-nav:none (PREVIEW-ONLY page for the unsent Oct 25, 2026 draft) -->\n", "")
+            .replace("/pages/previews/2026-10-25/PHNEWS-2026-10-25-preview.html", "/pages/archive/issues/2026-10-25.html"))
+    assert "noindex" not in _t and "PREVIEW-ONLY" not in _t
+    _sr.assert_no_link_name(_t, dyk_final(_pp))
+    (ROOT / "pages" / dyk_final(_pp)).write_text(_t, encoding="utf-8"); print(dyk_final(_pp))
