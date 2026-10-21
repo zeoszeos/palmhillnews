@@ -106,6 +106,12 @@ EVENT_LINK["Taste of Golf"] = ("More →", BASE + "2026-10-14-taste-of-golf-noti
 EVENT_EXTRA_SRC["Taste of Golf"] = BASE + "2026-10-14-taste-of-golf-notice.html"
 INFO_COVERED |= {"Bookclub Lunch at Irish Pub", "December Cruise Information Meeting"}
 TITLE["Bookclub Lunch at Irish Pub"] = "Book Club Lunch at Irish Pub"
+# STYLE-RULES R56 (Steven Oct 21 2026 10:44 AM, "middle path"): an event matched to a Webmaster/resident email notice shows calendar
+# facts only; More → opens that notice page; no per-event page is generated or linked (already-published pages such as
+# 2026-10-31-halloween-dance.html stay live, just unlinked). Source line stays Calendar + Webmaster (the notice).
+MATCHED_NOTICE = dict(EVENT_EXTRA_SRC)
+for _n, _u in MATCHED_NOTICE.items():
+    EVENT_DETAIL.pop(_n, None); EVENT_PAGE.pop(_n, None); EVENT_LINK[_n] = ("More →", _u); INFO_COVERED.add(_n)
 
 def bg(i): return "#EAF4E4" if i % 2 else "#FFFFFF"
 def src_cal(extra=None):
@@ -156,6 +162,7 @@ def mtg_rows():
             continue
         out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:4px 8px;border-bottom:1px solid #ddd;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td valign="top" align="left" style="font-size:15px;line-height:1.3;font-weight:bold;color:#333333;text-align:left;padding-right:10px;">{escape(e["name"])}</td><td valign="top" align="right" style="font-size:14px;line-height:1.3;color:#666666;text-align:right;padding-top:1px;">{escape(VENUE.get(e["venue"], e["venue"]))}</td></tr><tr><td valign="top" align="left" style="font-size:14px;color:#666666;text-align:left;line-height:1.35;padding-top:1px;padding-right:10px;">{pdate(e["date"])}<span style="white-space:nowrap;"> • {ptime(e["start"])}</span>{nt}</td><td valign="top" align="right" style="font-size:14px;color:#666666;text-align:right;white-space:nowrap;line-height:1.35;padding-top:1px;"><span style="white-space:nowrap;">{srcx}</span></td></tr></table></td></tr>')
     return "".join(out)
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr56
 def ev_rows(evs):
     out = []
     assert all(v[0] == "More →" for v in EVENT_LINK.values()), "STYLE-RULES R23: event/notice links say More →"
@@ -174,6 +181,12 @@ def ev_rows(evs):
                    + (f'<div style="font-size:15px;color:#333333;margin-top:3px;">{escape(det)}</div>' if det else "")
                    + (f'<div style="font-size:14px;margin-top:4px;"><a href="{lk[1]}" style="color:{G};">{lk[0]}</a></div>' if lk else "")
                    + f'<div style="font-size:13px;color:#666666;margin-top:5px;">{src_cal(EVENT_EXTRA_SRC.get(e["name"]))}</div></td></tr>')
+    import urllib.request as _ur
+    for e, row in zip(evs, out):  # R56 guard
+        if e["name"] in MATCHED_NOTICE:
+            _u = MATCHED_NOTICE[e["name"]]; _lp = Path("/workspace/oct18-batch/pages") / _u.rsplit("/", 1)[1]
+            assert _lp.exists(), f"R56: notice page missing {_lp}"
+            _sr56.assert_matched_event_card(row, e["name"], _u, CAL, _lp.read_text(encoding="utf-8")); print("R56 matched:", e["date"], e["name"], "->", _lp.name)
     return "".join(out)
 def listen(href, size=15):
     return (f'<a href="{href}" style="color:{G};white-space:nowrap;font-size:14px;"><img src="{SPK}" width="24" height="24" alt="" '

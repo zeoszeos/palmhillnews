@@ -362,3 +362,21 @@ def assert_no_link_name(html, name):
     body = _re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<title>[\s\S]*?</title>", "", html)
     if _re.search(r"Palm\s+Hill\s+Link", body, _re.I): raise SystemExit(f"R52: {name} contains 'Palm Hill Link' (no Link name inside articles)")
     return html
+
+
+# STYLE-RULES R56 (Steven, Oct 21 2026 10:44 AM, "middle path"): an event that matches a Webmaster/resident email notice shows ONLY
+# calendar facts (name, place, date, time); More → goes straight to the notice page; no text copied from the email; the only
+# links allowed are the notice page and the club Calendar (Source line). Fails the build otherwise.
+def assert_matched_event_card(row, name, notice_url, cal_url, notice_html):
+    import re as _re, html as _h
+    hrefs = set(_re.findall(r'href="([^"]+)"', row))
+    bad = hrefs - {notice_url, cal_url}
+    if bad: raise SystemExit(f"R56: {name} event card links {sorted(bad)} (only the notice page + Calendar allowed)")
+    if not _re.search(r'<a href="' + _re.escape(notice_url) + r'"[^>]*>More →</a>', row): raise SystemExit(f"R56: {name} More → must open the notice page")
+    if 'font-size:15px;color:#333333;margin-top:3px;' in row: raise SystemExit(f"R56: {name} event card has a description line (calendar facts only)")
+    w = lambda t: _re.findall(r"[a-z0-9']+", _h.unescape(_re.sub(r"<[^>]+>", " ", t)).lower())
+    nw = w(_re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", "", notice_html)); grams = {tuple(nw[i:i+6]) for i in range(len(nw) - 5)}
+    cw = w(_re.sub(r'<div style="font-size:13px[^>]*>.*?</div>', "", row))
+    hit = [" ".join(cw[i:i+6]) for i in range(len(cw) - 5) if tuple(cw[i:i+6]) in grams]
+    if hit: raise SystemExit(f"R56: {name} event card copies email text: {hit[0]!r}")
+    return row
