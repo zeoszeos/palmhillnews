@@ -202,9 +202,11 @@ def title_row(title, right):
 TONY_FB_PLACEHOLDER = False  # set False Saturday once Tony's wording (due Fri Oct 16, palmhillblast) is pasted below
 TONY_FB = ("Join the Palm Hill Residents Group on Facebook", None)  # Tony's wording arrived Fri Oct 16 (palmhillblast); verbatim
 FBURL = "https://www.facebook.com/groups/720846344400510"
-FBQR = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/assets/fb-group-qr.png"
-FBPAGE_NOTICE = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/facebook-group-notice.html"
-FBPAGE_DYK = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/facebook-group-did-you-know.html"
+# R60 (Steven Oct 21 8:34 PM): live published Oct 18 URLs (publish_oct18 MAP), never pages/previews/ or #listen-pending
+FBQR = "https://palmhillnews.vercel.app/pages/assets/phnews/2026-10-18/fb-group-qr.png"
+FBPAGE_NOTICE = "https://palmhillnews.vercel.app/pages/2026-10-18-facebook-group-notice.html"
+FBPAGE_DYK = "https://palmhillnews.vercel.app/pages/2026-10-18-did-you-know-facebook-group.html"
+FB_LISTEN = "https://palmhillnews.vercel.app/pages/2026-10-18-notice-join-the-palm-hill-residents-group-on-facebook.html?listen=1"  # as in the approved Oct 18 issue
 TONY_FB_TXT = ('Palm Hill now has a private Facebook group just for residents, with park news, event reminders and photos posted by the admins (comments are turned off). '
     'Every request is checked against the member directory, so use the address and email the Office has for you, answer all 3 questions, or Facebook will turn the request down. '
     f'Search Facebook for &quot;Palm Hill Country Club - Residents Only Group&quot; or join here: <a href="{FBURL}" style="color:{G};">{FBURL}</a>'
@@ -292,8 +294,9 @@ def notice_rows():
     rows, items = [], [(TONY_FB[0], TONY_FB_TXT, "Tony Ciaramitaro, Communications Chair", None)] + NOTICES
     for i, (t, txt, sl, sh) in enumerate(items):
         ph = t == TONY_FB[0] and TONY_FB_PLACEHOLDER
-        lh = (sh + "?listen=1") if sh else None
-        right = listen(lh) if lh else listen(ARCH + "main.html", 15).replace(f'href="{ARCH}main.html"', 'href="#listen-pending"')
+        lh = (sh + "?listen=1") if sh else (FB_LISTEN if t == TONY_FB[0] else None)
+        assert lh, f"R60: notice {t!r} has no Listen page"
+        right = listen(lh)
         src = f'Source: <a href="{sh}" style="color:{G};">{escape(sl)}</a>' if sh else f"Source: {escape(sl)}"
         rowbg = "#FFF3B0" if ph else bg(i)
         rows.append(f'<tr style="background:{rowbg};page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;{"border:2px dashed #B8860B;" if ph else ""}">'
@@ -620,11 +623,17 @@ s = _sr.assert_archive_labels(_sr.archive_labels(s), OUTF.name)
 s = _sr.assert_source_credits(s, OUTF.name)
 s = _sr.assert_community_stories(s, OUTF.name, COMMUNITY_STORIES_OMIT_APPROVED)  # R45
 s = _sr.assert_event_sources(s, OUTF.name)  # R48 (Steven, Oct 18 12:31 AM): event rows need Calendar/RPM/Agenda  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
+# STYLE-RULES R18/R60 (Steven Oct 21 8:34 PM): root-cause fix -- the Oct 25 builder never ran summary_trim (Oct 18 ran it in
+# make_live_preview/publish), so notices showed their full text. Trim here, then guard (scripts/check_notices.py) after writing.
+sys.path.insert(0, "/workspace/oct18-batch/scripts"); import summary_trim as _st; s = _st.trim(s)
+import check_notices as _cn; _cnf = _cn.static(s)
+if _cnf: raise SystemExit("R60: " + "; ".join(_cnf))
 # STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
 import source_sections as _ss
 _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
 OUTF.write_text(s, encoding="utf-8")
+_cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
