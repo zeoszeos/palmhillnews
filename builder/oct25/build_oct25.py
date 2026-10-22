@@ -287,7 +287,7 @@ NOTICES = [
 ]
 # Steven Oct 20 3:03 PM: drop stale carried-over notices (Linda's Oct 24 market email, Oct 27 mowing date, Taste of Golf notice --
 # Taste of Golf stays as an event row). Guard: none of these titles may appear in Community Notices.
-NOTICES_DROPPED_OCT25 = {"October Mowing Date"}  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
+NOTICES_DROPPED_OCT25 = {"October Mowing Date", "Property Fraud Alert"}  # Steven Oct 21 8:43 PM: Property Fraud Alert dropped (its Vercel page stays live)  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
 def notice_rows():
