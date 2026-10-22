@@ -106,6 +106,8 @@ EVENT_LINK["Taste of Golf"] = ("More →", BASE + "2026-10-14-taste-of-golf-noti
 EVENT_EXTRA_SRC["Taste of Golf"] = BASE + "2026-10-14-taste-of-golf-notice.html"
 INFO_COVERED |= {"Bookclub Lunch at Irish Pub", "December Cruise Information Meeting"}
 TITLE["Bookclub Lunch at Irish Pub"] = "Book Club Lunch at Irish Pub"
+# Calendar re-pull Oct 22 7:55 PM: new one-off Bridge Club (Oct 26, Pool Room South); detail = its calendar listing text verbatim
+EVENT_DETAIL["Bridge Club"] = "Moved due to Haunted House"; INFO_COVERED.add("Bridge Club")
 # STYLE-RULES R56 (Steven Oct 21 2026 10:44 AM, "middle path"): an event matched to a Webmaster/resident email notice shows calendar
 # facts only; More → opens that notice page; no per-event page is generated or linked (already-published pages such as
 # 2026-10-31-halloween-dance.html stay live, just unlinked). Source line stays Calendar + Webmaster (the notice).
