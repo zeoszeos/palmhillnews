@@ -37,6 +37,15 @@ SOURCES = {
         subject="Shuffleboard Information", notice_title="Shuffleboard Season Reminders",
         use_existing_page=True,  # R47 (Steven, Oct 18 12:23 AM): More → / Listen open the Webmaster full-email page
         sections=[dict(heading="Shuffleboard reminders", keys=["courts"])], approved_omit=[]),
+    # Steven Oct 23 5:09 AM: two Webmaster emails (gotwicz); RPM's duplicate of the sanitation email is ignored
+    "2026-10-22-sanitation-field-notice.html": dict(
+        subject="Help with maintaining Sanitation Field", notice_title="Help with maintaining Sanitation Field",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Brush Dumpster - Brush Only", keys=["brush dumpster"]), dict(heading="Broken Pavers", keys=["pavers"])], approved_omit=[]),
+    "2026-10-20-couples-golf-league-notice.html": dict(
+        subject="Couples Golf Leagur", notice_title="Couples Golf League",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Couples Golf League", keys=["Couples Golf League"])], approved_omit=[]),
     "2026-10-14-taste-of-golf-notice.html": dict(
         subject="Taste of Golf", notice_title="Taste of Golf — November 18",
         use_existing_page=True,  # R47 (Steven, Oct 18 12:23 AM): More → / Listen open the Webmaster full-email page

@@ -11,6 +11,9 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 SHORT = [
  ("Bus loads at 8:00 AM for the arts and crafts festival", "Bus loads at 8:00 AM for the arts and crafts festival. $35 per seat, payable at coffee.", B + "2026-10-24-mount-dora-trip.html"),
  ("Palm Hill now has a private Facebook group just for residents,", "Palm Hill now has a private Facebook group just for residents.", None),
+ # Steven Oct 23 5:09 AM: new Webmaster notices (gotwicz); teaser already short, trim adds the inline More → (R23/R47)
+ ("The brush dumpster is designated for brush and yard waste ONLY.", "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster.", B + "2026-10-22-sanitation-field-notice.html"),
+ ("Couples Golf League will be starting November 5th.", "Couples Golf League will be starting November 5th. Couples League needs Hosting Volunteers.", B + "2026-10-20-couples-golf-league-notice.html"),
  ("All food and beverages must be kept at least 4 feet away", "All food and beverages must be kept at least 4 feet away from the edge of the pool. No glass containers.", B + "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html"),
  ("An announcing chairperson is needed for November coffees", "Volunteers are needed for November coffees and for Pancakes on Saturday, Nov 14.", B + "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"),
  ("Please don&#x27;t walk on the courts;", "Please don&#x27;t walk on the courts; return discs and cue sticks; turn off lights and fans when you leave.", B + "2026-10-12-shuffleboard-information-notice.html"),

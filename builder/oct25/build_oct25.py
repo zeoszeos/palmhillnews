@@ -221,7 +221,24 @@ sys.path.insert(0, "/workspace/oct18-batch/scripts"); import notice_page as _np
 WM_COPY_PANCAKES = "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"   # gotwicz 1a13ffdbd4141bdd
 WM_COPY_SHUFFLE = "2026-10-12-shuffleboard-information-notice.html"                   # gotwicz 1a13200e1dcdde48
 WM_COPY_GOLF = "2026-10-14-taste-of-golf-notice.html"                                  # gotwicz 1a13d9d5ef6e178f
+WM_COPY_SANIT = "2026-10-22-sanitation-field-notice.html"                            # gotwicz 1a164e859613b210 (Steven Oct 23 5:09 AM, A)
+WM_COPY_COUPLES = "2026-10-20-couples-golf-league-notice.html"                        # gotwicz 1a15c9dca2aac0fc (Steven Oct 23 5:09 AM, C)
 WM_COPIES = [
+    (WM_COPY_SANIT, "Help with maintaining Sanitation Field", "Thursday, Oct 22, 2026, 1:42 PM ET", [
+        ("p", "Dear Palm Hill Residents,"),
+        ("p", "We need your help in maintaining our sanitation field and keeping disposal areas properly organized."),
+        ("p", "Brush Dumpster - Brush Only: Please remember that the brush dumpster is designated for brush and yard waste ONLY. Do not place any trash, plastic bags, or other materials in this dumpster or on the brush pile near it. Only natural brush and plant material should be disposed of here."),
+        ("p", "Broken Pavers: If you have broken pavers, please do not leave them in the sanitation field. All broken pavers and similar construction debris should be placed in the construction dumpster."),
+        ("p", "Proper sorting helps us manage waste efficiently and keeps costs down for our community. Thank you for your cooperation in following these guidelines."),
+        ("p", "If you have questions about where to dispose of specific items, please contact the office at (727) 581-8729."),
+        ("p", "Thank you for helping keep Palm Hill clean and well-maintained."),
+        ("p", "Sincerely,"),
+        ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc")]),
+    (WM_COPY_COUPLES, "Couples Golf Leagur", "Tuesday, Oct 20, 2026, 11:59 PM ET", [   # subject as sent
+        ("p", "Couples Golf League will be starting November 5th. A sign-up sheet for play and a Host Sign-up sheet, for the whole season, is posted at the Pro Shop. Couples League needs Hosting Volunteers."),
+        ("p", "For Palm Hill Couples interested, please sign up and reach out to Mike McCarthy with any questions."),
+        ("p", "Look forward to a fun Golf Season!"),
+        ("p", "Julie Hughes")]),
     (WM_COPY_PANCAKES, "November Pancakes & Coffee Volunteers", "Thursday, Oct 15, 2026, 10:29 AM ET", [
         ("p", "An announcing chairperson is needed for the month of November for the North Club House coffees."),
         ("p", "8 volunteers are needed for November coffees in the North."),
@@ -258,7 +275,12 @@ WM_COPIES = [
 for _n, _subj, _sent, _blocks in WM_COPIES:
     _np.write("/workspace/oct18-batch", _n, _subj, _sent, _blocks)
 LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
+SANIT_TEASER = "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster."  # R18: source sentences, light trims
+COUPLES_TEASER = "Couples Golf League will be starting November 5th. Couples League needs Hosting Volunteers."  # R18: source sentences verbatim
 NOTICES = [
+    # Steven Oct 23 5:09 AM (A, C): two Webmaster emails (gotwicz); one email = one notice (R42); RPM duplicate of the sanitation email ignored
+    ("Help with maintaining Sanitation Field", SANIT_TEASER, "Webmaster", BASE + WM_COPY_SANIT),
+    ("Couples Golf League", COUPLES_TEASER, "Webmaster", BASE + WM_COPY_COUPLES),
     ("Swimming Pool Food and Beverage Rules",  # Webmaster, Fri Oct 16 12:29 PM ET (gotwicz 1a1458d5b589bff6); newest notice after Tony's
      "All food and beverages must be kept at least 4 feet away from the edge of the pool (the \"wet deck\" area). No glass containers of any kind are permitted inside the fenced pool area; please use plastic or other non-breakable containers. Residents are responsible for ensuring that their guests comply with all pool rules and regulations.",
      "Webmaster", BASE + "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html"),
@@ -592,6 +614,15 @@ _k = _ai.find('"did-you-know": {'); _i = _ai.find('"items": [', _k) + len('"item
 _new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _DYK_ROWS if f'"page": "{r["page"]}"' not in _ai)
 if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
 ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
+# Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
+_NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
+                     page=WM_COPY_SANIT, source="Palm Hill Webmaster notice, Oct 22", issues=["2026-10-25"]),
+                dict(date="2026-10-25", id="2026-10-25-couples-golf-league", title="Couples Golf League", text=COUPLES_TEASER,
+                     page=WM_COPY_COUPLES, source="Palm Hill Webmaster notice, Oct 20", issues=["2026-10-25"])]
+_ai = _AI.read_text(encoding="utf-8"); _k = _ai.find('"community-notices": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
+_new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _NOTICE_ROWS if f'"page": "{r["page"]}"' not in _ai)
+if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
+ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
