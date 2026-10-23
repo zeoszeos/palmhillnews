@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """PREVIEW builder: Committee & Board Meeting Video Archive hub + per-group pages.
-Data: archive/committee-videos.json (merged Mar 23 2026 club-page email + Oct 1 2026 latest scan).
+Data: archive/committee-videos.json, re-synced EVERY run from the live club Committees page (STYLE-RULES R61;
+scripts/pull_club_videos.py). Was: a Mar 24 2026 email copy + Oct 1 scan, never refreshed (root cause of 31 missing videos).
+Use --offline only for local tests; check_committee_videos.py fails a build whose data lags the live page.
 Usage: build_meeting_video_archive.py [--from-csv CSV] [--check]"""
-import csv, json, sys, html, datetime, re, urllib.request, collections, os
+import csv, json, sys, html, datetime, re, urllib.request, urllib.parse, collections, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import style_rules as _SR  # R44 archive top-area guard
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -86,7 +88,7 @@ def page(title,canon,crumbs,body,strip):
 <main class="ph-body">
 <h1 class="ph-section">{E(title)}</h1>
 {body}
-<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a> (sign-in required) · List as of Mar 23, 2026, plus the newest recording per group from Oct 1, 2026. Recordings from Apr–Oct 2026 may be incomplete.</p>
+<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a> (sign-in required) · List re-checked against the club page every build.</p>
 </main>
 </div>
 </body>
@@ -97,8 +99,51 @@ def rng(rs):
   ds=sorted(r['date'] for r in rs); f=lambda d:datetime.date.fromisoformat(d).strftime('%b %Y')
   a,b=f(ds[0]),f(ds[-1]); n=len(rs)
   return (a if a==b else f'{a} – {b}')+f', {n} video'+('' if n==1 else 's')
+def live_sync(rows):
+  # R61: re-pull the live page each run; add every dated video not yet in the data (Drive link checked first).
+  import pull_club_videos as P
+  live=P.main(); today=datetime.date.today().isoformat(); added=[]; dead=[]
+  have={(r['url'],r['date']) for r in rows}
+  for i in live['items']:
+    if (i['url'],i['date']) in have: continue
+    host=urllib.parse.urlparse(i['url']).netloc
+    code=check(i['url']); code=code if code is not None else ''
+    if code==404: dead.append(i); continue
+    same=[r for r in rows if r['group']==i['group'] and r['date']==i['date'] and r.get('link_status')=='broken']
+    src=f'Club Committees page (live, pulled {today})'
+    if same:  # club replaced a dead file with a new link for the same meeting
+      r=same[0]; r.update(url=i['url'],host=host,http=code,source=src,last_checked=today,
+        status='OK (opens)' if code==200 else r['status']); added.append(r); continue
+    flags=['audio'] if re.search(r'audio only|sound only',i['note'],re.I) else []
+    r=dict(date=i['date'],group=i['group'],meeting=i['meeting'],note='' if flags else i['note'],host=host,url=i['url'],source=src,
+      flags=flags,http=code,status='OK (opens)' if code==200 else 'UNVERIFIED',last_checked=today)
+    rows.append(r); added.append(r)
+  json.dump(dict(pulled=live['fetched_at'],added=[(r['group'],r['date']) for r in added],
+    dead=[dict(group=i['group'],date=i['date'],url=i['url']) for i in dead]),open(os.path.join(ROOT,'archive/club-videos-sync.json'),'w'),indent=1)
+  print(f'R61: added/updated {len(added)}; dead (left out) {len(dead)}')
+  for i in dead: print('  DEAD 404:',i['group'],i['date'],i['url'])
+  return rows
+LATEST=os.path.join(ROOT,'archive/archive-items.json')
+def update_latest(rows):
+  # R61: Latest videos (videos.html, built by build_archive.js) = newest working recording per group already listed there.
+  d=json.load(open(LATEST)); items=d['sections']['videos']['items']
+  lab={'Board Meeting':'board'}
+  for s,l,_ in GROUPS: lab.setdefault(l,s)
+  new=[]
+  for it in items:
+    g=lab.get(it['group']); rs=[r for r in rows if r['group']==g and r['link_status']=='ok' and 'drive.google' in r['host']]
+    if g and rs:
+      top=max(rs,key=lambda r:r['date'])
+      if top['date']>it['date']: it=dict(group=it['group'],date=top['date'],url=top['url'])
+    new.append(it)
+  new.sort(key=lambda v:v['date'],reverse=True)
+  # rewrite only the videos items block, keeping the file's hand-curated one-line-per-item layout
+  t=open(LATEST).read(); i=t.index('"videos": {'); a=t.index('"items": [',i)+len('"items": ['); b=t.index('\n    ]}',a)
+  body='\n'+',\n'.join('      '+json.dumps(v,ensure_ascii=False) for v in new)
+  open(LATEST,'w').write(t[:a]+body+t[b:])
 def main(args):
   rows=load(args)
+  if '--offline' not in args and '--from-csv' not in args: rows=live_sync(rows)
   if '--check' in args:
     for r in rows:
       c=check(r['url'])
@@ -108,6 +153,7 @@ def main(args):
   for r in rows: r['link_status']=status_of(r)
   rows.sort(key=lambda r:(r['group'],r['date']),reverse=False)
   json.dump(rows,open(DATA,'w'),indent=1)
+  if '--offline' not in args: update_latest(rows)
   by=collections.defaultdict(list)
   for r in rows: by[r['group']].append(r)
   # hub
@@ -154,3 +200,6 @@ def main(args):
   print('other:',len(by.get('other',[])),'total',len(rows))
   print('status:',collections.Counter(r['link_status'] for r in rows))
 main(sys.argv)
+if '--offline' not in sys.argv and '--from-csv' not in sys.argv:  # R61 guard runs on every live build
+  import subprocess
+  if subprocess.call([sys.executable,os.path.join(ROOT,'scripts/check_committee_videos.py')]): sys.exit('R61 guard failed')

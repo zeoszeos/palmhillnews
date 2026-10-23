@@ -176,12 +176,12 @@
       {"date": "2026-09-08", "id": "zoom-how-to", "title": "How to view a meeting on Zoom", "text": "To watch a Palm Hill meeting from home, use the Zoom meeting link provided in the meeting notice.", "external": "https://1drv.ms/v/c/e0092a6f69ebf15a/IQCBOm7PC8QQSKHU9xcxrotVAbkE0riOGGlxxQPsUnSZZ4A", "external_label": "Watch the tutorial video →", "issues": ["2026-07-21", "2026-07-26", "2026-08-03", "2026-08-11", "2026-08-17", "2026-08-24", "2026-08-30", "2026-09-08", "2026-09-13", "2026-09-21", "2026-09-27", "2026-10-04"]}
     ]},
     "videos": {"title": "Latest Board and Committee Meeting Videos", "hub_label": "Latest Board and Committee Meeting Videos", "prev": "Meeting Video Archives →", "past": "Meeting Video Archives →", "lead": "Newest Board and committee meeting recordings. Tap a meeting to open it in Google Drive.", "snapshot": "Committees of Palm Hill Webpage", "items": [
+      {"group": "Finance Committee", "date": "2026-10-22", "url": "https://drive.google.com/file/d/1JJPjj_VCvC5wlA_h3VXQ__jJpoK6HFqk/view?usp=sharing"},
       {"group": "Buildings & Grounds Committee", "date": "2026-10-14", "url": "https://drive.google.com/file/d/1uwwQUXaqttWHMbvDwc7pwJPnAPGuEyDt/view?usp=sharing"},
       {"group": "Planning & Environmental Committee", "date": "2026-10-14", "url": "https://drive.google.com/file/d/1_pPyrdSvFmLzkLnyGZmH65feploxqyOd/view?usp=sharing"},
       {"group": "Golf Committee", "date": "2026-10-13", "url": "https://drive.google.com/file/d/1K70lWKX21ZJJoIdtdKPDnZ4DdiNAQq7o/view?usp=sharing"},
       {"group": "Communications Committee", "date": "2026-10-12", "url": "https://drive.google.com/file/d/1EPqasR9YOUbZjQ9D-GbBJ1HEr6zprBSw/view?usp=sharing"},
       {"group": "Board Meeting", "date": "2026-09-30", "url": "https://drive.google.com/file/d/1QSk27sDMe9p9EdnI_AX3RkGf0j_vN-g-/view?usp=sharing"},
-      {"group": "Finance Committee", "date": "2026-09-17", "url": "https://drive.google.com/file/d/1PpzIv83WA6l69DA2Up95vcJikbXbZVmV/view?usp=sharing"},
       {"group": "Rules & Regulations Committee", "date": "2026-08-10", "url": "https://drive.google.com/file/d/1rXk1lDEmGtcAxA4eK7YAKTkp4elPAA8R/view?usp=sharing"},
       {"group": "Real Estate Committee", "date": "2026-03-31", "url": "https://drive.google.com/file/d/1QPY_R4aZSbpipZLkFQqp11EXP15JGJS-/view?usp=sharing"}
     ]}
