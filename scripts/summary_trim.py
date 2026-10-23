@@ -11,6 +11,13 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 SHORT = [
  ("Bus loads at 8:00 AM for the arts and crafts festival", "Bus loads at 8:00 AM for the arts and crafts festival. $35 per seat, payable at coffee.", B + "2026-10-24-mount-dora-trip.html"),
  ("Palm Hill now has a private Facebook group just for residents,", "Palm Hill now has a private Facebook group just for residents.", None),
+ # Steven Oct 23 5:09 AM: new Webmaster notices (gotwicz); teaser already short, trim adds the inline More → (R23/R47)
+ ("The brush dumpster is designated for brush and yard waste ONLY.", "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster.", B + "2026-10-22-sanitation-field-notice.html"),
+ # Steven Oct 23 6:38 PM: Library / stop sign / South Rec Webmaster notices
+ ("The Library will be closed beginning MONDAY, OCTOBER 26TH", "The Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST. Pick up books by Sunday the 25th.", B + "2026-10-22-library-closed-notice.html"),
+ ("Please observe the posted speed limits and come to a complete stop", "Please observe the posted speed limits and come to a complete stop at all stop signs throughout our community.", B + "2026-10-21-stop-sign-rules-notice.html"),
+ ("The South Recreation Club has positions available", "The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026.", B + "2026-10-21-south-rec-club-seeking-officers-notice.html"),
+ ("Couples Golf League will be starting November 5th.", "Couples Golf League will be starting November 5th. Couples League needs Hosting Volunteers.", B + "2026-10-20-couples-golf-league-notice.html"),
  ("All food and beverages must be kept at least 4 feet away", "All food and beverages must be kept at least 4 feet away from the edge of the pool. No glass containers.", B + "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html"),
  ("An announcing chairperson is needed for November coffees", "Volunteers are needed for November coffees and for Pancakes on Saturday, Nov 14.", B + "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"),
  ("Please don&#x27;t walk on the courts;", "Please don&#x27;t walk on the courts; return discs and cue sticks; turn off lights and fans when you leave.", B + "2026-10-12-shuffleboard-information-notice.html"),

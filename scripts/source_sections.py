@@ -37,6 +37,28 @@ SOURCES = {
         subject="Shuffleboard Information", notice_title="Shuffleboard Season Reminders",
         use_existing_page=True,  # R47 (Steven, Oct 18 12:23 AM): More → / Listen open the Webmaster full-email page
         sections=[dict(heading="Shuffleboard reminders", keys=["courts"])], approved_omit=[]),
+    # Steven Oct 23 5:09 AM: two Webmaster emails (gotwicz); RPM's duplicate of the sanitation email is ignored
+    "2026-10-22-sanitation-field-notice.html": dict(
+        subject="Help with maintaining Sanitation Field", notice_title="Help with maintaining Sanitation Field",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Brush Dumpster - Brush Only", keys=["brush dumpster"]), dict(heading="Broken Pavers", keys=["pavers"])], approved_omit=[]),
+    # Steven Oct 23 6:38 PM: three Webmaster emails (gotwicz); notice title = subject
+    "2026-10-22-library-closed-notice.html": dict(
+        subject="Library Closed starting the week of October 26th", notice_title="Library Closed starting the week of October 26th",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Library closed Oct 26 - Nov 1", keys=["Library will be closed"])], approved_omit=[]),
+    "2026-10-21-stop-sign-rules-notice.html": dict(
+        subject="Please observe important stop sign rules", notice_title="Please observe important stop sign rules",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Speed limits and stop signs", keys=["stop signs"])], approved_omit=[]),
+    "2026-10-21-south-rec-club-seeking-officers-notice.html": dict(
+        subject="2027 South Rec Club Seeking Officers", notice_title="2027 South Rec Club Seeking Officers",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="2027 election positions", keys=["2027 election"])], approved_omit=[]),
+    "2026-10-20-couples-golf-league-notice.html": dict(
+        subject="Couples Golf Leagur", notice_title="Couples Golf League",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Couples Golf League", keys=["Couples Golf League"])], approved_omit=[]),
     "2026-10-14-taste-of-golf-notice.html": dict(
         subject="Taste of Golf", notice_title="Taste of Golf — November 18",
         use_existing_page=True,  # R47 (Steven, Oct 18 12:23 AM): More → / Listen open the Webmaster full-email page

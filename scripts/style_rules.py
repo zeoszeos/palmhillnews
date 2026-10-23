@@ -353,3 +353,45 @@ def dyk_items_ok(items, multi_approved=None):
 
 def assert_dyk_items(items, multi_approved=None):
     assert dyk_items_ok(items, multi_approved), "R50: more than one Did You Know in the issue needs Steven's recorded approval (DYK_MULTI_APPROVED)"
+
+
+# STYLE-RULES R52 (Steven, Oct 20 2026 3:03 PM): no "Palm Hill Link" name inside any article / story / Did You Know page
+# (body, source line or credit). Site navigation in the newsletter (Palm Hill Link Archives etc.) is not an article page.
+def assert_no_link_name(html, name):
+    import re as _re
+    body = _re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<title>[\s\S]*?</title>", "", html)
+    if _re.search(r"Palm\s+Hill\s+Link", body, _re.I): raise SystemExit(f"R52: {name} contains 'Palm Hill Link' (no Link name inside articles)")
+    return html
+
+
+# STYLE-RULES R56 (Steven, Oct 21 2026 10:44 AM, "middle path"): an event that matches a Webmaster/resident email notice shows ONLY
+# calendar facts (name, place, date, time); More → goes straight to the notice page; no text copied from the email; the only
+# links allowed are the notice page and the club Calendar (Source line). Fails the build otherwise.
+def assert_matched_event_card(row, name, notice_url, cal_url, notice_html):
+    import re as _re, html as _h
+    hrefs = set(_re.findall(r'href="([^"]+)"', row))
+    bad = hrefs - {notice_url, cal_url}
+    if bad: raise SystemExit(f"R56: {name} event card links {sorted(bad)} (only the notice page + Calendar allowed)")
+    if not _re.search(r'<a href="' + _re.escape(notice_url) + r'"[^>]*>More →</a>', row): raise SystemExit(f"R56: {name} More → must open the notice page")
+    if 'font-size:15px;color:#333333;margin-top:3px;' in row: raise SystemExit(f"R56: {name} event card has a description line (calendar facts only)")
+    w = lambda t: _re.findall(r"[a-z0-9']+", _h.unescape(_re.sub(r"<[^>]+>", " ", t)).lower())
+    nw = w(_re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", "", notice_html)); grams = {tuple(nw[i:i+6]) for i in range(len(nw) - 5)}
+    cw = w(_re.sub(r'<div style="font-size:13px[^>]*>.*?</div>', "", row))
+    hit = [" ".join(cw[i:i+6]) for i in range(len(cw) - 5) if tuple(cw[i:i+6]) in grams]
+    if hit: raise SystemExit(f"R56: {name} event card copies email text: {hit[0]!r}")
+    return row
+
+
+# STYLE-RULES R57 (Steven, Oct 21 2026 11:22 AM): each Did You Know item on the newsletter is its own block (tr.ph-dyk-item) with a
+# non-empty bold title, a teaser, and More → on its own line; blocks are visibly separated.
+def assert_dyk_blocks(html, n):
+    import re as _re
+    a = html.find(">Did You Know?</span>"); seg = html[a:html.find("Did You Know Archives →", a)]
+    blocks = _re.findall(r'<tr class="ph-dyk-item"[\s\S]*?</td></tr>', seg)
+    if len(blocks) != n: raise SystemExit(f"R57: {len(blocks)} Did You Know blocks, expected {n}")
+    for b in blocks:
+        t = _re.search(r'<div class="ph-dyk-title"[^>]*>([^<]+)</div>', b)
+        if not t or not t.group(1).strip() or "font-weight:bold" not in b: raise SystemExit("R57: Did You Know block without a bold title")
+        if not _re.search(r'<div class="ph-dyk-more"[^>]*><a href="[^"]+"[^>]*>More →</a></div>', b): raise SystemExit(f"R57: {t.group(1)}: More → not on its own line")
+        if "border-bottom:10px solid #FFFFFF" not in b: raise SystemExit(f"R57: {t.group(1)}: no separation between items")
+    return html

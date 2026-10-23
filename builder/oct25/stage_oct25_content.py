@@ -29,13 +29,15 @@ LISTEN = re.search(r'<a class="ph-listen"[\s\S]*?</a>', T).group(0)
 def page(title, inner, fname):
     h = re.sub(r"<title>.*?</title>", f"<title>{html.escape(title)} — Palm Hill Country Club (October 25 preview)</title>", head)
     h = h.replace("unsent Oct 18, 2026 draft", "unsent Oct 25, 2026 draft")
+    _sr.assert_no_link_name(inner, fname)  # R52
     out = h + f'<main><div class="hd"><h1 class="ph-section" style="margin:0">{html.escape(title)}</h1>{LISTEN}</div>\n' + inner + tail
     (PV / fname).write_text(out, encoding="utf-8"); return fname
 made = []
 for it in dyk["items"]:
     ps = "".join(f"<p>{html.escape(p)}</p>" for p in it["paragraphs"])
     if it.get("byline"): ps += f'<p class="dyk-byline">{html.escape(it["byline"])}</p>'
-    inner = (f'<div class="content-card">{ps}</div>\n<p class="source" style="font-size:14px;color:#666">Source: {html.escape(it["source"])} · '
+    _src = it.get("source") if it.get("source") and "Palm Hill Link" not in it["source"] else None   # R52 (Steven Oct 20 3:03 PM): no Link name -> no source line
+    inner = (f'<div class="content-card">{ps}</div>\n<p class="source" style="font-size:14px;color:#666">' + (f'Source: {html.escape(_src)} · ' if _src else '') +
              f'<a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>\n')
     made.append(page("Did You Know? " + it["title_display"], inner, it["preview_page"]))
 img = story["photo"]
@@ -47,3 +49,71 @@ inner = (f'<p class="byline">{html.escape(story["date_line"])}</p>\n<p class="by
 assert "First published" not in inner, "credit line removed until Steven gives it"
 made.append(page(story["title"], inner, story["preview_page"]))
 print("\n".join(made))
+
+# ---- Did You Know #3 (Steven Oct 20 2026, t1022u): Dave Bates "another rule" (Sun Oct 18 6:40 AM ET) + the ENTIRE cited rule
+# (Section III) verbatim, in a <blockquote> (no nested <div>: dyk_byline_ok reads the first content-card div) from the official club PDF. R31 (his wording), R33 (byline last in the card), R34 (heading + link line to
+# the club PDF), R50 (multi-item approval). Guard: every rule sentence must be in the live PDF text layer (pdftotext -raw).
+import subprocess, tempfile, urllib.request
+d3 = json.load(open(D / "dyk-dave-assessments.json", encoding="utf-8"))
+_pdf = urllib.request.urlopen(urllib.request.Request(d3["rule_pdf"], headers={"User-Agent": "PHNEWS/1.0"}), timeout=60)
+assert _pdf.status == 200 and "pdf" in _pdf.headers.get("Content-Type", ""), "R34: rules PDF must return 200 application/pdf"
+with tempfile.NamedTemporaryFile(suffix=".pdf") as _f:
+    _f.write(_pdf.read()); _f.flush()
+    _pt = re.sub(r"\s+", " ", subprocess.run(["pdftotext", "-raw", _f.name, "-"], capture_output=True, text=True).stdout)
+assert d3["rule_heading"] in _pt, "DYK3: rule heading not in official PDF"
+for _l, _x in d3["rule_items"]: assert _x in _pt, ("DYK3: rule text not verbatim in official PDF", _x[:60])
+_sr.assert_dyk_items([{"id": it["id"], "paragraphs": it["paragraphs"]} for it in dyk["items"]] + [{"id": d3["id"], "paragraphs": d3["email_paragraphs"]}],
+                     d3["multi_approved"])  # R50
+_U = html.escape(d3["rule_pdf"])
+_hd = f'<a class="dyk-rule-heading" href="{_U}" style="color:#3A6B1A">{html.escape(d3["rule_heading"])}</a>'
+ps = f'<p><strong>{html.escape(d3["email_paragraphs"][0])}</strong></p>' + "".join(f"<p>{html.escape(p)}</p>" for p in d3["email_paragraphs"][1:])
+ps += f'<blockquote class="dyk-full-rule" style="border-left:4px solid #2d5016;padding:4px 0 4px 12px;margin:16px 0"><p><strong>{_hd}</strong></p>'
+ps += "".join(f"<p>{html.escape(l)} {html.escape(x)}</p>" for l, x in d3["rule_items"]) + "</blockquote>"
+ps += f'<p class="dyk-byline">{html.escape(d3["byline"])}</p>'
+inner = (f'<div class="content-card">{ps}</div>\n<p class="dyk-rules-link" style="max-width:38em"><a href="{_U}" style="color:#3A6B1A">{html.escape(d3["rule_pdf_label"])}</a></p>\n'
+         f'<p class="source" style="font-size:14px;color:#666">Source: {html.escape(d3["source"])} · <a href="/pages/archive/did-you-know.html" style="color:#3A6B1A">Did You Know Archives →</a></p>\n')
+_fn = page("Did You Know? " + d3["title_display"], inner, d3["preview_page"])
+_out = (PV / _fn).read_text(encoding="utf-8")
+assert _sr.dyk_rule_link_ok(_out), "R34"
+assert _sr.dyk_byline_ok(_out, d3["byline"]), "R33"
+print(_fn)
+
+for _f in made + [_fn]: _sr.assert_no_link_name((PV / _f).read_text(encoding="utf-8"), _f)  # R52 on every written article/DYK page
+
+# ---- Steven Oct 20 4:33 PM: the Joe Clay More → was dead (it pointed at an undeployed preview URL). Preview builds now also write
+# the LIVE story page + its listen page, in the standard Community Stories shell (the published Marge Taylor page is the template:
+# build_archive.js requires <article> + a date-line Listen link to a listen-* page). Story text, photo and date line from the data;
+# no source/credit line (R52: no Palm Hill Link name; credit TBD from Steven).
+def _jc_page(_T):
+    _LIVE = story["live_page_planned"]; _LST = "2026-10-listen-joe-clay-story.html"
+    _h = html.escape(story["title"])
+    _main = (f'<main><p class="byline">{html.escape(story["kicker"])}<br>{html.escape(story["subtitle"])}</p>\n'
+             f'<figure><img src="{img["src"]}" width="{img["w"]}" height="{img["h"]}" alt="{html.escape(img["alt"])}"><figcaption>{html.escape(img["caption"])}</figcaption></figure>\n'
+             f'<article>\n' + "\n".join(f"<p>{html.escape(p)}</p>" for p in story["paragraphs"]) + '\n</article>\n</main>')
+    _live = re.sub(r"<title>.*?</title>", f"<title>{_h} — Palm Hill Community Stories</title>", _T, count=1)
+    _live = re.sub(r"<h1>.*?</h1>", f"<h1>{_h}</h1>", _live, count=1)
+    _live = re.sub(r"<main>[\s\S]*?</main>", lambda m: _main, _live, count=1)
+    _live = (_live.replace("2026-09-listen-marge-taylor-story.html", _LST).replace("2026-09-marge-taylor-love-of-the-game.html", _LIVE)
+                  .replace("Sep 1, 2026", story["date_line"]).replace("September 1, 2026", "October 1, 2026"))
+    assert "Marge" not in _live.split("<main>")[1].split("</main>")[0] and "<article>" in _live
+    _sr.assert_no_link_name(_live, _LIVE)  # R52
+
+    return _live
+_LIVE = story["live_page_planned"]; _LST = "2026-10-listen-joe-clay-story.html"
+_OUT = {_LIVE: _jc_page((ROOT / "pages/2026-09-marge-taylor-love-of-the-game.html").read_text(encoding="utf-8")),
+        _LST: _jc_page((ROOT / "pages/2026-09-listen-marge-taylor-story.html").read_text(encoding="utf-8"))}   # listen shell (?listen=1 autoplay)
+for _f, _live in _OUT.items(): _sr.assert_no_link_name(_live, _f); (ROOT / "pages" / _f).write_text(_live, encoding="utf-8"); print(_f)
+
+# ---- Steven Oct 21 11:25 AM: Did You Know items get their FINAL page URLs in preview builds (Oct 18 pattern:
+# pages/<issue>-did-you-know-<slug>.html), so the newsletter More → and the Did You Know archive rows link pages that exist
+# after publish. Same content as the preview page, without the noindex / preview markers.
+def dyk_final(preview_page): return "2026-10-25-" + preview_page
+for _pp in [it["preview_page"] for it in dyk["items"]] + [d3["preview_page"]]:
+    _t = (PV / _pp).read_text(encoding="utf-8")
+    _t = (_t.replace('<meta name="robots" content="noindex,nofollow">\n', "")
+            .replace(" — Palm Hill Country Club (October 25 preview)</title>", " — Palm Hill Country Club</title>")
+            .replace("<!-- ph-archive-nav:none (PREVIEW-ONLY page for the unsent Oct 25, 2026 draft) -->\n", "")
+            .replace("/pages/previews/2026-10-25/PHNEWS-2026-10-25-preview.html", "/pages/archive/issues/2026-10-25.html"))
+    assert "noindex" not in _t and "PREVIEW-ONLY" not in _t
+    _sr.assert_no_link_name(_t, dyk_final(_pp))
+    (ROOT / "pages" / dyk_final(_pp)).write_text(_t, encoding="utf-8"); print(dyk_final(_pp))
