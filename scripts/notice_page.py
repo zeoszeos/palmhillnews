@@ -3,7 +3,7 @@
 render(subject, sent, blocks, source) -> the community-notice source-copy page in the same shell as
 pages/2026-10-08-info-from-linda-notice.html (title only, Subject/From/Sent row, the email body copied as sent, Source line);
 write(repo, name, ...) writes pages/<name> and adds the standard Listen block (scripts/notice_listen.py).
-blocks: ("h", text) = a heading line of the email (underlined/centred), ("p", text) = a paragraph, ("ul", [items]) = a bullet list.
+blocks: ("h", text) = a heading line of the email (underlined/centred), ("p", text) = a paragraph, ("ul", [items]) = a bullet list, ("img", (src, alt)) = an image as sent.
 Text is the source wording; only whitespace (blank lines, &nbsp; runs, zero-width spaces) and the per-recipient unsubscribe
 footer are left out. Plain text in, escaped here."""
 import sys
@@ -20,6 +20,9 @@ def _blk(kind, v):
     if kind == "ul":
         return ('<div class="ph-detail"><ul style="margin:0;padding-left:1.3em">'
                 + "".join(f"<li>{escape(i)}</li>" for i in v) + "</ul></div>")
+    if kind == "img":  # Steven Oct 23 6:38 PM: image-only Webmaster email (flyer) -> the flyer as sent, from the club site
+        src, alt = v
+        return f'<div class="ph-detail"><img src="{escape(src)}" alt="{escape(alt)}" style="max-width:100%;height:auto;display:block"></div>'
     raise ValueError(kind)
 
 def render(subject, sent, blocks, source="Source: Palm Hill webmaster notice, copied as sent. Only the per-recipient unsubscribe link was left out.",

@@ -124,7 +124,13 @@ def src_cal(extra=None):
 MTG_EXTRA = [dict(  # Oct 25: Finance Oct 22 (agenda email) is past -> dropped; no newer Finance agenda in palmhillblast as of Oct 20 2:4x PM
              date="2026-11-18", start="13:00", name="Board of Directors Meeting", venue="Board Room South", note="(date to be confirmed)")]
 MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to be confirmed)",
-            ("2026-11-10", "Planning and Environmental Committee Meeting"): "(date to be confirmed)"}
+            }
+# STYLE-RULES R62 (Steven Oct 23 6:38 PM): P&E next meeting = Elaine Cole's date (her Oct 14 report): Tuesday Nov 10, 12:30 PM;
+# no "(date to be confirmed)". Data override only; her report page wording is untouched (her "a.m." stays as written).
+MTG_OVERRIDE = {"Planning and Environmental Committee Meeting": dict(date="2026-11-10", start="12:30")}
+for _e in meetings:
+    _o = MTG_OVERRIDE.get(CANON.get(_e["name"], _e["name"]))
+    if _o: _e.update(_o); _e.pop("note", None)
 meetings = sorted(meetings + MTG_EXTRA, key=lambda e: (e["date"], e["start"]))
 # R54 (Steven Oct 20 4:33 PM): no meeting listed twice -- one row per committee/board, the NEXT instance only. MTG_EXTRA rows
 # (agenda/TBC additions) were appended after the calendar's one-per-committee pass, so Board Oct 28 (calendar) + Board Nov 18 (TBC) both showed.
@@ -223,7 +229,36 @@ WM_COPY_SHUFFLE = "2026-10-12-shuffleboard-information-notice.html"             
 WM_COPY_GOLF = "2026-10-14-taste-of-golf-notice.html"                                  # gotwicz 1a13d9d5ef6e178f
 WM_COPY_SANIT = "2026-10-22-sanitation-field-notice.html"                            # gotwicz 1a164e859613b210 (Steven Oct 23 5:09 AM, A)
 WM_COPY_COUPLES = "2026-10-20-couples-golf-league-notice.html"                        # gotwicz 1a15c9dca2aac0fc (Steven Oct 23 5:09 AM, C)
+WM_COPY_LIBRARY = "2026-10-22-library-closed-notice.html"                             # gotwicz 1a164ed6011d050d (Steven Oct 23 6:38 PM)
+WM_COPY_STOP = "2026-10-21-stop-sign-rules-notice.html"                                # gotwicz 1a15eb6fba34f8ab (Steven Oct 23 6:38 PM; RPM duplicate ignored)
+WM_COPY_SOUTHREC = "2026-10-21-south-rec-club-seeking-officers-notice.html"            # gotwicz 1a15eb2704b3f9a0 (Steven Oct 23 6:38 PM; image-only email)
+SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    (WM_COPY_LIBRARY, "Library Closed starting the week of October 26th", "Thursday, Oct 22, 2026, 1:48 PM ET", [
+        ("p", "We are very excited to offer our residents and their guests the experience of our Haunted Library again this year.  Our designer, Duane Smathers, along with Judy Flannigan, will be creating another Library that will definitely reflect the Halloween spirit."),
+        ("p", "As additional animatronics will be featured, they will need the upcoming week to transform the room.   Therefore the Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST."),
+        ("p", "If you would like to pick up a book, please do so by Sunday the 25th.  To return books during that week,  Heidi Weeks has kindly placed a box in our main Recreation Hall near the curtain by the library for that purpose.   We so appreciate everyone's understanding and patience."),
+        ("p", "Thank you,"),
+        ("p", "Mollie Cardno"), ("p", "Inside Entertainment"), ("p", "North Recreation Hall")]),
+    (WM_COPY_STOP, "Please observe important stop sign rules", "Wednesday, Oct 21, 2026, 9:42 AM ET", [
+        ("p", "We hope this message finds you well. We are writing to remind all residents and their guests to please observe the posted speed limits and come to a complete stop at all stop signs throughout our community."),
+        ("p", "As our northern friends join us for the season, there will be more vehicles on the road, making it even more important that we all follow these safety guidelines."),
+        ("p", "The safety of our residents, their families, and guests is our top priority. Many of our neighbors enjoy walking, jogging, and cycling throughout Palm Hill, and we want to ensure everyone can do so safely."),
+        ("p", "Please remember to:"),
+        ("ul", ["Observe the posted speed limit at all times",
+                "Come to a complete stop at all stop signs whether you are in a car, on a bike or in a golf cart",
+                "Watch for pedestrians, cyclists, and golf carts",
+                "Remind your guests and service providers of these safety rules"]),
+        ("p", "Your cooperation in maintaining a safe environment for everyone is greatly appreciated. If you have any questions or concerns, please don't hesitate to contact the office at (727) 581-8729."),
+        ("p", "Thank you for your attention to this important matter."),
+        ("p", "Sincerely,"),
+        ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc")]),
+    (WM_COPY_SOUTHREC, "2027 South Rec Club Seeking Officers", "Wednesday, Oct 21, 2026, 9:34 AM ET", [
+        # the email body is one flyer image (no text); the flyer is shown as sent, alt text = its words (personal phone numbers left out)
+        ("img", (SOUTHREC_IMG, "South Recreation Club. 2027 Election. Make a Difference! The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026. Deadline: December 2, 2026 at the close of the business meeting. If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro. Get Involved... Help Keep Our Club Great! Thank you!")),
+        ("p", "The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026."),
+        ("p", "DEADLINE: December 2, 2026 at the close of the business meeting."),
+        ("p", "If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro.")]),
     (WM_COPY_SANIT, "Help with maintaining Sanitation Field", "Thursday, Oct 22, 2026, 1:42 PM ET", [
         ("p", "Dear Palm Hill Residents,"),
         ("p", "We need your help in maintaining our sanitation field and keeping disposal areas properly organized."),
@@ -277,9 +312,16 @@ for _n, _subj, _sent, _blocks in WM_COPIES:
 LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
 SANIT_TEASER = "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster."  # R18: source sentences, light trims
 COUPLES_TEASER = "Couples Golf League will be starting November 5th. Couples League needs Hosting Volunteers."  # R18: source sentences verbatim
+LIBRARY_TEASER = "The Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST. Pick up books by Sunday the 25th."  # R18: source sentences verbatim
+STOP_TEASER = "Please observe the posted speed limits and come to a complete stop at all stop signs throughout our community."  # R18: source sentence, lead-in trimmed
+SOUTHREC_TEASER = "The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026."  # R18: flyer wording
 NOTICES = [
+    # Steven Oct 23 6:38 PM: three more Webmaster emails (gotwicz), newest first; RPM duplicate of the stop sign email ignored
+    ("Library Closed starting the week of October 26th", LIBRARY_TEASER, "Webmaster", BASE + WM_COPY_LIBRARY),
     # Steven Oct 23 5:09 AM (A, C): two Webmaster emails (gotwicz); one email = one notice (R42); RPM duplicate of the sanitation email ignored
     ("Help with maintaining Sanitation Field", SANIT_TEASER, "Webmaster", BASE + WM_COPY_SANIT),
+    ("Please observe important stop sign rules", STOP_TEASER, "Webmaster", BASE + WM_COPY_STOP),
+    ("2027 South Rec Club Seeking Officers", SOUTHREC_TEASER, "Webmaster", BASE + WM_COPY_SOUTHREC),
     ("Couples Golf League", COUPLES_TEASER, "Webmaster", BASE + WM_COPY_COUPLES),
     ("Swimming Pool Food and Beverage Rules",  # Webmaster, Fri Oct 16 12:29 PM ET (gotwicz 1a1458d5b589bff6); newest notice after Tony's
      "All food and beverages must be kept at least 4 feet away from the edge of the pool (the \"wet deck\" area). No glass containers of any kind are permitted inside the fenced pool area; please use plastic or other non-breakable containers. Residents are responsible for ensuring that their guests comply with all pool rules and regulations.",
@@ -690,7 +732,14 @@ ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
 _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
                      page=WM_COPY_SANIT, source="Palm Hill Webmaster notice, Oct 22", issues=["2026-10-25"]),
                 dict(date="2026-10-25", id="2026-10-25-couples-golf-league", title="Couples Golf League", text=COUPLES_TEASER,
-                     page=WM_COPY_COUPLES, source="Palm Hill Webmaster notice, Oct 20", issues=["2026-10-25"])]
+                     page=WM_COPY_COUPLES, source="Palm Hill Webmaster notice, Oct 20", issues=["2026-10-25"]),
+                # Steven Oct 23 6:38 PM
+                dict(date="2026-10-25", id="2026-10-25-library-closed", title="Library Closed starting the week of October 26th", text=LIBRARY_TEASER,
+                     page=WM_COPY_LIBRARY, source="Palm Hill Webmaster notice, Oct 22", issues=["2026-10-25"]),
+                dict(date="2026-10-25", id="2026-10-25-stop-sign-rules", title="Please observe important stop sign rules", text=STOP_TEASER,
+                     page=WM_COPY_STOP, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"]),
+                dict(date="2026-10-25", id="2026-10-25-south-rec-club-seeking-officers", title="2027 South Rec Club Seeking Officers", text=SOUTHREC_TEASER,
+                     page=WM_COPY_SOUTHREC, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"])]
 _ai = _AI.read_text(encoding="utf-8"); _k = _ai.find('"community-notices": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
 _new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _NOTICE_ROWS if f'"page": "{r["page"]}"' not in _ai)
 if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
@@ -737,6 +786,11 @@ if _cnf: raise SystemExit("R60: " + "; ".join(_cnf))
 import source_sections as _ss
 _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
+# STYLE-RULES R62 (Steven Oct 23 6:38 PM): P&E next meeting shows Elaine's date, no TBC note
+import re as _re62; _pe = _re62.sub(r"<[^>]+>", " ", s[s.find("Planning and Environmental Committee Meeting"):][:1500])
+_pe = _pe[:_pe.find("Source")] if "Source" in _pe else _pe
+if not ("Tuesday, Nov 10, 2026" in _pe and "12:30 PM" in _pe and "to be confirmed" not in _pe):
+    raise SystemExit("R62: P&E next meeting row must be Tuesday, Nov 10, 2026 12:30 PM with no '(date to be confirmed)': " + " ".join(_pe.split())[:200])
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
