@@ -381,6 +381,37 @@ if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / GOLF
 CHAIR.insert(0, ("Golf Advisory Committee", "2026-10-13",
     "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",  # Carolyn's wording
     BASE + GOLF_1013_PAGE, BASE + GOLF_1013_LISTEN))
+# Oct 23 Friday build: Planning and Environmental Committee report from Elaine Cole (elainezcole@gmail.com), palmhillblast
+# "Blast report of P&E 10/14", Fri Oct 23 2:43 PM ET (Google Docs attachment "On-line report of P&E 10/14"). Meeting date
+# confirmed (R30) by the Webmaster agenda "Notice is given of a Planning and Environmental Meeting" (gotwicz, Oct 9) and the
+# "Reminder: Planning and Environmental Committee Meeting Today" notice (Oct 14): Wed Oct 14, 2026, 1:00 PM, South Board Room.
+# Full text = Elaine's wording, block by block. Her "12:30 a.m." for Nov 10 is kept as written (flagged for Steven).
+PE_1014_PAGE = "2026-10-14-planning-and-environmental-committee-report.html"
+PE_1014_LISTEN = "2026-10-25-listen-planning-environmental-committee-report.html"
+PE_1014 = [
+    ("p", "There were 3 items on the P&E agenda: update on progress in the north clubhouse for wellness classes, decision on laundry service lease, and master plan update."),
+    ("p", "The committee approved a motion to the Board to pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes. The ice machine has been relocated so it no longer is a nuisance to the classes. A hydration station has been installed. This station will accommodate filling water bottles."),
+    ("p", "The committee also approved a motion to the Board that it contract with Laundry Leasing LLC to provide and maintain 2 washers and 2 dryers. Committee members who researched the issue of Largo's Business Receipt Tax determined that this operation will not subject Palm Hill to the tax."),
+    ("p", "The Master Plan sub-committee will meet in late-October. It is working on evaluating HOPH's assets."),
+    ("p", "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m."),
+]
+if not (Path("/workspace/oct18-batch/pages") / PE_1014_PAGE).exists(): (Path("/workspace/oct18-batch/pages") / PE_1014_PAGE).write_text(
+    _crp.render("Planning and Environmental Committee Report", PE_1014, "Source: Planning and Environmental Committee Report (Elaine Cole)", PE_1014_PAGE), encoding="utf-8")
+_lp = Path("/workspace/oct18-batch/pages") / PE_1014_LISTEN
+if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / PE_1014_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
+CHAIR.insert(0, ("Planning and Environmental Committee", "2026-10-14",
+    "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",  # Elaine's wording, trimmed to 3 lines (R18)
+    BASE + PE_1014_PAGE, BASE + PE_1014_LISTEN))
+def _arch_row(section, row):
+    """R59: add an archive row (newest first) to archive/archive-items.json once; idempotent on the row's page."""
+    _f = Path("/workspace/oct18-batch/archive/archive-items.json"); _t = _f.read_text(encoding="utf-8")
+    if f'"page": "{row["page"]}"' in _t: return
+    _k = _t.find(f'"{section}": {{'); _i = _t.find('"items": [', _k); assert _k > 0 and _i > 0, section
+    _i += len('"items": [')
+    _t = _t[:_i] + "\n      " + json.dumps(row, ensure_ascii=False) + "," + _t[_i:]
+    json.loads(_t); _f.write_text(_t, encoding="utf-8")
+_arch_row("committee-reports", {"date": "2026-10-14", "title": "Planning and Environmental Committee Report", "page": PE_1014_PAGE,
+                                "listen": PE_1014_LISTEN, "issues": ["2026-10-25"]})
 # Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
 # attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
 # already published -- so none is added to the Oct 18 Chair Reports section without Steven's decision.
@@ -509,19 +540,60 @@ if STORY:
     elif '"2026-10-25"' not in _mi.group(2):
         _iss = (_mi.group(2) + ', "2026-10-25"') if _mi.group(2).strip() else '"2026-10-25"'
         Path("/workspace/oct18-batch/archive/archive-items.json").write_text(_ai.replace(_mi.group(0), _mi.group(1) + _iss + _mi.group(3)), encoding="utf-8")
+# Weekly Manager Update Oct 23 (Megan Leftwich, "Fw: Weekly Update 2026.10.23", palmhillblast Fri Oct 23 4:07 PM ET; her
+# original went to the Board at 4:03 PM) replaces Oct 16 (retention rule). The page is built here from the Oct 16 page's
+# card template with Megan's wording item by item (never hand-edited); decorative emoji in the insurance scenarios dropped.
+WMU_1023_PAGE = "2026-10-23-weekly-manager-update.html"
+WMU_1023 = [
+    "We had a complaint regarding the temperature of the water in the north pool. Staff have checked over the heaters, and they are working properly and maintaining the correct temperatures. We will not be changing the temperature, as it has been established and is maintained year-round.",
+    "At the Finance committee meeting, I confirmed the placement of the requested CDs. You now have 4 in your reserve account and 3 in your savings. All are $100,000 and have staggered due dates.",
+    "The City of Largo picked up the trash compactor to empty on Friday, and their truck broke down with the unit on it. They dropped off an open-top container temporarily but were able to get the compactor back to us just now.",
+    "The election equipment will be dropped off on Thursday morning next week, with the election on Tuesday the following week.",
+    "Toni has begun preparing the First Notice for the annual meeting. It is scheduled to go out on or before November 20th.",
+    "We received the second grease trap permit from the City of Largo this week. They are posted in the south clubhouse.",
+    "We had a motorcycle in the community on Needle today. I spoke to them, and we sent them a letter regarding it.",
+    ("David had asked if the insurance coverage was necessary and Lauren responded with the following:", [
+        "The coverage is not mandatory, but a recommendation considering the prior policy included the coverage.",
+        "Below are examples of claim scenarios that would preclude coverage without implementing such a policy:",
+        "<strong>Scenario 1 – Neighbor Dispute Turns Physical</strong><br>Two residents get into a heated argument over a parking space in a common lot. The dispute escalates and one resident strikes the other. The injured party sues the park, alleging negligent security and failure to address prior complaints about the aggressive neighbor.",
+        "<strong>Scenario 2 – Pool / Common Area Altercation</strong><br>A fight breaks out between teenagers at the community pool. A bystander resident is injured trying to break it up. The park is named in the lawsuit for failing to provide adequate supervision or security.",
+        "<strong>Scenario 3 – On-Site Manager Involvement</strong><br>A park manager physically confronts a resident who is violating community rules. The resident alleges excessive force and files a claim against both the manager and the park ownership entity."]),
+    "Lynntina with Duke confirmed receipt of the payment for the transformer. She has requested the signed waiver before they will schedule the work.",
+    "Manhole inspections were conducted today. I have reached out to them to confirm they have completed them. We will submit the required paperwork by the November 6th deadline.",
+    "Attached is a paper from RPM regarding minutes and some guidelines as to what to include. Please let me know if you have any questions, and I will share them with the committees.",
+]
+_wp = Path("/workspace/oct18-batch/pages") / WMU_1023_PAGE
+if not _wp.exists():  # published page (nav/Listen kept current by build_archive.js) is never overwritten
+    _tpl = (Path("/workspace/oct18-batch/pages") / "2026-10-16-weekly-manager-update.html").read_text(encoding="utf-8")
+    def _li(x):
+        if isinstance(x, tuple):
+            return f"<li>{escape(x[0], quote=False)}<blockquote>" + "".join(f"<p>{q}</p>" for q in x[1]) + "</blockquote></li>"
+        return f"<li>{escape(x, quote=False)}</li>"
+    _a = _tpl.index('<main><section class="content-card">') + len('<main><section class="content-card">')
+    _b = _tpl.index('<p class="signoff">', _a)
+    _tpl = _tpl[:_a] + "\n<p>Good Afternoon Everyone,</p>\n<ul>\n" + "\n".join(_li(x) for x in WMU_1023) + "\n</ul>\n" + _tpl[_b:]
+    _a = _tpl.index('<section class="content-card attachments"'); _b = _tpl.index("</section>", _a) + len("</section>\n")
+    _tpl = _tpl[:_a] + _tpl[_b:]   # Oct 16 photo attachment does not carry over; the RPM minutes PDF is not hosted (flagged)
+    for o, n in [("October 16, 2026", "October 23, 2026"), ("Oct 16, 2026", "Oct 23, 2026"),
+                 ("2026-10-16-weekly-manager-update", "2026-10-23-weekly-manager-update"), ("2026.10.16", "2026.10.23")]:
+        _tpl = _tpl.replace(o, n)
+    assert "2026-10-16" not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU Oct 23 template still has Oct 16 refs"
+    _wp.write_text(_tpl, encoding="utf-8")
+_arch_row("weekly-manager-updates", {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
+                                     "page": WMU_1023_PAGE, "issues": ["2026-10-25"]})
 # Weekly Manager Update Oct 16 (Megan, palmhillblast Oct 16 3:59 PM ET) replaces Oct 9 (retention rule)
 _W_OLD = s[s.find('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'):]
 _W_OLD = _W_OLD[:_W_OLD.find('</td></tr>')]
 assert "Duke Energy Waiver" in _W_OLD
-_W_NEW = ('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 16</div>'
-    '<div style="font-size:14px;color:#666666;margin-top:2px;">Friday, Oct 16, 2026</div>'
-    '<div style="font-size:15px;color:#333333;margin-top:3px;">The invoice for the transformer was paid; installation will take approximately 6 weeks. The sewer liner along Fern was ordered, with installation expected the week of 10/26. New sign with office hours installed at the south clubhouse.</div>'
-    f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{BASE}2026-10-16-weekly-manager-update.html" style="color:{G};white-space:nowrap;">Read Full Update →</a><span style="color:#999999;"> · </span><a href="{ARCH}weekly-manager-updates.html" style="color:{G};white-space:nowrap;">Weekly Manager Report Archives →</a></div>'
-    f'<div style="font-size:13px;color:#666666;margin-top:5px;"><a href="{BASE}2026-10-16-weekly-manager-update.html" style="color:{G};">Source</a>: Weekly Manager Update</div>')
+_W_NEW = ('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update</div>'  # R19: date only on the date line
+    '<div style="font-size:14px;color:#666666;margin-top:2px;">Friday, Oct 23, 2026</div>'
+    '<div style="font-size:15px;color:#333333;margin-top:3px;">The election equipment will be dropped off on Thursday morning next week, with the election on Tuesday the following week.</div>'
+    f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{BASE}{WMU_1023_PAGE}" style="color:{G};white-space:nowrap;">Read Full Update →</a><span style="color:#999999;"> · </span><a href="{ARCH}weekly-manager-updates.html" style="color:{G};white-space:nowrap;">Weekly Manager Report Archives →</a></div>'
+    f'<div style="font-size:13px;color:#666666;margin-top:5px;"><a href="{BASE}{WMU_1023_PAGE}" style="color:{G};">Source</a>: Weekly Manager Update</div>')
 s = s.replace(_W_OLD, _W_NEW)
 # Manager reports: Listen icon on the title line (pages have built-in Listen; ?listen=1 autostarts)
 for t, href in [("Shareholders Report — September 30 Board Meeting", BASE + "2026-09-30-shareholders-report.html"),
-                ("Weekly Manager Update — October 16", BASE + "2026-10-16-weekly-manager-update.html")]:
+                ("Weekly Manager Update", BASE + WMU_1023_PAGE)]:
     old = f'<div style="font-size:15px;font-weight:bold;color:#333333;">{t}</div>'; assert old in s, t
     s = s.replace(old, title_row(t, listen(href + "?listen=1")))
 # Henry October already the President's Message (to-do #7). Did You Know: archive link (to-do, Oct 11 evening)

@@ -651,6 +651,15 @@
       "page_link_label": "Committee Report Archives →",
       "items": [
         {
+          "date": "2026-10-14",
+          "title": "Planning and Environmental Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-14-planning-and-environmental-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-10-25-listen-planning-environmental-committee-report.html",
+          "issues": [
+            "2026-10-25"
+          ]
+        },
+        {
           "date": "2026-10-13",
           "title": "Golf Advisory Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-13-golf-advisory-committee-report.html",
@@ -813,6 +822,14 @@
       "email_link_label": "Weekly Manager Report Archives →",
       "page_link_label": "Weekly Manager Report Archives →",
       "items": [
+        {
+          "date": "2026-10-23",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-23-weekly-manager-update.html",
+          "issues": [
+            "2026-10-25"
+          ]
+        },
         {
           "date": "2026-10-16",
           "title": "Weekly Manager Update",

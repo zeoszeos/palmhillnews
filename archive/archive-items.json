@@ -98,6 +98,7 @@
       {"date": "2026-10-13", "title": "Golf Committee Meeting", "page": "2026-10-13-golf-committee-meeting.html", "issues": [], "also": [{"page": "2026-10-13-golf-committee-notice.html", "label": "Original notice →"}], "strip_extra": ["2026-10-13-golf-committee-zoom.html"]}
     ]},
     "committee-reports": { "dateline_listen": true, "listen_bottom": true, "title": "Committee Report Archives", "hub_label": "Committee Report Archives", "prev": "Committee Report Archives →", "past": "Committee Report Archives →", "strip_listen": true, "lead": "Every committee report the newsletter has carried, newest meeting first.", "items": [
+      {"date": "2026-10-14", "title": "Planning and Environmental Committee Report", "page": "2026-10-14-planning-and-environmental-committee-report.html", "listen": "2026-10-25-listen-planning-environmental-committee-report.html", "issues": ["2026-10-25"]},
       {"date": "2026-10-13", "title": "Golf Advisory Committee Report", "page": "2026-10-13-golf-advisory-committee-report.html", "listen": "2026-10-18-listen-golf-advisory-committee-report.html", "issues": ["2026-10-18"]},
       {"date": "2026-09-21", "title": "Communications Committee Report", "page": "2026-09-21-communications-committee-report.html", "listen": "2026-10-04-listen-communications-committee-report.html", "issues": ["2026-09-27", "2026-10-04", "2026-10-18"]},
       {"date": "2026-09-09", "title": "Planning and Environmental Committee Report", "page": "2026-09-16-planning-and-environmental-committee-report.html", "listen": "2026-10-04-listen-planning-environmental-committee-report.html", "issues": ["2026-09-21", "2026-09-27", "2026-10-04"]},
@@ -117,6 +118,7 @@
       {"date": "2026-06-24", "title": "Shareholders Report", "byline": "Megan Leftwich", "page": "2026-07-15-monthly-management-and-maintenance-report-2026-07-.html", "pdf": "shareholders-report/2026-06-24-Shareholders-Report.pdf", "issues": ["2026-07-21", "2026-08-03", "2026-08-11", "2026-08-17", "2026-09-21"]}
     ]},
     "weekly-manager-updates": {"title": "Weekly Manager Updates", "hub_label": "Weekly Manager Report Archives", "prev": "Weekly Manager Report Archives →", "past": "Weekly Manager Report Archives →", "lead": "Megan Leftwich's weekly updates from the Palm Hill office, newest first. Her monthly report to shareholders is under Monthly Shareholders Reports.", "story_nav": true, "story_nav_back": true, "items": [
+      {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-10-23-weekly-manager-update.html", "issues": ["2026-10-25"]},
       {"date": "2026-10-16", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-10-16-weekly-manager-update.html", "issues": ["2026-10-18"]},
       {"date": "2026-10-09", "title": "Weekly Manager Update", "byline": "Megan Leftwich", "page": "2026-10-09-weekly-manager-update.html", "issues": ["2026-10-11"]},
       {"date": "2026-09-18", "title": "Weekly Manager Report", "byline": "Megan Leftwich", "page": "2026-09-18-weekly-manager-report.html", "issues": ["2026-09-27"]},
