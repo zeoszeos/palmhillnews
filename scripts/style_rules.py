@@ -470,7 +470,7 @@ def sync_rules_dyk_archive_text(ai_text, issue_date, row_id, teaser):
 def assert_rules_dyk_archive(archive_html, row_id, main_teaser):
     """R66b guard: the rendered Did You Know Archives row equals the main-page teaser of the same build."""
     import re as _re, html as _h
-    m = _re.search(r'<div class="ph-row" id="' + _re.escape(row_id) + r'">.*?<div class="ph-detail">(.*?)</div>', archive_html, _re.S)
+    m = _re.search(r'<div class="ph-row(?: ph-alt)?" id="' + _re.escape(row_id) + r'">.*?<div class="ph-detail">(.*?)</div>', archive_html, _re.S)
     if not m: raise SystemExit(f"R66b: DYK archive row {row_id!r} not found")
     got = _h.unescape(m.group(1)).strip()
     if got != main_teaser: raise SystemExit(f"R66b: DYK archive teaser {row_id!r} differs from main page: {got!r} != {main_teaser!r}")
