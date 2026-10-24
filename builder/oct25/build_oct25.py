@@ -722,6 +722,23 @@ if not _wp.exists():  # published page (nav/Listen kept current by build_archive
         _tpl = _tpl.replace(o, n)
     assert "2026-10-16" not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU Oct 23 template still has Oct 16 refs"
     _wp.write_text(_tpl, encoding="utf-8")
+# STYLE-RULES R65 (Steven-approved Oct 24 2:26 PM): Megan's attached RPM paper ("Recording Minutes at Meetings", 2 pages, from her
+# "Weekly Update 2026.10.23" email) is hosted as a PDF and linked in an Attachments card on her Oct 23 page (Oct 9 page layout).
+# Applied by the builder to the existing page (idempotent); a copy, the source PDF is never moved.
+WMU_1023_PDF_SRC = Path("/workspace/megan-1023-images/minutes-M100.pdf")
+WMU_1023_PDF = "assets/manager/2026-10-23-rpm-recording-minutes-at-meetings.pdf"
+_pdf = Path("/workspace/oct18-batch/pages") / WMU_1023_PDF
+if not _pdf.exists():
+    import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
+_wt = _wp.read_text(encoding="utf-8")
+if WMU_1023_PDF not in _wt:
+    _att = ('<section class="content-card attachments" aria-labelledby="att-h"><h2 id="att-h">Attachments</h2>\n<ul class="att-docs">\n'
+            f'<li><a href="/pages/{WMU_1023_PDF}" target="_blank" rel="noopener"><span class="att-icon" aria-hidden="true">📄</span>'
+            '<span><b>Recording Minutes at Meetings</b><small>Paper from RPM on what to include in minutes · PDF, 2 pages</small></span></a></li>\n</ul>\n</section>\n')
+    _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
+    _wt = _wt[:_k] + _att + _wt[_k:]
+    _wp.write_text(_wt, encoding="utf-8")
+assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: Megan Oct 23 RPM minutes PDF link/copy missing"
 _arch_row("weekly-manager-updates", {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
                                      "page": WMU_1023_PAGE, "issues": ["2026-10-25"]})
 # Weekly Manager Update Oct 16 (Megan, palmhillblast Oct 16 3:59 PM ET) replaces Oct 9 (retention rule)
@@ -902,7 +919,7 @@ if not ("Tuesday, Nov 10, 2026" in _pe and "12:30 PM" in _pe and "to be confirme
 # STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting row = Wednesday, Nov 18, 2026 10:00 AM, calendar place, no TBC
 _fi = s.find(">Finance Committee<"); _fn = _re62.sub(r"<[^>]+>", " ", s[_fi:][:1200]) if _fi >= 0 else ""
 _fn = _fn[:_fn.find("Source")] if "Source" in _fn else _fn
-if not ("Wednesday, Nov 18, 2026" in _fn and "10:00 AM" in _fn and "South Clubhouse Boardroom" in _fn and "to be confirmed" not in _fn and "Nov 16" not in s):
+if not ("Wednesday, Nov 18, 2026" in _fn and "10:00 AM" in _fn and "South Clubhouse Boardroom" in _fn and "to be confirmed" not in _fn and "Nov 16" not in _fn):  # A4 (R64d): Finance row only
     raise SystemExit("R62b: Finance next meeting row must be Wednesday, Nov 18, 2026 10:00 AM, South Clubhouse Boardroom, no TBC: " + " ".join(_fn.split())[:200])
 # STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page
 _hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
@@ -934,6 +951,10 @@ import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-bat
 json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in meetings], "this_week": [(e["date"], e["name"]) for e in this_week],
            "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp}, open(ROOT / "build-audit-oct25.json", "w"), indent=1)
 print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week), "| upcoming", len(upcoming))
+# STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
+_rc = _sp2.run([sys.executable, str(HERE / "run_checks_oct25.py"), str(OUTF)], capture_output=True, text=True)
+print((_rc.stdout or "").strip().splitlines()[-1:] or _rc.stderr[-400:])
+if _rc.returncode != 0: raise SystemExit("R64: run_checks_oct25 FAIL\n" + "\n".join(l for l in _rc.stdout.splitlines() if "FAIL" in l) + _rc.stderr[-600:])
 
 # Steven Oct 20 4:33 PM: preview builds refresh the archive pages too (the story row shows on Community Stories before publish)
 import subprocess as _sp3
