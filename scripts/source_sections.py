@@ -42,6 +42,11 @@ SOURCES = {
         subject="Help with maintaining Sanitation Field", notice_title="Help with maintaining Sanitation Field",
         use_existing_page=True,  # R47
         sections=[dict(heading="Brush Dumpster - Brush Only", keys=["brush dumpster"]), dict(heading="Broken Pavers", keys=["pavers"])], approved_omit=[]),
+    # Steven Oct 24 11:38 AM: Bill Bender's flyer -- one flyer = one notice titled with its heading
+    "2026-10-23-holiday-greeting-distribution-plan.html": dict(
+        subject="Holiday Greeting Distribution Plan", notice_title="A convenient way to send holiday cards for Palm Hill residents",
+        use_existing_page=True,
+        sections=[dict(heading="Holiday greetings within Palm Hill", keys=["holiday greetings"])], approved_omit=[]),
     # Steven Oct 23 6:38 PM: three Webmaster emails (gotwicz); notice title = subject
     "2026-10-22-library-closed-notice.html": dict(
         subject="Library Closed starting the week of October 26th", notice_title="Library Closed starting the week of October 26th",

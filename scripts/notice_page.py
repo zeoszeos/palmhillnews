@@ -26,7 +26,7 @@ def _blk(kind, v):
     raise ValueError(kind)
 
 def render(subject, sent, blocks, source="Source: Palm Hill webmaster notice, copied as sent. Only the per-recipient unsubscribe link was left out.",
-           title=None):
+           title=None, sender="Palm Hill Webmaster"):
     title = title or " ".join(subject.split())
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -45,7 +45,7 @@ def render(subject, sent, blocks, source="Source: Palm Hill webmaster notice, co
 <main class="ph-body">
 <h1 class="ph-section">{escape(title)}</h1>
 <p class="ph-meta">{escape(sent)}</p>
-<div class="ph-row ph-alt"><div class="ph-detail"><strong>Subject:</strong> {escape(subject)}<br><strong>From:</strong> Palm Hill Webmaster<br><strong>Sent:</strong> {escape(sent)}</div></div>
+<div class="ph-row ph-alt"><div class="ph-detail"><strong>Subject:</strong> {escape(subject)}<br><strong>From:</strong> {escape(sender)}<br><strong>Sent:</strong> {escape(sent)}</div></div>
 <div class="ph-row">{"".join(_blk(k, v) for k, v in blocks)}</div>
 <p class="ph-source">{escape(source)}</p>
 </main>

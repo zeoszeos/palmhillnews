@@ -21,7 +21,7 @@ def static(s):
             if f'href="{url}"' not in blk or "More →" not in blk: fails.append(f"R60: trimmed notice {short[:40]!r} lacks More → {url}")
     # R47/R60 (Oct 23): every Webmaster notice carries More → to the same page as its Source link
     for row in sec.split('<tr style="background:')[1:]:
-        m = re.search(r'Source: <a href="([^"]+)"[^>]*>Webmaster</a>', row)
+        m = re.search(r'Source: <a href="([^"]+)"[^>]*>[^<]+</a>', row)  # R60b (Oct 24): any linked Source, not only Webmaster
         if m and not re.search(r'href="' + re.escape(m.group(1)) + r'"[^>]*>More →', row): fails.append(f"R60/R47: Webmaster notice without More → {m.group(1)}")
     for row in re.findall(r'margin-top:3px;">(.*?)</div>', sec, re.S):
         txt = re.sub(r"<[^>]+>", "", row)

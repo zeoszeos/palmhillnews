@@ -255,8 +255,8 @@ WM_COPIES = [
         ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc")]),
     (WM_COPY_SOUTHREC, "2027 South Rec Club Seeking Officers", "Wednesday, Oct 21, 2026, 9:34 AM ET", [
         # the email body is one flyer image (no text); the flyer is shown as sent, alt text = its words (personal phone numbers left out)
-        ("img", (SOUTHREC_IMG, "South Recreation Club. 2027 Election. Make a Difference! The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026. Deadline: December 2, 2026 at the close of the business meeting. If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro. Get Involved... Help Keep Our Club Great! Thank you!")),
-        ("p", "The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026."),
+        ("img", (SOUTHREC_IMG, "South Recreation Club. 2027 Election. Make a Difference! The South Recreation Club has the following positions available for the 2027 election: Inside Entertainment, Outside Entertainment, Bazaar Director. Deadline: December 2, 2026 at the close of the business meeting. If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro. Get Involved... Help Keep Our Club Great! Thank you!")),
+        ("p", "The South Recreation Club has the following positions available for the 2027 election: Inside Entertainment, Outside Entertainment, Bazaar Director."),
         ("p", "DEADLINE: December 2, 2026 at the close of the business meeting."),
         ("p", "If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro.")]),
     (WM_COPY_SANIT, "Help with maintaining Sanitation Field", "Thursday, Oct 22, 2026, 1:42 PM ET", [
@@ -307,6 +307,46 @@ WM_COPIES = [
         ("p", "Questions contact:"),
         ("p", "Caroline Zimmerman")]),
 ]
+# Steven Oct 24 11:38 AM: Bill Bender's flyer (gotwicz, bbenderfla@outlook.com, Fri Oct 23 11:38 PM ET, "Please add to your news
+# letter....", attachment "Mari, Card.jpg"; the message is in Spam and stays there). Page = flyer image + its text as printed.
+# Bill's email/phone are printed on the flyer as the program contact, so they are kept.
+HOLIDAY_PAGE = "2026-10-23-holiday-greeting-distribution-plan.html"
+HOLIDAY_IMG = "/pages/assets/notices/2026-10-23-holiday-greeting-distribution-plan.jpg"  # copy of /workspace/sweep/1024-0930/bill-bender-mari-card.jpg
+HOLIDAY_BLOCKS = [
+    ("img", (HOLIDAY_IMG, "Holiday Greeting Distribution Plan flyer")),
+    ("h", "Holiday Greeting Distribution Plan"),
+    ("p", "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."),
+    ("h", "Purpose"),
+    ("p", "To offer shareholders a distribution plan for holiday greetings at Hanukkah and Christmas time. Limited to addresses within Palm Hill that do not require postage."),
+    ("h", "How It Works"),
+    ("ul", ["Send 1 or 1100 greetings — there is no minimum or limit.",
+            "Save the cost of outside postage, currently about $.82 per item in the U.S.",
+            "Any resident can participate, limited to greetings within Palm Hill.",
+            "Address greetings as you would a normal letter: name and address.",
+            "Greetings will be deposited in specially designated drop boxes in the clubhouses. Deposits can be made anytime the boxes are available.",
+            "Boxes will be monitored and emptied as necessary. Contents will be stored until holiday week.",
+            "If you are leaving, please drop off before you depart.  If you are not on site, please contact Bill for instructions."]),
+    ("h", "Important Notes"),
+    ("ul", ["Amazon and Wal-Mart have online offerings now!",
+            "Sorting will take place as often as necessary by our committee.",
+            "Please clearly mark on the envelope any cards for Hanukkah to ease sorting."]),
+    ("h", "Distribution"),
+    ("ul", ["Distribution will be made by residents approximately 1 week before Hanukkah or Christmas.",
+            "In addition to our 1100 homes, cards will also be accepted for the administration offices and maintenance employees.",
+            "Canadian and Northern friends: feel free to reach out for suggestions on getting your cards to us."]),
+    ("h", "Volunteers Welcome"),
+    ("p", "As the program develops, additional folks will be needed for various tasks. Please notify us if you would like to help."),
+    ("h", "Contact"),
+    ("p", "Comments or questions should be directed to:"),
+    ("p", "Bill Bender"), ("p", "BBenderfla@outlook.com"), ("p", "315-520-0263"),
+    ("h", "Friends Greeting Friends"),
+    ("p", "This program is solely to encourage friends and neighbors to connect during the holiday season — friends greeting friends. Share your thoughts."),
+    ("p", "Thank you... Let’s Succeed!!!!!"),
+    ("p", "Bill Bender, Kate Wesoloowski, & Mike Okash")]
+(Path("/workspace/oct18-batch/pages") / HOLIDAY_PAGE).write_text(_np.render("Please add to your news letter....", "Friday, Oct 23, 2026, 11:38 PM ET", HOLIDAY_BLOCKS,
+    source="Source: flyer from Bill Bender (Mari, Card.jpg), shown as sent with its text transcribed as printed.",
+    title="Holiday Greeting Distribution Plan", sender="Bill Bender"), encoding="utf-8")
+_np.notice_listen.add("/workspace/oct18-batch", HOLIDAY_PAGE)
 for _n, _subj, _sent, _blocks in WM_COPIES:
     _np.write("/workspace/oct18-batch", _n, _subj, _sent, _blocks)
 LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
@@ -315,7 +355,11 @@ COUPLES_TEASER = "Couples Golf League will be starting November 5th. Couples Lea
 LIBRARY_TEASER = "The Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST. Pick up books by Sunday the 25th."  # R18: source sentences verbatim
 STOP_TEASER = "Please observe the posted speed limits and come to a complete stop at all stop signs throughout our community."  # R18: source sentence, lead-in trimmed
 SOUTHREC_TEASER = "The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026."  # R18: flyer wording
+HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
+HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Steven Oct 24 11:38 AM: Bill Bender's flyer (resident notice; Source = Bill Bender, linked to its page)
+    (HOLIDAY_TITLE, HOLIDAY_TEASER, "Bill Bender email", BASE + HOLIDAY_PAGE),
     # Steven Oct 23 6:38 PM: three more Webmaster emails (gotwicz), newest first; RPM duplicate of the stop sign email ignored
     ("Library Closed starting the week of October 26th", LIBRARY_TEASER, "Webmaster", BASE + WM_COPY_LIBRARY),
     # Steven Oct 23 5:09 AM (A, C): two Webmaster emails (gotwicz); one email = one notice (R42); RPM duplicate of the sanitation email ignored
@@ -739,7 +783,9 @@ _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title=
                 dict(date="2026-10-25", id="2026-10-25-stop-sign-rules", title="Please observe important stop sign rules", text=STOP_TEASER,
                      page=WM_COPY_STOP, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"]),
                 dict(date="2026-10-25", id="2026-10-25-south-rec-club-seeking-officers", title="2027 South Rec Club Seeking Officers", text=SOUTHREC_TEASER,
-                     page=WM_COPY_SOUTHREC, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"])]
+                     page=WM_COPY_SOUTHREC, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"]),
+                dict(date="2026-10-25", id="2026-10-25-holiday-greeting-distribution-plan", title=HOLIDAY_TITLE, text=HOLIDAY_TEASER,
+                     page=HOLIDAY_PAGE, source="Flyer from Bill Bender, Oct 23", issues=["2026-10-25"])]
 _ai = _AI.read_text(encoding="utf-8"); _k = _ai.find('"community-notices": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
 _new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _NOTICE_ROWS if f'"page": "{r["page"]}"' not in _ai)
 if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
@@ -791,6 +837,11 @@ import re as _re62; _pe = _re62.sub(r"<[^>]+>", " ", s[s.find("Planning and Envi
 _pe = _pe[:_pe.find("Source")] if "Source" in _pe else _pe
 if not ("Tuesday, Nov 10, 2026" in _pe and "12:30 PM" in _pe and "to be confirmed" not in _pe):
     raise SystemExit("R62: P&E next meeting row must be Tuesday, Nov 10, 2026 12:30 PM with no '(date to be confirmed)': " + " ".join(_pe.split())[:200])
+# STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page
+_hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
+if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
+_he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
+if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or ">Bill Bender email</a>" not in _hr: raise SystemExit("R60b: Bill Bender notice needs Source: Bill Bender email linked to " + HOLIDAY_PAGE)
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
