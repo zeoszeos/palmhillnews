@@ -858,6 +858,16 @@ if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, 
 # R66b (Steven Oct 24 3:16 PM): current-issue Rules DYK archive row uses the same R66 teaser as the main page (past rows untouched)
 _ai2 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-25", _DYK_ROWS[0]["id"], _DYK3_TEASER)
 if _ai2 != _AI.read_text(encoding="utf-8"): _AI.write_text(_ai2, encoding="utf-8")
+# R66c (Steven Oct 24 3:34 PM "Yes"): Oct 18 Traffic Rules archive row teaser re-generated in R66 style (archive row ONLY;
+# Oct 18 issue, SEND html and the detail page stay as sent). Parts = the sentences of Dave's "Sections of the rule" (source json).
+_TR_SRC = json.loads(Path("/workspace/oct18-batch/builder/oct18/data/dyk-traffic-rules-source.json").read_text(encoding="utf-8"))[-1]
+_TR_SENT = re.split(r"(?<=\.)\.?\s+", _TR_SRC.split("Sections of the rule:", 1)[1].strip())
+_TR_ITEMS = [(chr(65 + i), t) for i, t in enumerate(_TR_SENT[:6])]  # A-F; last sentence ("Most of all, be safe...") is not a rule part
+_TR_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
+_TR_TEASER, _trp = _sr_dyk.rules_dyk_teaser(_TR_ITEMS, _TR_PHRASES)
+_sr_dyk.assert_rules_dyk(_TR_TEASER, _TR_ITEMS, _trp, "traffic-rules")
+_ai3 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-18", "traffic-rules", _TR_TEASER)
+if _ai3 != _AI.read_text(encoding="utf-8"): _AI.write_text(_ai3, encoding="utf-8")
 ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
 _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
@@ -971,6 +981,7 @@ import subprocess as _sp3
 _ba = _sp3.run(["node", "scripts/build_archive.js"], cwd="/workspace/oct18-batch", capture_output=True, text=True)
 print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
 _sr_dyk.assert_rules_dyk_archive(Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8"), _DYK_ROWS[0]["id"], _DYK3_TEASER)  # R66b
+_sr_dyk.assert_rules_dyk_archive(Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8"), "traffic-rules", _TR_TEASER)  # R66c
 _ca = Path("/workspace/oct18-batch/pages/archive/community-stories.html").read_text(encoding="utf-8")
 ARCHIVE_BACKED.append(("community-stories.html", STORY["page"]))
 for _ap, _pg in ARCHIVE_BACKED:  # R59 guard: every archive-backed issue item is on its archive page and the page exists
