@@ -265,7 +265,7 @@ function sectionPage(k) {
     // right-justified, same font size as .ph-row-title (15px bold). Date/byline stay on the meta line below.
     // (Steven Oct 11). Other sections keep inline "Listen →".
     const leftMeta = [fullDate(it), it.byline ? esc(it.byline) : null, ...(it.also || []).map((a) => `<a href="${pageUrl(a.page)}">${esc(a.label)}</a>`)].filter(Boolean).join(' · ');
-    if (sec.clean_listen && it.listen) {
+    if ((sec.clean_listen || sec.listen_title) && it.listen) {  // R63 (Steven Oct 24): committee-reports uses listen_title
       const listen = listenLink(it.listen);
       out += `<div class="ph-row${n % 2 ? ' ph-alt' : ''}"${id}><div class="ph-row-line">${head}${listen}</div>\n<div class="ph-row-meta">${leftMeta}</div>\n`;
     } else {
@@ -279,12 +279,13 @@ function sectionPage(k) {
     if (it.source && !sec.plain_rows) out += `<div class="ph-row-meta">Source: ${esc(it.source)}</div>\n`;
     const inNl = (!sec.plain_rows && it.issues && it.issues.length) ? `In the newsletter: ${it.issues.slice().sort().map(issueLink).join(', ')}` : '';
     // STYLE-RULES R32 (Steven, Oct 17): an archive-only chair report (issues: []) keeps the R28 bottom line, labelled "Archive only"
-    const inNlFoot = inNl || (sec.listen_bottom && it.listen && !sec.plain_rows && Array.isArray(it.issues) && !it.issues.length ? 'In the newsletter: Archive only' : '');
+    const inNlFoot = inNl || ((sec.listen_bottom || sec.listen_title) && it.listen && !sec.plain_rows && Array.isArray(it.issues) && !it.issues.length ? 'In the newsletter: Archive only' : '');
     if (sec.listen_bottom && it.listen) {
       // STYLE-RULES R28 (Steven, Oct 17): Committee Chair Reports -- speaker icon + Listen on the bottom "In the newsletter" line,
       // right-justified, one line (nowrap), 14px in from the row's right edge (8px row padding + 6px), same icon as President's Message.
       out += `<div class="ph-row-line ph-row-foot" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="ph-row-meta" style="min-width:0">${inNlFoot}</div>${listenLink(it.listen, 'margin-right:6px')}</div>\n`;
-    } else if (inNl) out += `<div class="ph-row-meta">${inNl}</div>\n`;
+    } else if (sec.listen_title && inNlFoot) out += `<div class="ph-row-meta">${inNlFoot}</div>\n`;  // R63: bottom line keeps 'In the newsletter' / R32 'Archive only', no Listen
+    else if (inNl) out += `<div class="ph-row-meta">${inNl}</div>\n`;
     out += `</div>\n`;
     n++;
   }
@@ -745,6 +746,24 @@ for (const k of SECTION_ORDER) if (S[k].listen_bottom) {
   const aoGot = (html.match(/<div class="ph-row-meta" style="min-width:0">In the newsletter: Archive only<\/div><a class="ph-listen"/g) || []).length;
   if (aoGot !== ao) throw new Error(`${k}.html: R32 archive-only rows need "In the newsletter: Archive only" (found ${aoGot}/${ao})`);
   if (/>Listen →</.test(html) || got !== want) throw new Error(`${k}.html: R28 Listen must be the speaker icon on the bottom line (found ${got}/${want}, inline "Listen →": ${/>Listen →</.test(html)})`);
+}
+// STYLE-RULES R63 guard (Steven Oct 24 2026, supersedes R28 placement): on EVERY archive page each row's speaker Listen sits on the
+// TITLE line (div.ph-row-line, right-justified) -- never on the bottom 'In the newsletter' line; listen_title sections: one per listen item.
+for (const k of SECTION_ORDER) {
+  if (k === 'videos') continue;
+  const html = fs.readFileSync(path.join(OUT, `${k}.html`), 'utf8');
+  if (/class="ph-row-line ph-row-foot"[^\n]*class="ph-listen"/.test(html)) throw new Error(`${k}.html: R63 Listen must be on the row's title line, not the bottom line`);
+  const rows = html.split(/<div class="ph-row(?: ph-alt)?"/).slice(1);
+  for (const r of rows) { const L = r.indexOf('class="ph-listen"'), M = r.indexOf('<div class="ph-row-meta"');
+    if (L >= 0 && M >= 0 && L > M) throw new Error(`${k}.html: R63 a row's Listen is not on its title line`); }
+  if (S[k].listen_title) {
+    const want = S[k].items.filter((it) => it.listen && !it.hidden).length;
+    const got = (html.match(/<div class="ph-row-line"><a class="ph-row-title"[^\n]*<a class="ph-listen"[^>]*><img src="[^"]*speaker-read-aloud/g) || []).length;
+    if (got !== want || />Listen →</.test(html)) throw new Error(`${k}.html: R63 title-line Listen ${got}/${want}`);
+    const ao = S[k].items.filter((it) => it.listen && !it.hidden && Array.isArray(it.issues) && !it.issues.length).length;
+    const aoGot = (html.match(/<div class="ph-row-meta">In the newsletter: Archive only<\/div>/g) || []).length;
+    if (aoGot !== ao) throw new Error(`${k}.html: R32 archive-only rows need "In the newsletter: Archive only" (found ${aoGot}/${ao})`);
+  }
 }
 fs.writeFileSync(path.join(OUT, HOWTO_VIDEOS_HREF), howToVideosPage());  // R37 stub (not a hub page)
 { // R37: vercel.json must redirect the retired How To URL to Did You Know (idempotent)
