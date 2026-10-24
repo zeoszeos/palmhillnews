@@ -15,6 +15,8 @@ SHORT = [
  ("The brush dumpster is designated for brush and yard waste ONLY.", "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster.", B + "2026-10-22-sanitation-field-notice.html"),
  # Steven Oct 24 11:38 AM: Bill Bender's Holiday Greeting flyer (resident notice)
  ("A simple way for Palm Hill residents to send holiday greetings", "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community.", B + "2026-10-23-holiday-greeting-distribution-plan.html"),
+ # Steven Oct 24 1:27 PM: North Clubhouse ice machine notice (Steven's confirmed sentence; More -> its own page holding Elaine's sentence + his details)
+ ("The ice machine in the North Clubhouse was moved out of", "The ice machine in the North Clubhouse was moved out of the North meeting room and into the pool table room.", B + "2026-10-24-north-clubhouse-ice-machine-moved-notice.html"),
  # Steven Oct 23 6:38 PM: Library / stop sign / South Rec Webmaster notices
  ("The Library will be closed beginning MONDAY, OCTOBER 26TH", "The Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST. Pick up books by Sunday the 25th.", B + "2026-10-22-library-closed-notice.html"),
  ("Please observe the posted speed limits and come to a complete stop", "Please observe the posted speed limits and come to a complete stop at all stop signs throughout our community.", B + "2026-10-21-stop-sign-rules-notice.html"),

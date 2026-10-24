@@ -47,6 +47,11 @@ SOURCES = {
         subject="Holiday Greeting Distribution Plan", notice_title="A convenient way to send holiday cards for Palm Hill residents",
         use_existing_page=True,
         sections=[dict(heading="Holiday greetings within Palm Hill", keys=["holiday greetings"])], approved_omit=[]),
+    # Steven Oct 24 1:27 PM: ice machine notice (P&E report sentence + Steven's confirmed details)
+    "2026-10-24-north-clubhouse-ice-machine-moved-notice.html": dict(
+        subject="North Clubhouse Ice Machine Moved", notice_title="North Clubhouse Ice Machine Moved",
+        use_existing_page=True,
+        sections=[dict(heading="Ice machine moved to the pool table room", keys=["ice machine"])], approved_omit=[]),
     # Steven Oct 23 6:38 PM: three Webmaster emails (gotwicz); notice title = subject
     "2026-10-22-library-closed-notice.html": dict(
         subject="Library Closed starting the week of October 26th", notice_title="Library Closed starting the week of October 26th",

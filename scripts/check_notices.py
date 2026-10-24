@@ -22,7 +22,8 @@ def static(s):
     # R47/R60 (Oct 23): every Webmaster notice carries More → to the same page as its Source link
     for row in sec.split('<tr style="background:')[1:]:
         m = re.search(r'Source: <a href="([^"]+)"[^>]*>[^<]+</a>', row)  # R60b (Oct 24): any linked Source, not only Webmaster
-        if m and not re.search(r'href="' + re.escape(m.group(1)) + r'"[^>]*>More →', row): fails.append(f"R60/R47: Webmaster notice without More → {m.group(1)}")
+        _own = [u for _p, _s, u in _st.SHORT if u and _s in row]  # R60c (Oct 24): a notice whose Source is a report page may point More → at its own notice page
+        if m and not re.search(r'href="' + re.escape(m.group(1)) + r'"[^>]*>More →', row) and not (m.group(1).endswith("-committee-report.html") and _own and re.search(r'href="' + re.escape(_own[0]) + r'"[^>]*>More →', row)): fails.append(f"R60/R47: Webmaster notice without More → {m.group(1)}")
     for row in re.findall(r'margin-top:3px;">(.*?)</div>', sec, re.S):
         txt = re.sub(r"<[^>]+>", "", row)
         if len(txt) > 260 and "More →" not in txt: fails.append(f"R60: long notice without More → {txt[:50]!r}")

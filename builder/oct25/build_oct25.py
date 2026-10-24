@@ -349,6 +349,22 @@ HOLIDAY_BLOCKS = [
     source="Source: flyer from Bill Bender (Mari, Card.jpg), shown as sent with its text transcribed as printed.",
     title="Holiday Greeting Distribution Plan", sender="Bill Bender"), encoding="utf-8")
 _np.notice_listen.add("/workspace/oct18-batch", HOLIDAY_PAGE)
+# Steven Oct 24 1:27 PM: North Clubhouse ice machine notice = Elaine Cole's sentence (Oct 14 P&E report, verbatim) + Steven's own
+# confirmed details (he checked it in person), his words formed into sentences, no added facts. Title chosen (no source heading).
+ICE_PAGE = "2026-10-24-north-clubhouse-ice-machine-moved-notice.html"
+ICE_TITLE = "North Clubhouse Ice Machine Moved"   # chosen title (flagged: no source heading)
+ICE_ELAINE = "The ice machine has been relocated so it no longer is a nuisance to the classes."   # Elaine Cole, P&E Oct 14, verbatim
+ICE_STEVEN = ["The ice machine in the North Clubhouse was moved out of the North meeting room and into the pool table room.",
+              "It's more convenient, and people getting ice won't disturb any meetings going on in the meeting room."]
+_ICE_PE = "2026-10-14-planning-and-environmental-committee-report.html"
+assert ICE_ELAINE in (Path("/workspace/oct18-batch/pages") / _ICE_PE).read_text(encoding="utf-8"), "R60c: Elaine's ice machine sentence must be verbatim from the P&E Oct 14 report"
+ICE_TEASER = ICE_STEVEN[0]
+(Path("/workspace/oct18-batch/pages") / ICE_PAGE).write_text(_np.render(ICE_TITLE, "Saturday, Oct 24, 2026", [
+    ("h", "From the Planning and Environmental Committee Report (Oct 14, Elaine Cole)"), ("p", ICE_ELAINE),
+    ("h", "Details confirmed by Steven Leonowicz"), ("p", " ".join(ICE_STEVEN))],
+    source="Source: Oct P&E Committee Report", source_href=BASE + _ICE_PE, title=ICE_TITLE,
+    sender="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz"), encoding="utf-8")
+_np.notice_listen.add("/workspace/oct18-batch", ICE_PAGE)
 for _n, _subj, _sent, _blocks in WM_COPIES:
     _np.write("/workspace/oct18-batch", _n, _subj, _sent, _blocks)
 LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
@@ -362,6 +378,8 @@ HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings
 NOTICES = [
     # Steven Oct 24 11:38 AM: Bill Bender's flyer (resident notice; Source = Bill Bender, linked to its page)
     (HOLIDAY_TITLE, HOLIDAY_TEASER, "Bill Bender email", BASE + HOLIDAY_PAGE),
+    # Steven Oct 24 1:27 PM: position 3 (right after Bill Bender); Source links the Oct 14 P&E report page
+    (ICE_TITLE, ICE_TEASER, "Oct P&E Committee Report", BASE + _ICE_PE),
     # Steven Oct 23 6:38 PM: three more Webmaster emails (gotwicz), newest first; RPM duplicate of the stop sign email ignored
     ("Library Closed starting the week of October 26th", LIBRARY_TEASER, "Webmaster", BASE + WM_COPY_LIBRARY),
     # Steven Oct 23 5:09 AM (A, C): two Webmaster emails (gotwicz); one email = one notice (R42); RPM duplicate of the sanitation email ignored
@@ -402,11 +420,12 @@ NOTICES = [
 NOTICES_DROPPED_OCT25 = {"October Mowing Date", "Property Fraud Alert"}  # Steven Oct 21 8:43 PM: Property Fraud Alert dropped (its Vercel page stays live)  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
+NOTICE_LISTEN_OVERRIDE = {ICE_TITLE: BASE + ICE_PAGE}  # R60c: Listen reads the notice's own page (Source is the P&E report)
 def notice_rows():
     rows, items = [], [(TONY_FB[0], TONY_FB_TXT, "Tony Ciaramitaro, Communications Chair", None)] + NOTICES
     for i, (t, txt, sl, sh) in enumerate(items):
         ph = t == TONY_FB[0] and TONY_FB_PLACEHOLDER
-        lh = (sh + "?listen=1") if sh else (FB_LISTEN if t == TONY_FB[0] else None)
+        lh = (NOTICE_LISTEN_OVERRIDE.get(t, sh) + "?listen=1") if sh else (FB_LISTEN if t == TONY_FB[0] else None)
         assert lh, f"R60: notice {t!r} has no Listen page"
         right = listen(lh)
         src = f'Source: <a href="{sh}" style="color:{G};">{escape(sl)}</a>' if sh else f"Source: {escape(sl)}"
@@ -803,7 +822,9 @@ _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title=
                 dict(date="2026-10-25", id="2026-10-25-south-rec-club-seeking-officers", title="2027 South Rec Club Seeking Officers", text=SOUTHREC_TEASER,
                      page=WM_COPY_SOUTHREC, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"]),
                 dict(date="2026-10-25", id="2026-10-25-holiday-greeting-distribution-plan", title=HOLIDAY_TITLE, text=HOLIDAY_TEASER,
-                     page=HOLIDAY_PAGE, source="Flyer from Bill Bender, Oct 23", issues=["2026-10-25"])]
+                     page=HOLIDAY_PAGE, source="Flyer from Bill Bender, Oct 23", issues=["2026-10-25"]),
+                dict(date="2026-10-25", id="2026-10-25-north-clubhouse-ice-machine-moved", title=ICE_TITLE, text=ICE_TEASER,
+                     page=ICE_PAGE, source="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz", issues=["2026-10-25"])]
 _ai = _AI.read_text(encoding="utf-8"); _k = _ai.find('"community-notices": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
 _new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _NOTICE_ROWS if f'"page": "{r["page"]}"' not in _ai)
 if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
@@ -860,6 +881,15 @@ _hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
 if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
 _he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
 if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or ">Bill Bender email</a>" not in _hr: raise SystemExit("R60b: Bill Bender notice needs Source: Bill Bender email linked to " + HOLIDAY_PAGE)
+# STYLE-RULES R60c (Steven Oct 24 1:27 PM): ice machine notice -- exact title, 3rd notice (right after Bill Bender), Source
+# "Oct P&E Committee Report" linked to the Oct 14 P&E page, More -> its own notice page
+_ii = _hs.find(">" + ICE_TITLE + "<")
+if _ii < 0: raise SystemExit(f"R60c: Community Notice title {ICE_TITLE!r} not found")
+_ie = _hs.find('<tr style="background:', _ii); _ir = _hs[_ii:_ie if _ie > 0 else len(_hs)]
+if f'Source: <a href="{BASE + PE_1014_PAGE}"' not in _ir or ">Oct P&amp;E Committee Report</a>" not in _ir and ">Oct P&E Committee Report</a>" not in _ir: raise SystemExit("R60c: ice machine notice needs Source: Oct P&E Committee Report linked to " + PE_1014_PAGE)
+if not re.search(r'href="' + re.escape(BASE + ICE_PAGE) + r'"[^>]*>More →', _ir): raise SystemExit("R60c: ice machine notice needs More → " + ICE_PAGE)
+_tt = re.findall(r'font-weight:bold;color:#333333;text-align:left;padding-right:8px;">([^<]+)<', _hs)
+if len(_tt) < 3 or _tt[2] != ICE_TITLE or _hs.find(">" + HOLIDAY_TITLE + "<") > _ii: raise SystemExit(f"R60c: ice machine notice must be 3rd, right after Bill Bender: {_tt[:4]}")
 # R1 (Steven Oct 24 12:18 PM): normalize EVERY Listen button in the issue (incl. sections carried from the seed) to the shared inset
 def _r1_inset(m):
     a = m.group(0)
