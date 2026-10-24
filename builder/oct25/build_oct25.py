@@ -539,10 +539,17 @@ def chair_cards():
     # President's Message + weekly/monthly Manager reports: stay until replaced by a newer one or Steven overrides (no age cutoff)
     for i, (t, d, s, full, lis) in enumerate(sorted(shown, key=lambda c: c[1], reverse=True)):
         out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-bottom:1px solid #ddd;border-left:4px solid #2D5016;">'
-                   f'<div style="font-size:16px;font-weight:bold;color:#333333;">{escape(t)}</div>'
+                   # R63 (Steven Oct 24 2026): Listen on the card's TITLE line, right-justified (like the other sections), not beside Read Full Report
+                   f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr><td valign="top" align="left" style="font-size:16px;line-height:20px;font-weight:bold;color:#333333;text-align:left;padding-right:8px;">{escape(t)}</td>'
+                   f'<td valign="top" align="right" style="font-size:15px;line-height:20px;text-align:right;white-space:nowrap;width:1%;">{listen(lis)}</td></tr></table>'
                    f'<div style="font-size:14px;color:#666666;margin-top:2px;">{pdate(d)}</div>'
                    f'<div style="font-size:17px;line-height:1.45;color:#333333;margin-top:5px;">{escape(s)}</div>'
-                   f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin-top:8px;"><tr><td align="left" style="font-size:15px;text-align:left;"><a href="{full}" style="color:{G};white-space:nowrap;">Read Full Report →</a></td><td align="right" style="font-size:15px;text-align:right;white-space:nowrap;width:1%;">{listen(lis)}</td></tr></table></td></tr>')
+                   f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin-top:8px;"><tr><td align="left" style="font-size:15px;text-align:left;"><a href="{full}" style="color:{G};white-space:nowrap;">Read Full Report →</a></td></tr></table></td></tr>')
+    # R63 guard: every chair card's Listen sits on its title line (before the date line); none beside Read Full Report
+    for _r in out:
+        if ">Listen</a>" in _r:
+            assert _r.index(">Listen</a>") < _r.index('color:#666666;margin-top:2px;'), "R63: chair card Listen must be on the title line"
+            assert ">Listen</a>" not in _r[_r.index("Read Full Report"):], "R63: Listen beside Read Full Report"
     out.append(f'<tr><td style="padding:6px 8px;font-size:14px;"><a href="{ARCH}committee-reports.html" style="color:{G};">Committee Report Archives →</a></td></tr>')
     return "".join(out)
 
