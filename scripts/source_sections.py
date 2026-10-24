@@ -37,6 +37,38 @@ SOURCES = {
         subject="Shuffleboard Information", notice_title="Shuffleboard Season Reminders",
         use_existing_page=True,  # R47 (Steven, Oct 18 12:23 AM): More → / Listen open the Webmaster full-email page
         sections=[dict(heading="Shuffleboard reminders", keys=["courts"])], approved_omit=[]),
+    # Steven Oct 23 5:09 AM: two Webmaster emails (gotwicz); RPM's duplicate of the sanitation email is ignored
+    "2026-10-22-sanitation-field-notice.html": dict(
+        subject="Help with maintaining Sanitation Field", notice_title="Help with maintaining Sanitation Field",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Brush Dumpster - Brush Only", keys=["brush dumpster"]), dict(heading="Broken Pavers", keys=["pavers"])], approved_omit=[]),
+    # Steven Oct 24 11:38 AM: Bill Bender's flyer -- one flyer = one notice titled with its heading
+    "2026-10-23-holiday-greeting-distribution-plan.html": dict(
+        subject="Holiday Greeting Distribution Plan", notice_title="A convenient way to send holiday cards for Palm Hill residents",
+        use_existing_page=True,
+        sections=[dict(heading="Holiday greetings within Palm Hill", keys=["holiday greetings"])], approved_omit=[]),
+    # Steven Oct 24 1:27 PM: ice machine notice (P&E report sentence + Steven's confirmed details)
+    "2026-10-24-north-clubhouse-ice-machine-moved-notice.html": dict(
+        subject="North Clubhouse Ice Machine Moved", notice_title="North Clubhouse Ice Machine Moved",
+        use_existing_page=True,
+        sections=[dict(heading="Ice machine moved to the pool table room", keys=["ice machine"])], approved_omit=[]),
+    # Steven Oct 23 6:38 PM: three Webmaster emails (gotwicz); notice title = subject
+    "2026-10-22-library-closed-notice.html": dict(
+        subject="Library Closed starting the week of October 26th", notice_title="Library Closed starting the week of October 26th",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Library closed Oct 26 - Nov 1", keys=["Library will be closed"])], approved_omit=[]),
+    "2026-10-21-stop-sign-rules-notice.html": dict(
+        subject="Please observe important stop sign rules", notice_title="Please observe important stop sign rules",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Speed limits and stop signs", keys=["stop signs"])], approved_omit=[]),
+    "2026-10-21-south-rec-club-seeking-officers-notice.html": dict(
+        subject="2027 South Rec Club Seeking Officers", notice_title="2027 South Rec Club Seeking Officers",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="2027 election positions", keys=["2027 election"])], approved_omit=[]),
+    "2026-10-20-couples-golf-league-notice.html": dict(
+        subject="Couples Golf Leagur", notice_title="Couples Golf League",
+        use_existing_page=True,  # R47
+        sections=[dict(heading="Couples Golf League", keys=["Couples Golf League"])], approved_omit=[]),
     "2026-10-14-taste-of-golf-notice.html": dict(
         subject="Taste of Golf", notice_title="Taste of Golf — November 18",
         use_existing_page=True,  # R47 (Steven, Oct 18 12:23 AM): More → / Listen open the Webmaster full-email page
@@ -105,7 +137,7 @@ def check_issue(issue):
             url = BASE + p
             if not any(l.split("?")[0] == url for l in r["links"]):
                 fails.append(f"R42e {r['title']}: More/Listen must open the existing source page {url}")
-            gen = [l for l in r["links"] if "2026-10-18-notice-" in l or "/previews/2026-10-18/notices/" in l]
+            gen = [l for l in r["links"] if re.search(r"\d{4}-\d{2}-\d{2}-notice-|/previews/\d{4}-\d{2}-\d{2}/notices/", l)]  # A6: any issue date
             if gen: fails.append(f"R42e {r['title']}: links a generated notice page {gen}; use_existing_page means no new page")
     return fails
 

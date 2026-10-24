@@ -54,7 +54,8 @@ print('R44 archive top-area violations:',r44)
 # STYLE-RULES L27/L29: Source credits on the current issue (review copy) and its generated notice pages carry no date and
 # every 'Webmaster' is the linked short word. Archived issue copies keep their sent wording and are not checked.
 l27=[]
-for rel in ['pages/previews/2026-10-18/PHNEWS-2026-10-18-preview.html']+sorted('pages/'+f for f in os.listdir(os.path.join(R,'pages')) if f.startswith('2026-10-18-notice-')):
+_ISS=_SR.current_issue(R)  # A6 (Oct 24): current issue, not a hard-coded Oct 18
+for rel in [f'pages/previews/{_ISS}/PHNEWS-{_ISS}-preview.html']+sorted('pages/'+f for f in os.listdir(os.path.join(R,'pages')) if f.startswith(f'{_ISS}-notice-')):
   fp=os.path.join(R,rel)
   if os.path.exists(fp):
     v=_SR.source_credit_violations(open(fp,errors='ignore').read())

@@ -98,7 +98,13 @@ def required_pages():
         why = ("archive section " + mem[rel]) if rel in mem else ("page name" if REQ_NAME.search(os.path.basename(rel)) else ("email copy" if EMAIL_COPY.search(t) else None))
         if why: out[rel] = why
     return out
-DEFAULT_SEND = os.environ.get("PHNEWS_SEND_HTML", "/workspace/oct18-additions/PHNEWS-2026-10-18-SEND.html")
+def _default_send():  # A6 (Oct 24): the current issue's SEND file (PHNEWS_ISSUE or newest preview folder)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import style_rules as _s
+    iss = _s.current_issue(R)
+    for c in (f"/workspace/phnews-consolidation/oct18/PHNEWS-{iss}-SEND.html", f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"):
+        if os.path.exists(c): return c
+    return f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"
+DEFAULT_SEND = os.environ.get("PHNEWS_SEND_HTML") or _default_send()
 def nl_files():
     out = []
     for dp, _, fs in os.walk(os.path.join(R, "pages")):
@@ -191,7 +197,8 @@ def main(args, live=None, nl=None, nl_only=False):
                     t = blk["text"].strip()
                     if not t or INTENTIONAL.match(t) or not re.search(r"[A-Za-z0-9]", t): continue
                     if norm(t) not in spoken: miss.append(f"{blk['tag']}: {re.sub(r'\s+', ' ', t)[:90]}")
-                    elif len(norm(t)) > 60 and spoken.count(norm(t)) > 1 and sum(norm(x["text"]) == norm(t) for x in blocks) == 1:
+                    elif len(norm(t)) > 60 and spoken.count(norm(t)) > 1 and sum(norm(x["text"]) == norm(t) for x in blocks) == 1 \
+                            and spoken.count(norm(t)) > sum(norm(t) in norm(x["text"]) for x in blocks):  # Oct 20: text quoted again inside another visible block (DYK email line + full rule) is read once per block, not a double read
                         miss.append(f"double-read {blk['tag']}: {re.sub(r'\s+', ' ', t)[:90]}")
                 if not spoken: miss.insert(0, "nothing spoken")
                 if rel in targets:  # R49b: ?listen=1 must start reading by itself, title first
