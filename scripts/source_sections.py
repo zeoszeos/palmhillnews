@@ -137,7 +137,7 @@ def check_issue(issue):
             url = BASE + p
             if not any(l.split("?")[0] == url for l in r["links"]):
                 fails.append(f"R42e {r['title']}: More/Listen must open the existing source page {url}")
-            gen = [l for l in r["links"] if "2026-10-18-notice-" in l or "/previews/2026-10-18/notices/" in l]
+            gen = [l for l in r["links"] if re.search(r"\d{4}-\d{2}-\d{2}-notice-|/previews/\d{4}-\d{2}-\d{2}/notices/", l)]  # A6: any issue date
             if gen: fails.append(f"R42e {r['title']}: links a generated notice page {gen}; use_existing_page means no new page")
     return fails
 

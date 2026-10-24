@@ -290,7 +290,7 @@ def webmaster_more_violations(s, repo=None):
             if h.split("?")[0] != wm: bad.append(f"{title}: More → {h} differs from the Webmaster source {wm}")
         for h in lis:
             if h != wm + "?listen=1": bad.append(f"{title}: Listen {h} must be {wm}?listen=1")
-        short = [h for h in hrefs if "2026-10-18-notice-" in h or "/previews/2026-10-18/notices/" in h]
+        short = [h for h in hrefs if ISSUE_NOTICE_RE.search(h)]  # A6 (Oct 24): any issue date, not only Oct 18
         if short: bad.append(f"{title}: links a short notice page {short}")
         if repo is not None:
             import os as _os
@@ -395,3 +395,14 @@ def assert_dyk_blocks(html, n):
         if not _re.search(r'<div class="ph-dyk-more"[^>]*><a href="[^"]+"[^>]*>More →</a></div>', b): raise SystemExit(f"R57: {t.group(1)}: More → not on its own line")
         if "border-bottom:10px solid #FFFFFF" not in b: raise SystemExit(f"R57: {t.group(1)}: no separation between items")
     return html
+
+
+# A6 (Steven-approved Oct 24 2026, Claude review): issue-date-agnostic helpers shared by the scripts below.
+# The current issue = PHNEWS_ISSUE env var, else the newest pages/previews/YYYY-MM-DD folder.
+ISSUE_NOTICE_RE = re.compile(r"\d{4}-\d{2}-\d{2}-notice-|/previews/\d{4}-\d{2}-\d{2}/notices/")
+def current_issue(repo=None):
+    import os as _o
+    if _o.environ.get("PHNEWS_ISSUE"): return _o.environ["PHNEWS_ISSUE"]
+    repo = repo or _o.path.dirname(_o.path.dirname(_o.path.abspath(__file__)))
+    ds = sorted(d for d in _o.listdir(_o.path.join(repo, "pages", "previews")) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d))
+    return ds[-1]

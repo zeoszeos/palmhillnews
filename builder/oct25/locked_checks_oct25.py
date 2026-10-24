@@ -22,14 +22,17 @@ SECTION_ORDER_NO_THIS_WEEK = [h for h in SECTION_ORDER if h != "Events - This We
 MEETINGS_EXPECTED = []  # Oct 18: run_checks.py fills Meetings / This Week / Upcoming from build-audit-oct18.json (calendar pull)
 THIS_WEEK_EXPECTED = []  # L07 (Oct 11 ~10:09 AM ET, Steven item 13: Karaoke Obi-Time moved to Recurring -> This Week empty for Oct 11)
 UPCOMING_EXPECTED = []  # filled by run_checks.py from build-audit-oct18.json
-TREAT_AS_RECURRING = ["Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time"]  # + Karaoke Obi-Time (Steven, Oct 11 ~10:09 AM ET, Tony item 13)
+TREAT_AS_RECURRING = ["Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"]  # A3 (Oct 24): + Writing Club; run_checks_oct25 asserts this equals build_oct25/recurring_oct25 AS_RECURRING  # + Karaoke Obi-Time (Steven, Oct 11 ~10:09 AM ET, Tony item 13)
 # L09/L19 (I Got It all dates, Steven Oct 9 ~8:35 PM; on Recurring pages ~8:45 PM)
-NOTICES_EXPECTED = [  # L11 refreshed for Oct 18 (Steven, Oct 17 10:29 PM): R42 -- Linda's email is ONE notice, "Info from Linda"
-    "Join the Palm Hill Residents Group on Facebook", "Swimming Pool Food and Beverage Rules", "November Coffee and Pancake Volunteers",
-    "Shuffleboard Season Reminders", "Taste of Golf — November 18", "Info from Linda", "Property Fraud Alert", "October Mowing Date"]
-CHAIR_EXPECTED = {  # L13 refreshed for Oct 18 (30-day retention): title -> intro
-    "Golf Advisory Committee": "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",
-    "Communications Committee": "Tony Ciaramitaro chaired his first meeting: booking system, Facebook trial, Zoom training."}
+NOTICES_EXPECTED = [  # A2 (Oct 24): L11 locked for Oct 25 as approved (format-locked-2026-10-25-proof + R60b/R60c), in order
+    "Join the Palm Hill Residents Group on Facebook", "A convenient way to send holiday cards for Palm Hill residents",
+    "North Clubhouse Ice Machine Moved", "Library Closed starting the week of October 26th", "Help with maintaining Sanitation Field",
+    "Please observe important stop sign rules", "2027 South Rec Club Seeking Officers", "Couples Golf League",
+    "Swimming Pool Food and Beverage Rules", "November Coffee and Pancake Volunteers", "Shuffleboard Season Reminders",
+    "Taste of Golf — November 18", "Info from Linda"]
+CHAIR_EXPECTED = {  # A1 (Oct 24): L13 refreshed for Oct 25 -- P&E (Oct 14) + Golf (Oct 13); title -> intro
+    "Planning and Environmental Committee": "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",
+    "Golf Advisory Committee": "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026."}
 FULL_MONTHS = ("January","February","March","April","May","June","July","August","September","October","November","December")
 # L21 CODE POLICY M3 (Steven, Oct 9, 2026 ~8:57 PM ET): every user-visible month is 3 letters. "May" is already 3 letters.
 FULL_MONTH_RE = re.compile(r'\b(January|February|March|April|June|July|August|September|October|November|December)\b')
