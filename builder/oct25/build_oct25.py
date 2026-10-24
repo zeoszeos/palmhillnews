@@ -198,8 +198,10 @@ def ev_rows(evs):
     for _n, _u in MATCHED_NOTICE.items():  # R56b (Steven Oct 21 11:20 AM): a matched event's notice must be listed in Community Notices
         if any(e["name"] == _n for e in evs): assert any(n[3] == _u for n in NOTICES), f"R56b: {_n} links notice {_u} but it is not in Community Notices"
     return "".join(out)
+# R1 (Steven Oct 24 12:18 PM): every Listen button sits ~14px in from its row's right edge (shared, not per-page)
+LISTEN_INSET = "margin-right:14px;"
 def listen(href, size=15):
-    return (f'<a href="{href}" style="color:{G};white-space:nowrap;font-size:14px;"><img src="{SPK}" width="24" height="24" alt="" '
+    return (f'<a href="{href}" style="color:{G};white-space:nowrap;font-size:14px;display:inline-block;{LISTEN_INSET}"><img src="{SPK}" width="24" height="24" alt="" '
             f'style="display:inline-block;width:24px;height:24px;vertical-align:middle;border:0;outline:none;text-decoration:none;margin:-3px 4px -3px 0;">Listen</a>')
 def title_row(title, right):
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr><td valign="top" align="left" style="font-size:15px;line-height:18px;font-weight:bold;color:#333333;text-align:left;padding-right:8px;">{title}</td>'
@@ -591,7 +593,13 @@ s = s.replace("2026-10-11-recurring-activities-by-", f"{RECURRING[0]}-recurring-
 _JC = json.load(open("/workspace/oct18-batch/builder/oct25/data/community-story-joe-clay.json", encoding="utf-8"))
 # Oct 25 (PR #130, Steven Oct 19): Joe Clay - Keeper of The Course; date line Oct 1, 2026; credit line TBD (no source credit printed;
 # new rule Oct 20: no Palm Hill Link name inside articles). Preview pages until publish creates the live page (_JC live_page_planned).
-STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_JC["teaser_candidate"],
+# R18c (Steven Oct 24 12:18 PM): over-long phone teasers are CUT (never reworded) to their first source sentence(s);
+# the full text stays word-for-word on the item's own page. Guard: the cut must be a prefix of the source text.
+def _R18_CUT(text, n):
+    import re as _re0
+    sents = _re0.split(r"(?<=[.!?])\s+", text.strip()); cut = " ".join(sents[:n])
+    assert text.startswith(cut) and cut, ("R18c cut is not a prefix of the source", text); return cut
+STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_R18_CUT(_JC["teaser_candidate"], 1),
              page=_JC["live_page_planned"], listen="2026-10-listen-joe-clay-story.html",   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
              source=None, archive_title=_JC["title"])
 COMMUNITY_STORIES_OMIT_APPROVED = None   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
@@ -727,7 +735,7 @@ _DYK25 = json.load(open("/workspace/oct18-batch/builder/oct25/data/dyk-link-oct2
 _DYK3 = json.load(open("/workspace/oct18-batch/builder/oct25/data/dyk-dave-assessments.json", encoding="utf-8"))
 _PV25 = "https://palmhillnews.vercel.app/pages/previews/2026-10-25/"
 # R39 distilled teasers: at most 3 verbatim sentences from each item (ALL CAPS kept, RD9)
-_TEASE = {"2026-10-25-spectrum-information": "SPECTRUM SUPPORT PHONE NUMBER: 877-647-7732 is the Community Solutions Line for Bulk Owners Customer Support. This phone number is setup for Communities like Palm Hill.",
+_TEASE = {"2026-10-25-spectrum-information": "SPECTRUM SUPPORT PHONE NUMBER: 877-647-7732 is the Community Solutions Line for Bulk Owners Customer Support.",  # R18c cut (Steven Oct 24 12:18 PM)
           "2026-10-25-spectrum-music-channels": "Did you know with our new Spectrum set up we have access to several music channels? Simply turn on your TV then select the Spectrum app."}
 # R57 (Steven Oct 21 11:22 AM): each Did You Know item is its own block -- bold title (the item's source heading), teaser, then
 # More → on its own line; a white gap + green left bar separates items. Guard: style_rules.assert_dyk_blocks.
@@ -746,8 +754,11 @@ for _it in _DYK25["items"]:
 _d3src = _DYK3["email_paragraphs"] + [x for _, x in _DYK3["rule_items"]]
 # Steven Oct 21 11:22 AM: teaser = distilled summary in the official rule's own words (R39 distilled: verbatim sentences, <= 300 chars)
 # Steven Oct 21 11:39 AM: teaser in the rule's own words (his wording). Guard: every content word is in the official rule text.
-_DYK3_TEASER = ("$100.00 total ($50.00 transfer + $50.00 administrative) is required when a home/unit is transferred; "
+_DYK3_TEASER_FULL = ("$100.00 total ($50.00 transfer + $50.00 administrative) is required when a home/unit is transferred; "
                 "maintenance fees are due on the first day of the month, delinquent if not received by the tenth.")
+# R18c (Steven Oct 24 12:18 PM): cut at the semicolon (no rewording) so the phone teaser is <= 3 lines
+_DYK3_TEASER = _DYK3_TEASER_FULL.split("; ")[0] + "."
+assert _DYK3_TEASER_FULL.startswith(_DYK3_TEASER[:-1])
 _rw = set(re.findall(r"[a-z0-9$.]+", " ".join(x for _, x in _DYK3["rule_items"]).lower().replace("home/unit", "home unit")))
 _tw = [w.strip(".") for w in re.findall(r"[a-z0-9$.]+", _DYK3_TEASER.lower().replace("home/unit", "home unit"))]
 _bad = [w for w in _tw if w and w not in _rw and w.rstrip(".") not in {x.rstrip(".") for x in _rw} and w not in {"if", "are", "total"}]
@@ -842,6 +853,13 @@ _hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
 if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
 _he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
 if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or ">Bill Bender email</a>" not in _hr: raise SystemExit("R60b: Bill Bender notice needs Source: Bill Bender email linked to " + HOLIDAY_PAGE)
+# R1 (Steven Oct 24 12:18 PM): normalize EVERY Listen button in the issue (incl. sections carried from the seed) to the shared inset
+def _r1_inset(m):
+    a = m.group(0)
+    if LISTEN_INSET in a: return a
+    return re.sub(r'^<a ([^>]*?)style="([^"]*)"', lambda k: f'<a {k.group(1)}style="{k.group(2).rstrip(";")};white-space:nowrap;display:inline-block;{LISTEN_INSET}"', a, count=1)
+s = re.sub(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', _r1_inset, s)
+assert all(LISTEN_INSET in m.group(0) for m in re.finditer(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', s)), "R1 Listen inset missing"
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 sys.path.insert(0, "/workspace/oct18-batch/scripts"); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
