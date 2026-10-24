@@ -829,6 +829,13 @@ _rw = set(re.findall(r"[a-z0-9$.]+", " ".join(x for _, x in _DYK3["rule_items"])
 _tw = [w.strip(".") for w in re.findall(r"[a-z0-9$.]+", _DYK3_TEASER.lower().replace("home/unit", "home unit"))]
 _bad = [w for w in _tw if w and w not in _rw and w.rstrip(".") not in {x.rstrip(".") for x in _rw} and w not in {"if", "are", "total"}]
 assert not _bad, f"R39: DYK #3 teaser words not in the official rule: {_bad}"
+# R66 (Steven Oct 24 2026 3:02 PM): Rules DYK teaser generated from the rule's lettered parts; phrase override per item.
+_R66_PHRASES = {"2026-10-25-assessments-due": ["home transfer fees", ["monthly maintenance fee due dates", "late fees"]]}  # A, B
+_DYK3_TEASER, _r66p = _sr_dyk.rules_dyk_teaser(_DYK3["rule_items"], _R66_PHRASES.get(_DYK3["id"]))
+_sr_dyk.assert_rules_dyk(_DYK3_TEASER, _DYK3["rule_items"], _r66p, _DYK3["id"])
+assert _DYK3_TEASER == "Information on home transfer fees, monthly maintenance fee due dates, and late fees.", _DYK3_TEASER  # Steven's chosen option 2
+# R66 covers every Rules DYK item (any item carrying rule_items); the Spectrum items are not rules.
+assert not any("rule_items" in _it for _it in _DYK25["items"]), "R66: new Rules DYK item needs an _R66_PHRASES entry / review"
 DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, BASE + _dyk_final(_DYK3["preview_page"]))))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
 DYK_MULTI_APPROVED = _DYK25["dyk_multi_approved"] + "; " + _DYK3["multi_approved"]
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
