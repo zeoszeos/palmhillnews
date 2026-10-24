@@ -406,3 +406,46 @@ def current_issue(repo=None):
     repo = repo or _o.path.dirname(_o.path.dirname(_o.path.abspath(__file__)))
     ds = sorted(d for d in _o.listdir(_o.path.join(repo, "pages", "previews")) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d))
     return ds[-1]
+
+
+# STYLE-RULES R66 (Steven, Oct 24 2026 3:02 PM): Rules & Regulations Did You Know teasers are generated from the rule's
+# lettered parts (A, B, C...): one short topic phrase per part, joined as "Information on X, Y, and Z." Phrases may only
+# use topics present in the rule text (per-item override of the phrase list allowed). <= 3 lines at 390px mobile.
+R66_GENERIC = {"information", "on", "and", "the", "of", "for", "dates", "date", "due", "rules", "when", "how"}
+R66_MAX_CHARS_390 = 135  # 15px Arial in the DYK block at 390px (~45 chars/line x 3), conservative
+
+def _r66_words(t):
+    return re.findall(r"[a-z]+", t.lower())
+
+def rules_dyk_phrase_auto(part_text):
+    """Default topic phrase for a lettered part: its first sentence's subject words up to the verb (source words only)."""
+    first = re.split(r"(?<=[.])\s", part_text.strip())[0]
+    m = re.split(r"\b(?:is|are|shall|must|may|will)\b", first, maxsplit=1)[0]
+    return re.sub(r"^(?:a|an|the)\s+", "", m.strip().rstrip(",").lower())
+
+def rules_dyk_teaser(rule_items, phrases=None):
+    # one entry per lettered part; an entry may be a list of topics when a part covers several (e.g. due dates + late fees)
+    phrases = list(phrases) if phrases else [rules_dyk_phrase_auto(t) for _, t in rule_items]
+    flat = [x for p in phrases for x in ([p] if isinstance(p, str) else p)]
+    if len(flat) == 1: body = flat[0]
+    elif len(flat) == 2: body = f"{flat[0]} and {flat[1]}"
+    else: body = ", ".join(flat[:-1]) + ", and " + flat[-1]
+    return f"Information on {body}.", phrases
+
+def rules_dyk_violations(teaser, rule_items, phrases):
+    v = []
+    if not re.fullmatch(r"Information on .+\.", teaser): v.append("not in 'Information on ...' form")
+    if len(phrases) != len(rule_items): v.append(f"{len(phrases)} topic phrases for {len(rule_items)} lettered parts")
+    rule_w = set(_r66_words(" ".join(t for _, t in rule_items)))
+    for p in [x for q in phrases for x in ([q] if isinstance(q, str) else q)]:
+        if p.lower() not in teaser.lower(): v.append(f"phrase not in teaser: {p!r}")
+        for w in _r66_words(p):
+            if w in R66_GENERIC: continue
+            st = w[:5] if len(w) > 5 else w.rstrip("s")
+            if not any(r.startswith(st) for r in rule_w): v.append(f"topic word not in rule text: {w!r}")
+    if len(teaser) > R66_MAX_CHARS_390: v.append(f"over 3 lines at 390px ({len(teaser)} > {R66_MAX_CHARS_390} chars)")
+    return v
+
+def assert_rules_dyk(teaser, rule_items, phrases, name=""):
+    v = rules_dyk_violations(teaser, rule_items, phrases)
+    if v: raise SystemExit(f"R66: Rules DYK teaser {name!r}: " + "; ".join(v))
