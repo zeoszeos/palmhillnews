@@ -128,9 +128,32 @@ MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to
 # STYLE-RULES R62 (Steven Oct 23 6:38 PM): P&E next meeting = Elaine Cole's date (her Oct 14 report): Tuesday Nov 10, 12:30 PM;
 # no "(date to be confirmed)". Data override only; her report page wording is untouched (her "a.m." stays as written).
 MTG_OVERRIDE = {"Planning and Environmental Committee Meeting": dict(date="2026-11-10", start="12:30")}
+# STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting = its own Oct 22 agenda item 12 "Set next meeting date November 18, 2026"
+# (calendar says Mon Nov 16). Date only; calendar time (10:00 AM) and place kept since the agenda gives no time; no TBC note.
+_FIN_AGENDA = Path("/workspace/oct18-batch") / "pages/2026-10-10-finance-committee-meeting-notice.html"
+assert "12 Set next meeting date November 18, 2026" in open(_FIN_AGENDA, encoding="utf-8").read(), "R62b: Finance agenda item 12 wording changed"
+for _k in ("Finance Committee Meeting", "Finance Committee"): MTG_OVERRIDE[_k] = dict(date="2026-11-18")
+_R62B_HITS = []
+# STYLE-RULES R62c (LOCKED, Steven Oct 24 1:35 PM): a committee's own agenda/report next-meeting date beats the calendar.
+# Every MTG_OVERRIDE entry must cite its agenda/report page, and that page must exist and contain the cited wording.
+MTG_OVERRIDE_SOURCE = {
+    "Planning and Environmental Committee Meeting": ("pages/2026-10-14-planning-and-environmental-committee-report.html", "Nov"),
+    "Finance Committee Meeting": ("pages/2026-10-10-finance-committee-meeting-notice.html", "12 Set next meeting date November 18, 2026"),
+    "Finance Committee": ("pages/2026-10-10-finance-committee-meeting-notice.html", "12 Set next meeting date November 18, 2026"),
+}
+for _k in MTG_OVERRIDE:
+    if _k not in MTG_OVERRIDE_SOURCE: raise SystemExit(f"R62c: meeting override {_k!r} has no cited agenda/report source")
+    _sp, _sw = MTG_OVERRIDE_SOURCE[_k]
+    if not (Path("/workspace/oct18-batch") / _sp).exists() or _sw not in open(Path("/workspace/oct18-batch") / _sp, encoding="utf-8").read():
+        raise SystemExit(f"R62c: meeting override {_k!r} source {_sp} missing or lacks {_sw!r}")
 for _e in meetings:
     _o = MTG_OVERRIDE.get(CANON.get(_e["name"], _e["name"]))
-    if _o: _e.update(_o); _e.pop("note", None)
+    if _o:
+        _cal_start = _e.get("start", "")
+        _e.update(_o); _e.pop("note", None); _R62B_HITS.append(_e["name"])
+        # R62c time rule: an override without a source time keeps the calendar time (and place), or none if the calendar has none
+        if "start" not in _o and _e.get("start", "") != _cal_start:
+            raise SystemExit(f"R62c: override {_e['name']!r} has no source time but its time changed from the calendar's {_cal_start!r}")
 meetings = sorted(meetings + MTG_EXTRA, key=lambda e: (e["date"], e["start"]))
 # R54 (Steven Oct 20 4:33 PM): no meeting listed twice -- one row per committee/board, the NEXT instance only. MTG_EXTRA rows
 # (agenda/TBC additions) were appended after the calendar's one-per-committee pass, so Board Oct 28 (calendar) + Board Nov 18 (TBC) both showed.
@@ -876,6 +899,11 @@ import re as _re62; _pe = _re62.sub(r"<[^>]+>", " ", s[s.find("Planning and Envi
 _pe = _pe[:_pe.find("Source")] if "Source" in _pe else _pe
 if not ("Tuesday, Nov 10, 2026" in _pe and "12:30 PM" in _pe and "to be confirmed" not in _pe):
     raise SystemExit("R62: P&E next meeting row must be Tuesday, Nov 10, 2026 12:30 PM with no '(date to be confirmed)': " + " ".join(_pe.split())[:200])
+# STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting row = Wednesday, Nov 18, 2026 10:00 AM, calendar place, no TBC
+_fi = s.find(">Finance Committee<"); _fn = _re62.sub(r"<[^>]+>", " ", s[_fi:][:1200]) if _fi >= 0 else ""
+_fn = _fn[:_fn.find("Source")] if "Source" in _fn else _fn
+if not ("Wednesday, Nov 18, 2026" in _fn and "10:00 AM" in _fn and "South Clubhouse Boardroom" in _fn and "to be confirmed" not in _fn and "Nov 16" not in s):
+    raise SystemExit("R62b: Finance next meeting row must be Wednesday, Nov 18, 2026 10:00 AM, South Clubhouse Boardroom, no TBC: " + " ".join(_fn.split())[:200])
 # STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page
 _hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
 if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
