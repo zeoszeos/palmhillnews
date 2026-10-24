@@ -449,3 +449,28 @@ def rules_dyk_violations(teaser, rule_items, phrases):
 def assert_rules_dyk(teaser, rule_items, phrases, name=""):
     v = rules_dyk_violations(teaser, rule_items, phrases)
     if v: raise SystemExit(f"R66: Rules DYK teaser {name!r}: " + "; ".join(v))
+
+# R66b (Steven, Oct 24 2026 3:16 PM): the Did You Know Archives teaser for a current-issue Rules DYK item is the SAME
+# R66 teaser as the main page (one source: rules_dyk_teaser). Past issues' rows stay exactly as sent.
+def sync_rules_dyk_archive_text(ai_text, issue_date, row_id, teaser):
+    """Set the archive-items.json DYK row text (issue_date, row_id) to the R66 teaser; returns new json text."""
+    import json as _j
+    d = _j.loads(ai_text); rows = d["sections"]["did-you-know"]["items"]
+    hit = [r for r in rows if r.get("id") == row_id and r.get("date") == issue_date]
+    if len(hit) != 1: raise SystemExit(f"R66b: expected one DYK archive row {issue_date}/{row_id}, found {len(hit)}")
+    old = hit[0]["text"]
+    if old == teaser: return ai_text
+    pat = '"id": "' + row_id + '", '
+    i = ai_text.find(pat); j = ai_text.find('"text": ', i) + len('"text": ')
+    k = j + len(_j.dumps(old, ensure_ascii=False))
+    assert ai_text[j:k] == _j.dumps(old, ensure_ascii=False), "R66b: archive row text not found verbatim"
+    out = ai_text[:j] + _j.dumps(teaser, ensure_ascii=False) + ai_text[k:]
+    _j.loads(out); return out
+
+def assert_rules_dyk_archive(archive_html, row_id, main_teaser):
+    """R66b guard: the rendered Did You Know Archives row equals the main-page teaser of the same build."""
+    import re as _re, html as _h
+    m = _re.search(r'<div class="ph-row" id="' + _re.escape(row_id) + r'">.*?<div class="ph-detail">(.*?)</div>', archive_html, _re.S)
+    if not m: raise SystemExit(f"R66b: DYK archive row {row_id!r} not found")
+    got = _h.unescape(m.group(1)).strip()
+    if got != main_teaser: raise SystemExit(f"R66b: DYK archive teaser {row_id!r} differs from main page: {got!r} != {main_teaser!r}")

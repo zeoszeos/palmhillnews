@@ -855,6 +855,9 @@ for _it in _DYK25["items"]:
 _k = _ai.find('"did-you-know": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
 _new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _DYK_ROWS if f'"page": "{r["page"]}"' not in _ai)
 if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
+# R66b (Steven Oct 24 3:16 PM): current-issue Rules DYK archive row uses the same R66 teaser as the main page (past rows untouched)
+_ai2 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-25", _DYK_ROWS[0]["id"], _DYK3_TEASER)
+if _ai2 != _AI.read_text(encoding="utf-8"): _AI.write_text(_ai2, encoding="utf-8")
 ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
 _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
@@ -967,6 +970,7 @@ if _rc.returncode != 0: raise SystemExit("R64: run_checks_oct25 FAIL\n" + "\n".j
 import subprocess as _sp3
 _ba = _sp3.run(["node", "scripts/build_archive.js"], cwd="/workspace/oct18-batch", capture_output=True, text=True)
 print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
+_sr_dyk.assert_rules_dyk_archive(Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8"), _DYK_ROWS[0]["id"], _DYK3_TEASER)  # R66b
 _ca = Path("/workspace/oct18-batch/pages/archive/community-stories.html").read_text(encoding="utf-8")
 ARCHIVE_BACKED.append(("community-stories.html", STORY["page"]))
 for _ap, _pg in ARCHIVE_BACKED:  # R59 guard: every archive-backed issue item is on its archive page and the page exists
