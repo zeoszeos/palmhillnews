@@ -21,6 +21,8 @@ Branch `nov1-build` (off main 610be36). Oct 25 issue, SEND file, live pages and 
   Everything Nov 1 inherits from Oct 25 is copied there under `CARRIED FROM OCT 25 (Steven to review)`.
 - **Locked-check expectations for Nov 1** (L08 Upcoming label, L11 Notices, CHAIR): `LOCKED = {...}` in `builder/issues/2026-11-01.py`
   holds today's (Oct 25) values marked "TO REVIEW when Nov 1 content approved"; update them once Steven approves content. New weeks: see `docs/NEW-ISSUE-HOWTO.md`.
+- **Batch 6:** pull-in check `python3 builder/nov1/stage_nov1_content.py` (R73); Megan's PDF now at `<work>/source/megan-1023/`
+  (R72); visual baseline for Nov 1 only after Steven approves (R74, "no baseline" until then); failures print why/fix (R75).
 - Dry run: `PHNEWS_DRYRUN=1 python3 builder/build_issue.py --issue 2026-11-01` — content guards are listed as TODOs instead of stopping; never use for publish.
 - Previews: `D:\PHNEWS\nov1\PHNEWS-2026-11-01-preview.html` (fixed names), mirrored to NAS `PH Newsletter\2026-11-01-previews\`.
 - Calendar-pull record: `builder/calendar-pull/2026-11-01.json`.

@@ -96,10 +96,11 @@ for _n, _u in MATCHED_NOTICE.items():
     EVENT_DETAIL.pop(_n, None); EVENT_PAGE.pop(_n, None); EVENT_LINK[_n] = ("More →", _u); INFO_COVERED.add(_n)
 
 DRYRUN = os.environ.get("PHNEWS_DRYRUN") == "1"; DRYRUN_TODO = []
+from explain import explain as _why  # R75
 def _todo(msg):
     """Content guards stop a real build; with PHNEWS_DRYRUN=1 (and the issue's DRYRUN_OK) they are listed as TODOs instead (never publishes)."""
     if not (DRYRUN and C.DRYRUN_OK): raise SystemExit(msg)
-    DRYRUN_TODO.append(msg); print("DRY-RUN TODO:", msg)
+    DRYRUN_TODO.append(msg); print("DRY-RUN TODO:", msg); print(_why(msg))  # R75 why/fix line
 def bg(i): return "#EAF4E4" if i % 2 else "#FFFFFF"
 def src_cal(extra=None):
     s = f'Source: <a href="{CAL}" style="color:{G};">Calendar</a>'
@@ -384,6 +385,10 @@ if not _wp.exists():  # published page (nav/Listen kept current by build_archive
     assert WMU_TEMPLATE_DATE not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU template still has the template page's date refs"
     _wp.write_text(_tpl, encoding="utf-8")
 # R65: the weekly update's attached PDF (WMU_1023_PDF*, content file) is copied (never moved) and linked in an Attachments card.
+# R72 (batch 6, Steven Oct 24 2026 10:40 PM "do them all"): the PDF source is a content-file path relative to the work tree.
+if Path(WMU_1023_PDF_SRC).is_absolute(): raise SystemExit("R72 FAIL: WMU_1023_PDF_SRC must be relative to PHNEWS_WORK, not a fixed folder. Why: builds must not depend on one machine's folders. Fix: copy the PDF into <work>/source/ and set the relative path in the content file.")
+WMU_1023_PDF_SRC = ROOT / WMU_1023_PDF_SRC
+if not WMU_1023_PDF_SRC.exists(): raise SystemExit(f"R72 FAIL: weekly update PDF {WMU_1023_PDF_SRC} is missing. Why: the Attachments card would link a missing file. Fix: copy the PDF there (copy, never move).")
 _pdf = PAGES / WMU_1023_PDF
 if not _pdf.exists():
     import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
@@ -395,7 +400,7 @@ if WMU_1023_PDF not in _wt:
     _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
     _wt = _wt[:_k] + _att + _wt[_k:]
     _wp.write_text(_wt, encoding="utf-8")
-assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == Path(WMU_1023_PDF_SRC).stat().st_size, "R65: weekly update PDF link/copy missing"
+assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: weekly update PDF link/copy missing"
 for _sec, _row in ARCHIVE_ROWS_LATE: _arch_row(_sec, _row)
 # Weekly Manager Update card on the main page: the newest update replaces the seed card (retention rule); WMU_CARD_* in the content file
 _W_OLD = s[s.find(WMU_CARD_OLD):]
@@ -597,7 +602,7 @@ print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week),
 # STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
 _rc = _sp2.run([sys.executable, str(HERE / "run_checks.py"), str(OUTF)], capture_output=True, text=True)
 print((_rc.stdout or "").strip().splitlines()[-1:] or _rc.stderr[-400:])
-if _rc.returncode != 0: _todo(f"R64: run_checks ({ISSUE}) FAIL\n" + "\n".join(l for l in _rc.stdout.splitlines() if "FAIL" in l) + _rc.stderr[-600:])
+if _rc.returncode != 0: _todo(f"R64: run_checks ({ISSUE}) FAIL\n" + "\n".join(l for l in _rc.stdout.splitlines() if "FAIL" in l or l.startswith("    why")) + _rc.stderr[-600:])
 
 # Steven Oct 20 4:33 PM: preview builds refresh the archive pages too (the story row shows on Community Stories before publish)
 import subprocess as _sp3

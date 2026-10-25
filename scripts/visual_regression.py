@@ -3,6 +3,9 @@
 plus rule checks from STYLE-RULES.md. Run by the builder on Friday/Saturday builds.
 
   python scripts/visual_regression.py PAGE.html|URL --golden tests/golden/format-locked-2026-10-18 [--capture] [--out DIR]
+  python scripts/visual_regression.py PAGE.html --issue 2026-11-01 [--kind preview|send]   (R74: per-issue approved baseline
+         tests/golden/issue-<date>/<kind>/; prints "no baseline" and runs the rule checks only when none is saved yet.
+         Save one only after Steven approves: scripts/save_visual_baseline.py)
 
 --capture  write the golden set (do this only after Steven approves the look).
 Exit 0 = clean, 1 = rule failures, 2 = visual diffs only (report lists them; review, don't auto-fail the build).
@@ -157,12 +160,17 @@ def compare(a_path, b_path, diff_path):
     return None
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("page"); ap.add_argument("--golden", required=True)
+    ap = argparse.ArgumentParser(); ap.add_argument("page"); ap.add_argument("--golden"); ap.add_argument("--issue"); ap.add_argument("--kind", default="preview")
     ap.add_argument("--capture", action="store_true"); ap.add_argument("--out", default=None)
     a = ap.parse_args()
     url = a.page if re.match(r"https?://", a.page) else pathlib.Path(a.page).resolve().as_uri()
     html = open(a.page, encoding="utf-8").read() if not url.startswith("http") else None
-    gold = pathlib.Path(a.golden); out = pathlib.Path(a.out or (gold.parent / ("run-" + gold.name)))
+    if not (a.golden or a.issue): ap.error("--golden or --issue is required")
+    gold = pathlib.Path(a.golden) if a.golden else pathlib.Path(__file__).resolve().parents[1] / "tests/golden" / f"issue-{a.issue}" / a.kind
+    no_base = not a.capture and not (gold / "manifest.json").exists()  # R74: say so plainly, compare nothing
+    if no_base: print(f"R74: no baseline at {gold} -- visual compare skipped (rule checks still run). "
+                      "Save one after Steven approves the look: scripts/save_visual_baseline.py")
+    out = pathlib.Path(a.out or (gold.parent / ("run-" + gold.name)))
     (gold if a.capture else out).mkdir(parents=True, exist_ok=True)
     fails, diffs, manifest = [], [], {}
     with sync_playwright() as p:
@@ -180,7 +188,7 @@ def main():
                 name = f"{s['i']:02d}-{slug(s['title'])}-{view}.png"; manifest[name] = s["title"]
                 dst = (gold if a.capture else out) / name
                 pg.screenshot(path=str(dst), full_page=True, clip={"x": s["x"], "y": s["y"], "width": s["w"], "height": max(1, s["h"])})
-                if not a.capture:
+                if not a.capture and not no_base:
                     g = gold / name
                     if not g.exists(): diffs.append(f"{name}: new section (no golden)"); continue
                     r = compare(dst, g, out / name.replace(".png", "-DIFF.png"))
@@ -197,7 +205,7 @@ def main():
         for n in json.loads((gold / "manifest.json").read_text()) if (gold / "manifest.json").exists() else []:
             if n not in manifest: diffs.append(f"{n}: section missing")
     rep = ["PHNEWS format guard — " + a.page, f"rule failures: {len(fails)}", *("  FAIL " + f for f in fails),
-           f"visual diffs vs {gold.name}: {'(golden captured)' if a.capture else len(diffs)}", *("  DIFF " + d for d in diffs)]
+           (f"visual diffs: no baseline ({gold})" if no_base else f"visual diffs vs {gold.name}: {'(golden captured)' if a.capture else len(diffs)}"), *("  DIFF " + d for d in diffs)]
     print("\n".join(rep))
     if not a.capture: (out / "REPORT.txt").write_text("\n".join(rep) + "\n")
     sys.exit(1 if fails else (2 if diffs else 0))

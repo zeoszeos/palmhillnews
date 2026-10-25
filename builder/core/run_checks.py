@@ -81,7 +81,10 @@ L.ok("L31", "previews/2026-10-18" not in page and "2026-10-18-recurring" not in 
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
 res = L.results + L2.results
-for r in res: print(r)
+from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
+for r in res:
+    print(r)
+    if r[1] == "FAIL": print(_why(r[0]))
 fails = [r for r in res if r[1] == "FAIL"]
 print(f"run_checks {C.ISSUE}: {len(res) - len(fails)} PASS, {len(fails)} FAIL")
 sys.exit(1 if fails else 0)

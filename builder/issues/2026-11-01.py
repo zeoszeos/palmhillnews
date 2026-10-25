@@ -462,7 +462,7 @@ WMU_REPLACE = [("October 16, 2026", "October 23, 2026"), ("Oct 16, 2026", "Oct 2
 # STYLE-RULES R65 (Steven-approved Oct 24 2:26 PM): Megan's attached RPM paper ("Recording Minutes at Meetings", 2 pages, from her
 # "Weekly Update 2026.10.23" email) is hosted as a PDF and linked in an Attachments card on her Oct 23 page (Oct 9 page layout).
 # Applied by the builder to the existing page (idempotent); a copy, the source PDF is never moved.
-WMU_1023_PDF_SRC = "/workspace/megan-1023-images/minutes-M100.pdf"   # source PDF (copied, never moved)
+WMU_1023_PDF_SRC = "source/megan-1023/minutes-M100.pdf"   # R72: source PDF, relative to PHNEWS_WORK (copied, never moved)
 WMU_1023_PDF = "assets/manager/2026-10-23-rpm-recording-minutes-at-meetings.pdf"
 WMU_1023_PDF_TITLE = "Recording Minutes at Meetings"
 WMU_1023_PDF_DESC = "Paper from RPM on what to include in minutes · PDF, 2 pages"

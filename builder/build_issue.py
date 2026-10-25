@@ -64,7 +64,9 @@ def main(argv=None):
     g.add_argument("--issue", choices=sorted(p.stem for p in ISSUES.glob("20*.py"))); g.add_argument("--check", action="store_true")
     a = ap.parse_args(argv)
     bad = r71_violations() + r71b_violations()
-    if bad: raise SystemExit("R71 guard FAIL:\n  " + "\n  ".join(bad))
+    if bad:
+        from explain import explain
+        raise SystemExit("R71 guard FAIL:\n  " + "\n  ".join(f"{b}\n  {explain(b if 'R71b' in b else 'R71 ' + b).strip()}" for b in bad))
     if a.check: print("R71/R71b guard OK:", ", ".join(sorted(p.stem for p in ISSUES.glob("20*.py")))); return
     c = _ix.load(a.issue)
     os.environ.setdefault("PHNEWS_REPO", c.DEFAULT_REPO); os.environ.setdefault("PHNEWS_WORK", c.DEFAULT_WORK)
@@ -72,5 +74,9 @@ def main(argv=None):
     print(f"build_issue: {a.issue} -> core/build_core.py + issues/{a.issue}.py | REPO {os.environ['PHNEWS_REPO']} | WORK {os.environ['PHNEWS_WORK']}"
           + (" | DRY RUN" if os.environ.get("PHNEWS_DRYRUN") == "1" else ""))
     sys.argv = [str(CORE / "build_core.py")]
-    runpy.run_path(str(CORE / "build_core.py"), run_name="__main__")
+    try: runpy.run_path(str(CORE / "build_core.py"), run_name="__main__")
+    except SystemExit as e:  # R75: a guard stopped the build -> say why it matters and how to fix it
+        if e.code not in (None, 0) and not isinstance(e.code, int):
+            from explain import explain; print(str(e.code), file=sys.stderr); print(explain(e.code), file=sys.stderr); raise SystemExit(1)
+        raise
 if __name__ == "__main__": main()

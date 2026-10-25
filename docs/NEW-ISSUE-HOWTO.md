@@ -13,8 +13,13 @@ A new week = **one new content file**. Never copy a builder (the R71 guard stops
    calendar window (R21b), file names (`PHNEWS-<date>-preview.html`, `build-audit-<SHORT>.json`, `local-<SHORT>/`).
 3. Make the work tree (`DEFAULT_WORK`) with `source/` (seed + shell) and `data/` (calendar snapshots); put the week's source-verbatim
    item data in `builder/<SHORT>/data/` and, if needed, a `builder/<SHORT>/stage_<SHORT>_content.py` staging script.
-4. Check: `python3 builder/build_issue.py --check`, then dry run `PHNEWS_DRYRUN=1 python3 builder/build_issue.py --issue <date>`.
+4. Pull-in check (R73): `python3 builder/core/stage_check.py --issue <date>` -- every source FOUND, nothing MISSING/STALE.
+   Attachments (R72) go under the work tree (e.g. `<work>/source/...`), referenced by relative path in the content file.
+   Check: `python3 builder/build_issue.py --check`, then dry run `PHNEWS_DRYRUN=1 python3 builder/build_issue.py --issue <date>`.
 5. A rule or logic change goes in `builder/core/` (one place for every issue) and must keep `python3 tests/acceptance_oct25.py` PASS.
-6. Recurring pages: `PHNEWS_ISSUE=<date> python3 builder/core/recurring.py && python3 builder/core/recurring_grouped.py . <date>`.
+6. Visual baseline (R74): after Steven approves the look, `scripts/save_visual_baseline.py --issue <date> --kind preview PAGE --approved "..."`;
+   later `scripts/visual_regression.py PAGE --issue <date>` compares against it ("no baseline" until saved).
+7. Every failure prints a why/fix line (R75, `builder/core/explain.py`).
+8. Recurring pages: `PHNEWS_ISSUE=<date> python3 builder/core/recurring.py && python3 builder/core/recurring_grouped.py . <date>`.
 
 Still draft only: nothing is sent, published or pushed without Steven's go. Oct 18 (`builder/oct18/`) is locked as sent and exempt.
