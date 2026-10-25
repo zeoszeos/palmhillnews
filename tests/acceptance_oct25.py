@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Acceptance test (coding batch 3, Steven voice OK Oct 24 2026; STYLE-RULES R69): rebuild the approved Oct 25 issue in a
 throw-away temp copy and byte-compare it to the approved files. Never writes to /workspace/oct18-batch or the live work tree.
-  repo tree  = git archive of tag format-locked-2026-10-25-final-r4, with this checkout's scripts/ + builder/ laid over it
+  repo tree  = git archive of tag format-locked-2026-10-25-final-r5 (env PHNEWS_OCT25_TAG), with this checkout's scripts/ + builder/ laid over it
   work tree  = copy (mtimes kept) of /workspace/phnews-consolidation/oct18
   build      = builder/build_issue.py --issue 2026-10-25 with PHNEWS_REPO / PHNEWS_WORK / PHNEWS_CAL_OFFLINE=1
 Pass = new preview == approved preview AND (preview with the SEND title) == approved SEND, byte for byte."""
 import hashlib, os, shutil, subprocess, sys, tempfile
 from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
-TAG = os.environ.get("PHNEWS_OCT25_TAG", "format-locked-2026-10-25-final-r4")  # r5 once the footer-alignment PR lands
+TAG = os.environ.get("PHNEWS_OCT25_TAG", "format-locked-2026-10-25-final-r5")  # r5 = PR #139 (R70 footer alignment)
 WORK = Path(os.environ.get("PHNEWS_OCT25_WORK", "/workspace/phnews-consolidation/oct18"))
 APPROVED_PREVIEW = WORK / "PHNEWS-2026-10-25-preview.html"
 APPROVED_SEND = WORK / "PHNEWS-2026-10-25-SEND.html"

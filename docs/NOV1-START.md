@@ -9,12 +9,16 @@ Branch `nov1-build` (off main 610be36). Oct 25 issue, SEND file, live pages and 
 - **Sunday Nov 1:** publish (`scripts/publish_issue.py --issue 2026-11-01 --dry-run` first), only on Steven's go.
 
 ## Workspace
-- Builder: `builder/nov1/build_nov1.py` (+ `locked_checks_nov1.py`, `run_checks_nov1.py`, `recurring_nov1.py`,
-  `recurring_grouped.py`, `stage_nov1_content.py`, `data/`). Work root: `/workspace/phnews-consolidation/nov1`
+- **Builder (R71, coding batch 4):** ONE shared builder in `builder/core/` (`build_core.py`, `locked_checks.py`, `run_checks.py`,
+  `recurring.py`, `recurring_grouped.py`, `issue_ctx.py`) + this week's content file `builder/issues/2026-11-01.py` (data only).
+  `builder/nov1/` now holds only `data/` and `stage_nov1_content.py`. Work root: `/workspace/phnews-consolidation/nov1`
   (own `data/` calendar snapshots, so Oct 25 rebuilds are not affected). Repo writes go to the `/workspace/nov1-build` worktree.
-- **Build command (R69, coding batch 3):** `python3 builder/build_issue.py --issue 2026-11-01` from `/workspace/nov1-build`
-  (the per-issue file refuses to run directly). Oct 25 regression check before any builder commit: `python3 tests/acceptance_oct25.py`
-  (must print ACCEPTANCE PASS). The old copy in `/workspace/phnews-consolidation/nov1/builder/` is pre-batch-3; use the repo builder.
+- **Build command (R69):** `python3 builder/build_issue.py --issue 2026-11-01` from `/workspace/nov1-build`. Guard only:
+  `python3 builder/build_issue.py --check` (R71). Oct 25 regression check before any builder commit: `python3 tests/acceptance_oct25.py`
+  (tag format-locked-2026-10-25-final-r5; must print ACCEPTANCE PASS). The old copy in `/workspace/phnews-consolidation/nov1/builder/` is obsolete.
+- Recurring pages: `PHNEWS_ISSUE=2026-11-01 python3 builder/core/recurring.py && python3 builder/core/recurring_grouped.py . 2026-11-01`.
+- **Locked-check expectations for Nov 1** (L08 Upcoming, L11 Notices, CHAIR): set them in `LOCKED = {...}` in `builder/issues/2026-11-01.py`
+  once Steven approves content. New weeks: see `docs/NEW-ISSUE-HOWTO.md`.
 - Dry run: `PHNEWS_DRYRUN=1 python3 builder/build_issue.py --issue 2026-11-01` — content guards are listed as TODOs instead of stopping; never use for publish.
 - Previews: `D:\PHNEWS\nov1\PHNEWS-2026-11-01-preview.html` (fixed names), mirrored to NAS `PH Newsletter\2026-11-01-previews\`.
 - Calendar-pull record: `builder/calendar-pull/2026-11-01.json`.

@@ -13,7 +13,7 @@ sys.path.insert(0, str(CORE)); import issue_ctx as _ix
 # Oct 18 (builder/oct18/) is locked as sent (R10) and predates the shared builder; it is exempt and never built here.
 EXEMPT_DIRS = {"core", "issues", "calendar-pull", "oct18", "tools", "__pycache__"}
 LOGIC_PREFIXES = ("build_", "locked_checks", "run_checks", "recurring", "make_live_preview", "publish_")
-def r70_violations():
+def r71_violations():
     """R71 guard: (a) every content file is data only (assignments + docstring, no def/class/import/loops) and has the required
     fields; (b) no per-issue builder folder holds builder logic -- only data/, stage_<short>_content.py and README.md."""
     bad = []
@@ -35,7 +35,7 @@ def main(argv=None):
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--issue", choices=sorted(p.stem for p in ISSUES.glob("20*.py"))); g.add_argument("--check", action="store_true")
     a = ap.parse_args(argv)
-    bad = r70_violations()
+    bad = r71_violations()
     if bad: raise SystemExit("R71 guard FAIL:\n  " + "\n  ".join(bad))
     if a.check: print("R71 guard OK:", ", ".join(sorted(p.stem for p in ISSUES.glob("20*.py")))); return
     c = _ix.load(a.issue)
