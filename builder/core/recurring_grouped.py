@@ -5,7 +5,8 @@ bold group headings with (n) counts; item lines regular weight."""
 import re, sys
 from pathlib import Path
 REPO = Path(sys.argv[1]); ISSUE = sys.argv[2] if len(sys.argv) > 2 else "2026-10-11"  # STYLE-RULES R20: one set per issue
-SRC = Path(__import__("os").environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/nov1") / f"source/recurring-{ISSUE[5:7]}{ISSUE[8:]}-orig".replace("recurring-1011-", "recurring-oct11-").replace("recurring-1018-", "recurring-oct18-").replace("recurring-1025-", "recurring-oct25-").replace("recurring-1101-", "recurring-nov1-")
+import os as _os; _os.environ["PHNEWS_ISSUE"] = ISSUE; sys.path.insert(0, str(Path(__file__).resolve().parent)); import issue_ctx as _ix; C = _ix.load(ISSUE)  # R71
+SRC = Path(_os.environ.get("PHNEWS_WORK") or str(C.DEFAULT_WORK)) / f"source/recurring-{C.SHORT}-orig"
 F = ISSUE + "-recurring-activities-by-%s.html"
 LAB = {"date": "By Date", "name": "By Name", "location": "By Location"}
 CSS = """.sx-sticky{position:sticky;top:0;z-index:5;background:#e8f2e0;border-bottom:1px solid #c9dcbc;margin:12px -14px 0;padding:9px 14px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;font-family:Arial,sans-serif}
@@ -40,7 +41,7 @@ for k in LAB:
     s = s[:a] + nav + s[b:]
     s = re.sub(r'(<div class="ph-activities"[^>]*>).*?(</div>\s*</main>)', lambda m: m.group(1) + "\n" + "\n".join(out) + "\n" + m.group(2), s, flags=re.S)
     s = s.replace("</head>", f"<style>{CSS}</style>\n</head>", 1)
-    sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or "/workspace/nov1-build", "scripts")); import style_rules as _sr
+    sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO), "scripts")); import style_rules as _sr
     s = _sr.enforce_title_months(s)
     s = re.sub(r'(ph-section-issuedate">)([A-Z][a-z]{2}) ', lambda m: m.group(1) + {k3[:3]: k3 for k3 in ("January","February","March","April","May","June","July","August","September","October","November","December")}[m.group(2)] + " ", s)
     sys.path.insert(0, str(REPO / "scripts")); import readability as _rd  # STYLE-RULES RD1-RD13 (recurring tables: 15px/1.5)

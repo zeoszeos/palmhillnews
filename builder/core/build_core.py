@@ -1,9 +1,11 @@
-"""PHNEWS Nov 1, 2026 (Vol. 1, No. 16) DRAFT builder (cloned from build_oct25.py Oct 24 2026 8:3x PM). Previously: (cloned from build_oct18.py Oct 20 2026; same shell/seed, windows shifted one week). Box-side, draft only; sends/publishes nothing.
-Input: ../source/PHNEWS-2026-10-11-FINAL-REVIEW-as-sent-omen.html (Oct 11 as sent, untouched) as the shell,
-       ../data/cal-YYYYMMDD.json (Palm Hill calendar = source of truth for events/meetings; RPM never adds/overrides),
-       editorial content below (each item names its source).
-Saturday refresh: re-fetch calendar (fetch_calendar.sh), update NOTICES / MANAGER / Tony FB wording, rerun.
-Output: ../PHNEWS-2026-10-18-preview.html
+"""PHNEWS shared issue builder (coding batch 4, Steven Oct 24 2026 10:00 PM "We have time so let's do it correctly and just do it!";
+STYLE-RULES R69 + R71). ONE builder for every issue from Oct 25 on: all logic and R-rule guards live here; each issue's own data
+(date, Vol./No., story, dropped notices, per-issue flags, locked-check overrides) lives in builder/issues/<YYYY-MM-DD>.py.
+Merged from builder/oct25/build_oct25.py and builder/nov1/build_nov1.py (which were clones of build_oct18.py). Box-side, draft only;
+sends/publishes nothing. Run:  python3 builder/build_issue.py --issue <date>   (PHNEWS_DRYRUN=1 for a workspace dry run)
+Input: ROOT/source/ (Oct 11 as-sent shell + Oct 18 seed), ROOT/data/cal-*.json (calendar = source of truth), the carried editorial
+       content below (each item names its source), and the issue's content file.
+Output: ROOT/PHNEWS-<issue>-preview.html, ROOT/local-<SHORT>/ review copy, archive rows/pages in REPO.
 """
 import json, os, re, sys, glob, time
 _R49_T0 = time.time() - 1  # STYLE-RULES R49: pages written by this run get the Listen-coverage check at the end
@@ -13,18 +15,20 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 # R69 (coding batch 3): builds start only from builder/build_issue.py --issue <date>, which picks this content file by date.
-if os.environ.get("PHNEWS_ENTRY") != "build_issue" or os.environ.get("PHNEWS_ISSUE") != "2026-11-01":
-    raise SystemExit("R69: run  python3 builder/build_issue.py --issue 2026-11-01  (single builder entry point)")
+if os.environ.get("PHNEWS_ENTRY") != "build_issue" or not os.environ.get("PHNEWS_ISSUE"):
+    raise SystemExit("R69: run  python3 builder/build_issue.py --issue <date>  (single builder entry point)")
+sys.path.insert(0, str(HERE)); import issue_ctx as _ix   # R71: the issue's content file (builder/issues/<date>.py), data only
+C = _ix.load(os.environ["PHNEWS_ISSUE"])
 # Settings (coding batch 2, Steven Oct 24 2026 9:05 PM; STYLE-RULES R67): the two trees this builder uses, set in ONE place.
-#   REPO = the PHNEWS git checkout (pages/, scripts/, archive/, builder/*/data); env PHNEWS_REPO, default below.
-#   ROOT = the issue work tree (source/, data/cal-*.json, preview output, local-nov1/); env PHNEWS_WORK, default = this builder's parent.
-REPO = Path(os.environ.get("PHNEWS_REPO") or "/workspace/nov1-build").resolve()
-ROOT = Path(os.environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/nov1").resolve()
+#   REPO = the PHNEWS git checkout (pages/, scripts/, archive/, builder/*/data); env PHNEWS_REPO, default = the content file's DEFAULT_REPO.
+#   ROOT = the issue work tree (source/, data/cal-*.json, preview output, local-<SHORT>/); env PHNEWS_WORK, default = the content file's DEFAULT_WORK.
+REPO = Path(os.environ.get("PHNEWS_REPO") or C.DEFAULT_REPO).resolve()
+ROOT = Path(os.environ.get("PHNEWS_WORK") or C.DEFAULT_WORK).resolve()
 PAGES = REPO / "pages"; SCRIPTS = str(REPO / "scripts")
 sys.path.insert(0, SCRIPTS); import archive_items as _aj  # R68: the one archive-items.json editor
 if not (REPO / "scripts/build_archive.js").exists(): raise SystemExit(f"R67: PHNEWS_REPO {REPO} is not a PHNEWS checkout")
 SEED = ROOT / "source/PHNEWS-2026-10-18-seed-20261014.html"
-ISSUE = "2026-11-01"
+ISSUE = C.ISSUE
 # R21b (Steven, Oct 24 2026 9:05 PM, coding batch 1): calendar pull window comes from ISSUE (7 days before .. 60 days after), never hard-coded.
 from datetime import date as _d0, timedelta as _td0
 CAL_WINDOW = ((_d0.fromisoformat(ISSUE) - _td0(days=7)).isoformat(), (_d0.fromisoformat(ISSUE) + _td0(days=60)).isoformat())
@@ -34,11 +38,11 @@ if os.environ.get("PHNEWS_CAL_OFFLINE") != "1":
     sys.path.insert(0, SCRIPTS); import pull_calendar as _pc
     _pc.pull(str(ROOT / "data"), *CAL_WINDOW)
 CALF = sorted(glob.glob(str(ROOT / "data/cal-*.json")))[-1]
-OUTF = ROOT / "PHNEWS-2026-11-01-preview.html"
-THIS_WEEK = ("2026-11-01", "2026-11-07")
-UPCOMING = ("2026-11-08", "2026-11-29")      # ~3 weeks (Oct 9 rule), starts after This Week
-RECURRING = ("2026-11-01", "2026-11-30")
-MEETINGS = ("2026-11-01", "2026-12-01")      # 30 days inclusive
+OUTF = ROOT / f"PHNEWS-{ISSUE}-preview.html"
+# R69 section windows, derived from ISSUE (builder/core/issue_ctx.windows): This Week 0-6, Upcoming 7-28 (~3 weeks, Oct 9 rule),
+# Recurring 0-29, Meetings 0-30 days inclusive.
+THIS_WEEK, UPCOMING, RECURRING, MEETINGS = (C.WINDOWS[k] for k in ("THIS_WEEK", "UPCOMING", "RECURRING", "MEETINGS"))
+assert CAL_WINDOW == C.WINDOWS["CAL_WINDOW"], "R21b: calendar window must come from ISSUE"
 BASE = "https://palmhillnews.vercel.app/pages/"; CAL = "https://www.palmhillcountryclub.net/calendar-1/"
 ARCH = BASE + "archive/"
 SPK = "https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png"
@@ -131,8 +135,8 @@ for _n, _u in MATCHED_NOTICE.items():
 
 DRYRUN = os.environ.get("PHNEWS_DRYRUN") == "1"; DRYRUN_TODO = []
 def _todo(msg):
-    """Nov 1 workspace: content guards stop a real build; with PHNEWS_DRYRUN=1 they are listed as TODOs instead (never publishes)."""
-    if not DRYRUN: raise SystemExit(msg)
+    """Content guards stop a real build; with PHNEWS_DRYRUN=1 (and the issue's DRYRUN_OK) they are listed as TODOs instead (never publishes)."""
+    if not (DRYRUN and C.DRYRUN_OK): raise SystemExit(msg)
     DRYRUN_TODO.append(msg); print("DRY-RUN TODO:", msg)
 def bg(i): return "#EAF4E4" if i % 2 else "#FFFFFF"
 def src_cal(extra=None):
@@ -461,14 +465,13 @@ NOTICES = [
 # Taste of Golf stays as an event row). Guard: none of these titles may appear in Community Notices.
 NOTICES_DROPPED_OCT25 = {"October Mowing Date", "Property Fraud Alert"}  # Steven Oct 21 8:43 PM: Property Fraud Alert dropped (its Vercel page stays live)  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
-# Nov 1 carry policy (set up Oct 24 2026 8:3x PM; Steven confirms Friday): keep notices still valid on/after Nov 1, drop Oct 25
-# one-offs that are expired or were news for that week only. Re-check every kept notice against the Friday inbox sweep.
-NOTICES_DROPPED_NOV1 = {"Library Closed starting the week of October 26th",   # closure ends Sun Nov 1
-                        "Info from Linda",                                     # Halloween Dance Oct 31 / market Oct 24: past
-                        ICE_TITLE,                                             # Oct 25 news item (R60c was Oct 25-only)
-                        "Help with maintaining Sanitation Field", "Please observe important stop sign rules"}  # ran Oct 25 (Steven to confirm drop)
-NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_NOV1]
-assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_NOV1
+# Per-issue carry policy (content file NOTICES_DROPPED): keep notices still valid on/after the issue date, drop the previous
+# issue's one-offs that are expired or were news for that week only. Re-check every kept notice against the Friday inbox sweep.
+NOTICES_DROPPED_ISSUE = set(C.NOTICES_DROPPED)
+_unknown = NOTICES_DROPPED_ISSUE - {n[0] for n in NOTICES}
+if _unknown: raise SystemExit(f"R71: {ISSUE} NOTICES_DROPPED names unknown notice title(s): {sorted(_unknown)}")
+NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_ISSUE]
+assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
 NOTICE_LISTEN_OVERRIDE = {ICE_TITLE: BASE + ICE_PAGE}  # R60c: Listen reads the notice's own page (Source is the P&E report)
 def notice_rows():
@@ -595,7 +598,7 @@ def chair_cards():
     out = []
     # RETENTION (Steven, Oct 16): latest report per committee, shown only if dated within 30 days of the issue; older -> archive only
     from datetime import date as _d, timedelta as _td
-    cutoff = (_d(2026, 11, 1) - _td(days=30)).isoformat()
+    cutoff = (_d.fromisoformat(ISSUE) - _td(days=30)).isoformat()
     latest = {}
     for c in sorted(CHAIR, key=lambda c: c[1], reverse=True): latest.setdefault(c[0], c)
     shown = [c for c in latest.values() if c[1] >= cutoff]
@@ -620,10 +623,10 @@ def chair_cards():
 # ---------- assemble ----------
 s = SEED.read_text(encoding="utf-8")
 s = s.replace("<title>", "<title>", 1)
-s = re.sub(r"<title>.*?</title>", "<title>PHNEWS November 1, 2026 — DRAFT (not sent)</title>", s, count=1, flags=re.S)
+s = re.sub(r"<title>.*?</title>", f"<title>PHNEWS {C.ISSUE_LONG} — DRAFT (not sent)</title>", s, count=1, flags=re.S)
 s = s.replace('color:#e5f1d1;">October 18, 2026<', 'color:#e5f1d1;">Sunday, October 18, 2026<')  # batch item 1: weekday in masthead
 s = s.replace("October 11, 2026", "October 18, 2026").replace("Vol. 1, No. 13", "Vol. 1, No. 14")
-s = s.replace("October 18, 2026", "November 1, 2026").replace("Vol. 1, No. 14", "Vol. 1, No. 16")  # Nov 1 issue (Oct 18 seed)
+s = s.replace("October 18, 2026", C.ISSUE_LONG).replace("Vol. 1, No. 14", C.VOLNO)  # this issue (Oct 18 seed)
 stamp = os.environ.get("PHNEWS_BUILD_STAMP") or datetime.now(ZoneInfo("America/New_York")).strftime("%-I:%M %p")  # override only for byte-identical re-renders
 s = s.replace(">3:07 PM<", f">{stamp}<")
 
@@ -661,7 +664,6 @@ s = s.replace("2026-10-11-recurring-activities-by-", f"{RECURRING[0]}-recurring-
 # cloned from Oct 11, never had it. Oct 18 carries Carolyn M. Story's Marge Taylor profile (Palm Hill Link Sep 2026, pp. 10-12;
 # confirmed in Carolyn's Sep 28 email to palmhillblast; story + listen pages built Oct 9, PR #10; never in a newsletter before).
 # Placed where Oct 4 had it: right before From the Board President. Teaser = verbatim sentence from the story page.
-_JC = json.load(open(REPO / "builder/oct25/data/community-story-joe-clay.json", encoding="utf-8"))
 # Oct 25 (PR #130, Steven Oct 19): Joe Clay - Keeper of The Course; date line Oct 1, 2026; credit line TBD (no source credit printed;
 # new rule Oct 20: no Palm Hill Link name inside articles). Preview pages until publish creates the live page (_JC live_page_planned).
 # R18c (Steven Oct 24 12:18 PM): over-long phone teasers are CUT (never reworded) to their first source sentence(s);
@@ -670,12 +672,14 @@ def _R18_CUT(text, n):
     import re as _re0
     sents = _re0.split(r"(?<=[.!?])\s+", text.strip()); cut = " ".join(sents[:n])
     assert text.startswith(cut) and cut, ("R18c cut is not a prefix of the source", text); return cut
-STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_R18_CUT(_JC["teaser_candidate"], 1),
-             page=_JC["live_page_planned"], listen="2026-10-listen-joe-clay-story.html",   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
-             source=None, archive_title=_JC["title"])
-STORY = None   # Nov 1: Joe Clay (Oct 25) is NOT carried. Set STORY from builder/nov1/data/<story>.json when a new story is chosen.
+STORY = None
+if C.STORY:   # content file STORY = dict(json=<story data json>, listen=<listen page>, teaser_sentences=n)
+    _JC = json.load(open(REPO / C.STORY["json"], encoding="utf-8"))
+    STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_R18_CUT(_JC["teaser_candidate"], C.STORY["teaser_sentences"]),
+                 page=_JC["live_page_planned"], listen=C.STORY["listen"],   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
+                 source=None, archive_title=_JC["title"])
 # PHNEWS_DRYRUN=1 lets the build finish without a story for workspace testing only -- it is NOT Steven's R45 approval and never publishes.
-COMMUNITY_STORIES_OMIT_APPROVED = ("DRY RUN ONLY - no Nov 1 story chosen yet (not an approval)" if os.environ.get("PHNEWS_DRYRUN") == "1" and not STORY else None)   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
+COMMUNITY_STORIES_OMIT_APPROVED = (C.STORY_OMIT_DRYRUN_NOTE if os.environ.get("PHNEWS_DRYRUN") == "1" and C.DRYRUN_OK and not STORY else None)   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
 if STORY: _story_page = (PAGES / STORY["page"]).read_text(encoding="utf-8")
 if STORY: assert STORY["teaser"].replace("'", "\u2019") in _story_page or STORY["teaser"] in _story_page, "R45: story teaser must be verbatim from the story page"
 if STORY: assert (PAGES / STORY["listen"]).exists(), "R45: story listen page missing"
@@ -899,7 +903,7 @@ _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title=
                 dict(date="2026-10-25", id="2026-10-25-north-clubhouse-ice-machine-moved", title=ICE_TITLE, text=ICE_TEASER,
                      page=ICE_PAGE, source="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz", issues=["2026-10-25"])]
 _aj.add_rows(REPO, "community-notices", _NOTICE_ROWS)
-ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_NOV1]
+ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_ISSUE]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
@@ -925,7 +929,7 @@ s = _conf.sub(lambda m: CALCHECK_P, s)
 assert "All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1, "R25 footer"
 s = _sr.service_box_fit(s)  # STYLE-RULES R27: footer service-request lines on one line at desktop width
 (REPO / "builder/calendar-pull").mkdir(exist_ok=True)
-(REPO / "builder/calendar-pull/2026-11-01.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
+(REPO / f"builder/calendar-pull/{ISSUE}.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
 _sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
 # STYLE-RULES R41/R43 (Steven, Oct 17 10:29 / 10:33 PM): '<Singular noun> Archives →' on every newsletter archive link
 # (seed 'Past President Messages →' / 'Past Shareholders Reports →' -> President's Message / Shareholders Report Archives →).
@@ -964,7 +968,15 @@ _he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else
 if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or ">Bill Bender email</a>" not in _hr: raise SystemExit("R60b: Bill Bender notice needs Source: Bill Bender email linked to " + HOLIDAY_PAGE)
 # STYLE-RULES R60c (Steven Oct 24 1:27 PM): ice machine notice -- exact title, 3rd notice (right after Bill Bender), Source
 # "Oct P&E Committee Report" linked to the Oct 14 P&E page, More -> its own notice page
-# R60c (ice machine notice position/source) applied to Oct 25 only; the notice is dropped for Nov 1 (NOTICES_DROPPED_NOV1).
+# R60c (ice machine notice 3rd, right after Bill Bender; Source: Oct P&E Committee Report) -- content file R60C_ICE_NOTICE (Oct 25 only).
+if C.R60C_ICE_NOTICE:
+    _ii = _hs.find(">" + ICE_TITLE + "<")
+    if _ii < 0: raise SystemExit(f"R60c: Community Notice title {ICE_TITLE!r} not found")
+    _ie = _hs.find('<tr style="background:', _ii); _ir = _hs[_ii:_ie if _ie > 0 else len(_hs)]
+    if f'Source: <a href="{BASE + PE_1014_PAGE}"' not in _ir or ">Oct P&amp;E Committee Report</a>" not in _ir and ">Oct P&E Committee Report</a>" not in _ir: raise SystemExit("R60c: ice machine notice needs Source: Oct P&E Committee Report linked to " + PE_1014_PAGE)
+    if not re.search(r'href="' + re.escape(BASE + ICE_PAGE) + r'"[^>]*>More →', _ir): raise SystemExit("R60c: ice machine notice needs More → " + ICE_PAGE)
+    _tt = re.findall(r'font-weight:bold;color:#333333;text-align:left;padding-right:8px;">([^<]+)<', _hs)
+    if len(_tt) < 3 or _tt[2] != ICE_TITLE or _hs.find(">" + HOLIDAY_TITLE + "<") > _ii: raise SystemExit(f"R60c: ice machine notice must be 3rd, right after Bill Bender: {_tt[:4]}")
 # R1 (Steven Oct 24 12:18 PM): normalize EVERY Listen button in the issue (incl. sections carried from the seed) to the shared inset
 def _r1_inset(m):
     a = m.group(0)
@@ -979,12 +991,12 @@ _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in t
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, str(REPO / "scripts/fetch_link_pdf.py")], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
 json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in meetings], "this_week": [(e["date"], e["name"]) for e in this_week],
-           "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp}, open(ROOT / "build-audit-nov1.json", "w"), indent=1)
+           "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp}, open(ROOT / f"build-audit-{C.SHORT}.json", "w"), indent=1)
 print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week), "| upcoming", len(upcoming))
 # STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
-_rc = _sp2.run([sys.executable, str(HERE / "run_checks_nov1.py"), str(OUTF)], capture_output=True, text=True)
+_rc = _sp2.run([sys.executable, str(HERE / "run_checks.py"), str(OUTF)], capture_output=True, text=True)
 print((_rc.stdout or "").strip().splitlines()[-1:] or _rc.stderr[-400:])
-if _rc.returncode != 0: _todo("R64: run_checks_nov1 FAIL\n" + "\n".join(l for l in _rc.stdout.splitlines() if "FAIL" in l) + _rc.stderr[-600:])
+if _rc.returncode != 0: _todo(f"R64: run_checks ({ISSUE}) FAIL\n" + "\n".join(l for l in _rc.stdout.splitlines() if "FAIL" in l) + _rc.stderr[-600:])
 
 # Steven Oct 20 4:33 PM: preview builds refresh the archive pages too (the story row shows on Community Stories before publish)
 import subprocess as _sp3
@@ -1011,9 +1023,9 @@ assert 'href="community-stories.html"' in (REPO / "pages/archive/main.html").rea
 # Local review copy (D:\PHNEWS\<week>\, fixed names). The issue's story + Story Archives links open local copies that mirror the
 # live paths: <story>.html and archive/community-stories.html (the canonical page, incl. this issue's story); every other
 # root-relative link/asset in the local archive copy is made absolute to palmhillnews.vercel.app so it renders like the live page.
-LOCAL = ROOT / "local-nov1"; LOCAL.mkdir(exist_ok=True); (LOCAL / "archive").mkdir(exist_ok=True)
+LOCAL = ROOT / f"local-{C.SHORT}"; LOCAL.mkdir(exist_ok=True); (LOCAL / "archive").mkdir(exist_ok=True)
 _loc = (s.replace(BASE + STORY["page"], STORY["page"]) if STORY else s).replace(STORY_ARCHIVE_URL, "archive/community-stories.html")
-(LOCAL / "PHNEWS-2026-11-01-preview.html").write_text(_loc, encoding="utf-8")
+(LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
 import shutil as _sh
 if STORY: _sh.copy(PAGES / STORY["page"], LOCAL / STORY["page"])
 _lca = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ca)
@@ -1027,13 +1039,21 @@ assert not STORY or ('href="../' + STORY["page"]) in _lca, "R58: local archive c
 _ld = (REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8")
 _ld = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ld)
 _ld = re.sub(r'href="(?!https?:|#|mailto:)([^"/][^"]*\.html)"', r'href="https://palmhillnews.vercel.app/pages/archive/\1"', _ld)
-_loc = (LOCAL / "PHNEWS-2026-11-01-preview.html").read_text(encoding="utf-8").replace(ARCH + "did-you-know.html", "archive/did-you-know.html")
+_loc = (LOCAL / f"PHNEWS-{ISSUE}-preview.html").read_text(encoding="utf-8").replace(ARCH + "did-you-know.html", "archive/did-you-know.html")
 for _ap, _pg in ARCHIVE_BACKED:
     if _ap != "did-you-know.html": continue
     _sh.copy(PAGES / _pg, LOCAL / _pg)
     _loc = _loc.replace(BASE + _pg, _pg)
     for _u in ("https://palmhillnews.vercel.app/pages/" + _pg, "https://palmhillnews.vercel.app/pages/archive/../" + _pg): _ld = _ld.replace('href="' + _u, 'href="../' + _pg)
     assert 'href="../' + _pg in _ld, f"R59: local DYK archive copy missing {_pg}"
-(LOCAL / "archive/did-you-know.html").write_text(_ld, encoding="utf-8"); (LOCAL / "PHNEWS-2026-11-01-preview.html").write_text(_loc, encoding="utf-8")
+(LOCAL / "archive/did-you-know.html").write_text(_ld, encoding="utf-8"); (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
 print("local review copy:", sorted(str(p.relative_to(LOCAL)) for p in LOCAL.rglob("*") if p.is_file()))
 print("DRY-RUN TODOs:", len(DRYRUN_TODO)) if DRYRUN else None
+# STYLE-RULES R70 (Steven, Oct 24 2026 9:56 PM; PR #139, carried into the shared builder in batch 4): the live preview page is synced
+# from this build's local copy (never hand-copied), and its Calendar check + masthead time must equal the SEND copy's
+# (build with PHNEWS_CAL_OFFLINE=1 + PHNEWS_BUILD_STAMP to match a SEND). No SEND file yet (e.g. a Nov 1 dry run) = nothing to compare.
+import check_preview_send_stamp as _r70
+(REPO / f"pages/previews/{ISSUE}").mkdir(parents=True, exist_ok=True)
+print("R70 synced:", _r70.sync(LOCAL / f"PHNEWS-{ISSUE}-preview.html", REPO, ISSUE))
+_r70f, _ = _r70.check(ISSUE, ROOT, REPO)
+if _r70f: raise SystemExit("; ".join(_r70f))

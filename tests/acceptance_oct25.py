@@ -8,7 +8,7 @@ Pass = new preview == approved preview AND (preview with the SEND title) == appr
 import hashlib, os, shutil, subprocess, sys, tempfile
 from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
-TAG = "format-locked-2026-10-25-final-r4"
+TAG = os.environ.get("PHNEWS_OCT25_TAG", "format-locked-2026-10-25-final-r4")  # r5 once the footer-alignment PR lands
 WORK = Path(os.environ.get("PHNEWS_OCT25_WORK", "/workspace/phnews-consolidation/oct18"))
 APPROVED_PREVIEW = WORK / "PHNEWS-2026-10-25-preview.html"
 APPROVED_SEND = WORK / "PHNEWS-2026-10-25-SEND.html"
@@ -25,6 +25,7 @@ def main():
         t = Path(t); repo, work = t / "repo", t / "work"; repo.mkdir()
         tar = subprocess.run(["git", "archive", TAG], cwd=HERE, capture_output=True, check=True).stdout
         subprocess.run(["tar", "-x", "-C", str(repo)], input=tar, check=True)
+        shutil.rmtree(repo / "builder")   # batch 4 (R71): the tag's old per-issue builders are replaced by this checkout's core + issues/
         for d in ("scripts", "builder"):
             shutil.copytree(HERE / d, repo / d, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copytree(WORK, work, symlinks=True, ignore=shutil.ignore_patterns("__pycache__"))  # copytree keeps mtimes (copy2)

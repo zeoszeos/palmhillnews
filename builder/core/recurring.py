@@ -1,14 +1,15 @@
-# Oct 25 clone of recurring_oct18.py (issue/window/Vol-No moved)
+# Shared Recurring pages builder (coding batch 4, R71): issue/window/Vol-No come from the content file. Run with PHNEWS_ISSUE set.
 """Oct 18 Recurring pages (Steven Oct 16 11:16 PM, STYLE-RULES R20): window starts on the issue date and matches the
 issue's Recurring band; Vol 1 No 14; data = newest calendar snapshot (data/cal-*.json, R21) with build_oct18's AS_RECURRING.
-Writes ungrouped pages to source/recurring-oct25-orig/ (gen.py format); recurring_grouped.py then applies Option B."""
+Writes ungrouped pages to source/recurring-<SHORT>-orig/ (gen.py format); recurring_grouped.py then applies Option B."""
+import os as _os, sys as _sys; _sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent)); import issue_ctx as _ix; C = _ix.load()  # R71 content file
 import json, re, sys
 from datetime import date, datetime
 from html import escape
 from pathlib import Path
-sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or "/workspace/oct18-batch", "scripts")); from style_rules import mon3_text
-ROOT = Path(__import__("os").environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18")  # R67 work tree (batch 3)
-ISSUE = "2026-10-25"; RECURRING = ("2026-10-25", "2026-11-23"); VOLNO = "Vol. 1, No. 15"
+sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO), "scripts")); from style_rules import mon3_text
+ROOT = Path(__import__("os").environ.get("PHNEWS_WORK") or str(C.DEFAULT_WORK))  # R67 work tree (batch 3)
+ISSUE = C.ISSUE; RECURRING = C.WINDOWS["RECURRING"]; VOLNO = C.VOLNO
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
 CAL = "https://www.palmhillcountryclub.net/calendar-1/"
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
@@ -36,7 +37,7 @@ def rows(o):
     if o == "date": return rec
     if o == "name": return sorted(rec, key=lambda e: (e["name"], e["date"], e.get("start", "")))
     return sorted(rec, key=lambda e: (place(e) in ("TBD", "TBS"), place(e), e["date"], e.get("start") or "99:99", e["name"]))
-out = ROOT / "source/recurring-oct25-orig"; out.mkdir(parents=True, exist_ok=True)
+out = ROOT / f"source/recurring-{C.SHORT}-orig"; out.mkdir(parents=True, exist_ok=True)
 for o in orders:
     cur = lambda x: ' aria-current="page"' if x == o else ""
     nav = ('<nav class="ph-links" aria-label="Activity views">' + '<span class="ph-dot"> · </span>'.join(
@@ -69,4 +70,4 @@ for o in orders:
 </html>
 '''
     (out / f"{ISSUE}-recurring-activities-by-{o}.html").write_text(mon3_text(h), encoding="utf-8")
-print("recurring Oct 25:", len(rec), "rows", rec[0]["date"], "->", rec[-1]["date"])
+print(f"recurring {C.ISSUE}:", len(rec), "rows", rec[0]["date"], "->", rec[-1]["date"])
