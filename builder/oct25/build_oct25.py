@@ -1025,3 +1025,9 @@ for _ap, _pg in ARCHIVE_BACKED:
     assert 'href="../' + _pg in _ld, f"R59: local DYK archive copy missing {_pg}"
 (LOCAL / "archive/did-you-know.html").write_text(_ld, encoding="utf-8"); (LOCAL / "PHNEWS-2026-10-25-preview.html").write_text(_loc, encoding="utf-8")
 print("local review copy:", sorted(str(p.relative_to(LOCAL)) for p in LOCAL.rglob("*") if p.is_file()))
+# STYLE-RULES R70 (Steven, Oct 24 2026 9:56 PM): the live preview page is synced from this build's local copy (never hand-copied),
+# and its Calendar check + masthead time must equal the SEND copy's (build with PHNEWS_CAL_OFFLINE=1 + PHNEWS_BUILD_STAMP to match a SEND).
+import check_preview_send_stamp as _r70
+print("R70 synced:", _r70.sync(LOCAL / "PHNEWS-2026-10-25-preview.html", "/workspace/oct18-batch", ISSUE))
+_r70f, _ = _r70.check(ISSUE, ROOT, "/workspace/oct18-batch")
+if _r70f: raise SystemExit("; ".join(_r70f))
