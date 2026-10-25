@@ -6,8 +6,8 @@ import json, re, sys
 from datetime import date, datetime
 from html import escape
 from pathlib import Path
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); from style_rules import mon3_text
-ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or "/workspace/oct18-batch", "scripts")); from style_rules import mon3_text
+ROOT = Path(__import__("os").environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18")  # R67 work tree (batch 3)
 ISSUE = "2026-10-25"; RECURRING = ("2026-10-25", "2026-11-23"); VOLNO = "Vol. 1, No. 15"
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
 CAL = "https://www.palmhillcountryclub.net/calendar-1/"

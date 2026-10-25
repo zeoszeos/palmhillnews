@@ -12,7 +12,7 @@ H = Path(__file__).resolve().parent
 def _load(name, f):
     spec = importlib.util.spec_from_file_location(name, H / f); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
 lc = _load("lc25", "locked_checks_oct25.py")
-ROOT = H.parent
+ROOT = Path(__import__("os").environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18")  # R67 work tree (batch 3)
 page_f = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "PHNEWS-2026-10-25-preview.html"
 page = page_f.read_text(encoding="utf-8")
 audit = json.load(open(ROOT / "build-audit-oct25.json"))

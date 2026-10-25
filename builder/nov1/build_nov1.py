@@ -12,11 +12,14 @@ from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
+# R69 (coding batch 3): builds start only from builder/build_issue.py --issue <date>, which picks this content file by date.
+if os.environ.get("PHNEWS_ENTRY") != "build_issue" or os.environ.get("PHNEWS_ISSUE") != "2026-11-01":
+    raise SystemExit("R69: run  python3 builder/build_issue.py --issue 2026-11-01  (single builder entry point)")
 # Settings (coding batch 2, Steven Oct 24 2026 9:05 PM; STYLE-RULES R67): the two trees this builder uses, set in ONE place.
 #   REPO = the PHNEWS git checkout (pages/, scripts/, archive/, builder/*/data); env PHNEWS_REPO, default below.
 #   ROOT = the issue work tree (source/, data/cal-*.json, preview output, local-nov1/); env PHNEWS_WORK, default = this builder's parent.
 REPO = Path(os.environ.get("PHNEWS_REPO") or "/workspace/nov1-build").resolve()
-ROOT = Path(os.environ.get("PHNEWS_WORK") or HERE.parent).resolve()
+ROOT = Path(os.environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/nov1").resolve()
 PAGES = REPO / "pages"; SCRIPTS = str(REPO / "scripts")
 sys.path.insert(0, SCRIPTS); import archive_items as _aj  # R68: the one archive-items.json editor
 if not (REPO / "scripts/build_archive.js").exists(): raise SystemExit(f"R67: PHNEWS_REPO {REPO} is not a PHNEWS checkout")

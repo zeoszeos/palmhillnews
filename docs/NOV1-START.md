@@ -12,7 +12,10 @@ Branch `nov1-build` (off main 610be36). Oct 25 issue, SEND file, live pages and 
 - Builder: `builder/nov1/build_nov1.py` (+ `locked_checks_nov1.py`, `run_checks_nov1.py`, `recurring_nov1.py`,
   `recurring_grouped.py`, `stage_nov1_content.py`, `data/`). Work root: `/workspace/phnews-consolidation/nov1`
   (own `data/` calendar snapshots, so Oct 25 rebuilds are not affected). Repo writes go to the `/workspace/nov1-build` worktree.
-- Dry run: `PHNEWS_DRYRUN=1 python3 build_nov1.py` — content guards are listed as TODOs instead of stopping; never use for publish.
+- **Build command (R69, coding batch 3):** `python3 builder/build_issue.py --issue 2026-11-01` from `/workspace/nov1-build`
+  (the per-issue file refuses to run directly). Oct 25 regression check before any builder commit: `python3 tests/acceptance_oct25.py`
+  (must print ACCEPTANCE PASS). The old copy in `/workspace/phnews-consolidation/nov1/builder/` is pre-batch-3; use the repo builder.
+- Dry run: `PHNEWS_DRYRUN=1 python3 builder/build_issue.py --issue 2026-11-01` — content guards are listed as TODOs instead of stopping; never use for publish.
 - Previews: `D:\PHNEWS\nov1\PHNEWS-2026-11-01-preview.html` (fixed names), mirrored to NAS `PH Newsletter\2026-11-01-previews\`.
 - Calendar-pull record: `builder/calendar-pull/2026-11-01.json`.
 

@@ -7,7 +7,7 @@ from datetime import date, datetime
 from html import escape
 from pathlib import Path
 sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or "/workspace/nov1-build", "scripts")); from style_rules import mon3_text
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__import__("os").environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/nov1")  # R67 work tree (batch 3)
 ISSUE = "2026-11-01"; RECURRING = ("2026-11-01", "2026-11-30"); VOLNO = "Vol. 1, No. 16"
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
 CAL = "https://www.palmhillcountryclub.net/calendar-1/"

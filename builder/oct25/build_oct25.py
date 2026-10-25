@@ -11,16 +11,29 @@ from datetime import date, datetime
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
-HERE = Path(__file__).resolve().parent; ROOT = HERE.parent
+HERE = Path(__file__).resolve().parent
+# R69 (coding batch 3): builds start only from builder/build_issue.py --issue <date>, which picks this content file by date.
+if os.environ.get("PHNEWS_ENTRY") != "build_issue" or os.environ.get("PHNEWS_ISSUE") != "2026-10-25":
+    raise SystemExit("R69: run  python3 builder/build_issue.py --issue 2026-10-25  (single builder entry point)")
+# Settings (coding batch 3, carried from batch 2; STYLE-RULES R67): the two trees this builder uses, set in ONE place.
+#   REPO = the PHNEWS git checkout; env PHNEWS_REPO (default: the Oct 25 work copy). ROOT = the issue work tree; env PHNEWS_WORK.
+REPO = Path(os.environ.get("PHNEWS_REPO") or "/workspace/oct18-batch").resolve()
+ROOT = Path(os.environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18").resolve()
+PAGES = REPO / "pages"; SCRIPTS = str(REPO / "scripts")
+sys.path.insert(0, SCRIPTS); import archive_items as _aj  # R68: the one archive-items.json editor
+if not (REPO / "scripts/build_archive.js").exists(): raise SystemExit(f"R67: PHNEWS_REPO {REPO} is not a PHNEWS checkout")
 SEED = ROOT / "source/PHNEWS-2026-10-18-seed-20261014.html"
+ISSUE = "2026-10-25"
+# R21b: calendar pull window from ISSUE (7 days before .. 60 days after) = Oct 18 .. Dec 24, same as before.
+from datetime import date as _d0, timedelta as _td0
+CAL_WINDOW = ((_d0.fromisoformat(ISSUE) - _td0(days=7)).isoformat(), (_d0.fromisoformat(ISSUE) + _td0(days=60)).isoformat())
 # STYLE-RULES R21 (Steven, Oct 16 11:32 PM): re-pull the calendar right before every proof/publish build (prints the diff).
 # PHNEWS_CAL_OFFLINE=1 only for re-renders that must reproduce an already-pulled snapshot.
 if os.environ.get("PHNEWS_CAL_OFFLINE") != "1":
-    sys.path.insert(0, "/workspace/oct18-batch/scripts"); import pull_calendar as _pc
-    _pc.pull(str(ROOT / "data"), "2026-10-18", "2026-12-24")
+    sys.path.insert(0, SCRIPTS); import pull_calendar as _pc
+    _pc.pull(str(ROOT / "data"), *CAL_WINDOW)
 CALF = sorted(glob.glob(str(ROOT / "data/cal-*.json")))[-1]
 OUTF = ROOT / "PHNEWS-2026-10-25-preview.html"
-ISSUE = "2026-10-25"
 THIS_WEEK = ("2026-10-25", "2026-10-31")
 UPCOMING = ("2026-11-01", "2026-11-22")      # ~3 weeks (Oct 9 rule), starts after This Week
 RECURRING = ("2026-10-25", "2026-11-23")
@@ -130,7 +143,7 @@ MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to
 MTG_OVERRIDE = {"Planning and Environmental Committee Meeting": dict(date="2026-11-10", start="12:30")}
 # STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting = its own Oct 22 agenda item 12 "Set next meeting date November 18, 2026"
 # (calendar says Mon Nov 16). Date only; calendar time (10:00 AM) and place kept since the agenda gives no time; no TBC note.
-_FIN_AGENDA = Path("/workspace/oct18-batch") / "pages/2026-10-10-finance-committee-meeting-notice.html"
+_FIN_AGENDA = REPO / "pages/2026-10-10-finance-committee-meeting-notice.html"
 assert "12 Set next meeting date November 18, 2026" in open(_FIN_AGENDA, encoding="utf-8").read(), "R62b: Finance agenda item 12 wording changed"
 for _k in ("Finance Committee Meeting", "Finance Committee"): MTG_OVERRIDE[_k] = dict(date="2026-11-18")
 _R62B_HITS = []
@@ -144,7 +157,7 @@ MTG_OVERRIDE_SOURCE = {
 for _k in MTG_OVERRIDE:
     if _k not in MTG_OVERRIDE_SOURCE: raise SystemExit(f"R62c: meeting override {_k!r} has no cited agenda/report source")
     _sp, _sw = MTG_OVERRIDE_SOURCE[_k]
-    if not (Path("/workspace/oct18-batch") / _sp).exists() or _sw not in open(Path("/workspace/oct18-batch") / _sp, encoding="utf-8").read():
+    if not (REPO / _sp).exists() or _sw not in open(REPO / _sp, encoding="utf-8").read():
         raise SystemExit(f"R62c: meeting override {_k!r} source {_sp} missing or lacks {_sw!r}")
 for _e in meetings:
     _o = MTG_OVERRIDE.get(CANON.get(_e["name"], _e["name"]))
@@ -182,8 +195,8 @@ def mtg_rows():
             srcx = (f'Source: <a href="{CAL}" style="color:{G};">Calendar</a>,&nbsp;&nbsp; ' if e.get("from_calendar", True) else 'Source: ') + f'<a href="{nu}" style="color:{G};">Webmaster</a>'
             # STYLE-RULES.md R13 (Steven Oct 16 6:51 PM, Oct 11 precedent): Zoom → goes to the Vercel Zoom page, never zoom.us
             assert d.get("zoom_page"), f"{d['name']}: webmaster notice needs zoom_page (Vercel) - never link zoom.us directly"
-            sys.path.insert(0, "/workspace/oct18-batch/scripts"); import meeting_zoom_page as _mzp
-            (Path("/workspace/oct18-batch/pages") / d["zoom_page"]).write_text(_mzp.render(d), encoding="utf-8")
+            sys.path.insert(0, SCRIPTS); import meeting_zoom_page as _mzp
+            (PAGES / d["zoom_page"]).write_text(_mzp.render(d), encoding="utf-8")
             e = dict(e, also=d["also"], agenda=nu, zoom=BASE + d["zoom_page"])
             L='style="font-size:14px;color:#666666;text-align:right;line-height:1.35;padding-top:1px;'
             out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:4px 8px;border-bottom:1px solid #ddd;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">'
@@ -193,7 +206,7 @@ def mtg_rows():
             continue
         out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:4px 8px;border-bottom:1px solid #ddd;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td valign="top" align="left" style="font-size:15px;line-height:1.3;font-weight:bold;color:#333333;text-align:left;padding-right:10px;">{escape(e["name"])}</td><td valign="top" align="right" style="font-size:14px;line-height:1.3;color:#666666;text-align:right;padding-top:1px;">{escape(VENUE.get(e["venue"], e["venue"]))}</td></tr><tr><td valign="top" align="left" style="font-size:14px;color:#666666;text-align:left;line-height:1.35;padding-top:1px;padding-right:10px;">{pdate(e["date"])}<span style="white-space:nowrap;"> • {ptime(e["start"])}</span>{nt}</td><td valign="top" align="right" style="font-size:14px;color:#666666;text-align:right;white-space:nowrap;line-height:1.35;padding-top:1px;"><span style="white-space:nowrap;">{srcx}</span></td></tr></table></td></tr>')
     return "".join(out)
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr56
+sys.path.insert(0, SCRIPTS); import style_rules as _sr56
 def ev_rows(evs):
     out = []
     assert all(v[0] == "More →" for v in EVENT_LINK.values()), "STYLE-RULES R23: event/notice links say More →"
@@ -204,7 +217,7 @@ def ev_rows(evs):
             import event_page as _ep; fn, paras = EVENT_PAGE[e["name"]]
             if e["name"] not in PHONE_OK_PAGES and any(re.search(r"\d{3}-\d{3}-\d{4}", x) for x in paras): raise SystemExit(f"phone rule: {e['name']} page has a phone number without Steven's OK (PHONE_OK_PAGES)")
             dl = f"{pdate(e['date'])} • {ptime(e['start'])}" + (f" to {ptime(e['end'])}" if e.get("end") else "") + f" • {VENUE.get(e['venue'], e['venue'])}"
-            (Path("/workspace/oct18-batch/pages") / fn).write_text(_ep.render(e["name"], dl, paras), encoding="utf-8")
+            (PAGES / fn).write_text(_ep.render(e["name"], dl, paras), encoding="utf-8")
     for i, e in enumerate(evs):
         det = EVENT_DETAIL.get(e["name"]); lk = EVENT_LINK.get(e["name"])
         loc = "Mount Dora" if e["name"] == "Mount Dora Trip" else VENUE.get(e["venue"], e["venue"])
@@ -215,7 +228,7 @@ def ev_rows(evs):
     import urllib.request as _ur
     for e, row in zip(evs, out):  # R56 guard
         if e["name"] in MATCHED_NOTICE:
-            _u = MATCHED_NOTICE[e["name"]]; _lp = Path("/workspace/oct18-batch/pages") / _u.rsplit("/", 1)[1]
+            _u = MATCHED_NOTICE[e["name"]]; _lp = PAGES / _u.rsplit("/", 1)[1]
             assert _lp.exists(), f"R56: notice page missing {_lp}"
             _sr56.assert_matched_event_card(row, e["name"], _u, CAL, _lp.read_text(encoding="utf-8")); print("R56 matched:", e["date"], e["name"], "->", _lp.name)
     for _n, _u in MATCHED_NOTICE.items():  # R56b (Steven Oct 21 11:20 AM): a matched event's notice must be listed in Community Notices
@@ -248,7 +261,7 @@ TONY_FB_TXT = ('Palm Hill now has a private Facebook group just for residents, w
 # Every Webmaster Source credit is the linked word "Webmaster" (no date, no sender) opening a copy of the source email.
 # These three Webmaster emails (noreply@palmhillcountryclub.net, gotwicz Gmail) had no copy page; scripts/notice_page.py renders
 # them in the info-from-linda shell, verbatim (only blank lines, &nbsp; runs, zero-width spaces and the unsubscribe footer dropped).
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import notice_page as _np
+sys.path.insert(0, SCRIPTS); import notice_page as _np
 WM_COPY_PANCAKES = "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"   # gotwicz 1a13ffdbd4141bdd
 WM_COPY_SHUFFLE = "2026-10-12-shuffleboard-information-notice.html"                   # gotwicz 1a13200e1dcdde48
 WM_COPY_GOLF = "2026-10-14-taste-of-golf-notice.html"                                  # gotwicz 1a13d9d5ef6e178f
@@ -368,10 +381,10 @@ HOLIDAY_BLOCKS = [
     ("p", "This program is solely to encourage friends and neighbors to connect during the holiday season — friends greeting friends. Share your thoughts."),
     ("p", "Thank you... Let’s Succeed!!!!!"),
     ("p", "Bill Bender, Kate Wesoloowski, & Mike Okash")]
-(Path("/workspace/oct18-batch/pages") / HOLIDAY_PAGE).write_text(_np.render("Please add to your news letter....", "Friday, Oct 23, 2026, 11:38 PM ET", HOLIDAY_BLOCKS,
+(PAGES / HOLIDAY_PAGE).write_text(_np.render("Please add to your news letter....", "Friday, Oct 23, 2026, 11:38 PM ET", HOLIDAY_BLOCKS,
     source="Source: flyer from Bill Bender (Mari, Card.jpg), shown as sent with its text transcribed as printed.",
     title="Holiday Greeting Distribution Plan", sender="Bill Bender"), encoding="utf-8")
-_np.notice_listen.add("/workspace/oct18-batch", HOLIDAY_PAGE)
+_np.notice_listen.add(str(REPO), HOLIDAY_PAGE)
 # Steven Oct 24 1:27 PM: North Clubhouse ice machine notice = Elaine Cole's sentence (Oct 14 P&E report, verbatim) + Steven's own
 # confirmed details (he checked it in person), his words formed into sentences, no added facts. Title chosen (no source heading).
 ICE_PAGE = "2026-10-24-north-clubhouse-ice-machine-moved-notice.html"
@@ -380,16 +393,16 @@ ICE_ELAINE = "The ice machine has been relocated so it no longer is a nuisance t
 ICE_STEVEN = ["The ice machine in the North Clubhouse was moved out of the North meeting room and into the pool table room.",
               "It's more convenient, and people getting ice won't disturb any meetings going on in the meeting room."]
 _ICE_PE = "2026-10-14-planning-and-environmental-committee-report.html"
-assert ICE_ELAINE in (Path("/workspace/oct18-batch/pages") / _ICE_PE).read_text(encoding="utf-8"), "R60c: Elaine's ice machine sentence must be verbatim from the P&E Oct 14 report"
+assert ICE_ELAINE in (PAGES / _ICE_PE).read_text(encoding="utf-8"), "R60c: Elaine's ice machine sentence must be verbatim from the P&E Oct 14 report"
 ICE_TEASER = ICE_STEVEN[0]
-(Path("/workspace/oct18-batch/pages") / ICE_PAGE).write_text(_np.render(ICE_TITLE, "Saturday, Oct 24, 2026", [
+(PAGES / ICE_PAGE).write_text(_np.render(ICE_TITLE, "Saturday, Oct 24, 2026", [
     ("h", "From the Planning and Environmental Committee Report (Oct 14, Elaine Cole)"), ("p", ICE_ELAINE),
     ("h", "Details confirmed by Steven Leonowicz"), ("p", " ".join(ICE_STEVEN))],
     source="Source: Oct P&E Committee Report", source_href=BASE + _ICE_PE, title=ICE_TITLE,
     sender="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz"), encoding="utf-8")
-_np.notice_listen.add("/workspace/oct18-batch", ICE_PAGE)
+_np.notice_listen.add(str(REPO), ICE_PAGE)
 for _n, _subj, _sent, _blocks in WM_COPIES:
-    _np.write("/workspace/oct18-batch", _n, _subj, _sent, _blocks)
+    _np.write(str(REPO), _n, _subj, _sent, _blocks)
 LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
 SANIT_TEASER = "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster."  # R18: source sentences, light trims
 COUPLES_TEASER = "Couples Golf League will be starting November 5th. Couples League needs Hosting Volunteers."  # R18: source sentences verbatim
@@ -502,12 +515,12 @@ GOLF_1013 = [
     ("h2", "Next Meeting"),
     ("ul", ["Date & Time: November 10, 2026, at 2:00 PM EST", "Location: SCH"]),
 ]
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import chair_report_page as _crp
-if not (Path("/workspace/oct18-batch/pages") / GOLF_1013_PAGE).exists(): (Path("/workspace/oct18-batch/pages") / GOLF_1013_PAGE).write_text(  # Oct 25: published page (Listen added by build_archive.js) is never overwritten
+sys.path.insert(0, SCRIPTS); import chair_report_page as _crp
+if not (PAGES / GOLF_1013_PAGE).exists(): (PAGES / GOLF_1013_PAGE).write_text(  # Oct 25: published page (Listen added by build_archive.js) is never overwritten
     _crp.render("Golf Advisory Committee Report", GOLF_1013, "Source: Golf Advisory Committee Report (Carolyn Story)", GOLF_1013_PAGE), encoding="utf-8")
 # seed the listen-* page once; build_archive.js (dateline_listen) rebuilds it from the report page on every run
-_lp = Path("/workspace/oct18-batch/pages") / GOLF_1013_LISTEN
-if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / GOLF_1013_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
+_lp = PAGES / GOLF_1013_LISTEN
+if not _lp.exists(): _lp.write_text((PAGES / GOLF_1013_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
 CHAIR.insert(0, ("Golf Advisory Committee", "2026-10-13",
     "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",  # Carolyn's wording
     BASE + GOLF_1013_PAGE, BASE + GOLF_1013_LISTEN))
@@ -525,21 +538,16 @@ PE_1014 = [
     ("p", "The Master Plan sub-committee will meet in late-October. It is working on evaluating HOPH's assets."),
     ("p", "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m."),
 ]
-if not (Path("/workspace/oct18-batch/pages") / PE_1014_PAGE).exists(): (Path("/workspace/oct18-batch/pages") / PE_1014_PAGE).write_text(
+if not (PAGES / PE_1014_PAGE).exists(): (PAGES / PE_1014_PAGE).write_text(
     _crp.render("Planning and Environmental Committee Report", PE_1014, "Source: Planning and Environmental Committee Report (Elaine Cole)", PE_1014_PAGE), encoding="utf-8")
-_lp = Path("/workspace/oct18-batch/pages") / PE_1014_LISTEN
-if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / PE_1014_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
+_lp = PAGES / PE_1014_LISTEN
+if not _lp.exists(): _lp.write_text((PAGES / PE_1014_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
 CHAIR.insert(0, ("Planning and Environmental Committee", "2026-10-14",
     "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",  # Elaine's wording, trimmed to 3 lines (R18)
     BASE + PE_1014_PAGE, BASE + PE_1014_LISTEN))
 def _arch_row(section, row):
     """R59: add an archive row (newest first) to archive/archive-items.json once; idempotent on the row's page."""
-    _f = Path("/workspace/oct18-batch/archive/archive-items.json"); _t = _f.read_text(encoding="utf-8")
-    if f'"page": "{row["page"]}"' in _t: return
-    _k = _t.find(f'"{section}": {{'); _i = _t.find('"items": [', _k); assert _k > 0 and _i > 0, section
-    _i += len('"items": [')
-    _t = _t[:_i] + "\n      " + json.dumps(row, ensure_ascii=False) + "," + _t[_i:]
-    json.loads(_t); _f.write_text(_t, encoding="utf-8")
+    _aj.add_rows(REPO, section, [row])
 _arch_row("committee-reports", {"date": "2026-10-14", "title": "Planning and Environmental Committee Report", "page": PE_1014_PAGE,
                                 "listen": PE_1014_LISTEN, "issues": ["2026-10-25"]})
 # Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
@@ -565,10 +573,10 @@ RULES_ARCHIVE_ONLY = [
         ("p", "Submitted by Bob Newport, Committee Laison")]),
 ]
 for _pg, _ls, _blocks in RULES_ARCHIVE_ONLY:
-    if not (Path("/workspace/oct18-batch/pages") / _pg).exists(): (Path("/workspace/oct18-batch/pages") / _pg).write_text(  # Oct 25: keep published page
+    if not (PAGES / _pg).exists(): (PAGES / _pg).write_text(  # Oct 25: keep published page
         _crp.render("Rules and Regulations Committee Report", _blocks, "Source: Rules and Regulations Committee Report (Bob Newport)", _pg), encoding="utf-8")
-    _lp = Path("/workspace/oct18-batch/pages") / _ls
-    if not _lp.exists(): _lp.write_text((Path("/workspace/oct18-batch/pages") / _pg).read_text(encoding="utf-8"), encoding="utf-8")
+    _lp = PAGES / _ls
+    if not _lp.exists(): _lp.write_text((PAGES / _pg).read_text(encoding="utf-8"), encoding="utf-8")
 def chair_cards():
     out = []
     # RETENTION (Steven, Oct 16): latest report per committee, shown only if dated within 30 days of the issue; older -> archive only
@@ -639,7 +647,7 @@ s = s.replace("2026-10-11-recurring-activities-by-", f"{RECURRING[0]}-recurring-
 # cloned from Oct 11, never had it. Oct 18 carries Carolyn M. Story's Marge Taylor profile (Palm Hill Link Sep 2026, pp. 10-12;
 # confirmed in Carolyn's Sep 28 email to palmhillblast; story + listen pages built Oct 9, PR #10; never in a newsletter before).
 # Placed where Oct 4 had it: right before From the Board President. Teaser = verbatim sentence from the story page.
-_JC = json.load(open("/workspace/oct18-batch/builder/oct25/data/community-story-joe-clay.json", encoding="utf-8"))
+_JC = json.load(open(REPO / "builder/oct25/data/community-story-joe-clay.json", encoding="utf-8"))
 # Oct 25 (PR #130, Steven Oct 19): Joe Clay - Keeper of The Course; date line Oct 1, 2026; credit line TBD (no source credit printed;
 # new rule Oct 20: no Palm Hill Link name inside articles). Preview pages until publish creates the live page (_JC live_page_planned).
 # R18c (Steven Oct 24 12:18 PM): over-long phone teasers are CUT (never reworded) to their first source sentence(s);
@@ -652,9 +660,9 @@ STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_R18_CUT(_JC["teas
              page=_JC["live_page_planned"], listen="2026-10-listen-joe-clay-story.html",   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
              source=None, archive_title=_JC["title"])
 COMMUNITY_STORIES_OMIT_APPROVED = None   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
-_story_page = (Path("/workspace/oct18-batch/pages") / STORY["page"]).read_text(encoding="utf-8")
+_story_page = (PAGES / STORY["page"]).read_text(encoding="utf-8")
 assert STORY["teaser"].replace("'", "\u2019") in _story_page or STORY["teaser"] in _story_page, "R45: story teaser must be verbatim from the story page"
-assert (Path("/workspace/oct18-batch/pages") / STORY["listen"]).exists(), "R45: story listen page missing"
+assert (PAGES / STORY["listen"]).exists(), "R45: story listen page missing"
 if STORY:
     _d = date.fromisoformat(STORY["date"])
     _row = (f'<tr style="background:#FFFFFF;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
@@ -670,19 +678,13 @@ if STORY:
     _cs += '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + _row + "</table></div>"
     s = s[:a] + _cs + s[a:]
     # the community-stories archive row records this issue ("In the newsletter: Oct 18")
-    _ai = _AI.read_text(encoding="utf-8") if "_AI" in globals() else Path("/workspace/oct18-batch/archive/archive-items.json").read_text(encoding="utf-8")
-    _mi = re.search(r'(\{"date": "' + STORY["date"] + r'"[^\n]*?"title": "' + re.escape(STORY["archive_title"]) + r'"[^\n]*?"issues": \[)([^\]]*)(\])', _ai)
+    _sd = _aj.load(REPO)[1]["sections"]["community-stories"]["items"]
+    _mi = [r for r in _sd if r.get("date") == STORY["date"] and r.get("title") == STORY["archive_title"]]
     if not _mi:  # Steven Oct 20 4:33 PM: preview builds add the archive row too (was deferred to publish)
-        _row = json.dumps({"date": STORY["date"], "date_label": "Oct 2026", "title": STORY["archive_title"], "summary": STORY["teaser"],
-                           "page": STORY["page"], "listen": STORY["listen"], "issues": ["2026-10-25"]}, ensure_ascii=False)
-        _k = _ai.find('"community-stories": {'); _i = _ai.find('"items": [', _k); assert _k > 0 and _i > 0, "R45: community-stories items list"
-        _i += len('"items": [')
-        _ai = _ai[:_i] + "\n      " + _row + "," + _ai[_i:]
-        Path("/workspace/oct18-batch/archive/archive-items.json").write_text(_ai, encoding="utf-8")
-        json.loads(_ai)
-    elif '"2026-10-25"' not in _mi.group(2):
-        _iss = (_mi.group(2) + ', "2026-10-25"') if _mi.group(2).strip() else '"2026-10-25"'
-        Path("/workspace/oct18-batch/archive/archive-items.json").write_text(_ai.replace(_mi.group(0), _mi.group(1) + _iss + _mi.group(3)), encoding="utf-8")
+        _aj.add_rows(REPO, "community-stories", [{"date": STORY["date"], "date_label": "Oct 2026", "title": STORY["archive_title"], "summary": STORY["teaser"],
+                           "page": STORY["page"], "listen": STORY["listen"], "issues": ["2026-10-25"]}])
+    elif "2026-10-25" not in _mi[0].get("issues", []):
+        _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + ["2026-10-25"])
 # Weekly Manager Update Oct 23 (Megan Leftwich, "Fw: Weekly Update 2026.10.23", palmhillblast Fri Oct 23 4:07 PM ET; her
 # original went to the Board at 4:03 PM) replaces Oct 16 (retention rule). The page is built here from the Oct 16 page's
 # card template with Megan's wording item by item (never hand-edited); decorative emoji in the insurance scenarios dropped.
@@ -705,9 +707,9 @@ WMU_1023 = [
     "Manhole inspections were conducted today. I have reached out to them to confirm they have completed them. We will submit the required paperwork by the November 6th deadline.",
     "Attached is a paper from RPM regarding minutes and some guidelines as to what to include. Please let me know if you have any questions, and I will share them with the committees.",
 ]
-_wp = Path("/workspace/oct18-batch/pages") / WMU_1023_PAGE
+_wp = PAGES / WMU_1023_PAGE
 if not _wp.exists():  # published page (nav/Listen kept current by build_archive.js) is never overwritten
-    _tpl = (Path("/workspace/oct18-batch/pages") / "2026-10-16-weekly-manager-update.html").read_text(encoding="utf-8")
+    _tpl = (PAGES / "2026-10-16-weekly-manager-update.html").read_text(encoding="utf-8")
     def _li(x):
         if isinstance(x, tuple):
             return f"<li>{escape(x[0], quote=False)}<blockquote>" + "".join(f"<p>{q}</p>" for q in x[1]) + "</blockquote></li>"
@@ -727,7 +729,7 @@ if not _wp.exists():  # published page (nav/Listen kept current by build_archive
 # Applied by the builder to the existing page (idempotent); a copy, the source PDF is never moved.
 WMU_1023_PDF_SRC = Path("/workspace/megan-1023-images/minutes-M100.pdf")
 WMU_1023_PDF = "assets/manager/2026-10-23-rpm-recording-minutes-at-meetings.pdf"
-_pdf = Path("/workspace/oct18-batch/pages") / WMU_1023_PDF
+_pdf = PAGES / WMU_1023_PDF
 if not _pdf.exists():
     import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
 _wt = _wp.read_text(encoding="utf-8")
@@ -773,16 +775,14 @@ DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:a
 # STYLE-RULES R39 (Steven, Oct 17 6:22 PM): DYK summary ~3 lines at desktop, built ONLY from Dave's own sentences (XI. TRAFFIC
 # RULES text, 1:17 PM email); light trimming only ("Further - " dropped, ".." -> "."). Verbatim check in style_rules.dyk_summary_ok.
 import html as _html
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr_dyk
+sys.path.insert(0, SCRIPTS); import style_rules as _sr_dyk
 DYK_RULES_SUMMARY = ("The speed limit in the park is 15 mph. It's okay to go 15 mph and make a full stop at a stop sign. "
     "Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights.")  # Steven 6:28 PM: 3 sentences max
 _DYK_SRC = json.load(open(ROOT / "data/dyk-traffic-rules-source.json"))
 assert _sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC), "R39: DYK summary must be at most 3 of Dave's verbatim sentences"
 # R39: the Did You Know archive row shows the same summary (archive/archive-items.json, id traffic-rules)
-_AI = Path("/workspace/oct18-batch/archive/archive-items.json"); _ai = _AI.read_text(encoding="utf-8")
-_m = re.search(r'("id": "traffic-rules", "title": "Traffic Rules", "text": )"((?:[^"\\]|\\.)*)"', _ai); assert _m, "R39: traffic-rules archive row not found"
-_new = _m.group(1) + json.dumps(DYK_RULES_SUMMARY, ensure_ascii=False)
-if _m.group(0) != _new: _AI.write_text(_ai.replace(_m.group(0), _new), encoding="utf-8")
+_AI = _aj.path(REPO)
+_aj.set_field(REPO, "did-you-know", {"id": "traffic-rules", "title": "Traffic Rules"}, "text", DYK_RULES_SUMMARY)
 DYK_RULES_PV = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/did-you-know-traffic-rules.html"
 # R39 (Steven, Oct 17 6:32 PM): teaser mode per item -- "framing" (topic/source description, no author name, no rule quotes) or
 # "distilled" (<= 3 verbatim source sentences). Traffic Rules = framing on the main page; the archive row keeps the distilled summary.
@@ -797,8 +797,8 @@ else:
 DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
     f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(_DYK_MAIN)} '
     f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
-_DYK25 = json.load(open("/workspace/oct18-batch/builder/oct25/data/dyk-link-oct2026-spectrum.json", encoding="utf-8"))
-_DYK3 = json.load(open("/workspace/oct18-batch/builder/oct25/data/dyk-dave-assessments.json", encoding="utf-8"))
+_DYK25 = json.load(open(REPO / "builder/oct25/data/dyk-link-oct2026-spectrum.json", encoding="utf-8"))
+_DYK3 = json.load(open(REPO / "builder/oct25/data/dyk-dave-assessments.json", encoding="utf-8"))
 _PV25 = "https://palmhillnews.vercel.app/pages/previews/2026-10-25/"
 # R39 distilled teasers: at most 3 verbatim sentences from each item (ALL CAPS kept, RD9)
 _TEASE = {"2026-10-25-spectrum-information": "SPECTRUM SUPPORT PHONE NUMBER: 877-647-7732 is the Community Solutions Line for Bulk Owners Customer Support.",  # R18c cut (Steven Oct 24 12:18 PM)
@@ -844,7 +844,6 @@ s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" sty
 _sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
 # R59 (Steven Oct 21 11:25 AM): preview builds add archive rows for every archive-backed issue item (DYK here; story above),
 # newest first, existing row format; build_archive.js (run at the end) renders them. Guard at the end: each item is on its archive page.
-_ai = _AI.read_text(encoding="utf-8")
 _DYK_ROWS = [dict(date="2026-10-25", id=_DYK3["id"].replace("2026-10-25-", ""), title=_DYK3["title_display"], text=_DYK3_TEASER,
                   page=_dyk_final(_DYK3["preview_page"]), source_label=_DYK3["source"], issues=["2026-10-25"])]
 for _it in _DYK25["items"]:
@@ -852,22 +851,20 @@ for _it in _DYK25["items"]:
               page=_dyk_final(_it["preview_page"]), issues=["2026-10-25"])
     if _it.get("byline"): _r["source_label"] = _it["byline"]
     _DYK_ROWS.append(_r)
-_k = _ai.find('"did-you-know": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
-_new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _DYK_ROWS if f'"page": "{r["page"]}"' not in _ai)
-if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
+_aj.add_rows(REPO, "did-you-know", _DYK_ROWS)
 # R66b (Steven Oct 24 3:16 PM): current-issue Rules DYK archive row uses the same R66 teaser as the main page (past rows untouched)
 _ai2 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-25", _DYK_ROWS[0]["id"], _DYK3_TEASER)
-if _ai2 != _AI.read_text(encoding="utf-8"): _AI.write_text(_ai2, encoding="utf-8")
+_aj.save_text(REPO, _ai2, json.loads(_ai2))
 # R66c (Steven Oct 24 3:34 PM "Yes"): Oct 18 Traffic Rules archive row teaser re-generated in R66 style (archive row ONLY;
 # Oct 18 issue, SEND html and the detail page stay as sent). Parts = the sentences of Dave's "Sections of the rule" (source json).
-_TR_SRC = json.loads(Path("/workspace/oct18-batch/builder/oct18/data/dyk-traffic-rules-source.json").read_text(encoding="utf-8"))[-1]
+_TR_SRC = json.loads((REPO / "builder/oct18/data/dyk-traffic-rules-source.json").read_text(encoding="utf-8"))[-1]
 _TR_SENT = re.split(r"(?<=\.)\.?\s+", _TR_SRC.split("Sections of the rule:", 1)[1].strip())
 _TR_ITEMS = [(chr(65 + i), t) for i, t in enumerate(_TR_SENT[:6])]  # A-F; last sentence ("Most of all, be safe...") is not a rule part
 _TR_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 _TR_TEASER, _trp = _sr_dyk.rules_dyk_teaser(_TR_ITEMS, _TR_PHRASES)
 _sr_dyk.assert_rules_dyk(_TR_TEASER, _TR_ITEMS, _trp, "traffic-rules")
 _ai3 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-18", "traffic-rules", _TR_TEASER)
-if _ai3 != _AI.read_text(encoding="utf-8"): _AI.write_text(_ai3, encoding="utf-8")
+_aj.save_text(REPO, _ai3, json.loads(_ai3))
 ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
 _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
@@ -885,9 +882,7 @@ _NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title=
                      page=HOLIDAY_PAGE, source="Flyer from Bill Bender, Oct 23", issues=["2026-10-25"]),
                 dict(date="2026-10-25", id="2026-10-25-north-clubhouse-ice-machine-moved", title=ICE_TITLE, text=ICE_TEASER,
                      page=ICE_PAGE, source="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz", issues=["2026-10-25"])]
-_ai = _AI.read_text(encoding="utf-8"); _k = _ai.find('"community-notices": {'); _i = _ai.find('"items": [', _k) + len('"items": ['); assert _k > 0
-_new = "".join("\n      " + json.dumps(r, ensure_ascii=False) + "," for r in _NOTICE_ROWS if f'"page": "{r["page"]}"' not in _ai)
-if _new: _ai = _ai[:_i] + _new + _ai[_i:]; json.loads(_ai); _AI.write_text(_ai, encoding="utf-8")
+_aj.add_rows(REPO, "community-notices", _NOTICE_ROWS)
 ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
@@ -895,7 +890,7 @@ s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill
 # STYLE-RULES R25 (Steven, Oct 17 12:20 AM): footer archive-links row removed (links stay in Helpful Webpages);
 # Helpful Webpages label is 'Committee Meeting Video Archives' (never 'Committee Meeting Videos - Archives')
 assert 'Videos - Archives' not in s, 'R25 label'
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr  # STYLE-RULES.md (shared)
+sys.path.insert(0, SCRIPTS); import style_rules as _sr  # STYLE-RULES.md (shared)
 s = _sr.enforce_title_months(s)  # full months in titles/bands
 import link_archive_bullet as _lab; s = _lab.add(s)
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
@@ -913,8 +908,8 @@ assert len(_conf.findall(s)) == 1, "R25: footer calendar-confirm sentence not fo
 s = _conf.sub(lambda m: CALCHECK_P, s)
 assert "All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1, "R25 footer"
 s = _sr.service_box_fit(s)  # STYLE-RULES R27: footer service-request lines on one line at desktop width
-Path("/workspace/oct18-batch/builder/calendar-pull").mkdir(exist_ok=True)
-Path("/workspace/oct18-batch/builder/calendar-pull/2026-10-25.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
+(REPO / "builder/calendar-pull").mkdir(exist_ok=True)
+(REPO / "builder/calendar-pull/2026-10-25.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")
 _sr_dyk.assert_no_stamp(s, OUTF.name)  # R40
 # STYLE-RULES R41/R43 (Steven, Oct 17 10:29 / 10:33 PM): '<Singular noun> Archives →' on every newsletter archive link
 # (seed 'Past President Messages →' / 'Past Shareholders Reports →' -> President's Message / Shareholders Report Archives →).
@@ -924,7 +919,12 @@ s = _sr.assert_community_stories(s, OUTF.name, COMMUNITY_STORIES_OMIT_APPROVED) 
 s = _sr.assert_event_sources(s, OUTF.name)  # R48 (Steven, Oct 18 12:31 AM): event rows need Calendar/RPM/Agenda  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
 # STYLE-RULES R18/R60 (Steven Oct 21 8:34 PM): root-cause fix -- the Oct 25 builder never ran summary_trim (Oct 18 ran it in
 # make_live_preview/publish), so notices showed their full text. Trim here, then guard (scripts/check_notices.py) after writing.
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import summary_trim as _st; s = _st.trim(s)
+sys.path.insert(0, SCRIPTS); import summary_trim as _st
+_um = _st.unmatched(s)  # R18b: report every saved trim that no longer matches; a current-issue one stops the build
+print(f"R18b summary_trim: {len(_um)} saved trim(s) not in this issue" + "".join(f"\n  unmatched{' (CURRENT ISSUE)' if c else ''}: {pre[:60]!r}" for pre, u, c in _um))
+for _pre, _u, _c in _um:
+    if _c: _todo(f"R18b: saved trim {_pre[:60]!r} no longer matches its item ({_u}); update summary_trim.SHORT")
+s = _st.trim(s)
 import check_notices as _cn; _cnf = _cn.static(s)
 if _cnf: raise SystemExit("R60: " + "; ".join(_cnf))
 # STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
@@ -964,10 +964,10 @@ s = re.sub(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', _r1_inset, s)
 assert all(LISTEN_INSET in m.group(0) for m in re.finditer(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', s)), "R1 Listen inset missing"
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
-sys.path.insert(0, "/workspace/oct18-batch/scripts"); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
+sys.path.insert(0, SCRIPTS); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
-import subprocess as _sp2; _lr = _sp2.run([sys.executable, "/workspace/oct18-batch/scripts/fetch_link_pdf.py"], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
+import subprocess as _sp2; _lr = _sp2.run([sys.executable, str(REPO / "scripts/fetch_link_pdf.py")], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
 json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in meetings], "this_week": [(e["date"], e["name"]) for e in this_week],
            "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp}, open(ROOT / "build-audit-oct25.json", "w"), indent=1)
 print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week), "| upcoming", len(upcoming))
@@ -978,15 +978,16 @@ if _rc.returncode != 0: raise SystemExit("R64: run_checks_oct25 FAIL\n" + "\n".j
 
 # Steven Oct 20 4:33 PM: preview builds refresh the archive pages too (the story row shows on Community Stories before publish)
 import subprocess as _sp3
-_ba = _sp3.run(["node", "scripts/build_archive.js"], cwd="/workspace/oct18-batch", capture_output=True, text=True)
+_ba = _sp3.run(["node", "scripts/build_archive.js"], cwd=str(REPO), capture_output=True, text=True)
 print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
-_sr_dyk.assert_rules_dyk_archive(Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8"), _DYK_ROWS[0]["id"], _DYK3_TEASER)  # R66b
-_sr_dyk.assert_rules_dyk_archive(Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8"), "traffic-rules", _TR_TEASER)  # R66c
-_ca = Path("/workspace/oct18-batch/pages/archive/community-stories.html").read_text(encoding="utf-8")
+_sr_dyk.assert_r10_locked_pages(REPO)  # R10: locked as-sent pages unchanged (byte pin)
+_sr_dyk.assert_rules_dyk_archive((REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8"), _DYK_ROWS[0]["id"], _DYK3_TEASER)  # R66b
+_sr_dyk.assert_rules_dyk_archive((REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8"), "traffic-rules", _TR_TEASER)  # R66c
+_ca = (REPO / "pages/archive/community-stories.html").read_text(encoding="utf-8")
 ARCHIVE_BACKED.append(("community-stories.html", STORY["page"]))
 for _ap, _pg in ARCHIVE_BACKED:  # R59 guard: every archive-backed issue item is on its archive page and the page exists
-    assert (Path("/workspace/oct18-batch/pages") / _pg).exists(), f"R59: {_pg} missing"
-    assert _pg in Path("/workspace/oct18-batch/pages/archive/" + _ap).read_text(encoding="utf-8"), f"R59: {_pg} not on archive/{_ap}"
+    assert (PAGES / _pg).exists(), f"R59: {_pg} missing"
+    assert _pg in (PAGES / "archive" / _ap).read_text(encoding="utf-8"), f"R59: {_pg} not on archive/{_ap}"
     assert (BASE + _pg) in s, f"R59: issue does not link the final URL {_pg}"
 print("R59 archive-backed items OK:", ARCHIVE_BACKED)
 assert STORY["page"] in _ca, "R45: the issue's story is not on the Community Stories archive page"
@@ -996,7 +997,7 @@ assert STORY["page"] in _ca, "R45: the issue's story is not on the Community Sto
 STORY_ARCHIVE_URL = ARCH + "community-stories.html"   # https://palmhillnews.vercel.app/pages/archive/community-stories.html
 _sa = re.findall(r'href="([^"]+)"[^>]*>Story Archives →', s)
 assert _sa and all(u == STORY_ARCHIVE_URL for u in _sa), f"R58: Story Archives → must link {STORY_ARCHIVE_URL}, got {_sa}"
-assert 'href="community-stories.html"' in Path("/workspace/oct18-batch/pages/archive/main.html").read_text(encoding="utf-8"), "R58: Main Archive no longer links community-stories.html"
+assert 'href="community-stories.html"' in (REPO / "pages/archive/main.html").read_text(encoding="utf-8"), "R58: Main Archive no longer links community-stories.html"
 # Local review copy (D:\PHNEWS\<week>\, fixed names). The issue's story + Story Archives links open local copies that mirror the
 # live paths: <story>.html and archive/community-stories.html (the canonical page, incl. this issue's story); every other
 # root-relative link/asset in the local archive copy is made absolute to palmhillnews.vercel.app so it renders like the live page.
@@ -1004,7 +1005,7 @@ LOCAL = ROOT / "local-oct25"; LOCAL.mkdir(exist_ok=True); (LOCAL / "archive").mk
 _loc = s.replace(BASE + STORY["page"], STORY["page"]).replace(STORY_ARCHIVE_URL, "archive/community-stories.html")
 (LOCAL / "PHNEWS-2026-10-25-preview.html").write_text(_loc, encoding="utf-8")
 import shutil as _sh
-_sh.copy("/workspace/oct18-batch/pages/" + STORY["page"], LOCAL / STORY["page"])
+_sh.copy(PAGES / STORY["page"], LOCAL / STORY["page"])
 _lca = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ca)
 _lca = re.sub(r'href="(?!https?:|#|mailto:)([^"/][^"]*\.html)"', r'href="https://palmhillnews.vercel.app/pages/archive/\1"', _lca)
 for _u in ("https://palmhillnews.vercel.app/pages/" + STORY["page"], "https://palmhillnews.vercel.app/pages/archive/../" + STORY["page"]):
@@ -1013,13 +1014,13 @@ for _u in ("https://palmhillnews.vercel.app/pages/" + STORY["page"], "https://pa
 _old = LOCAL / "community-stories.html"
 if _old.exists(): _old.unlink()   # local review scratch copy only (box), replaced by archive/community-stories.html
 assert ('href="../' + STORY["page"]) in _lca, "R58: local archive copy must list and link this issue's story"
-_ld = Path("/workspace/oct18-batch/pages/archive/did-you-know.html").read_text(encoding="utf-8")
+_ld = (REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8")
 _ld = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ld)
 _ld = re.sub(r'href="(?!https?:|#|mailto:)([^"/][^"]*\.html)"', r'href="https://palmhillnews.vercel.app/pages/archive/\1"', _ld)
 _loc = (LOCAL / "PHNEWS-2026-10-25-preview.html").read_text(encoding="utf-8").replace(ARCH + "did-you-know.html", "archive/did-you-know.html")
 for _ap, _pg in ARCHIVE_BACKED:
     if _ap != "did-you-know.html": continue
-    _sh.copy("/workspace/oct18-batch/pages/" + _pg, LOCAL / _pg)
+    _sh.copy(PAGES / _pg, LOCAL / _pg)
     _loc = _loc.replace(BASE + _pg, _pg)
     for _u in ("https://palmhillnews.vercel.app/pages/" + _pg, "https://palmhillnews.vercel.app/pages/archive/../" + _pg): _ld = _ld.replace('href="' + _u, 'href="../' + _pg)
     assert 'href="../' + _pg in _ld, f"R59: local DYK archive copy missing {_pg}"
