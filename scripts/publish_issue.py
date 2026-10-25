@@ -57,6 +57,7 @@ else:
     if missing: raise SystemExit(f"R47 (dry run): linked source pages missing {missing}")
 s = _sr.assert_webmaster_more(s, NAME, REPO)
 s = _sr.assert_event_sources(s, NAME)  # R48
+if "<script" in s.lower(): raise SystemExit("R76: the SEND copy must contain no <script> (email Listen = plain links)")
 out = ROOT / f"PHNEWS-{I}-SEND.html"; out.write_text(s, encoding="utf-8")
 nas = ROOT / f"nas-layout/{I[:7]}/{I}/sent-final"; nas.mkdir(parents=True, exist_ok=True); (nas / NAME).write_text(s, encoding="utf-8")
 print(("DRY RUN: " if a.dry_run else "") + f"{I}: {len(MAP)} preview pages mapped {list(MAP.values())}; SEND -> {out}")

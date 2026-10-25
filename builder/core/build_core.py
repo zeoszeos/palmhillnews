@@ -592,6 +592,18 @@ s = re.sub(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', _r1_inset, s)
 assert all(LISTEN_INSET in m.group(0) for m in re.finditer(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', s)), "R1 Listen inset missing"
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
+# STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): from listen_settings v2_from on, every page this NL links with ?listen=1
+# gets the v2 listen block (big "Tap to listen" bar when autoplay is blocked). Script block only; R10 locked pages untouched.
+# The NL itself (preview -> SEND) never carries a script.
+sys.path.insert(0, SCRIPTS); import page_listen as _plv
+if "<script" in s.lower(): raise SystemExit("R76: the newsletter (preview/SEND) must not contain any <script>; email copies are plain links")
+if _plv.v2_for(ISSUE):
+    _r10 = set(_sr_dyk.R10_LOCKED_SHA256)
+    for _rel in sorted(set(re.findall(r'href="(?:https://palmhillnews\.vercel\.app)?/?pages/([^"?#]+\.html)\?(?:[^"]*&)?listen=1', s))):
+        _f = PAGES / _rel
+        if "pages/" + _rel in _r10 or not _f.exists(): continue
+        _t = _f.read_text(encoding="utf-8"); _n = _plv.upgrade(_t)
+        if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R76 v2 listen:", _rel)
 sys.path.insert(0, SCRIPTS); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal

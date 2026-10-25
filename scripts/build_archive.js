@@ -124,7 +124,23 @@ const R10_LOCKED = ['pages/2026-09-30-shareholders-report.html', 'pages/2026-10-
 const R10_SHA = (rel) => { const f = path.join(ROOT, rel); return fs.existsSync(f) ? require('crypto').createHash('sha256').update(fs.readFileSync(f)).digest('hex') : null; };
 const R10_START = Object.fromEntries(R10_LOCKED.map((r) => [r, R10_SHA(r)]));
 const r10Skipped = [];
+// STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): website Listen plays IN PLACE on the archive hub/section pages (once the
+// current issue is on/after listen_settings.json v2_from) and on archived issue copies dated v2_from or later. Same block
+// and reader as scripts/page_listen.py (listen_inplace.html + listen_reader.js). The emailed SEND copy is never touched.
+const LISTEN_V2_FROM = JSON.parse(fs.readFileSync(path.join(__dirname, 'listen_settings.json'), 'utf8')).v2_from;
+const LISTEN_READER = fs.readFileSync(path.join(__dirname, 'listen_reader.js'), 'utf8').replace(/\n+$/, '');
+const INPLACE_BLOCK = fs.readFileSync(path.join(__dirname, 'listen_inplace.html'), 'utf8').replace('/*READER*/', () => LISTEN_READER).trim();
+const CUR_ISSUE = process.env.PHNEWS_ISSUE || (() => { try { return fs.readdirSync(path.join(ROOT, 'pages/previews')).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().pop() || ''; } catch (e) { return ''; } })();
+function inplace(rel, content) {
+  const m = rel.match(/^pages\/archive\/(?:issues\/(\d{4}-\d{2}-\d{2})|[^/]+)\.html$/);
+  if (!m || !(m[1] ? m[1] >= LISTEN_V2_FROM : CUR_ISSUE >= LISTEN_V2_FROM)) return content;
+  if (!/class="ph-listen"|listen=1|>\s*Listen\s*(?:→|&rarr;)?\s*<\/a>/.test(content)) return content;
+  const t = content.replace(/\n?<!-- ph-inplace-listen:start -->[\s\S]*?<!-- ph-inplace-listen:end -->/, '');
+  const i = t.toLowerCase().lastIndexOf('</body>');
+  return i < 0 ? t : t.slice(0, i) + INPLACE_BLOCK + '\n' + t.slice(i);
+}
 function write(file, content) {
+  content = inplace(path.relative(ROOT, file).split(path.sep).join('/'), content);
   if (R10_LOCKED.includes(path.relative(ROOT, file).split(path.sep).join('/'))) { r10Skipped.push(path.relative(ROOT, file)); return; }
   built.set(file, content);
   const prev = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
@@ -895,6 +911,8 @@ const CHAIR_LISTEN_JS = `<!-- ph-chair-listen:start -->
 })();
 </script>
 <!-- ph-chair-listen:end -->`;
+const PAGE_V2_BLOCK = fs.readFileSync(path.join(__dirname, 'page_listen_v2.html'), 'utf8').replace('/*READER*/', () => LISTEN_READER).trim();
+const PAGE_V2_RE = /\n?<!-- ph-page-listen:start -->[\s\S]*?<!-- ph-page-listen:end -->\n?/g;
 const CHAIR_BLOCK_RE = /\n?<!-- ph-chair-listen:start -->[\s\S]*?<!-- ph-chair-listen:end -->\n?/g;
 const chairListenPages = new Set();
 // Steven Oct 11 (2nd pass): the SAME clean listen page for "clean_listen" sections -- President's Message (Henry
@@ -903,9 +921,13 @@ const chairListenPages = new Set();
 for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) for (const it of S[k].items) {
   if (!it.page || !it.listen || chairListenPages.has(it.listen)) continue;
   const reportFile = path.join(PAGES, it.page);
-  const base = (built.get(reportFile) ?? fs.readFileSync(reportFile, 'utf8')).replace(CHAIR_BLOCK_RE, '\n');
+  // R76: items dated v2_from or later use the ONE shared v2 page-listen block (scripts/page_listen_v2.html: Tap-to-listen bar)
+  // instead of the older chair-only copy; earlier items keep CHAIR_LISTEN_JS byte for byte.
+  const v2 = !!it.date && it.date >= LISTEN_V2_FROM;
+  let base = (built.get(reportFile) ?? fs.readFileSync(reportFile, 'utf8')).replace(CHAIR_BLOCK_RE, '\n');
+  if (v2) base = base.replace(PAGE_V2_RE, '\n');
   if (!/<a class="ph-listen" href="[^"]*\/pages\/[^"]*listen[^"]*"/.test(base) || !/<article\b/.test(base)) throw new Error(`pages/${it.page}: clean report page has no date-line Listen link or <article>`);
-  const report = base.replace(/\n?<\/body>/i, () => '\n' + CHAIR_LISTEN_JS + '\n</body>');
+  const report = base.replace(/\n?<\/body>/i, () => '\n' + (v2 ? PAGE_V2_BLOCK : CHAIR_LISTEN_JS) + '\n</body>');
   write(reportFile, report);
   let listen = report
     .replace(/<body([^>]*)>/i, (m, a) => `<body${a} data-ph-autoplay="1">\n${CHAIR_LISTEN_MARK}pages/${it.page} on every build; edit the report page or archive-items.json, not this file. -->`)

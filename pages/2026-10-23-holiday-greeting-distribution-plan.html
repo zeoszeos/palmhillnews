@@ -21,18 +21,14 @@
 </main>
 </div>
 <!-- ph-page-listen:start -->
-<script>
+<script data-ph-listen-v="2">
 (() => {
-  const link = document.querySelector('a.ph-listen');
-  if (!link) return;
-  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
-  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-    return;
-  }
-  const synth = window.speechSynthesis;
+  // STYLE-RULES R49 / R49b / R76 (Steven, Oct 25 2026 9:29 AM): v2 page-listen. Opened with ?listen=1 (or a
+  // data-ph-autoplay listen page) it tries to read once; if the browser blocks speech (no 'start' within 1.5 s) a big
+  // "Tap to listen" bar appears at the top -- one tap reads from the beginning. Never a silent wait.
+  // STYLE-RULES R49/R76: the ONE reader (what Listen speaks), shared by the v2 page-listen script and the in-place
+  // Listen on archive / issue pages. phParts(doc) -> phrases in page order. Same rules as the v1 page script.
   const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
-  let run = 0, playing = false, started = false;
-  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
   function chunks(text) {
     const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
     if (!clean) return [];
@@ -44,28 +40,21 @@
     if (p) out.push(p);
     return out;
   }
-  function parts() {
-    // R49 (Steven, Oct 18 12:39/12:43 AM): read ALL visible content in page order -- the h1, every content card / email
-    // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
-    // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
-    const h1 = document.querySelector('h1');
+  function phParts(doc) {
+    const win = doc.defaultView || window;
+    const h1 = doc.querySelector('h1');
     const sel = 'main .content-card, main .ph-row, main .ph-meta, main .source, main .ph-source, main .credit, main .byline';
-    const sent = (document.querySelector('main') || document.body).innerText;  // R49b: a .ph-meta line that only repeats the email's Sent time is the date line (skipped)
-    const all = Array.from(document.querySelectorAll(sel))
-      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
+    const sent = (doc.querySelector('main') || doc.body).innerText;
+    const all = Array.from(doc.querySelectorAll(sel))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links, .ph-tap-bar') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
       .filter((el) => !(el.classList.contains('ph-meta') && sent.includes('Sent: ' + el.innerText.trim())));
-    let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
-      .map((el) => el.innerText.trim())
-      .filter(Boolean);
-    if (!blocks.length) blocks = walkAll();  // R49b (Steven, Oct 18 2:05 AM): pages without content cards
-    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
+    let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el))).map((el) => el.innerText.trim()).filter(Boolean);
+    if (!blocks.length) blocks = walkAll(doc, win);
+    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);
   }
-  function walkAll() {
-    // R49b: early notice copies, simple / card pages and plain reports have no content cards -- read every visible block
-    // in <main> / <article> / <body> in page order (outermost block once; table rows, quotes, bare div text, the Source
-    // line). Skipped: header, kicker/badge, date line, navigation, archive links, the Listen button, Back links.
+  function walkAll(doc, win) {
     const BLOCK = 'h2,h3,h4,h5,h6,p,li,blockquote,figure,figcaption,pre,table,dl,aside';
-    const SKIP = 'h1,header,footer,script,style,noscript,nav,button,[role="navigation"],.ph-listen,.ph-listen-row,.ph-story-nav,.ph-story-links-long,.ph-archive-bar,.ph-dateline,.page-kicker,.ph-strip,.ph-links,.badge,.meta,.date,.back,.attachments,[aria-hidden="true"]';
+    const SKIP = 'h1,header,footer,script,style,noscript,nav,button,[role="navigation"],.ph-listen,.ph-listen-row,.ph-tap-bar,.ph-story-nav,.ph-story-links-long,.ph-archive-bar,.ph-dateline,.page-kicker,.ph-strip,.ph-links,.badge,.meta,.date,.back,.attachments,[aria-hidden="true"]';
     const vis = (el) => el.getClientRects().length > 0;
     const out = [];
     const walk = (el) => {
@@ -79,18 +68,38 @@
           if (n.matches('table,dl')) n.querySelectorAll('caption,tr,dt,dd').forEach((r) => { const x = r.innerText.trim(); if (x) out.push(x); });
           else if (n.matches('figure,aside,blockquote') && n.querySelector('p,li,figcaption')) walk(n);
           else { const x = n.innerText.trim(); if (x) out.push(x); }
-        } else if (getComputedStyle(n).display.startsWith('inline')) run += n.innerText;
+        } else if (win.getComputedStyle(n).display.startsWith('inline')) run += n.innerText;
         else { flush(); walk(n); }
       }
       flush();
     };
-    walk(document.querySelector('main') || document.querySelector('article') || document.body);
+    walk(doc.querySelector('main') || doc.querySelector('article') || doc.body);
     return out;
   }
-
+  window.phListenParts = phParts;
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
+  const synth = window.speechSynthesis;
+  let run = 0, playing = false, started = false, bar = null;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function hideBar() { if (bar) { bar.remove(); bar = null; document.body.style.paddingTop = ''; } }
+  function showBar() {
+    if (bar) return;
+    bar = document.createElement('button');
+    bar.type = 'button'; bar.className = 'ph-tap-bar'; bar.setAttribute('aria-label', 'Tap to listen to this page');
+    bar.textContent = '\u25B6 Tap to listen';
+    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;display:block;width:100%;box-sizing:border-box;margin:0;min-height:72px;padding:18px 16px;border:0;border-bottom:4px solid #e0b300;background:#1d4310;color:#ffffff;font:bold 28px/1.2 Arial,Helvetica,sans-serif;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none';
+    bar.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); hideBar(); start(false); });
+    document.body.insertBefore(bar, document.body.firstChild);
+    window.scrollTo(0, 0);
+    document.body.style.paddingTop = '80px';
+  }
   function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
   function start(auto) {
-    const list = parts(); const me = ++run; let i = 0;
+    hideBar();
+    const list = phParts(document); const me = ++run; let i = 0;
     synth.cancel(); playing = true; started = false; setLabel('Stop');
     const next = () => {
       if (me !== run) return;
@@ -98,25 +107,18 @@
       const u = new SpeechSynthesisUtterance(list[i]);
       u.lang = 'en-US'; u.rate = 1;
       u.onstart = () => { if (me === run) started = true; };
-      u.onend = () => { if (me !== run) return; i += 1; next(); };
-      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      u.onend = () => { if (me !== run) return; started = true; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); if (auto && !started) showBar(); };
       synth.speak(u);
     };
     next();
-    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); showBar(); } }, 1500);
   }
   link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
-  function arm() {
-    const onTap = (e) => {
-      document.removeEventListener('click', onTap, true);
-      if (playing || (e.target.closest && e.target.closest('a'))) return;
-      start(false);
-    };
-    document.addEventListener('click', onTap, true);
-  }
   window.addEventListener('pagehide', stop);
   const q = new URLSearchParams(location.search);
-  if (q.get('listen') === '1' || q.get('autoplay') === '1') {
+  const auto = q.get('autoplay') !== '0' && (q.get('listen') === '1' || q.get('autoplay') === '1' || document.body.dataset.phAutoplay === '1');
+  if (auto) {
     const go = () => start(true);
     if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
   }
