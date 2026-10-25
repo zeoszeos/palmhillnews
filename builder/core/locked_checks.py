@@ -25,15 +25,8 @@ THIS_WEEK_EXPECTED = []  # L07 (Oct 11 ~10:09 AM ET, Steven item 13: Karaoke Obi
 UPCOMING_EXPECTED = []  # filled by run_checks.py from build-audit-oct18.json
 TREAT_AS_RECURRING = ["Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"]  # A3 (Oct 24): + Writing Club; run_checks asserts this equals core build_core/recurring AS_RECURRING  # + Karaoke Obi-Time (Steven, Oct 11 ~10:09 AM ET, Tony item 13)
 # L09/L19 (I Got It all dates, Steven Oct 9 ~8:35 PM; on Recurring pages ~8:45 PM)
-NOTICES_EXPECTED = [  # A2 (Oct 24): L11 locked for Oct 25 as approved (format-locked-2026-10-25-proof + R60b/R60c), in order
-    "Join the Palm Hill Residents Group on Facebook", "A convenient way to send holiday cards for Palm Hill residents",
-    "North Clubhouse Ice Machine Moved", "Library Closed starting the week of October 26th", "Help with maintaining Sanitation Field",
-    "Please observe important stop sign rules", "2027 South Rec Club Seeking Officers", "Couples Golf League",
-    "Swimming Pool Food and Beverage Rules", "November Coffee and Pancake Volunteers", "Shuffleboard Season Reminders",
-    "Taste of Golf — November 18", "Info from Linda"]
-CHAIR_EXPECTED = {  # A1 (Oct 24): L13 refreshed for Oct 25 -- P&E (Oct 14) + Golf (Oct 13); title -> intro
-    "Planning and Environmental Committee": "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",
-    "Golf Advisory Committee": "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026."}
+NOTICES_EXPECTED = None  # R71 (batch 5): L11 list lives in the issue content file LOCKED (in order)
+CHAIR_EXPECTED = None    # R71 (batch 5): L13 title -> intro lives in the issue content file LOCKED
 FULL_MONTHS = ("January","February","March","April","May","June","July","August","September","October","November","December")
 # L21 CODE POLICY M3 (Steven, Oct 9, 2026 ~8:57 PM ET): every user-visible month is 3 letters. "May" is already 3 letters.
 FULL_MONTH_RE = re.compile(r'\b(January|February|March|April|June|July|August|September|October|November|December)\b')
@@ -535,3 +528,5 @@ def check_link_monthly_latest(L, email):
 for _k, _v in C.LOCKED.items():
     if _k not in globals(): raise SystemExit(f"R71: {C.ISSUE} LOCKED override {_k!r} is not a locked_checks name")
     globals()[_k] = _v
+for _k in ("NOTICES_EXPECTED", "CHAIR_EXPECTED"):
+    if globals()[_k] is None: raise SystemExit(f"R71: {C.ISSUE} content file LOCKED must set {_k}")

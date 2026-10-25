@@ -17,8 +17,10 @@ Branch `nov1-build` (off main 610be36). Oct 25 issue, SEND file, live pages and 
   `python3 builder/build_issue.py --check` (R71). Oct 25 regression check before any builder commit: `python3 tests/acceptance_oct25.py`
   (tag format-locked-2026-10-25-final-r5; must print ACCEPTANCE PASS). The old copy in `/workspace/phnews-consolidation/nov1/builder/` is obsolete.
 - Recurring pages: `PHNEWS_ISSUE=2026-11-01 python3 builder/core/recurring.py && python3 builder/core/recurring_grouped.py . 2026-11-01`.
-- **Locked-check expectations for Nov 1** (L08 Upcoming, L11 Notices, CHAIR): set them in `LOCKED = {...}` in `builder/issues/2026-11-01.py`
-  once Steven approves content. New weeks: see `docs/NEW-ISSUE-HOWTO.md`.
+- **Content (R71b, coding batch 5):** all per-issue items now live in `builder/issues/2026-11-01.py`; the core holds logic only.
+  Everything Nov 1 inherits from Oct 25 is copied there under `CARRIED FROM OCT 25 (Steven to review)`.
+- **Locked-check expectations for Nov 1** (L08 Upcoming label, L11 Notices, CHAIR): `LOCKED = {...}` in `builder/issues/2026-11-01.py`
+  holds today's (Oct 25) values marked "TO REVIEW when Nov 1 content approved"; update them once Steven approves content. New weeks: see `docs/NEW-ISSUE-HOWTO.md`.
 - Dry run: `PHNEWS_DRYRUN=1 python3 builder/build_issue.py --issue 2026-11-01` — content guards are listed as TODOs instead of stopping; never use for publish.
 - Previews: `D:\PHNEWS\nov1\PHNEWS-2026-11-01-preview.html` (fixed names), mirrored to NAS `PH Newsletter\2026-11-01-previews\`.
 - Calendar-pull record: `builder/calendar-pull/2026-11-01.json`.

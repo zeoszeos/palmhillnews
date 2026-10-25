@@ -49,6 +49,9 @@ SPK = "https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-r
 G = "#3A6B1A"
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
+assert all(globals()[k] == v for k, v in _ix.PRESEED.items()), "R71: core BASE/CAL/ARCH/G must equal issue_ctx.PRESEED"
+# R71 (batch 5): this issue's content (builder/issues/<date>.py) -- events, meetings, notices, reports, DYK -- injected here, logic below.
+_CONTENT = _ix.content_data(C); globals().update(_CONTENT)
 
 cal = json.load(open(CALF)); events = cal["events"]
 def pdate(iso): d = date.fromisoformat(iso); return f"{d:%A}, {MON3[d.month-1]} {d.day}, {d.year}"
@@ -81,51 +84,10 @@ def evsel(w):
                   key=lambda e: (e["date"], e["start"]))
 this_week, upcoming = evsel(THIS_WEEK), evsel(UPCOMING)
 
-# Event detail rewritten from the calendar "info" (no personal phone numbers or home addresses).
-EVENT_DETAIL = {
-    "Mount Dora Trip": "Bus loads at 8:00 AM for the arts and crafts festival, with an optional boat ride on the lake. $35 per seat, payable at coffee; the calendar shows about 12 seats left.",
-    "Halloween Golf Cart Parade": "Line up at the North Clubhouse at 6:30 PM for the 7:00 PM parade to the South Clubhouse; it takes about 1½ hours. Charge golf-cart batteries fully.",
-    "Halloween Dance Party": "Doors open at 6:15 PM with no assigned seating. The tickets are sold out as of now. Bring a treat to share for table-to-table trick-or-treating.",  # Steven Oct 17 10:29 PM: sold-out wording restored (Linda, Oct 8)
-    "Senior Empowerment Luncheon": "The luncheon runs 10:00 AM to 1:00 PM; the room is booked from 9:15 AM for set-up. Pre-registration is required.",
-    "North Clubhouse Craft Fair": "Crafters can rent a table for $20, 9:00 AM to 1:00 PM. See the club calendar for who to contact to book.",
-    "Veterans Day Program": "Program at the South Clubhouse; check the club calendar for later details.",
-    "Pot Luck Supper": "Doors open at 5:00 PM; dinner is at 5:30 PM. Bring your own table setup and drink.",
-    "MESCO Spaghetti Dinner Fundraiser": "Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door.",
-    "Fall Festival": "Music and food trucks on the South Lawn and Patio.",
-    "Bookclub:Foster by Claire Keegan": "Book club discussion of Foster by Claire Keegan.",
-    "Bocce Party": "Sign up at either clubhouse or by calling Pat Foor or Joe Cothran. Join us for the fellowship and fun!",
-}
-EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
-                   "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html"}
-EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween-dance.html"),
-              "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
-              "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
-              "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html")}
-# R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
-# has explicitly OK'd (PHONE_OK_PAGES; Bocce Party approved Oct 16 11:37 PM). Issue summaries never carry them.
-PHONE_OK_PAGES = {"Bocce Party"}
-EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
-    ["Sign up at either clubhouse or by calling Pat Foor (727-631-3372) or Joe Cothran (727-512-1185). Join us for the fellowship and fun!",  # PHONE_OK_PAGES
-     "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."]),
-    # R21 calendar re-pull Sat Oct 17 1:47 PM: start moved 4:00 PM -> 5:00 PM; the More → page date line now comes from the calendar
-    "MESCO Spaghetti Dinner Fundraiser": ("2026-11-14-mesco-spaghetti-dinner-fundraiser.html",
-    ["Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door."])}
+# Event text/links/More → pages (EVENT_DETAIL, EVENT_EXTRA_SRC, EVENT_LINK, PHONE_OK_PAGES, EVENT_PAGE, INFO_COVERED, TITLE) come
+# from the issue content file (R71, batch 5); injected by _ix.content_data(C) above.
 assert not any(re.search(r"\d{3}-\d{3}-\d{4}", v) for v in EVENT_DETAIL.values() if v), "phone rule: no phone numbers in issue summaries"
 # R21: events whose summary already carries the whole calendar listing (checked by hand Oct 16) - no More → page needed
-INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
-                "Veterans Day Program", "Bookclub:Foster by Claire Keegan"}
-TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan"}
-# Oct 25: events new to the issue window (calendar re-pull Oct 20 2:40 PM). Detail = the calendar listing text (light edits only).
-EVENT_DETAIL.update({
-    "Taste of Golf": "Free. New golfers and residents welcome; golf teachers on each hole, treats and a hot dog on the Pro Shop patio. Sign up at the Pro Shop, North or South Clubhouse.",
-    "Bookclub Lunch at Irish Pub": "Members and those joining book club only.",
-    "December Cruise Information Meeting": "Information meeting for everyone going on the December cruise. Questions: Tony Ciaramitaro."})
-EVENT_LINK["Taste of Golf"] = ("More →", BASE + "2026-10-14-taste-of-golf-notice.html")      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
-EVENT_EXTRA_SRC["Taste of Golf"] = BASE + "2026-10-14-taste-of-golf-notice.html"
-INFO_COVERED |= {"Bookclub Lunch at Irish Pub", "December Cruise Information Meeting"}
-TITLE["Bookclub Lunch at Irish Pub"] = "Book Club Lunch at Irish Pub"
-# Calendar re-pull Oct 22 7:55 PM: new one-off Bridge Club (Oct 26, Pool Room South); detail = its calendar listing text verbatim
-EVENT_DETAIL["Bridge Club"] = "Moved due to Haunted House"; INFO_COVERED.add("Bridge Club")
 # STYLE-RULES R56 (Steven Oct 21 2026 10:44 AM, "middle path"): an event matched to a Webmaster/resident email notice shows calendar
 # facts only; More → opens that notice page; no per-event page is generated or linked (already-published pages such as
 # 2026-10-31-halloween-dance.html stay live, just unlinked). Source line stays Calendar + Webmaster (the notice).
@@ -143,27 +105,9 @@ def src_cal(extra=None):
     s = f'Source: <a href="{CAL}" style="color:{G};">Calendar</a>'
     if extra: s += f', <a href="{extra}" style="color:{G};">Webmaster</a>'
     return s
-# Steven, Oct 16 (MEETING-SOURCES-COMPARE.md): Finance from agenda email (no Zoom link yet); Palm Hill dates for Nov conflicts, flagged TBC
-MTG_EXTRA = [dict(  # Oct 25: Finance Oct 22 (agenda email) is past -> dropped; no newer Finance agenda in palmhillblast as of Oct 20 2:4x PM
-             date="2026-11-18", start="13:00", name="Board of Directors Meeting", venue="Board Room South", note="(date to be confirmed)")]
-MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to be confirmed)",
-            }
-# STYLE-RULES R62 (Steven Oct 23 6:38 PM): P&E next meeting = Elaine Cole's date (her Oct 14 report): Tuesday Nov 10, 12:30 PM;
-# no "(date to be confirmed)". Data override only; her report page wording is untouched (her "a.m." stays as written).
-MTG_OVERRIDE = {"Planning and Environmental Committee Meeting": dict(date="2026-11-10", start="12:30")}
-# STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting = its own Oct 22 agenda item 12 "Set next meeting date November 18, 2026"
-# (calendar says Mon Nov 16). Date only; calendar time (10:00 AM) and place kept since the agenda gives no time; no TBC note.
-_FIN_AGENDA = REPO / "pages/2026-10-10-finance-committee-meeting-notice.html"
-assert "12 Set next meeting date November 18, 2026" in open(_FIN_AGENDA, encoding="utf-8").read(), "R62b: Finance agenda item 12 wording changed"
-for _k in ("Finance Committee Meeting", "Finance Committee"): MTG_OVERRIDE[_k] = dict(date="2026-11-18")
+# Meetings extras/notes/overrides (MTG_EXTRA, MTG_NOTE, MTG_OVERRIDE, MTG_OVERRIDE_SOURCE) come from the issue content file (R71).
+# R62c below checks every override cites its agenda/report page and wording (this replaced the Oct 25 Finance item-12 assert).
 _R62B_HITS = []
-# STYLE-RULES R62c (LOCKED, Steven Oct 24 1:35 PM): a committee's own agenda/report next-meeting date beats the calendar.
-# Every MTG_OVERRIDE entry must cite its agenda/report page, and that page must exist and contain the cited wording.
-MTG_OVERRIDE_SOURCE = {
-    "Planning and Environmental Committee Meeting": ("pages/2026-10-14-planning-and-environmental-committee-report.html", "Nov"),
-    "Finance Committee Meeting": ("pages/2026-10-10-finance-committee-meeting-notice.html", "12 Set next meeting date November 18, 2026"),
-    "Finance Committee": ("pages/2026-10-10-finance-committee-meeting-notice.html", "12 Set next meeting date November 18, 2026"),
-}
 for _k in MTG_OVERRIDE:
     if _k not in MTG_OVERRIDE_SOURCE: raise SystemExit(f"R62c: meeting override {_k!r} has no cited agenda/report source")
     _sp, _sw = MTG_OVERRIDE_SOURCE[_k]
@@ -254,216 +198,20 @@ def title_row(title, right):
             f'<td valign="top" align="right" style="font-size:13px;line-height:18px;text-align:right;white-space:nowrap;width:1%;">{right}</td></tr></table>')
 
 # ---------- Community Notices (palmhillblast + gotwicz Gmail as of Oct 15) ----------
-# (title, text, source label, source href or None, listen href or None)
-TONY_FB_PLACEHOLDER = False  # set False Saturday once Tony's wording (due Fri Oct 16, palmhillblast) is pasted below
-TONY_FB = ("Join the Palm Hill Residents Group on Facebook", None)  # Tony's wording arrived Fri Oct 16 (palmhillblast); verbatim
-FBURL = "https://www.facebook.com/groups/720846344400510"
-# R60 (Steven Oct 21 8:34 PM): live published Oct 18 URLs (publish_oct18 MAP), never pages/previews/ or #listen-pending
-FBQR = "https://palmhillnews.vercel.app/pages/assets/phnews/2026-10-18/fb-group-qr.png"
-FBPAGE_NOTICE = "https://palmhillnews.vercel.app/pages/2026-10-18-facebook-group-notice.html"
-FBPAGE_DYK = "https://palmhillnews.vercel.app/pages/2026-10-18-did-you-know-facebook-group.html"
-FB_LISTEN = "https://palmhillnews.vercel.app/pages/2026-10-18-notice-join-the-palm-hill-residents-group-on-facebook.html?listen=1"  # as in the approved Oct 18 issue
-TONY_FB_TXT = ('Palm Hill now has a private Facebook group just for residents, with park news, event reminders and photos posted by the admins (comments are turned off). '
-    'Every request is checked against the member directory, so use the address and email the Office has for you, answer all 3 questions, or Facebook will turn the request down. '
-    f'Search Facebook for &quot;Palm Hill Country Club - Residents Only Group&quot; or join here: <a href="{FBURL}" style="color:{G};">{FBURL}</a>'
-    f'<br><a href="{FBPAGE_NOTICE}" style="color:{G};font-size:14px;">Full notice with QR code to scan →</a>')
+# Notice data (TONY_FB*, FB*, WM_COPIES, NOTICE_PAGES, NOTICES, ...) come from the issue content file (R71).
 # ---------- STYLE-RULES L27/L29 (Steven, Oct 17 11:51 PM): Webmaster source copies ----------
 # Every Webmaster Source credit is the linked word "Webmaster" (no date, no sender) opening a copy of the source email.
 # These three Webmaster emails (noreply@palmhillcountryclub.net, gotwicz Gmail) had no copy page; scripts/notice_page.py renders
 # them in the info-from-linda shell, verbatim (only blank lines, &nbsp; runs, zero-width spaces and the unsubscribe footer dropped).
 sys.path.insert(0, SCRIPTS); import notice_page as _np
-WM_COPY_PANCAKES = "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html"   # gotwicz 1a13ffdbd4141bdd
-WM_COPY_SHUFFLE = "2026-10-12-shuffleboard-information-notice.html"                   # gotwicz 1a13200e1dcdde48
-WM_COPY_GOLF = "2026-10-14-taste-of-golf-notice.html"                                  # gotwicz 1a13d9d5ef6e178f
-WM_COPY_SANIT = "2026-10-22-sanitation-field-notice.html"                            # gotwicz 1a164e859613b210 (Steven Oct 23 5:09 AM, A)
-WM_COPY_COUPLES = "2026-10-20-couples-golf-league-notice.html"                        # gotwicz 1a15c9dca2aac0fc (Steven Oct 23 5:09 AM, C)
-WM_COPY_LIBRARY = "2026-10-22-library-closed-notice.html"                             # gotwicz 1a164ed6011d050d (Steven Oct 23 6:38 PM)
-WM_COPY_STOP = "2026-10-21-stop-sign-rules-notice.html"                                # gotwicz 1a15eb6fba34f8ab (Steven Oct 23 6:38 PM; RPM duplicate ignored)
-WM_COPY_SOUTHREC = "2026-10-21-south-rec-club-seeking-officers-notice.html"            # gotwicz 1a15eb2704b3f9a0 (Steven Oct 23 6:38 PM; image-only email)
-SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
-WM_COPIES = [
-    (WM_COPY_LIBRARY, "Library Closed starting the week of October 26th", "Thursday, Oct 22, 2026, 1:48 PM ET", [
-        ("p", "We are very excited to offer our residents and their guests the experience of our Haunted Library again this year.  Our designer, Duane Smathers, along with Judy Flannigan, will be creating another Library that will definitely reflect the Halloween spirit."),
-        ("p", "As additional animatronics will be featured, they will need the upcoming week to transform the room.   Therefore the Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST."),
-        ("p", "If you would like to pick up a book, please do so by Sunday the 25th.  To return books during that week,  Heidi Weeks has kindly placed a box in our main Recreation Hall near the curtain by the library for that purpose.   We so appreciate everyone's understanding and patience."),
-        ("p", "Thank you,"),
-        ("p", "Mollie Cardno"), ("p", "Inside Entertainment"), ("p", "North Recreation Hall")]),
-    (WM_COPY_STOP, "Please observe important stop sign rules", "Wednesday, Oct 21, 2026, 9:42 AM ET", [
-        ("p", "We hope this message finds you well. We are writing to remind all residents and their guests to please observe the posted speed limits and come to a complete stop at all stop signs throughout our community."),
-        ("p", "As our northern friends join us for the season, there will be more vehicles on the road, making it even more important that we all follow these safety guidelines."),
-        ("p", "The safety of our residents, their families, and guests is our top priority. Many of our neighbors enjoy walking, jogging, and cycling throughout Palm Hill, and we want to ensure everyone can do so safely."),
-        ("p", "Please remember to:"),
-        ("ul", ["Observe the posted speed limit at all times",
-                "Come to a complete stop at all stop signs whether you are in a car, on a bike or in a golf cart",
-                "Watch for pedestrians, cyclists, and golf carts",
-                "Remind your guests and service providers of these safety rules"]),
-        ("p", "Your cooperation in maintaining a safe environment for everyone is greatly appreciated. If you have any questions or concerns, please don't hesitate to contact the office at (727) 581-8729."),
-        ("p", "Thank you for your attention to this important matter."),
-        ("p", "Sincerely,"),
-        ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc")]),
-    (WM_COPY_SOUTHREC, "2027 South Rec Club Seeking Officers", "Wednesday, Oct 21, 2026, 9:34 AM ET", [
-        # the email body is one flyer image (no text); the flyer is shown as sent, alt text = its words (personal phone numbers left out)
-        ("img", (SOUTHREC_IMG, "South Recreation Club. 2027 Election. Make a Difference! The South Recreation Club has the following positions available for the 2027 election: Inside Entertainment, Outside Entertainment, Bazaar Director. Deadline: December 2, 2026 at the close of the business meeting. If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro. Get Involved... Help Keep Our Club Great! Thank you!")),
-        ("p", "The South Recreation Club has the following positions available for the 2027 election: Inside Entertainment, Outside Entertainment, Bazaar Director."),
-        ("p", "DEADLINE: December 2, 2026 at the close of the business meeting."),
-        ("p", "If you're interested, please contact a search committee member: Joan Dougall, Martha Ladd, Tony Ciaramitaro.")]),
-    (WM_COPY_SANIT, "Help with maintaining Sanitation Field", "Thursday, Oct 22, 2026, 1:42 PM ET", [
-        ("p", "Dear Palm Hill Residents,"),
-        ("p", "We need your help in maintaining our sanitation field and keeping disposal areas properly organized."),
-        ("p", "Brush Dumpster - Brush Only: Please remember that the brush dumpster is designated for brush and yard waste ONLY. Do not place any trash, plastic bags, or other materials in this dumpster or on the brush pile near it. Only natural brush and plant material should be disposed of here."),
-        ("p", "Broken Pavers: If you have broken pavers, please do not leave them in the sanitation field. All broken pavers and similar construction debris should be placed in the construction dumpster."),
-        ("p", "Proper sorting helps us manage waste efficiently and keeps costs down for our community. Thank you for your cooperation in following these guidelines."),
-        ("p", "If you have questions about where to dispose of specific items, please contact the office at (727) 581-8729."),
-        ("p", "Thank you for helping keep Palm Hill clean and well-maintained."),
-        ("p", "Sincerely,"),
-        ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc")]),
-    (WM_COPY_COUPLES, "Couples Golf Leagur", "Tuesday, Oct 20, 2026, 11:59 PM ET", [   # subject as sent
-        ("p", "Couples Golf League will be starting November 5th. A sign-up sheet for play and a Host Sign-up sheet, for the whole season, is posted at the Pro Shop. Couples League needs Hosting Volunteers."),
-        ("p", "For Palm Hill Couples interested, please sign up and reach out to Mike McCarthy with any questions."),
-        ("p", "Look forward to a fun Golf Season!"),
-        ("p", "Julie Hughes")]),
-    (WM_COPY_PANCAKES, "November Pancakes & Coffee Volunteers", "Thursday, Oct 15, 2026, 10:29 AM ET", [
-        ("p", "An announcing chairperson is needed for the month of November for the North Club House coffees."),
-        ("p", "8 volunteers are needed for November coffees in the North."),
-        ("p", "14 volunteers are needed for pancakes on November 14th - arrival time is 7:30 AM"),
-        ("p", "Please use the sign up sheets on the bulletin board at the north clubhouse."),
-        ("p", "Thank you,"),
-        ("p", "Mollie Cardon")]),
-    (WM_COPY_SHUFFLE, "Shuffleboard Information", "Monday, Oct 12, 2026, 5:24 PM ET", [
-        ("h", "With shuffleboard season approaching, just a few reminders:"),
-        ("ul", ["For safety reasons, please do not walk on the courts.",
-                "After use, return the disc to holders, and place under benches.",
-                "After use, return cue sticks to wall hangers.",
-                "When leaving the buildings, close the windows and turn off the lights and fans.",
-                "All persons under 18 years old must be accompanied by an adult.",
-                "No smoking.",
-                "For safety, wear closed toe shoes"]),
-        ("h", "Additional information for the north courts with embedded beads:"),
-        ("ul", ["Do not drop the disc directly onto the beaded surface, as that can dislodge the beads. Place the disc outside of the playing area and push them forward into the kitchen to start play."]),
-        ("p", "Thank you from the Shuffleboard Club.")]),
-    (WM_COPY_GOLF, "Taste of Golf", "Wednesday, Oct 14, 2026, 11:31 PM ET", [
-        ("h", "Palm Hill Country Club"),
-        ("h", "\u201cTaste of Golf\u201d"),
-        ("h", "November 18, 2026; 10 AM"),
-        ("p", "Welcome New Golfers & Residents for a fun filled day to learn & play golf."),
-        ("p", "Meet at Pro Shop.  Event is FREE."),
-        ("p", "Golf teachers on each hole, teaching golf basics: Golf etiquette, Warm-up, Driving, Chipping, Putting, Reading the green."),
-        ("p", "Not a golfer\u2026.Come walk & watch & enjoy the beauty of the course."),
-        ("p", "Treats on each hole & enjoy a Hot Dog on the Pro Shop patio!"),
-        ("p", "Join in on the fun and meet new friends!"),
-        ("p", "Sign Up sheets:  Pro Shop, North Clubhouse, South Clubhouse"),
-        ("p", "Questions contact:"),
-        ("p", "Caroline Zimmerman")]),
-]
-# Steven Oct 24 11:38 AM: Bill Bender's flyer (gotwicz, bbenderfla@outlook.com, Fri Oct 23 11:38 PM ET, "Please add to your news
-# letter....", attachment "Mari, Card.jpg"; the message is in Spam and stays there). Page = flyer image + its text as printed.
-# Bill's email/phone are printed on the flyer as the program contact, so they are kept.
-HOLIDAY_PAGE = "2026-10-23-holiday-greeting-distribution-plan.html"
-HOLIDAY_IMG = "/pages/assets/notices/2026-10-23-holiday-greeting-distribution-plan.jpg"  # copy of /workspace/sweep/1024-0930/bill-bender-mari-card.jpg
-HOLIDAY_BLOCKS = [
-    ("img", (HOLIDAY_IMG, "Holiday Greeting Distribution Plan flyer")),
-    ("h", "Holiday Greeting Distribution Plan"),
-    ("p", "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."),
-    ("h", "Purpose"),
-    ("p", "To offer shareholders a distribution plan for holiday greetings at Hanukkah and Christmas time. Limited to addresses within Palm Hill that do not require postage."),
-    ("h", "How It Works"),
-    ("ul", ["Send 1 or 1100 greetings — there is no minimum or limit.",
-            "Save the cost of outside postage, currently about $.82 per item in the U.S.",
-            "Any resident can participate, limited to greetings within Palm Hill.",
-            "Address greetings as you would a normal letter: name and address.",
-            "Greetings will be deposited in specially designated drop boxes in the clubhouses. Deposits can be made anytime the boxes are available.",
-            "Boxes will be monitored and emptied as necessary. Contents will be stored until holiday week.",
-            "If you are leaving, please drop off before you depart.  If you are not on site, please contact Bill for instructions."]),
-    ("h", "Important Notes"),
-    ("ul", ["Amazon and Wal-Mart have online offerings now!",
-            "Sorting will take place as often as necessary by our committee.",
-            "Please clearly mark on the envelope any cards for Hanukkah to ease sorting."]),
-    ("h", "Distribution"),
-    ("ul", ["Distribution will be made by residents approximately 1 week before Hanukkah or Christmas.",
-            "In addition to our 1100 homes, cards will also be accepted for the administration offices and maintenance employees.",
-            "Canadian and Northern friends: feel free to reach out for suggestions on getting your cards to us."]),
-    ("h", "Volunteers Welcome"),
-    ("p", "As the program develops, additional folks will be needed for various tasks. Please notify us if you would like to help."),
-    ("h", "Contact"),
-    ("p", "Comments or questions should be directed to:"),
-    ("p", "Bill Bender"), ("p", "BBenderfla@outlook.com"), ("p", "315-520-0263"),
-    ("h", "Friends Greeting Friends"),
-    ("p", "This program is solely to encourage friends and neighbors to connect during the holiday season — friends greeting friends. Share your thoughts."),
-    ("p", "Thank you... Let’s Succeed!!!!!"),
-    ("p", "Bill Bender, Kate Wesoloowski, & Mike Okash")]
-(PAGES / HOLIDAY_PAGE).write_text(_np.render("Please add to your news letter....", "Friday, Oct 23, 2026, 11:38 PM ET", HOLIDAY_BLOCKS,
-    source="Source: flyer from Bill Bender (Mari, Card.jpg), shown as sent with its text transcribed as printed.",
-    title="Holiday Greeting Distribution Plan", sender="Bill Bender"), encoding="utf-8")
-_np.notice_listen.add(str(REPO), HOLIDAY_PAGE)
-# Steven Oct 24 1:27 PM: North Clubhouse ice machine notice = Elaine Cole's sentence (Oct 14 P&E report, verbatim) + Steven's own
-# confirmed details (he checked it in person), his words formed into sentences, no added facts. Title chosen (no source heading).
-ICE_PAGE = "2026-10-24-north-clubhouse-ice-machine-moved-notice.html"
-ICE_TITLE = "North Clubhouse Ice Machine Moved"   # chosen title (flagged: no source heading)
-ICE_ELAINE = "The ice machine has been relocated so it no longer is a nuisance to the classes."   # Elaine Cole, P&E Oct 14, verbatim
-ICE_STEVEN = ["The ice machine in the North Clubhouse was moved out of the North meeting room and into the pool table room.",
-              "It's more convenient, and people getting ice won't disturb any meetings going on in the meeting room."]
-_ICE_PE = "2026-10-14-planning-and-environmental-committee-report.html"
-assert ICE_ELAINE in (PAGES / _ICE_PE).read_text(encoding="utf-8"), "R60c: Elaine's ice machine sentence must be verbatim from the P&E Oct 14 report"
-ICE_TEASER = ICE_STEVEN[0]
-(PAGES / ICE_PAGE).write_text(_np.render(ICE_TITLE, "Saturday, Oct 24, 2026", [
-    ("h", "From the Planning and Environmental Committee Report (Oct 14, Elaine Cole)"), ("p", ICE_ELAINE),
-    ("h", "Details confirmed by Steven Leonowicz"), ("p", " ".join(ICE_STEVEN))],
-    source="Source: Oct P&E Committee Report", source_href=BASE + _ICE_PE, title=ICE_TITLE,
-    sender="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz"), encoding="utf-8")
-_np.notice_listen.add(str(REPO), ICE_PAGE)
+# R60c-style source checks + generated notice pages (NOTICE_PAGES, content file) + Webmaster copy pages (WM_COPIES)
+for _sv, _spg, _smsg in SOURCE_VERBATIM:
+    assert _sv in (PAGES / _spg).read_text(encoding="utf-8"), _smsg
+for _p in NOTICE_PAGES:
+    (PAGES / _p["page"]).write_text(_np.render(_p["subject"], _p["sent"], _p["blocks"], **_p["kw"]), encoding="utf-8")
+    _np.notice_listen.add(str(REPO), _p["page"])
 for _n, _subj, _sent, _blocks in WM_COPIES:
     _np.write(str(REPO), _n, _subj, _sent, _blocks)
-LINDA_TEASER = "Halloween Dance tickets are sold out. Be respectful at clubhouses. Largo Evening Market: Sat. Oct. 24th, 5-9pm, Ulmer Park."  # R42/R18: Linda's own words, all 3 sections, 3 lines max
-SANIT_TEASER = "The brush dumpster is designated for brush and yard waste ONLY. Broken pavers should be placed in the construction dumpster."  # R18: source sentences, light trims
-COUPLES_TEASER = "Couples Golf League will be starting November 5th. Couples League needs Hosting Volunteers."  # R18: source sentences verbatim
-LIBRARY_TEASER = "The Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST. Pick up books by Sunday the 25th."  # R18: source sentences verbatim
-STOP_TEASER = "Please observe the posted speed limits and come to a complete stop at all stop signs throughout our community."  # R18: source sentence, lead-in trimmed
-SOUTHREC_TEASER = "The South Recreation Club has positions available for the 2027 election. DEADLINE: December 2, 2026."  # R18: flyer wording
-HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
-HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
-NOTICES = [
-    # Steven Oct 24 11:38 AM: Bill Bender's flyer (resident notice; Source = Bill Bender, linked to its page)
-    (HOLIDAY_TITLE, HOLIDAY_TEASER, "Bill Bender email", BASE + HOLIDAY_PAGE),
-    # Steven Oct 24 1:27 PM: position 3 (right after Bill Bender); Source links the Oct 14 P&E report page
-    (ICE_TITLE, ICE_TEASER, "Oct P&E Committee Report", BASE + _ICE_PE),
-    # Steven Oct 23 6:38 PM: three more Webmaster emails (gotwicz), newest first; RPM duplicate of the stop sign email ignored
-    ("Library Closed starting the week of October 26th", LIBRARY_TEASER, "Webmaster", BASE + WM_COPY_LIBRARY),
-    # Steven Oct 23 5:09 AM (A, C): two Webmaster emails (gotwicz); one email = one notice (R42); RPM duplicate of the sanitation email ignored
-    ("Help with maintaining Sanitation Field", SANIT_TEASER, "Webmaster", BASE + WM_COPY_SANIT),
-    ("Please observe important stop sign rules", STOP_TEASER, "Webmaster", BASE + WM_COPY_STOP),
-    ("2027 South Rec Club Seeking Officers", SOUTHREC_TEASER, "Webmaster", BASE + WM_COPY_SOUTHREC),
-    ("Couples Golf League", COUPLES_TEASER, "Webmaster", BASE + WM_COPY_COUPLES),
-    ("Swimming Pool Food and Beverage Rules",  # Webmaster, Fri Oct 16 12:29 PM ET (gotwicz 1a1458d5b589bff6); newest notice after Tony's
-     "All food and beverages must be kept at least 4 feet away from the edge of the pool (the \"wet deck\" area). No glass containers of any kind are permitted inside the fenced pool area; please use plastic or other non-breakable containers. Residents are responsible for ensuring that their guests comply with all pool rules and regulations.",
-     "Webmaster", BASE + "2026-10-16-swimming-pool-food-and-beverage-rules-notice.html"),
-    ("November Coffee and Pancake Volunteers",
-     "An announcing chairperson is needed for November coffees at the North Clubhouse, along with 8 coffee volunteers. Pancakes on Saturday, Nov 14 need 14 volunteers, arriving at 7:30 AM. Sign-up sheets are on the North Clubhouse bulletin board.",
-     "Webmaster", BASE + WM_COPY_PANCAKES),  # L27/L29: linked short Webmaster, no date/sender
-    ("Shuffleboard Season Reminders",
-     "Please don't walk on the courts; return discs to their holders under the benches and cue sticks to the wall hangers; close windows and turn off lights and fans when you leave. Anyone under 18 must be with an adult, no smoking, and wear closed-toe shoes. On the north courts with embedded beads, don't drop the disc onto the beaded surface — set it outside the playing area and push it forward into the kitchen.",
-     "Webmaster", BASE + WM_COPY_SHUFFLE),  # L27/L29: "(Shuffleboard Club)" is a sender name -> dropped
-    ("Taste of Golf — November 18",
-     "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it's free. Golf teachers on each hole cover etiquette, warm-up, driving, chipping, putting and reading the green, with treats on each hole and a hot dog on the Pro Shop patio. Not a golfer? Walk, watch and enjoy the course. Sign-up sheets are at the Pro Shop and both clubhouses.",
-     "Webmaster", BASE + WM_COPY_GOLF),  # L27/L29
-    # STYLE-RULES R42 (Steven, Oct 17 10:29 PM): one source email = one notice. Linda Keehl's "Info from Linda" (Webmaster, Thu Oct 8
-    # 5:25 PM ET) has three sections -- Halloween Dance, PLEASE-PLEASE-PLEASE (clubhouse courtesy), Largo Evening Market -- so it is ONE
-    # notice titled with her subject, teaser in her words covering all three (scripts/source_sections.py SOURCES + guard). More → and
-    # Listen open the existing copy of her email (use_existing_page: no generated notice page). The old 2026-10-18-notice-clubhouse-
-    # courtesy-during-busy-season.html stays live (URL valid) but is no longer linked from the issue. Her email is not an event source of
-    # truth: the Halloween Dance Party row's date/time/room come from the calendar.
-    ("Info from Linda",
-     LINDA_TEASER,
-     "Webmaster", BASE + "2026-10-08-info-from-linda-notice.html"),
-    ("Property Fraud Alert",
-     f'The Palm Hill webmaster shared the sign-up link for <a href="https://www.propertyfraudalert.com/select" style="color:{G};">Property Fraud Alert</a>, a free service that notifies you when a document is recorded under your name.',
-     "Webmaster", BASE + "2026-09-30-property-fraud-alert-notice.html"),
-    ("October Mowing Date",
-     "Reminder: BrightView's next tentative resident mowing date is Tuesday, Oct 27. The schedule may change.",
-     "RPM", BASE + "2026-09-29-mowing-dates-notice.html"),
-]
-# Steven Oct 20 3:03 PM: drop stale carried-over notices (Linda's Oct 24 market email, Oct 27 mowing date, Taste of Golf notice --
-# Taste of Golf stays as an event row). Guard: none of these titles may appear in Community Notices.
-NOTICES_DROPPED_OCT25 = {"October Mowing Date", "Property Fraud Alert"}  # Steven Oct 21 8:43 PM: Property Fraud Alert dropped (its Vercel page stays live)  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
 # Per-issue carry policy (content file NOTICES_DROPPED): keep notices still valid on/after the issue date, drop the previous
 # issue's one-offs that are expired or were news for that week only. Re-check every kept notice against the Friday inbox sweep.
@@ -473,9 +221,8 @@ if _unknown: raise SystemExit(f"R71: {ISSUE} NOTICES_DROPPED names unknown notic
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_ISSUE]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
-NOTICE_LISTEN_OVERRIDE = {ICE_TITLE: BASE + ICE_PAGE}  # R60c: Listen reads the notice's own page (Source is the P&E report)
 def notice_rows():
-    rows, items = [], [(TONY_FB[0], TONY_FB_TXT, "Tony Ciaramitaro, Communications Chair", None)] + NOTICES
+    rows, items = [], [(TONY_FB[0], TONY_FB_TXT, TONY_FB_SOURCE, None)] + NOTICES
     for i, (t, txt, sl, sh) in enumerate(items):
         ph = t == TONY_FB[0] and TONY_FB_PLACEHOLDER
         lh = (NOTICE_LISTEN_OVERRIDE.get(t, sh) + "?listen=1") if sh else (FB_LISTEN if t == TONY_FB[0] else None)
@@ -490,108 +237,22 @@ def notice_rows():
     return "".join(rows)
 
 # ---------- Chair reports: stacked cards (to-do #12) ----------
-CHAIR = [  # newest first; no Source line; no word "Report" in titles; 17px summary; action row at bottom
-    ("Communications Committee", "2026-09-21", "Tony Ciaramitaro chaired his first meeting: booking system, Facebook trial, Zoom training.",
-     BASE + "2026-09-21-communications-committee-report.html", BASE + "2026-10-04-listen-communications-committee-report.html"),
-    ("Planning and Environmental Committee", "2026-09-09", "The committee found buying the land HOPH rents feasible; its report is with the Board.",
-     BASE + "2026-09-16-planning-and-environmental-committee-report.html", BASE + "2026-10-04-listen-planning-environmental-committee-report.html"),
-    ("Golf Advisory Committee", "2026-09-08", "Sprinkler work continues and hole #1 has a new sand trap. Golf clinic proposed for Nov 18.",
-     BASE + "2026-09-08-golf-advisory-committee-report.html", BASE + "2026-10-04-listen-golf-advisory-committee-report.html"),
-]
-# Steven, Oct 17 1:40 PM (post-proof addition): Golf Advisory Committee summary from Carolyn Story (nystory11@gmail.com),
-# palmhillblast "Golf Advisory Committee", Sat Oct 17 1:20 PM ET. Meeting date: not stated in the email; Tuesday Oct 13, 2026
-# per the calendar-confirmed Golf Committee meeting (agenda: Board liaison Carolyn Story, Communications request, next meeting
-# Nov 10) and "Finances (as of 10/13)". Full text = Carolyn's wording, block by block (scripts/chair_report_page.py).
-GOLF_1013_PAGE = "2026-10-13-golf-advisory-committee-report.html"
-GOLF_1013_LISTEN = "2026-10-18-listen-golf-advisory-committee-report.html"
-GOLF_1013 = [
-    ("p", "Please find the summary of our recent meeting notes below:"),
-    ("h2", "Finances (as of 10/13) – Megan Leftwich"),
-    ("ul", ["Budget: $2,534.31 over budget for the month; $5,519.89 over YTD.",
-            "Activity: 76 paid memberships, 46 paid cart fees, and 8 ten-packs sold."]),
-    ("h2", "Golf Course Update – Joe Clay, Superintendent"),
-    ("ul", ["Course Conditions: Weather is currently affecting growth, but normal conditions are expected in about a week.",
-            "Projects: Pro Shop plantings are complete, sod green work is ongoing, and new sand traps were added."]),
-    ("h2", "Board Liaison Update – Carolyn Story"),
-    ("ul", ["The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",
-            "Commended the team on the upcoming Golf Clinic."]),
-    ("h2", "Code of Conduct & Accountability – Caroline Zimmerman, Chair"),
-    ("ul", ["Posting: The approved Code of Conduct will be posted in the Link, Pro Shop, and sign-up area, and included in membership packets.",
-            "Accountability: Members must pay before play each season. The membership list is available to the Pro Shop."]),
-    ("h2", "Fiscal Year"),
-    ("ul", ["The Golf Committee is currently processing a request to move the fiscal year start from July to April."]),
-    ("h2", "Associations & Leagues"),
-    ("ul", ["Women's League (Sue Waldecker): Friday morning slot is reserved; league starts Nov 6, with the first meeting on Nov 13. Volunteer/chair sign-ups are in the Pro Shop. First year using an online handicap system managed by K. Kummer and D. Southward.",
-            "Couples League (Mike McCarthy): Hosting sign-up is available at the Pro Shop. Thanksgiving, Christmas Eve, and New Year's Eve will be open play.",
-            "Bandits (Chuck Silcox): Members are slowly returning."]),
-    ("h2", "Pro Shop & Events"),
-    ("ul", ["Deep cleaning is complete, and two large artificial ferns are on order for the patio.",
-            "Golf Clinic: 15 people signed up so far. Sign-up sheets are in the Pro Shop and North/South Clubhouses."]),
-    ("h2", "Communication Committee"),
-    ("ul", ["Approved minutes will be sent after each meeting for posting on the PHCC website."]),
-    ("h2", "Next Meeting"),
-    ("ul", ["Date & Time: November 10, 2026, at 2:00 PM EST", "Location: SCH"]),
-]
+# CHAIR (cards), CHAIR_REPORTS (generated report pages), RULES_ARCHIVE_ONLY and ARCHIVE_ROWS come from the issue content file (R71).
 sys.path.insert(0, SCRIPTS); import chair_report_page as _crp
-if not (PAGES / GOLF_1013_PAGE).exists(): (PAGES / GOLF_1013_PAGE).write_text(  # Oct 25: published page (Listen added by build_archive.js) is never overwritten
-    _crp.render("Golf Advisory Committee Report", GOLF_1013, "Source: Golf Advisory Committee Report (Carolyn Story)", GOLF_1013_PAGE), encoding="utf-8")
-# seed the listen-* page once; build_archive.js (dateline_listen) rebuilds it from the report page on every run
-_lp = PAGES / GOLF_1013_LISTEN
-if not _lp.exists(): _lp.write_text((PAGES / GOLF_1013_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
-CHAIR.insert(0, ("Golf Advisory Committee", "2026-10-13",
-    "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.",  # Carolyn's wording
-    BASE + GOLF_1013_PAGE, BASE + GOLF_1013_LISTEN))
-# Oct 23 Friday build: Planning and Environmental Committee report from Elaine Cole (elainezcole@gmail.com), palmhillblast
-# "Blast report of P&E 10/14", Fri Oct 23 2:43 PM ET (Google Docs attachment "On-line report of P&E 10/14"). Meeting date
-# confirmed (R30) by the Webmaster agenda "Notice is given of a Planning and Environmental Meeting" (gotwicz, Oct 9) and the
-# "Reminder: Planning and Environmental Committee Meeting Today" notice (Oct 14): Wed Oct 14, 2026, 1:00 PM, South Board Room.
-# Full text = Elaine's wording, block by block. Her "12:30 a.m." for Nov 10 is kept as written (flagged for Steven).
-PE_1014_PAGE = "2026-10-14-planning-and-environmental-committee-report.html"
-PE_1014_LISTEN = "2026-10-25-listen-planning-environmental-committee-report.html"
-PE_1014 = [
-    ("p", "There were 3 items on the P&E agenda: update on progress in the north clubhouse for wellness classes, decision on laundry service lease, and master plan update."),
-    ("p", "The committee approved a motion to the Board to pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes. The ice machine has been relocated so it no longer is a nuisance to the classes. A hydration station has been installed. This station will accommodate filling water bottles."),
-    ("p", "The committee also approved a motion to the Board that it contract with Laundry Leasing LLC to provide and maintain 2 washers and 2 dryers. Committee members who researched the issue of Largo's Business Receipt Tax determined that this operation will not subject Palm Hill to the tax."),
-    ("p", "The Master Plan sub-committee will meet in late-October. It is working on evaluating HOPH's assets."),
-    ("p", "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m."),
-]
-if not (PAGES / PE_1014_PAGE).exists(): (PAGES / PE_1014_PAGE).write_text(
-    _crp.render("Planning and Environmental Committee Report", PE_1014, "Source: Planning and Environmental Committee Report (Elaine Cole)", PE_1014_PAGE), encoding="utf-8")
-_lp = PAGES / PE_1014_LISTEN
-if not _lp.exists(): _lp.write_text((PAGES / PE_1014_PAGE).read_text(encoding="utf-8"), encoding="utf-8")
-CHAIR.insert(0, ("Planning and Environmental Committee", "2026-10-14",
-    "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",  # Elaine's wording, trimmed to 3 lines (R18)
-    BASE + PE_1014_PAGE, BASE + PE_1014_LISTEN))
+for _cr in CHAIR_REPORTS:
+    if not (PAGES / _cr["page"]).exists(): (PAGES / _cr["page"]).write_text(  # a published page (Listen added by build_archive.js) is never overwritten
+        _crp.render(_cr["title"], _cr["blocks"], _cr["source"], _cr["page"]), encoding="utf-8")
+    # seed the listen-* page once; build_archive.js (dateline_listen) rebuilds it from the report page on every run
+    _lp = PAGES / _cr["listen"]
+    if not _lp.exists(): _lp.write_text((PAGES / _cr["page"]).read_text(encoding="utf-8"), encoding="utf-8")
+    CHAIR.insert(0, _cr["card"])
 def _arch_row(section, row):
     """R59: add an archive row (newest first) to archive/archive-items.json once; idempotent on the row's page."""
     _aj.add_rows(REPO, section, [row])
-_arch_row("committee-reports", {"date": "2026-10-14", "title": "Planning and Environmental Committee Report", "page": PE_1014_PAGE,
-                                "listen": PE_1014_LISTEN, "issues": ["2026-10-25"]})
-# Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
-# attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
-# already published -- so none is added to the Oct 18 Chair Reports section without Steven's decision.
-# Steven, Oct 17 (answer t839s3231): "Add March and May to the Chair Reports archive only". Full report + listen-* seed pages
-# from Bob's own wording (Word files "Rules Mtg. March 23 26.docx", "Rules Meeting May 2026.docx"; R30), block by block, typos kept.
-# ARCHIVE ONLY: not added to CHAIR (the Oct 18 issue / SEND are unchanged); archive rows live in archive/archive-items.json
-# (committee-reports, issues: []) and build_archive.js adds the date line + R28 bottom-right speaker Listen. Aug 10 stays as published.
-RULES_ARCHIVE_ONLY = [
-    ("2026-03-23-rules-and-regulations-committee-report.html", "2026-03-23-listen-rules-regulations-committee-report.html", [
-        ("p", "Rules and Regulation Committee"),
-        ("p", "March 23, 2026 11 am"),
-        ("p", "Boardroom, Zoom, and Ch.732"),
-        ("p", "The Rules and Regulation Committee held a meeting on 23 March. 2026 at 11 am. Since this was the first meeting of the committee, the agenda was just topics for future actions, and discussions on Park issues. Also to allow the committee to meet each other."),
-        ("p", "Topics for future actions and discussion are, Replacement of trees that are removed, ESA animals and the responsibility of them trespassing on others property, (especially where they toilet), Guns and Weapons Policy, Possible Speed Bump Locations, and Increasing the Application fee."),
-        ("p", "There was Discussion of Rule Enforcement in the park, and this will be a subject for future discussion. The meeting was adjourned at 11:40 am.")]),
-    ("2026-05-11-rules-and-regulations-committee-report.html", "2026-05-11-listen-rules-regulations-committee-report.html", [
-        ("p", "Rules and Regulation Committee"),
-        ("p", "May 11, 2026 1 pm"),
-        ("p", "Boardroom, Zoom, and Ch.732"),
-        ("p", "The Rules and Regulations Meeting was called to order at 1pm, and adjourned at 2:30pm. Although the length of the meeting was fairly long the number of Topics was limited. Discussion of a Firearms rule was briefly discussed but was tabled until further input could be accessed. There was also a brief discussion on Speed bumps but was tabled for future discussion. There was a lot of discussion on ESA dogs, but it is to be further reviewed in a Future meeting. The Committee reviewed the proposed Violations Policy, and made adjustments to it. It was then approved to be sent to the Board for adoption. The next meeting was set for August 10, 2026, at 1pm. Then the meeting was adjourned"),
-        ("p", "Submitted by Bob Newport, Committee Laison")]),
-]
+for _sec, _row in ARCHIVE_ROWS: _arch_row(_sec, _row)
 for _pg, _ls, _blocks in RULES_ARCHIVE_ONLY:
     if not (PAGES / _pg).exists(): (PAGES / _pg).write_text(  # Oct 25: keep published page
-        _crp.render("Rules and Regulations Committee Report", _blocks, "Source: Rules and Regulations Committee Report (Bob Newport)", _pg), encoding="utf-8")
+        _crp.render(RULES_ARCHIVE_TITLE, _blocks, RULES_ARCHIVE_SOURCE, _pg), encoding="utf-8")
     _lp = PAGES / _ls
     if not _lp.exists(): _lp.write_text((PAGES / _pg).read_text(encoding="utf-8"), encoding="utf-8")
 def chair_cards():
@@ -701,54 +362,28 @@ if STORY:
     _sd = _aj.load(REPO)[1]["sections"]["community-stories"]["items"]
     _mi = [r for r in _sd if r.get("date") == STORY["date"] and r.get("title") == STORY["archive_title"]]
     if not _mi:  # Steven Oct 20 4:33 PM: preview builds add the archive row too (was deferred to publish)
-        _aj.add_rows(REPO, "community-stories", [{"date": STORY["date"], "date_label": "Oct 2026", "title": STORY["archive_title"], "summary": STORY["teaser"],
-                           "page": STORY["page"], "listen": STORY["listen"], "issues": ["2026-10-25"]}])
-    elif "2026-10-25" not in _mi[0].get("issues", []):
-        _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + ["2026-10-25"])
-# Weekly Manager Update Oct 23 (Megan Leftwich, "Fw: Weekly Update 2026.10.23", palmhillblast Fri Oct 23 4:07 PM ET; her
-# original went to the Board at 4:03 PM) replaces Oct 16 (retention rule). The page is built here from the Oct 16 page's
-# card template with Megan's wording item by item (never hand-edited); decorative emoji in the insurance scenarios dropped.
-WMU_1023_PAGE = "2026-10-23-weekly-manager-update.html"
-WMU_1023 = [
-    "We had a complaint regarding the temperature of the water in the north pool. Staff have checked over the heaters, and they are working properly and maintaining the correct temperatures. We will not be changing the temperature, as it has been established and is maintained year-round.",
-    "At the Finance committee meeting, I confirmed the placement of the requested CDs. You now have 4 in your reserve account and 3 in your savings. All are $100,000 and have staggered due dates.",
-    "The City of Largo picked up the trash compactor to empty on Friday, and their truck broke down with the unit on it. They dropped off an open-top container temporarily but were able to get the compactor back to us just now.",
-    "The election equipment will be dropped off on Thursday morning next week, with the election on Tuesday the following week.",
-    "Toni has begun preparing the First Notice for the annual meeting. It is scheduled to go out on or before November 20th.",
-    "We received the second grease trap permit from the City of Largo this week. They are posted in the south clubhouse.",
-    "We had a motorcycle in the community on Needle today. I spoke to them, and we sent them a letter regarding it.",
-    ("David had asked if the insurance coverage was necessary and Lauren responded with the following:", [
-        "The coverage is not mandatory, but a recommendation considering the prior policy included the coverage.",
-        "Below are examples of claim scenarios that would preclude coverage without implementing such a policy:",
-        "<strong>Scenario 1 – Neighbor Dispute Turns Physical</strong><br>Two residents get into a heated argument over a parking space in a common lot. The dispute escalates and one resident strikes the other. The injured party sues the park, alleging negligent security and failure to address prior complaints about the aggressive neighbor.",
-        "<strong>Scenario 2 – Pool / Common Area Altercation</strong><br>A fight breaks out between teenagers at the community pool. A bystander resident is injured trying to break it up. The park is named in the lawsuit for failing to provide adequate supervision or security.",
-        "<strong>Scenario 3 – On-Site Manager Involvement</strong><br>A park manager physically confronts a resident who is violating community rules. The resident alleges excessive force and files a claim against both the manager and the park ownership entity."]),
-    "Lynntina with Duke confirmed receipt of the payment for the transformer. She has requested the signed waiver before they will schedule the work.",
-    "Manhole inspections were conducted today. I have reached out to them to confirm they have completed them. We will submit the required paperwork by the November 6th deadline.",
-    "Attached is a paper from RPM regarding minutes and some guidelines as to what to include. Please let me know if you have any questions, and I will share them with the committees.",
-]
+        _aj.add_rows(REPO, "community-stories", [{"date": STORY["date"], "date_label": STORY_DATE_LABEL, "title": STORY["archive_title"], "summary": STORY["teaser"],
+                           "page": STORY["page"], "listen": STORY["listen"], "issues": [ISSUE]}])
+    elif ISSUE not in _mi[0].get("issues", []):
+        _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + [ISSUE])
+# Weekly Manager Update page (WMU_* data from the issue content file): built from the previous page's card template, item by item.
 _wp = PAGES / WMU_1023_PAGE
 if not _wp.exists():  # published page (nav/Listen kept current by build_archive.js) is never overwritten
-    _tpl = (PAGES / "2026-10-16-weekly-manager-update.html").read_text(encoding="utf-8")
+    _tpl = (PAGES / WMU_TEMPLATE).read_text(encoding="utf-8")
     def _li(x):
         if isinstance(x, tuple):
             return f"<li>{escape(x[0], quote=False)}<blockquote>" + "".join(f"<p>{q}</p>" for q in x[1]) + "</blockquote></li>"
         return f"<li>{escape(x, quote=False)}</li>"
     _a = _tpl.index('<main><section class="content-card">') + len('<main><section class="content-card">')
     _b = _tpl.index('<p class="signoff">', _a)
-    _tpl = _tpl[:_a] + "\n<p>Good Afternoon Everyone,</p>\n<ul>\n" + "\n".join(_li(x) for x in WMU_1023) + "\n</ul>\n" + _tpl[_b:]
+    _tpl = _tpl[:_a] + f"\n<p>{WMU_GREETING}</p>\n<ul>\n" + "\n".join(_li(x) for x in WMU_1023) + "\n</ul>\n" + _tpl[_b:]
     _a = _tpl.index('<section class="content-card attachments"'); _b = _tpl.index("</section>", _a) + len("</section>\n")
     _tpl = _tpl[:_a] + _tpl[_b:]   # Oct 16 photo attachment does not carry over; the RPM minutes PDF is not hosted (flagged)
-    for o, n in [("October 16, 2026", "October 23, 2026"), ("Oct 16, 2026", "Oct 23, 2026"),
-                 ("2026-10-16-weekly-manager-update", "2026-10-23-weekly-manager-update"), ("2026.10.16", "2026.10.23")]:
+    for o, n in WMU_REPLACE:
         _tpl = _tpl.replace(o, n)
-    assert "2026-10-16" not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU Oct 23 template still has Oct 16 refs"
+    assert WMU_TEMPLATE_DATE not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU template still has the template page's date refs"
     _wp.write_text(_tpl, encoding="utf-8")
-# STYLE-RULES R65 (Steven-approved Oct 24 2:26 PM): Megan's attached RPM paper ("Recording Minutes at Meetings", 2 pages, from her
-# "Weekly Update 2026.10.23" email) is hosted as a PDF and linked in an Attachments card on her Oct 23 page (Oct 9 page layout).
-# Applied by the builder to the existing page (idempotent); a copy, the source PDF is never moved.
-WMU_1023_PDF_SRC = Path("/workspace/megan-1023-images/minutes-M100.pdf")
-WMU_1023_PDF = "assets/manager/2026-10-23-rpm-recording-minutes-at-meetings.pdf"
+# R65: the weekly update's attached PDF (WMU_1023_PDF*, content file) is copied (never moved) and linked in an Attachments card.
 _pdf = PAGES / WMU_1023_PDF
 if not _pdf.exists():
     import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
@@ -756,26 +391,24 @@ _wt = _wp.read_text(encoding="utf-8")
 if WMU_1023_PDF not in _wt:
     _att = ('<section class="content-card attachments" aria-labelledby="att-h"><h2 id="att-h">Attachments</h2>\n<ul class="att-docs">\n'
             f'<li><a href="/pages/{WMU_1023_PDF}" target="_blank" rel="noopener"><span class="att-icon" aria-hidden="true">📄</span>'
-            '<span><b>Recording Minutes at Meetings</b><small>Paper from RPM on what to include in minutes · PDF, 2 pages</small></span></a></li>\n</ul>\n</section>\n')
+            f'<span><b>{WMU_1023_PDF_TITLE}</b><small>{WMU_1023_PDF_DESC}</small></span></a></li>\n</ul>\n</section>\n')
     _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
     _wt = _wt[:_k] + _att + _wt[_k:]
     _wp.write_text(_wt, encoding="utf-8")
-assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: Megan Oct 23 RPM minutes PDF link/copy missing"
-_arch_row("weekly-manager-updates", {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
-                                     "page": WMU_1023_PAGE, "issues": ["2026-10-25"]})
-# Weekly Manager Update Oct 16 (Megan, palmhillblast Oct 16 3:59 PM ET) replaces Oct 9 (retention rule)
-_W_OLD = s[s.find('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'):]
+assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == Path(WMU_1023_PDF_SRC).stat().st_size, "R65: weekly update PDF link/copy missing"
+for _sec, _row in ARCHIVE_ROWS_LATE: _arch_row(_sec, _row)
+# Weekly Manager Update card on the main page: the newest update replaces the seed card (retention rule); WMU_CARD_* in the content file
+_W_OLD = s[s.find(WMU_CARD_OLD):]
 _W_OLD = _W_OLD[:_W_OLD.find('</td></tr>')]
-assert "Duke Energy Waiver" in _W_OLD
+assert WMU_CARD_OLD_MARK in _W_OLD
 _W_NEW = ('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update</div>'  # R19: date only on the date line
-    '<div style="font-size:14px;color:#666666;margin-top:2px;">Friday, Oct 23, 2026</div>'
-    '<div style="font-size:15px;color:#333333;margin-top:3px;">The election equipment will be dropped off on Thursday morning next week, with the election on Tuesday the following week.</div>'
+    f'<div style="font-size:14px;color:#666666;margin-top:2px;">{WMU_CARD_DATE}</div>'
+    f'<div style="font-size:15px;color:#333333;margin-top:3px;">{WMU_CARD_TEASER}</div>'
     f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{BASE}{WMU_1023_PAGE}" style="color:{G};white-space:nowrap;">Read Full Update →</a><span style="color:#999999;"> · </span><a href="{ARCH}weekly-manager-updates.html" style="color:{G};white-space:nowrap;">Weekly Manager Report Archives →</a></div>'
     f'<div style="font-size:13px;color:#666666;margin-top:5px;"><a href="{BASE}{WMU_1023_PAGE}" style="color:{G};">Source</a>: Weekly Manager Update</div>')
 s = s.replace(_W_OLD, _W_NEW)
 # Manager reports: Listen icon on the title line (pages have built-in Listen; ?listen=1 autostarts)
-for t, href in [("Shareholders Report — September 30 Board Meeting", BASE + "2026-09-30-shareholders-report.html"),
-                ("Weekly Manager Update", BASE + WMU_1023_PAGE)]:
+for t, href in MANAGER_LISTEN:
     old = f'<div style="font-size:15px;font-weight:bold;color:#333333;">{t}</div>'; assert old in s, t
     s = s.replace(old, title_row(t, listen(href + "?listen=1")))
 # Henry October already the President's Message (to-do #7). Did You Know: archive link (to-do, Oct 11 evening)
@@ -785,7 +418,7 @@ s = s.replace(old, f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board
 # Did You Know: Tony's FB variation (verbatim, Oct 16) appended as 2nd row
 a = s.find(">Did You Know?</span>"); e = s.find("</table></div>", a); assert a > 0 and e > 0
 DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
-    '<div style="font-size:15px;color:#333333;margin-top:3px;">Did you know Palm Hill has a private, residents-only Facebook group? Park news, events and photos. Search &quot;Palm Hill Country Club - Residents Only Group&quot; on Facebook and answer all 3 questions.</div>'
+    f'<div style="font-size:15px;color:#333333;margin-top:3px;">{DYK_FB_TEXT}</div>'
     f'<div style="font-size:14px;margin-top:4px;"><a href="{FBURL}" style="color:{G};">{FBURL}</a></div>'
     f'<div style="font-size:14px;margin-top:4px;"><a href="{FBPAGE_DYK}" style="color:{G};">Full item with QR code to scan →</a></div></td></tr>')
 # Steven's rule (Oct 16): main issue shows ONLY the newest Did You Know; older items live on archive/did-you-know.html
@@ -796,19 +429,11 @@ DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:a
 # RULES text, 1:17 PM email); light trimming only ("Further - " dropped, ".." -> "."). Verbatim check in style_rules.dyk_summary_ok.
 import html as _html
 sys.path.insert(0, SCRIPTS); import style_rules as _sr_dyk
-DYK_RULES_SUMMARY = ("The speed limit in the park is 15 mph. It's okay to go 15 mph and make a full stop at a stop sign. "
-    "Golf Carts and all motor vehicles shall not be operated after dark without tail lights and headlights.")  # Steven 6:28 PM: 3 sentences max
-_DYK_SRC = json.load(open(ROOT / "data/dyk-traffic-rules-source.json"))
+_DYK_SRC = json.load(open(ROOT / DYK_RULES_SOURCE_FILE))
 assert _sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC), "R39: DYK summary must be at most 3 of Dave's verbatim sentences"
 # R39: the Did You Know archive row shows the same summary (archive/archive-items.json, id traffic-rules)
 _AI = _aj.path(REPO)
-_aj.set_field(REPO, "did-you-know", {"id": "traffic-rules", "title": "Traffic Rules"}, "text", DYK_RULES_SUMMARY)
-DYK_RULES_PV = "https://palmhillnews.vercel.app/pages/previews/2026-10-18/did-you-know-traffic-rules.html"
-# R39 (Steven, Oct 17 6:32 PM): teaser mode per item -- "framing" (topic/source description, no author name, no rule quotes) or
-# "distilled" (<= 3 verbatim source sentences). Traffic Rules = framing on the main page; the archive row keeps the distilled summary.
-DYK_RULES_TEASER_MODE = "framing"
-DYK_RULES_TEASER = "A look at traffic rules from the park's official Rules and Regulations."   # Steven's wording, 6:32 PM
-DYK_CONTRIBUTOR_NAMES = ["Dave", "David", "Bates", "Board VP"]
+_aj.set_field(REPO, "did-you-know", DYK_RULES_ARCHIVE_KEY, "text", DYK_RULES_SUMMARY)
 if DYK_RULES_TEASER_MODE == "framing":
     assert _sr_dyk.dyk_framing_ok(DYK_RULES_TEASER, DYK_CONTRIBUTOR_NAMES, _DYK_SRC), "R39: framing teaser has a name, quotes a rule, or is over 3 lines"
     _DYK_MAIN = DYK_RULES_TEASER
@@ -817,12 +442,8 @@ else:
 DYK_RULES = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
     f'<div style="font-size:15px;color:#333333;margin-top:3px;">{_html.escape(_DYK_MAIN)} '
     f'<a href="{DYK_RULES_PV}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
-_DYK25 = json.load(open(REPO / "builder/oct25/data/dyk-link-oct2026-spectrum.json", encoding="utf-8"))
-_DYK3 = json.load(open(REPO / "builder/oct25/data/dyk-dave-assessments.json", encoding="utf-8"))
-_PV25 = "https://palmhillnews.vercel.app/pages/previews/2026-10-25/"
-# R39 distilled teasers: at most 3 verbatim sentences from each item (ALL CAPS kept, RD9)
-_TEASE = {"2026-10-25-spectrum-information": "SPECTRUM SUPPORT PHONE NUMBER: 877-647-7732 is the Community Solutions Line for Bulk Owners Customer Support.",  # R18c cut (Steven Oct 24 12:18 PM)
-          "2026-10-25-spectrum-music-channels": "Did you know with our new Spectrum set up we have access to several music channels? Simply turn on your TV then select the Spectrum app."}
+_DYK25 = json.load(open(REPO / DYK_ITEMS_JSON, encoding="utf-8"))
+_DYK3 = json.load(open(REPO / DYK_RULES_ITEM_JSON, encoding="utf-8"))
 # R57 (Steven Oct 21 11:22 AM): each Did You Know item is its own block -- bold title (the item's source heading), teaser, then
 # More → on its own line; a white gap + green left bar separates items. Guard: style_rules.assert_dyk_blocks.
 def _dyk_row(title, text, href):
@@ -832,16 +453,13 @@ def _dyk_row(title, text, href):
             f'<div class="ph-dyk-more" style="font-size:14px;margin-top:6px;"><a href="{href}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
 DYK_ITEMS = []
 # Steven Oct 21 11:25 AM: final page URLs (Oct 18 pattern pages/<issue>-did-you-know-<slug>.html, written by the stage script)
-def _dyk_final(pp): return "2026-10-25-" + pp
-_DYK_TITLE = {"2026-10-25-spectrum-information": "Spectrum Support Phone Number"}   # Steven Oct 21: short block title (source wording)
+def _dyk_final(pp): return DYK_PAGE_PREFIX + pp
 for _it in _DYK25["items"]:
     assert _sr_dyk.dyk_summary_ok(_TEASE[_it["id"]], _it["paragraphs"]), ("R39 distilled teaser not verbatim", _it["id"])
     DYK_ITEMS.append((_it["id"], _dyk_row(_DYK_TITLE.get(_it["id"], _it["title_display"]), _TEASE[_it["id"]], BASE + _dyk_final(_it["preview_page"]))))
 _d3src = _DYK3["email_paragraphs"] + [x for _, x in _DYK3["rule_items"]]
 # Steven Oct 21 11:22 AM: teaser = distilled summary in the official rule's own words (R39 distilled: verbatim sentences, <= 300 chars)
 # Steven Oct 21 11:39 AM: teaser in the rule's own words (his wording). Guard: every content word is in the official rule text.
-_DYK3_TEASER_FULL = ("$100.00 total ($50.00 transfer + $50.00 administrative) is required when a home/unit is transferred; "
-                "maintenance fees are due on the first day of the month, delinquent if not received by the tenth.")
 # R18c (Steven Oct 24 12:18 PM): cut at the semicolon (no rewording) so the phone teaser is <= 3 lines
 _DYK3_TEASER = _DYK3_TEASER_FULL.split("; ")[0] + "."
 assert _DYK3_TEASER_FULL.startswith(_DYK3_TEASER[:-1])
@@ -850,10 +468,9 @@ _tw = [w.strip(".") for w in re.findall(r"[a-z0-9$.]+", _DYK3_TEASER.lower().rep
 _bad = [w for w in _tw if w and w not in _rw and w.rstrip(".") not in {x.rstrip(".") for x in _rw} and w not in {"if", "are", "total"}]
 assert not _bad, f"R39: DYK #3 teaser words not in the official rule: {_bad}"
 # R66 (Steven Oct 24 2026 3:02 PM): Rules DYK teaser generated from the rule's lettered parts; phrase override per item.
-_R66_PHRASES = {"2026-10-25-assessments-due": ["home transfer fees", ["monthly maintenance fee due dates", "late fees"]]}  # A, B
 _DYK3_TEASER, _r66p = _sr_dyk.rules_dyk_teaser(_DYK3["rule_items"], _R66_PHRASES.get(_DYK3["id"]))
 _sr_dyk.assert_rules_dyk(_DYK3_TEASER, _DYK3["rule_items"], _r66p, _DYK3["id"])
-assert _DYK3_TEASER == "Information on home transfer fees, monthly maintenance fee due dates, and late fees.", _DYK3_TEASER  # Steven's chosen option 2
+assert _DYK3_TEASER == DYK_RULES_ITEM_TEASER_APPROVED, _DYK3_TEASER  # Steven's chosen wording (content file)
 # R66 covers every Rules DYK item (any item carrying rule_items); the Spectrum items are not rules.
 assert not any("rule_items" in _it for _it in _DYK25["items"]), "R66: new Rules DYK item needs an _R66_PHRASES entry / review"
 DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, BASE + _dyk_final(_DYK3["preview_page"]))))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
@@ -864,44 +481,30 @@ s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" sty
 _sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
 # R59 (Steven Oct 21 11:25 AM): preview builds add archive rows for every archive-backed issue item (DYK here; story above),
 # newest first, existing row format; build_archive.js (run at the end) renders them. Guard at the end: each item is on its archive page.
-_DYK_ROWS = [dict(date="2026-10-25", id=_DYK3["id"].replace("2026-10-25-", ""), title=_DYK3["title_display"], text=_DYK3_TEASER,
-                  page=_dyk_final(_DYK3["preview_page"]), source_label=_DYK3["source"], issues=["2026-10-25"])]
+_DYK_ROWS = [dict(date=DYK_ROW_DATE, id=_DYK3["id"].replace(DYK_PAGE_PREFIX, ""), title=_DYK3["title_display"], text=_DYK3_TEASER,
+                  page=_dyk_final(_DYK3["preview_page"]), source_label=_DYK3["source"], issues=DYK_ROW_ISSUES)]
 for _it in _DYK25["items"]:
-    _r = dict(date="2026-10-25", id=_it["id"].replace("2026-10-25-", ""), title=_DYK_TITLE.get(_it["id"], _it["title_display"]), text=_TEASE[_it["id"]],
-              page=_dyk_final(_it["preview_page"]), issues=["2026-10-25"])
+    _r = dict(date=DYK_ROW_DATE, id=_it["id"].replace(DYK_PAGE_PREFIX, ""), title=_DYK_TITLE.get(_it["id"], _it["title_display"]), text=_TEASE[_it["id"]],
+              page=_dyk_final(_it["preview_page"]), issues=DYK_ROW_ISSUES)
     if _it.get("byline"): _r["source_label"] = _it["byline"]
     _DYK_ROWS.append(_r)
 _aj.add_rows(REPO, "did-you-know", _DYK_ROWS)
 # R66b (Steven Oct 24 3:16 PM): current-issue Rules DYK archive row uses the same R66 teaser as the main page (past rows untouched)
-_ai2 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-25", _DYK_ROWS[0]["id"], _DYK3_TEASER)
+_ai2 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), DYK_ROW_DATE, _DYK_ROWS[0]["id"], _DYK3_TEASER)
 _aj.save_text(REPO, _ai2, json.loads(_ai2))
 # R66c (Steven Oct 24 3:34 PM "Yes"): Oct 18 Traffic Rules archive row teaser re-generated in R66 style (archive row ONLY;
 # Oct 18 issue, SEND html and the detail page stay as sent). Parts = the sentences of Dave's "Sections of the rule" (source json).
-_TR_SRC = json.loads((REPO / "builder/oct18/data/dyk-traffic-rules-source.json").read_text(encoding="utf-8"))[-1]
+_TR_SRC = json.loads((REPO / R66C_SOURCE_JSON).read_text(encoding="utf-8"))[-1]
 _TR_SENT = re.split(r"(?<=\.)\.?\s+", _TR_SRC.split("Sections of the rule:", 1)[1].strip())
 _TR_ITEMS = [(chr(65 + i), t) for i, t in enumerate(_TR_SENT[:6])]  # A-F; last sentence ("Most of all, be safe...") is not a rule part
-_TR_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
+_TR_PHRASES = R66C_PHRASES
 _TR_TEASER, _trp = _sr_dyk.rules_dyk_teaser(_TR_ITEMS, _TR_PHRASES)
-_sr_dyk.assert_rules_dyk(_TR_TEASER, _TR_ITEMS, _trp, "traffic-rules")
-_ai3 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), "2026-10-18", "traffic-rules", _TR_TEASER)
+_sr_dyk.assert_rules_dyk(_TR_TEASER, _TR_ITEMS, _trp, R66C_ROW_ID)
+_ai3 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), R66C_ROW_DATE, R66C_ROW_ID, _TR_TEASER)
 _aj.save_text(REPO, _ai3, json.loads(_ai3))
 ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
-_NOTICE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
-                     page=WM_COPY_SANIT, source="Palm Hill Webmaster notice, Oct 22", issues=["2026-10-25"]),
-                dict(date="2026-10-25", id="2026-10-25-couples-golf-league", title="Couples Golf League", text=COUPLES_TEASER,
-                     page=WM_COPY_COUPLES, source="Palm Hill Webmaster notice, Oct 20", issues=["2026-10-25"]),
-                # Steven Oct 23 6:38 PM
-                dict(date="2026-10-25", id="2026-10-25-library-closed", title="Library Closed starting the week of October 26th", text=LIBRARY_TEASER,
-                     page=WM_COPY_LIBRARY, source="Palm Hill Webmaster notice, Oct 22", issues=["2026-10-25"]),
-                dict(date="2026-10-25", id="2026-10-25-stop-sign-rules", title="Please observe important stop sign rules", text=STOP_TEASER,
-                     page=WM_COPY_STOP, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"]),
-                dict(date="2026-10-25", id="2026-10-25-south-rec-club-seeking-officers", title="2027 South Rec Club Seeking Officers", text=SOUTHREC_TEASER,
-                     page=WM_COPY_SOUTHREC, source="Palm Hill Webmaster notice, Oct 21", issues=["2026-10-25"]),
-                dict(date="2026-10-25", id="2026-10-25-holiday-greeting-distribution-plan", title=HOLIDAY_TITLE, text=HOLIDAY_TEASER,
-                     page=HOLIDAY_PAGE, source="Flyer from Bill Bender, Oct 23", issues=["2026-10-25"]),
-                dict(date="2026-10-25", id="2026-10-25-north-clubhouse-ice-machine-moved", title=ICE_TITLE, text=ICE_TEASER,
-                     page=ICE_PAGE, source="Oct P&E Committee Report (Elaine Cole); details confirmed by Steven Leonowicz", issues=["2026-10-25"])]
+_NOTICE_ROWS = NOTICE_ARCHIVE_ROWS
 _aj.add_rows(REPO, "community-notices", _NOTICE_ROWS)
 ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_ISSUE]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
@@ -951,21 +554,19 @@ if _cnf: raise SystemExit("R60: " + "; ".join(_cnf))
 import source_sections as _ss
 _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
-# STYLE-RULES R62 (Steven Oct 23 6:38 PM): P&E next meeting shows Elaine's date, no TBC note
-import re as _re62; _pe = _re62.sub(r"<[^>]+>", " ", s[s.find("Planning and Environmental Committee Meeting"):][:1500])
-_pe = _pe[:_pe.find("Source")] if "Source" in _pe else _pe
-if not ("Tuesday, Nov 10, 2026" in _pe and "12:30 PM" in _pe and "to be confirmed" not in _pe):
-    raise SystemExit("R62: P&E next meeting row must be Tuesday, Nov 10, 2026 12:30 PM with no '(date to be confirmed)': " + " ".join(_pe.split())[:200])
-# STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting row = Wednesday, Nov 18, 2026 10:00 AM, calendar place, no TBC
-_fi = s.find(">Finance Committee<"); _fn = _re62.sub(r"<[^>]+>", " ", s[_fi:][:1200]) if _fi >= 0 else ""
-_fn = _fn[:_fn.find("Source")] if "Source" in _fn else _fn
-if not ("Wednesday, Nov 18, 2026" in _fn and "10:00 AM" in _fn and "South Clubhouse Boardroom" in _fn and "to be confirmed" not in _fn and "Nov 16" not in _fn):  # A4 (R64d): Finance row only
-    raise SystemExit("R62b: Finance next meeting row must be Wednesday, Nov 18, 2026 10:00 AM, South Clubhouse Boardroom, no TBC: " + " ".join(_fn.split())[:200])
+# STYLE-RULES R62/R62b (Steven Oct 23 6:38 PM / Oct 24 1:34 PM): meetings rows show the agenda/report date, no TBC note.
+# The expected wording is issue data (content file MEETING_ROW_CHECKS); A4 (R64d): each check reads its own row only.
+import re as _re62
+for _mc in C.MEETING_ROW_CHECKS:
+    _mi = s.find(_mc["start"]); _mt = _re62.sub(r"<[^>]+>", " ", s[_mi:][:_mc["span"]]) if _mi >= 0 else ""
+    _mt = _mt[:_mt.find("Source")] if "Source" in _mt else _mt
+    if not (all(x in _mt for x in _mc["need"]) and not any(x in _mt for x in _mc["never"])):
+        raise SystemExit(f"{_mc['rule']}: meetings row must show {_mc['need']} and not {_mc['never']}: " + " ".join(_mt.split())[:200])
 # STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page
 _hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
 if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
 _he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
-if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or ">Bill Bender email</a>" not in _hr: raise SystemExit("R60b: Bill Bender notice needs Source: Bill Bender email linked to " + HOLIDAY_PAGE)
+if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or f">{C.HOLIDAY_SOURCE_LABEL}</a>" not in _hr: raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} needs Source: {C.HOLIDAY_SOURCE_LABEL} linked to " + HOLIDAY_PAGE)
 # STYLE-RULES R60c (Steven Oct 24 1:27 PM): ice machine notice -- exact title, 3rd notice (right after Bill Bender), Source
 # "Oct P&E Committee Report" linked to the Oct 14 P&E page, More -> its own notice page
 # R60c (ice machine notice 3rd, right after Bill Bender; Source: Oct P&E Committee Report) -- content file R60C_ICE_NOTICE (Oct 25 only).
@@ -973,7 +574,7 @@ if C.R60C_ICE_NOTICE:
     _ii = _hs.find(">" + ICE_TITLE + "<")
     if _ii < 0: raise SystemExit(f"R60c: Community Notice title {ICE_TITLE!r} not found")
     _ie = _hs.find('<tr style="background:', _ii); _ir = _hs[_ii:_ie if _ie > 0 else len(_hs)]
-    if f'Source: <a href="{BASE + PE_1014_PAGE}"' not in _ir or ">Oct P&amp;E Committee Report</a>" not in _ir and ">Oct P&E Committee Report</a>" not in _ir: raise SystemExit("R60c: ice machine notice needs Source: Oct P&E Committee Report linked to " + PE_1014_PAGE)
+    if f'Source: <a href="{BASE + PE_1014_PAGE}"' not in _ir or f">{C.ICE_SOURCE_LABEL.replace('&', '&amp;')}</a>" not in _ir and f">{C.ICE_SOURCE_LABEL}</a>" not in _ir: raise SystemExit(f"R60c: ice machine notice needs Source: {C.ICE_SOURCE_LABEL} linked to " + PE_1014_PAGE)
     if not re.search(r'href="' + re.escape(BASE + ICE_PAGE) + r'"[^>]*>More →', _ir): raise SystemExit("R60c: ice machine notice needs More → " + ICE_PAGE)
     _tt = re.findall(r'font-weight:bold;color:#333333;text-align:left;padding-right:8px;">([^<]+)<', _hs)
     if len(_tt) < 3 or _tt[2] != ICE_TITLE or _hs.find(">" + HOLIDAY_TITLE + "<") > _ii: raise SystemExit(f"R60c: ice machine notice must be 3rd, right after Bill Bender: {_tt[:4]}")

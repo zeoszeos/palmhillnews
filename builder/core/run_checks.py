@@ -41,15 +41,14 @@ L.ok("L05", [norm(x) for x in titles(sec)] == [norm(n) for _, n in audit["meetin
 L.ok("L05b", len(titles(sec)) == len(set(titles(sec))), "one meeting per committee")
 L.ok("L26", f">{_W('MEETINGS')}<" in sec, f"Meetings window {_W('MEETINGS')} in header")
 L.ok("L06", sec.count('text-align:right;padding-top:1px;">') >= len(audit["meetings"]), "Meetings: location right-aligned on title line")
-fi = text(sec[sec.find(">Finance Committee<"):])
-fi = fi[:fi.find("Source")]
-L.ok("R62b", "Wednesday, Nov 18, 2026" in fi and "10:00 AM" in fi and "to be confirmed" not in fi and "Nov 16" not in fi, f"Finance row {fi[:90]}")
-pe = text(sec[sec.find(">Planning and Environmental Committee Meeting<"):]); pe = pe[:pe.find("Source")]
-L.ok("R62", "Tuesday, Nov 10, 2026" in pe and "12:30 PM" in pe and "to be confirmed" not in pe, f"P&E row {pe[:90]}")
+for _mc in C.MEETING_ROW_CHECKS:  # R62/R62b expected wording = content file data
+    _mt = text(sec[sec.find(_mc["start"]):]); _mt = _mt[:_mt.find("Source")]
+    L.ok(_mc["rule"], all(x in _mt for x in _mc["need"]) and not any(x in _mt for x in _mc["never"]),
+         f"{'Finance' if _mc['rule'] == 'R62b' else 'P&E'} row {_mt[:90]}")
 # L07/L08 This Week / Upcoming = audit rows; treat-as-recurring never there
 tw = lc._section(page, "Events - This Week"); up = lc._section(page, "Events - Upcoming")
 L.ok("L07", [norm(x) for x in titles(tw)] == [norm(n) for _, n in audit["this_week"]] and f">{_W('THIS_WEEK')}<" in tw, f"This Week rows {titles(tw)}")
-L.ok("L08", [norm(x) for x in titles(up)] == [norm(n) for _, n in audit["upcoming"]] and ">November 1 through November 22<" in up, f"Upcoming rows {titles(up)}")
+L.ok("L08", [norm(x) for x in titles(up)] == [norm(n) for _, n in audit["upcoming"]] and f">{C.UPCOMING_LABEL_EXPECTED}<" in up, f"Upcoming rows {titles(up)}")
 # A3: one shared treat-as-recurring list
 b25 = (H / "build_core.py").read_text(encoding="utf-8")
 _as = lambda src: set(eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))
@@ -69,14 +68,14 @@ ch = lc._section(page, "Committee Chair Reports")
 L.ok("L13", titles(ch) == list(lc.CHAIR_EXPECTED), f"chair rows {titles(ch)}")
 for t, intro in lc.CHAIR_EXPECTED.items():
     L.ok("L13b", intro.replace("&", "&amp;") in ch or intro in ch, f"intro: {t}")
-L.ok("L14", "Wednesday, Oct 14, 2026" in ch and "Tuesday, Oct 13, 2026" in ch, "chair dates P&E Oct 14, Golf Oct 13 (3-letter months)")
+L.ok("L14", all(d in ch for d in C.CHAIR_DATES_EXPECTED), C.CHAIR_DATES_LABEL)
 n = len(lc.CHAIR_EXPECTED)
 L.ok("L15", len(re.findall(r">\s*Listen\s*</a>", ch)) == n and "Listen to the Chair Report" not in ch, "one Listen per chair report")
 L.ok("L16", ch.count(">Read Full Report →</a>") == n and ">Committee Report Archives →</a>" in ch, "Read Full Report → each + archives link")
 # L17 Recurring
 rc = lc._section(page, "Recurring Meetings &amp; Events")
 L.ok("L17", f">{_W('RECURRING')}, 2026<" in rc and rc.count(lc.BASE + f"{C.ISSUE}-recurring-activities-by-") == 3
-     and "confirmed recurring" not in rc.lower(), "Recurring: Oct 25 window, By Date/Name/Location pages")
+     and "confirmed recurring" not in rc.lower(), C.RECURRING_CHECK_LABEL)
 # no stale Oct 18 issue dates leaked into links
 L.ok("L31", "previews/2026-10-18" not in page and "2026-10-18-recurring" not in page, "no Oct 18 preview/recurring links")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

@@ -9,6 +9,18 @@ ISSUES_DIR = CORE.parent / "issues"
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
 REQUIRED = ("ISSUE", "VOL_NO", "SHORT", "DEFAULT_REPO", "DEFAULT_WORK", "STORY", "NOTICES_DROPPED", "R60C_ICE_NOTICE",
             "DRYRUN_OK", "STORY_OMIT_DRYRUN_NOTE", "LOCKED")
+# Batch 5 (Steven Oct 24 2026 10:26 PM "Don't wait"): every per-issue item (events text, meetings overrides, notices, chair reports,
+# reports, Did You Know, archive rows) lives in the content file. Content files may use these shared names (pre-set before they load):
+PRESEED = {"BASE": "https://palmhillnews.vercel.app/pages/", "CAL": "https://www.palmhillcountryclub.net/calendar-1/",
+           "ARCH": "https://palmhillnews.vercel.app/pages/archive/", "G": "#3A6B1A"}
+DERIVED = ("ISSUE_LONG", "VOLNO", "WINDOWS", "REPO", "WORK")
+def content_data(c):
+    """Per-issue data names of content file c (everything but the required/derived fields and the pre-set shared names), deep-copied
+    so the core can extend them without touching the loaded file. build_core.py injects these into its namespace (R71)."""
+    import copy, types
+    skip = set(REQUIRED) | set(PRESEED) | set(DERIVED)
+    return {k: copy.deepcopy(v) for k, v in vars(c).items()
+            if not k.startswith("__") and k not in skip and not isinstance(v, types.ModuleType)}
 def windows(issue):
     d = date.fromisoformat(issue); f = lambda n: (d + timedelta(days=n)).isoformat()
     return {"THIS_WEEK": (f(0), f(6)), "UPCOMING": (f(7), f(28)), "RECURRING": (f(0), f(29)), "MEETINGS": (f(0), f(30)),
@@ -28,7 +40,7 @@ def load(issue=None):
     p = content_path(issue)
     if not p.exists(): raise SystemExit(f"R71: no content file builder/issues/{issue}.py")
     spec = importlib.util.spec_from_file_location(f"phnews_issue_{issue.replace('-', '_')}", p); m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m); check(m, issue)
+    m.__dict__.update(PRESEED); spec.loader.exec_module(m); check(m, issue)
     d = date.fromisoformat(issue)
     m.ISSUE_LONG = f"{FULL[d.month-1]} {d.day}, {d.year}"            # "October 25, 2026"
     m.VOLNO = f"Vol. 1, No. {m.VOL_NO}"

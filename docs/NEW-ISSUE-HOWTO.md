@@ -5,6 +5,10 @@ A new week = **one new content file**. Never copy a builder (the R71 guard stops
 1. Copy the idea of the latest content file: create `builder/issues/<YYYY-MM-DD>.py` (the Sunday issue date) with every required
    field: `ISSUE`, `VOL_NO`, `SHORT` (e.g. `nov8`), `DEFAULT_REPO`, `DEFAULT_WORK`, `STORY` (dict json/listen/teaser_sentences or None),
    `STORY_OMIT_DRYRUN_NOTE`, `NOTICES_DROPPED`, `R60C_ICE_NOTICE`, `DRYRUN_OK`, `LOCKED`. Data only: assignments and comments, no code.
+   Then the issue's own content (R71b, batch 5): events detail/links, meetings overrides + `MEETING_ROW_CHECKS`, notices, chair
+   reports, Weekly Manager Update, Did You Know, archive rows, PDF attachment, and `LOCKED = {"NOTICES_EXPECTED": [...],
+   "CHAIR_EXPECTED": {...}}`. Start from the previous week's file; label anything not yet reviewed `CARRIED FROM <date>`.
+   Never put issue text in `builder/core/` -- the R71b guard fails the build if a content string shows up there.
 2. Everything else comes from the date: long date, Vol./No. text, This Week / Upcoming / Recurring / Meetings windows (R69),
    calendar window (R21b), file names (`PHNEWS-<date>-preview.html`, `build-audit-<SHORT>.json`, `local-<SHORT>/`).
 3. Make the work tree (`DEFAULT_WORK`) with `source/` (seed + shell) and `data/` (calendar snapshots); put the week's source-verbatim
