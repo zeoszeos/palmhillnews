@@ -83,7 +83,7 @@ def check_email(page):
     expect = SECTION_ORDER if THIS_WEEK_EXPECTED else SECTION_ORDER_NO_THIS_WEEK
     L.ok("L03", got == expect, f"section order {got}")
     # L03b replaced by R45 (Steven, Oct 18 12:07 AM): the Oct 11 omission was never approved; a story row is required
-    import sys as _s; _s.path.insert(0, "/workspace/nov1-build/scripts"); import style_rules as _sr45
+    import sys as _s; _s.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or "/workspace/nov1-build", "scripts")); import style_rules as _sr45
     L.ok("L03b", not _sr45.community_stories_violations(page), f"R45 Community Stories section {_sr45.community_stories_violations(page) or 'present'}")
     # L04 hard exclusions
     for bad in ("Block Captain", "Test Meeting", "Private Event", "Message from Board President Henry Klain",

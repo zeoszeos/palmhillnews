@@ -9,13 +9,13 @@ STYLE-RULES asserts as publish_oct18 (R18 R22 R39-R49b), and writes the SEND fil
 ROOT/nas-layout/<yyyy-mm>/<issue>/sent-final/PHNEWS-<issue>-FINAL.html. Emails nothing.
 --dry-run: writes ONLY the SEND/NAS-layout files; no repo page is written or touched (the R47 Listen add is checked, not done).
 """
-import argparse, re, sys, time
+import argparse, os, re, sys, time
 from pathlib import Path
 _T0 = time.time() - 1
 HERE = Path(__file__).resolve().parent; REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import style_rules as _sr, summary_trim as _st, source_sections as _ss, notice_listen as _nl, readability as _rd, check_listen_coverage as _lc
-ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--root", default="/workspace/phnews-consolidation/oct18")
+ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--root", default=os.environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18")  # R67: env PHNEWS_WORK
 ap.add_argument("--repo", default=str(REPO)); ap.add_argument("--dry-run", action="store_true"); a = ap.parse_args()
 I = a.issue; ROOT = Path(a.root); REPO = Path(a.repo); assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", I), I
 from datetime import date

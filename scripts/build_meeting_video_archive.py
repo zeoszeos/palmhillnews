@@ -138,9 +138,8 @@ def update_latest(rows):
     new.append(it)
   new.sort(key=lambda v:v['date'],reverse=True)
   # rewrite only the videos items block, keeping the file's hand-curated one-line-per-item layout
-  t=open(LATEST).read(); i=t.index('"videos": {'); a=t.index('"items": [',i)+len('"items": ['); b=t.index('\n    ]}',a)
-  body='\n'+',\n'.join('      '+json.dumps(v,ensure_ascii=False) for v in new)
-  open(LATEST,'w').write(t[:a]+body+t[b:])
+  sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))); import archive_items as _aj  # R68: the one archive-items.json editor
+  _aj.set_items(ROOT,'videos',new)
 def main(args):
   rows=load(args)
   if '--offline' not in args and '--from-csv' not in args: rows=live_sync(rows)

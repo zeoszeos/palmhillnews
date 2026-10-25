@@ -101,7 +101,8 @@ def required_pages():
 def _default_send():  # A6 (Oct 24): the current issue's SEND file (PHNEWS_ISSUE or newest preview folder)
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import style_rules as _s
     iss = _s.current_issue(R)
-    for c in (f"/workspace/phnews-consolidation/oct18/PHNEWS-{iss}-SEND.html", f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"):
+    _w = os.environ.get("PHNEWS_WORK")  # R67 (batch 2): the issue work tree, when set, is checked first
+    for c in ((f"{_w}/PHNEWS-{iss}-SEND.html",) if _w else ()) + (f"/workspace/phnews-consolidation/oct18/PHNEWS-{iss}-SEND.html", f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"):
         if os.path.exists(c): return c
     return f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"
 DEFAULT_SEND = os.environ.get("PHNEWS_SEND_HTML") or _default_send()
