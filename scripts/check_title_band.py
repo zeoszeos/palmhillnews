@@ -2,7 +2,7 @@
 """STYLE-RULES R38 guard (rendered, 1280px + 390px): on a banded archive page every .ph-row has a title band (.ph-band-a|b)
 holding the title; a header band sits between the header block and the first item with margin-top >= 20px; titles keep the
 baseline 15px / bold (700); band text contrast meets WCAG AA (>= 4.5:1).
-Usage: /workspace/.venv-vr/bin/python scripts/check_title_band.py pages/archive/did-you-know.html"""
+Usage: /workspace/pwvenv/bin/python scripts/check_title_band.py pages/archive/did-you-know.html"""
 import sys, os, re
 from playwright.sync_api import sync_playwright
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -13,7 +13,7 @@ def lum(c):
 def ratio(a, b): la, lb = sorted([lum(a), lum(b)], reverse=True); return (la + 0.05) / (lb + 0.05)
 page = sys.argv[1]; fails = []
 with sync_playwright() as p:
-    b = p.chromium.launch(executable_path="/usr/bin/google-chrome")
+    b = p.chromium.launch()  # Playwright's bundled Chromium (coding batch 1, Oct 24 2026); no fixed Chrome path
     for w, tag in [(1280, "desktop"), (390, "mobile")]:
         pg = b.new_page(viewport={"width": w, "height": 900})
         pg.route("**/pages/assets/**", lambda r: r.fulfill(path=os.path.join(ROOT, r.request.url.split("/pages/", 1)[1].join(["pages/", ""]))))

@@ -474,3 +474,16 @@ def assert_rules_dyk_archive(archive_html, row_id, main_teaser):
     if not m: raise SystemExit(f"R66b: DYK archive row {row_id!r} not found")
     got = _h.unescape(m.group(1)).strip()
     if got != main_teaser: raise SystemExit(f"R66b: DYK archive teaser {row_id!r} differs from main page: {got!r} != {main_teaser!r}")
+
+# STYLE-RULES R10 (Steven, Oct 24 2026 9:05 PM, coding batch 1): the two locked as-sent pages are pinned byte-for-byte.
+# build_archive.js never rewrites them (R10_LOCKED); this guard fails the build if either page's bytes differ from the pin.
+R10_LOCKED_SHA256 = {
+    "pages/2026-09-30-shareholders-report.html": "9ab8daa1e31fba1e2d556979ec9e7480413ff21ce4910fb290556f9b01bd3b98",
+    "pages/2026-10-09-weekly-manager-update.html": "b2976e40840afa02ce8e84fc08fee4336cb03e18cea38a6ca49f83dbd2c127db",
+}
+def assert_r10_locked_pages(repo):
+    import hashlib, os as _os
+    for rel, want in R10_LOCKED_SHA256.items():
+        f = _os.path.join(str(repo), rel)
+        got = hashlib.sha256(open(f, "rb").read()).hexdigest() if _os.path.exists(f) else None
+        if got != want: raise SystemExit(f"R10: locked page {rel} changed (sha256 {got}, pinned {want}); it must stay exactly as sent")

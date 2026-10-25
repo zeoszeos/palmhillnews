@@ -13,14 +13,17 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent; ROOT = HERE.parent
 SEED = ROOT / "source/PHNEWS-2026-10-18-seed-20261014.html"
+ISSUE = "2026-11-01"
+# R21b (Steven, Oct 24 2026 9:05 PM, coding batch 1): calendar pull window comes from ISSUE (7 days before .. 60 days after), never hard-coded.
+from datetime import date as _d0, timedelta as _td0
+CAL_WINDOW = ((_d0.fromisoformat(ISSUE) - _td0(days=7)).isoformat(), (_d0.fromisoformat(ISSUE) + _td0(days=60)).isoformat())
 # STYLE-RULES R21 (Steven, Oct 16 11:32 PM): re-pull the calendar right before every proof/publish build (prints the diff).
 # PHNEWS_CAL_OFFLINE=1 only for re-renders that must reproduce an already-pulled snapshot.
 if os.environ.get("PHNEWS_CAL_OFFLINE") != "1":
     sys.path.insert(0, "/workspace/nov1-build/scripts"); import pull_calendar as _pc
-    _pc.pull(str(ROOT / "data"), "2026-10-25", "2026-12-31")
+    _pc.pull(str(ROOT / "data"), *CAL_WINDOW)
 CALF = sorted(glob.glob(str(ROOT / "data/cal-*.json")))[-1]
 OUTF = ROOT / "PHNEWS-2026-11-01-preview.html"
-ISSUE = "2026-11-01"
 THIS_WEEK = ("2026-11-01", "2026-11-07")
 UPCOMING = ("2026-11-08", "2026-11-29")      # ~3 weeks (Oct 9 rule), starts after This Week
 RECURRING = ("2026-11-01", "2026-11-30")
@@ -939,7 +942,12 @@ s = _sr.assert_community_stories(s, OUTF.name, COMMUNITY_STORIES_OMIT_APPROVED) 
 s = _sr.assert_event_sources(s, OUTF.name)  # R48 (Steven, Oct 18 12:31 AM): event rows need Calendar/RPM/Agenda  # STYLE-RULES L27/L29: linked short 'Webmaster', no dates on Source credits
 # STYLE-RULES R18/R60 (Steven Oct 21 8:34 PM): root-cause fix -- the Oct 25 builder never ran summary_trim (Oct 18 ran it in
 # make_live_preview/publish), so notices showed their full text. Trim here, then guard (scripts/check_notices.py) after writing.
-sys.path.insert(0, "/workspace/nov1-build/scripts"); import summary_trim as _st; s = _st.trim(s)
+sys.path.insert(0, "/workspace/nov1-build/scripts"); import summary_trim as _st
+_um = _st.unmatched(s)  # R18b: report every saved trim that no longer matches; a current-issue one stops the build
+print(f"R18b summary_trim: {len(_um)} saved trim(s) not in this issue" + "".join(f"\n  unmatched{' (CURRENT ISSUE)' if c else ''}: {pre[:60]!r}" for pre, u, c in _um))
+for _pre, _u, _c in _um:
+    if _c: _todo(f"R18b: saved trim {_pre[:60]!r} no longer matches its item ({_u}); update summary_trim.SHORT")
+s = _st.trim(s)
 import check_notices as _cn; _cnf = _cn.static(s)
 if _cnf: raise SystemExit("R60: " + "; ".join(_cnf))
 # STYLE-RULES R42: one source email = one Community Notice (source-to-sections map; split / missing section fails the build)
@@ -989,6 +997,7 @@ if _rc.returncode != 0: _todo("R64: run_checks_nov1 FAIL\n" + "\n".join(l for l 
 import subprocess as _sp3
 _ba = _sp3.run(["node", "scripts/build_archive.js"], cwd="/workspace/nov1-build", capture_output=True, text=True)
 print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
+_sr_dyk.assert_r10_locked_pages("/workspace/nov1-build")  # R10: locked as-sent pages unchanged (byte pin)
 _sr_dyk.assert_rules_dyk_archive(Path("/workspace/nov1-build/pages/archive/did-you-know.html").read_text(encoding="utf-8"), _DYK_ROWS[0]["id"], _DYK3_TEASER)  # R66b
 _sr_dyk.assert_rules_dyk_archive(Path("/workspace/nov1-build/pages/archive/did-you-know.html").read_text(encoding="utf-8"), "traffic-rules", _TR_TEASER)  # R66c
 _ca = Path("/workspace/nov1-build/pages/archive/community-stories.html").read_text(encoding="utf-8")

@@ -118,7 +118,14 @@ function listenLink(listen, extra = '') {
   return `<a class="ph-listen" href="${pageUrl(listen)}" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;${extra ? extra + ';' : ''}color:#1d4310;font:bold 15px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
 }
 
+// STYLE-RULES R10 (Steven, Oct 24 2026 9:05 PM, batch 1): locked as-sent pages are never rewritten by this builder.
+// write() skips them, and the run fails if either page's bytes differ at the end from what they were at the start.
+const R10_LOCKED = ['pages/2026-09-30-shareholders-report.html', 'pages/2026-10-09-weekly-manager-update.html'];
+const R10_SHA = (rel) => { const f = path.join(ROOT, rel); return fs.existsSync(f) ? require('crypto').createHash('sha256').update(fs.readFileSync(f)).digest('hex') : null; };
+const R10_START = Object.fromEntries(R10_LOCKED.map((r) => [r, R10_SHA(r)]));
+const r10Skipped = [];
 function write(file, content) {
+  if (R10_LOCKED.includes(path.relative(ROOT, file).split(path.sep).join('/'))) { r10Skipped.push(path.relative(ROOT, file)); return; }
   built.set(file, content);
   const prev = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
   if (prev === content) return;
@@ -1067,4 +1074,6 @@ write(path.join(OUT, 'archive-index.json'), JSON.stringify(index, null, 2) + '\n
 if (Object.keys(report).length) console.log(JSON.stringify(report, null, 2));
 console.log(`${CHECK ? 'would change' : 'changed'} ${changed.length} file(s)`);
 changed.forEach((f) => console.log('  ' + f));
+if (r10Skipped.length) console.log(`R10: locked page(s) left as sent: ${[...new Set(r10Skipped)].join(', ')}`);
+for (const r of R10_LOCKED) if (R10_SHA(r) !== R10_START[r]) throw new Error(`R10: locked page ${r} changed during build_archive.js (must stay byte-for-byte as sent)`);
 if (CHECK && changed.length) process.exit(1);

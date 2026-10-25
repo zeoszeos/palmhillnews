@@ -36,6 +36,16 @@ SHORT = [
  ("Did you know Palm Hill has a private, residents-only Facebook group?", "Did you know Palm Hill has a private, residents-only Facebook group? Park news, events and photos.", None),
 ]
 OPEN = 'margin-top:3px;">'
+def unmatched(s, base=B):
+    """R18b (Steven, Oct 24 2026 9:05 PM, coding batch 1): SHORT entries whose saved full-text prefix is not in s.
+    Returns [(prefix, url, current)]; current=True when the entry's More page is linked in s (the item is in this issue
+    but its text no longer starts with the saved prefix, so it would go out untrimmed). The builder reports all and fails on current."""
+    out = []
+    for pre, short, url in SHORT:
+        if s.find(OPEN + pre) >= 0: continue
+        cur = bool(url) and (url.replace(B, base) in s) and short not in s
+        out.append((pre, url, cur))
+    return out
 def trim(s, base=B):
     for pre, short, url in SHORT:
         i = s.find(OPEN + pre)
