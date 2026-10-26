@@ -35,6 +35,7 @@ LOCKED = {  # TO REVIEW when Nov 1 content approved -- today's values, carried f
     "CHAIR_EXPECTED": {
         'Planning and Environmental Committee': 'Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.',
         'Golf Advisory Committee': 'The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026.',
+        'Communications Committee': 'Facebook: Henry Klain approved the two-month trial on October 9.',
     },
 }
 
@@ -384,6 +385,28 @@ PE_1014 = [
     ("p", "The Master Plan sub-committee will meet in late-October. It is working on evaluating HOPH's assets."),
     ("p", "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m."),
 ]
+# R77 (Nov 1): Communications Committee Report, meeting of Monday Oct 12, 2026 -- Tony Ciaramitaro (tonysee99@outlook.com) to
+# Chuck Silcox, cc palmhillblast, "Communications Committee Report - October 12, 2026 Meeting", Mon Oct 26 2026 10:01 AM ET
+# (thread 1a17884503342ec9). Tony's wording verbatim, bullet by bullet; his email has a stray line break after the bullet
+# marker before "Committee-run Zoom" -- joined into one bullet (no words changed). Title drops "- Meeting of October 12, 2026"
+# (date goes on the date line, R77). Replaces the Sep 21 Communications card (latest per committee, 30-day retention).
+COMMS_1012_PAGE = "2026-10-12-communications-committee-report.html"
+COMMS_1012_LISTEN = "2026-11-01-listen-communications-committee-report.html"
+COMMS_1012 = [
+    ("ul", ["Six of nine members attended, and the September 21 minutes were approved.",
+            "Webmaster: 66 email blasts have gone out to 1,362 addresses since the last meeting.",
+            "Website: more than 78,000 page views and about 4,500 visitors in the last 90 days, almost half of the views on Homes for Sale and Rent. The site is getting a facelift ahead of its February renewal.",
+            "Calendar: the new calendar and booking system went live September 30. RPM has its own Board Room page, and a public Events Calendar is under About.",
+            "e-Newsletter: a weekly \"Did You Know\" rule is coming, at David Bates' suggestion.",
+            "Facebook: Henry Klain approved the two-month trial on October 9. The committee agreed, with no objection, to include the private Palm Hill Country Club - Residents Only Group. Both are one-way with comments off, only Jean Stjernstrom and Tony Ciaramitaro post, and group members are checked against the member directory.",
+            "Committee-run Zoom: the chair proposed automating meeting setup and recordings, and Megan offered RPM's help at meetings. Chuck, Gail and Megan will review and if necessary, will revise the process to reduce volunteer steps to setup and manage meetings.",
+            "Candidates Night: Wednesday, January 6, at 6:30 p.m. 14 of 34 past candidates have answered the survey.",
+            "Next meeting: Monday, November 9, 2026 at 10:00 a.m., South Clubhouse Boardroom and Zoom."]),
+    ("p", "Thank you!"),
+    ("p", "Tony Ciaramitaro"),
+    ("p", "Communications Committee Chair"),
+]
+COMMS_1012_TEASER = "Facebook: Henry Klain approved the two-month trial on October 9."  # Tony's wording (R18, fits 3 lines)
 # Chair reports with a generated full page (scripts/chair_report_page.py); the core writes the page (never overwriting a published
 # one), seeds its listen-* page and puts the card at the top of CHAIR, in this order (so the last one listed ends up first).
 CHAIR_REPORTS = [
@@ -397,11 +420,17 @@ CHAIR_REPORTS = [
          card=("Planning and Environmental Committee", "2026-10-14",
         "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",  # Elaine's wording, trimmed to 3 lines (R18)
         BASE + PE_1014_PAGE, BASE + PE_1014_LISTEN)),
+    dict(page=COMMS_1012_PAGE, listen=COMMS_1012_LISTEN, title="Communications Committee Report", blocks=COMMS_1012,
+         source="Source: Communications Committee Report (Tony Ciaramitaro)",
+         card=("Communications Committee", "2026-10-12", COMMS_1012_TEASER,
+        BASE + COMMS_1012_PAGE, BASE + COMMS_1012_LISTEN)),
 ]
 # Archive rows this issue adds (R59; archive/archive-items.json, idempotent on the row's page): (section, row)
 ARCHIVE_ROWS = [
     ("committee-reports", {"date": "2026-10-14", "title": "Planning and Environmental Committee Report", "page": PE_1014_PAGE,
                                     "listen": PE_1014_LISTEN, "issues": ["2026-10-25"]}),
+    ("committee-reports", {"date": "2026-10-12", "title": "Communications Committee Report", "page": COMMS_1012_PAGE,
+                                    "listen": COMMS_1012_LISTEN, "issues": ["2026-11-01"]}),
 ]
 # Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
 # attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
@@ -541,6 +570,6 @@ MEETING_ROW_CHECKS = [   # R62/R62b: a meetings row must show (need) and must no
 HOLIDAY_SOURCE_LABEL = "Bill Bender email"            # R60b linked Source wording
 ICE_SOURCE_LABEL = "Oct P&E Committee Report"         # R60c linked Source wording
 UPCOMING_LABEL_EXPECTED = "November 1 through November 22"   # L08 Upcoming header label
-CHAIR_DATES_EXPECTED = ["Wednesday, Oct 14, 2026", "Tuesday, Oct 13, 2026"]   # L14 chair report dates
-CHAIR_DATES_LABEL = "chair dates P&E Oct 14, Golf Oct 13 (3-letter months)"
+CHAIR_DATES_EXPECTED = ["Wednesday, Oct 14, 2026", "Tuesday, Oct 13, 2026", "Monday, Oct 12, 2026"]   # L14 chair report dates
+CHAIR_DATES_LABEL = "chair dates P&E Oct 14, Golf Oct 13, Communications Oct 12 (3-letter months)"
 RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"

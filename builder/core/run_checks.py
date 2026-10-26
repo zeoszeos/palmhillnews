@@ -78,6 +78,16 @@ L.ok("L17", f">{_W('RECURRING')}, 2026<" in rc and rc.count(lc.BASE + f"{C.ISSUE
      and "confirmed recurring" not in rc.lower(), C.RECURRING_CHECK_LABEL)
 # no stale Oct 18 issue dates leaked into links
 L.ok("L31", "previews/2026-10-18" not in page and "2026-10-18-recurring" not in page, "no Oct 18 preview/recurring links")
+# R77 chair report from a chair's email: page = the chair's wording block by block (no edits), title without the meeting date,
+# one card per committee (a newer report replaces the older card)
+from html import escape as _esc
+_RP = Path(lc.__file__).resolve().parents[2] / "pages"
+for _cr in getattr(C, "CHAIR_REPORTS", []):
+    _pg = (_RP / _cr["page"]).read_text(encoding="utf-8") if (_RP / _cr["page"]).exists() else ""
+    _bits = [x for k, v in _cr["blocks"] for x in (v if k == "ul" else [v])]
+    L.ok("R77", bool(_pg) and all(_esc(b, quote=False) in _pg for b in _bits), f"chair wording verbatim: {_cr['page']}")
+    L.ok("R77", not re.search(r"(?i)meeting of|\b(19|20)\d\d\b|report\W+report", _cr["title"]), f"chair title has no date / duplicate Report: {_cr['title']}")
+L.ok("R77", len(titles(ch)) == len(set(titles(ch))), "one chair card per committee (newer replaces older)")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
 res = L.results + L2.results
