@@ -115,6 +115,23 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
     _got = {tuple(x) for x in audit.get("all_events", [])}
     L.ok("R79", not (_got & _rec), f"All Events has no Recurring-page event {sorted(_got & _rec)}")
     L.ok("R79", _got == _exp and f'data-activity-count="{len(_exp)}"' in _aeh, f"All Events = every window event not on Recurring ({len(_exp)}); missing {sorted(_exp - _got)} extra {sorted(_got - _exp)}")
+# R80 (Steven Oct 26 2026 11:41 AM): every All Events row (all three sorts) has its own Source line with the linked Calendar,
+# plus the linked Webmaster notice for every event the content maps to one (EVENT_EXTRA_SRC, the R48/R56 map); none invented.
+if getattr(C, "ALL_EVENTS_PAGE", False):
+    from html import escape as _esc
+    _CALU = "https://www.palmhillcountryclub.net/calendar-1/"; _xs = dict(getattr(C, "EVENT_EXTRA_SRC", {}))
+    _wanted = {n: u for n, u in _xs.items() if any(n == x[1] for x in _got)}
+    for _o in ("date", "name", "location"):
+        _h = (_RPg / f"{C.ISSUE}-all-events-by-{_o}.html").read_text(encoding="utf-8")
+        _rows = []   # each row is prefixed with its group heading (the By Name page carries the name in the heading only)
+        for _g in re.split(r'(?=<h2 class="gx-h">)', _h.split('class="ph-activities"', 1)[1]):
+            _hd = (re.match(r'<h2 class="gx-h">(.*?)<span', _g) or [None, ""])[1]
+            _rows += [f"[{_hd}] " + r for r in re.split(r'<div class="ph-row(?: ph-alt)?">', _g)[1:]]
+        _nosrc = [r[:80] for r in _rows if f'ph-row-src' not in r or f'Source: <a href="{_CALU}"' not in r]
+        L.ok("R80", len(_rows) == len(_got) and not _nosrc, f"All Events {_o}: {len(_rows)} rows, each with Source: Calendar (missing {_nosrc})")
+        _bad = [n for n, u in _wanted.items() if not any(_esc(n) in r and f'<a href="{u}" style="color:#3a6b1a;">Webmaster</a>' in r for r in _rows)]
+        _extra = [r[:60] for r in _rows if "Webmaster</a>" in r and not any(_esc(n) in r and u in r for n, u in _wanted.items())]
+        L.ok("R80", not _bad and not _extra, f"All Events {_o}: Webmaster source on {sorted(_wanted)} only (missing {_bad}, unmapped {_extra})")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
 res = L.results + L2.results

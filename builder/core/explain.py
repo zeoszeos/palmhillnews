@@ -37,6 +37,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R77": "put the chair's wording in block by block, drop the meeting date from the title, and list one card per committee",
     "R78": "from Nov 1 the Meetings header carries no date range: set MEETINGS_SHOW_RANGE = False in the content file (Oct 25 keeps True)",
     "R79": "run recurring.py + recurring_grouped.py for the issue (writes the three All Events pages); keep ALL_EVENTS_LINK_TEXT / ALL_EVENTS_NOTE as Steven wrote them",
+    "R80": "All Events rows get Source lines from recurring.py (rsrc + EVENT_EXTRA_SRC); map a Webmaster notice to an event in EVENT_EXTRA_SRC, then rerun recurring.py + recurring_grouped.py",
     "R62": "fix the date/time in MEETING_ROW_CHECKS or MTG_OVERRIDE (agenda/report date beats the calendar)",
     "R62b": "fix the Finance row in MTG_OVERRIDE / MEETING_ROW_CHECKS",
     "R62c": "each MTG_OVERRIDE must cite its agenda/report page and wording (MTG_OVERRIDE_SOURCE)",

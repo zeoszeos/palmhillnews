@@ -23,18 +23,18 @@ def group_set(F, SRC, NOTE=None):
     """Option B grouping for one By Date/Name/Location set (R20 Recurring; R79 All Events, same shell + sorts)."""
     for k in LAB:
         s = (SRC / (F % k)).read_text(encoding="utf-8")
-        rows = re.findall(r'ph-row-title">(.*?)</div><div class="ph-row-loc">(.*?)</div></div><div class="ph-row-meta">(.*?)</div>', s)
+        rows = re.findall(r'ph-row-title">(.*?)</div><div class="ph-row-loc">(.*?)</div></div><div class="ph-row-meta">(.*?)</div>((?:<div class="ph-row-src"[^>]*>.*?</div>)?)</div>', s)
         groups = {}
-        for t, l, m in rows:
+        for t, l, m, sr in rows:
             d, tm = m.split(" • ")
-            groups.setdefault({"date": d, "location": l, "name": t}[k], []).append((t, l, d, tm))
+            groups.setdefault({"date": d, "location": l, "name": t}[k], []).append((t, l, d, tm, sr))
         out = []
         for g, items in groups.items():
             out.append(f'<h2 class="gx-h">{g}<span class="n">({len(items)})</span></h2>')
-            for i, (t, l, d, tm) in enumerate(items):
+            for i, (t, l, d, tm, sr) in enumerate(items):
                 dd = d.replace(", 2026", "")
                 L, R = {"date": (f"{tm} · {t}", l), "location": (t, f"{dd} • {tm}"), "name": (f"{dd} • {tm}", l)}[k]
-                out.append(f'<div class="ph-row{" ph-alt" if i % 2 else ""}"><div class="ph-row-line"><div class="ph-row-title">{L}</div><div class="ph-row-loc">{R}</div></div></div>')
+                out.append(f'<div class="ph-row{" ph-alt" if i % 2 else ""}"><div class="ph-row-line"><div class="ph-row-title">{L}</div><div class="ph-row-loc">{R}</div></div>{sr}</div>')  # R80: row Source line (All Events only)
         nav = ('<nav class="sx-sticky" aria-label="Sort by"><b>Sort by:</b>'
                + "".join(f'<a href="{F % x}"{" aria-current=\"page\"" if x == k else ""}>{LAB[x][3:]}</a>' for x in LAB) + "</nav>\n"
                + (f'<p class="sx-note ph-all-events-note">{NOTE}</p>\n' if NOTE else '') + '<p class="sx-note">Source: <a href="https://www.palmhillcountryclub.net/calendar-1/">Calendar</a> · Times and rooms are subject to change. The club calendar may require sign-in.</p>\n'

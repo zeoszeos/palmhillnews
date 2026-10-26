@@ -37,7 +37,13 @@ def rows(o):
     if o == "date": return rec
     if o == "name": return sorted(rec, key=lambda e: (e["name"], e["date"], e.get("start", "")))
     return sorted(rec, key=lambda e: (place(e) in ("TBD", "TBS"), place(e), e["date"], e.get("start") or "99:99", e["name"]))
-def write_set(rec, PREFIX, T, NOTE=None):
+# R80 (Steven Oct 26 2026 11:41 AM): All Events rows carry their own Source line -- linked Calendar, plus the linked Webmaster
+# notice when the issue content already maps the event to one (EVENT_EXTRA_SRC, the same R48/R56 map the This Week/Upcoming rows use).
+def rsrc(e, m):
+    x = m.get(e["name"])
+    return ('<div class="ph-row-src" style="font-size:13px;color:#666666;margin-top:2px;">Source: <a href="' + CAL + '" style="color:#3a6b1a;">Calendar</a>'
+            + (f', <a href="{x}" style="color:#3a6b1a;">Webmaster</a>' if x else '') + '</div>')
+def write_set(rec, PREFIX, T, NOTE=None, SRCMAP=None):
     """One set of By Date / By Name / By Location pages (R20 Recurring; R79 All Events uses the same shell)."""
     out = ROOT / f"source/{PREFIX}-{C.SHORT}-orig"; out.mkdir(parents=True, exist_ok=True)
     def rows(o):
@@ -50,7 +56,7 @@ def write_set(rec, PREFIX, T, NOTE=None):
             f'<a href="{ISSUE}-{PREFIX}-by-{x}.html"{cur(x)}>{LBL[x]} →</a>' for x in orders) +
             '</nav>\n<p class="ph-source ph-lead-center" style="margin:0 0 6px;">Source: <a href="' + CAL + '" style="color:#3a6b1a;">Calendar</a></p>')
         acts = "".join(f'<div class="ph-row{" ph-alt" if i % 2 else ""}"><div class="ph-row-line"><div class="ph-row-title">{escape(e["name"])}</div>'
-                       f'<div class="ph-row-loc">{escape(place(e))}</div></div><div class="ph-row-meta">{escape(pdate(e["date"]))} • {escape(ptime(e.get("start")))}</div></div>\n'
+                       f'<div class="ph-row-loc">{escape(place(e))}</div></div><div class="ph-row-meta">{escape(pdate(e["date"]))} • {escape(ptime(e.get("start")))}</div>' + (rsrc(e, SRCMAP) if SRCMAP is not None else '') + '</div>\n'
                        for i, e in enumerate(rows(o)))
         main = (f'<h1 class="ph-section">{T}<span class="ph-section-sub">{md(RECURRING[0])} through {longd(RECURRING[1])}</span></h1>\n'
                 f'<div class="ph-section-date"><span class="ph-section-volno">{escape(VOLNO)}</span><span class="ph-section-issuedate">{longd(ISSUE)}</span></div>\n{nav}\n'
@@ -84,5 +90,5 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
                     and RECURRING[0] <= e["date"] <= RECURRING[1] and not e.get("recurring") and e["name"] not in AS_RECURRING
                     and not re.search(r"\bcommittee\b|\bboard of directors\b", e["name"], re.I) and e.get("category") != "CLOSURE" and not e.get("allDay")
                     and (e.get("category") != "Meetings" or e["name"] == "Palm Hill MasterPlan Team")], key=k)
-    write_set(allev, "all-events", "All Events", C.ALL_EVENTS_NOTE); print(f"all events {C.ISSUE}:", len(allev), "rows")
+    write_set(allev, "all-events", "All Events", C.ALL_EVENTS_NOTE, dict(getattr(C, "EVENT_EXTRA_SRC", {}))); print(f"all events {C.ISSUE}:", len(allev), "rows")
 print(f"recurring {C.ISSUE}:", len(rec), "rows", rec[0]["date"], "->", rec[-1]["date"])
