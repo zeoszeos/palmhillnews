@@ -36,7 +36,10 @@ def _item(p):
     return _fig(story["figures"][p["figure"]])
 def _page(T):
     h = html.escape(story["title"])
-    main = (f'<main><p class="byline">{html.escape(story["byline"])}</p>\n<article>\n' + "\n".join(_item(p) for p in story["paragraphs"])
+    _ph = story.get("photo"); _k = story.get("kicker")
+    _top = (f'<figure><img src="{_ph["src"]}" width="{_ph["w"]}" height="{_ph["h"]}" alt="{html.escape(_ph["alt"])}"><figcaption>{html.escape(_ph["caption"])}</figcaption></figure>\n' if _ph else "")
+    if _ph: assert _ph["src"].startswith("https://palmhillnews.vercel.app/assets/") and _ph["alt"].strip() and (ROOT / "public" / _ph["src"].split("vercel.app/", 1)[1]).exists(), "R84: cover photo needs an absolute URL, alt text and the file in public/"
+    main = (f'<main><p class="byline">' + (f'{html.escape(_k)}<br>' if _k else "") + f'{html.escape(story["byline"])}</p>\n' + _top + '<article>\n' + "\n".join(_item(p) for p in story["paragraphs"])
             + f'\n</article>\n<p class="source">{html.escape(story["credit_line"])}</p>\n</main>')
     out = re.sub(r"<title>Listen: .*?</title>", f"<title>Listen: {h} — Palm Hill Community Stories</title>", T, count=1)
     out = re.sub(r"<title>(?!Listen: ).*?</title>", f"<title>{h} — Palm Hill Community Stories</title>", out, count=1)

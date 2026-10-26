@@ -1,9 +1,18 @@
 {
  "_about": "Nov 1, 2026 Community Story (R45/R83). Palm Hill Link February 2026, pp 4-5 (PDF pages 4-5). Steven chose it Oct 26 2026 12:19 PM: full length, verbatim; past-date references left as printed. Extraction fixes only: PDF line breaks rejoined; drop-cap 'P alm' rejoined; 'Director for the City of Largo.' (printed on its own indented line) rejoined to its sentence; the photo caption 'Katra Peck and / Victoria Richards' that ran into the p4 body removed from the text and used as the photo caption; page headers/footers/page numbers dropped. Printed italics (the parenthetical painting note and the press-release Note) are kept as plain text. Title/second head given in title case as Steven wrote them (print is all caps).",
  "title": "Katra Peck’s Painting Chosen for Display in Horizon West Bay Complex in Downtown Largo",
+ "kicker": "Cover Photo",
  "second_head": "Creative Art Space Attracts Palm Hill Residents on Tuesdays in South Rec Hall",
  "cover_line": "Katra Peck, Palm Hill Artist",
  "byline": "Story and photos by Susan Kerr, LINK Editor",
+ "photo": {
+  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/katra-peck-cover-clean-february-2026.jpg",
+  "w": 450,
+  "h": 406,
+  "alt": "Katra Peck smiling beside her painting of pink flamingos by the water",
+  "caption": "Katra Peck, Palm Hill Artist",
+  "note": "Feb 2026 Link cover photo. The PDF holds it as six 450x75 JPEG strips (Im0-Im5) under vector cover text, so the stitched photo has no print on it: no inpainting needed (Joe's Oct cover needed it). Only the flat frame-colour bands were cropped (22 px top, 22 px bottom); pixels otherwise unchanged; re-saved JPEG q95. Native 450x450, ~73 ppi: low-res. Caption = the cover line as printed."
+ },
  "paragraphs": [
   "Palm Hill resident Katra Peck is a self-taught artist whose artwork attracted the attention of the City of Largo as a permanent fixture in the soon-to-be-opened Horizon West Bay complex in downtown Largo.",
   "Katra’s artwork was spotted at the Largo Community Arts Center, where Largo officials were seeking local artists’ works to display in the new City Hall complex under construction.",

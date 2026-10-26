@@ -39,6 +39,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R79": "run recurring.py + recurring_grouped.py for the issue (writes the three All Events pages); keep ALL_EVENTS_LINK_TEXT / ALL_EVENTS_NOTE as Steven wrote them",
     "R80": "All Events rows get Source lines from recurring.py (rsrc + EVENT_EXTRA_SRC); map a Webmaster notice to an event in EVENT_EXTRA_SRC, then rerun recurring.py + recurring_grouped.py",
     "R81": "Helpful Webpages has 7 links from Nov 1 (LINKS_SEVEN); rebuild videos.html (node scripts/build_archive.js) and palm-hill-link.html (python3 scripts/build_link_archive.py)",
+    "R84": "the story data needs photo{src (absolute palmhillnews URL), w, h, alt, caption} with the file under public/assets; rerun stage_nov1_content.py --story-only and build_archive.js",
     "R83": "the Community Story needs its data JSON + stage_nov1_content.py pages (python3 builder/nov1/stage_nov1_content.py --story-only); credit line exactly 'First published in the Palm Hill Link, <Month YYYY>' after </article>; remove any test/review/dry-run wording",
     "R82": "a calendar-only event needs EVENT_DETAIL + EVENT_LINK + EVENT_PAGE from the calendar listing (names verbatim)",
     "R62": "fix the date/time in MEETING_ROW_CHECKS or MTG_OVERRIDE (agenda/report date beats the calendar)",

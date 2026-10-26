@@ -160,6 +160,16 @@ if getattr(C, "STORY", None):
     try: _sr83.assert_no_link_name(_sp, _spf.name, credit_line=_sj.get("credit_line")); _okc = bool(_sp)
     except SystemExit: _okc = False
     L.ok("R83", _okc, f"story page credit line: {_sj.get('credit_line')}")
+    # R84 (Steven Oct 26 2026 12:52 PM): the Link cover photo sits at the top of the story page (and its Listen page) like Joe Clay's;
+    # absolute palmhillnews URL, alt text, file in public/ (resolves live only after a deploy). Main page: text teaser only, as Oct 25.
+    _ph = _sj.get("photo")
+    if _ph:
+        _pf = _rp / "public" / _ph["src"].split("vercel.app/", 1)[-1]
+        _fig = f'<figure><img src="{_ph["src"]}" width="{_ph["w"]}" height="{_ph["h"]}" alt="{_html.escape(_ph["alt"])}">'
+        _lp = (_rp / "pages" / C.STORY["listen"]).read_text(encoding="utf-8") if (_rp / "pages" / C.STORY["listen"]).exists() else ""
+        L.ok("R84", _ph["src"].startswith("https://palmhillnews.vercel.app/assets/") and _pf.exists() and _ph["alt"].strip() != "", f"cover photo {_pf.name} in public/, absolute URL, alt text")
+        L.ok("R84", _fig in _sp.split("<article>")[0], "cover photo at the top of the story page")
+        L.ok("R84", _fig in _lp.split("<article>")[0], "cover photo at the top of the Listen page")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
