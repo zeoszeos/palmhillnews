@@ -318,13 +318,26 @@ else:
     s = s[:_a] + _sec + s[_b:]
 replace_table("Committee Chair Reports", chair_cards())
 replace_table("Community Notices", notice_rows())
-replace_table("Events - Upcoming", ev_rows(upcoming), f"{md(UPCOMING[0])} through {md(UPCOMING[1])}")
+# R79 (Steven, Oct 26 2026 11:25 AM): from Nov 1 both Events sections end with a link to the All Events page = every event in the
+# issue's Recurring window that is not on the Recurring pages, chosen with the same rule as This Week/Upcoming (evsel).
+# Link text + note come from the content file (ALL_EVENTS_LINK_TEXT / ALL_EVENTS_NOTE); off unless ALL_EVENTS_PAGE (Oct 25 unchanged).
+_AE = bool(globals().get("ALL_EVENTS_PAGE", False))
+all_events = evsel(RECURRING) if _AE else []
+AE_FILE = f"{ISSUE}-all-events-by-date.html"  # default sort, like the Recurring link
+def _ae_link():
+    if not _AE: return ""
+    return f'<tr><td style="padding:6px 8px;font-size:14px;"><a href="{BASE}{AE_FILE}" style="color:{G};">{escape(ALL_EVENTS_LINK_TEXT)}</a></td></tr>'
+replace_table("Events - Upcoming", ev_rows(upcoming) + _ae_link(), f"{md(UPCOMING[0])} through {md(UPCOMING[1])}")
 # Events - This Week (cloned from Upcoming shell) placed per L03 order
 a, b = section_span(s, "Events - Upcoming"); up = s[a:b]
 tw = up.replace("events-upcoming-detailed", "events-this-week-detailed").replace(">Events - Upcoming<", ">Events - This Week<").replace('data-heading-variant="upcoming_events"', 'data-heading-variant="this_week"')
 r0, _ = section_span(s, "Recurring Meetings &amp; Events")
 s = s[:r0] + tw + s[r0:]   # L03: This Week sits between Chair Reports and Recurring
-replace_table("Events - This Week", ev_rows(this_week), f"{md(THIS_WEEK[0])} through {md(THIS_WEEK[1])}")
+replace_table("Events - This Week", ev_rows(this_week) + _ae_link(), f"{md(THIS_WEEK[0])} through {md(THIS_WEEK[1])}")
+if _AE:  # R79 All Events pages are written by recurring.py + recurring_grouped.py (same shell and sorts as Recurring)
+    assert not any(e.get("recurring") or e["name"] in AS_RECURRING for e in all_events), "R79: an All Events row is on the Recurring pages"
+    for _o in ("date", "name", "location"):
+        assert (PAGES / f"{ISSUE}-all-events-by-{_o}.html").exists(), f"R79: run recurring.py + recurring_grouped.py first ({ISSUE}-all-events-by-{_o}.html)"
 # Recurring: window text; Oct 18 recurring pages don't exist yet -> keep live Oct 11 pages (flagged)
 s = s.replace("Oct 11 through Nov 9, 2026", f"{md(RECURRING[0])} through {md(RECURRING[1])}, 2026")
 # STYLE-RULES R20: the issue links to its own week's Recurring pages (recurring_oct18.py + recurring_grouped.py ... 2026-10-18)
@@ -618,7 +631,8 @@ _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in t
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
 import subprocess as _sp2; _lr = _sp2.run([sys.executable, str(REPO / "scripts/fetch_link_pdf.py")], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
 json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in meetings], "this_week": [(e["date"], e["name"]) for e in this_week],
-           "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp}, open(ROOT / f"build-audit-{C.SHORT}.json", "w"), indent=1)
+           "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp,
+           **({"all_events": [(e["date"], e["name"]) for e in all_events]} if _AE else {})}, open(ROOT / f"build-audit-{C.SHORT}.json", "w"), indent=1)
 print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week), "| upcoming", len(upcoming))
 # STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
 _rc = _sp2.run([sys.executable, str(HERE / "run_checks.py"), str(OUTF)], capture_output=True, text=True)

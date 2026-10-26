@@ -47,7 +47,7 @@ g. **Oct 25 leftovers waiting on Steven:** his final-check changes + Sunday go f
 
 ## Content decisions to confirm Friday (dry-run state)
 - **Dropped from Oct 25:** Joe Clay story (no Nov 1 story yet -> R45 needs a story or Steven's omit OK), notices Library Closed
-  (ended Nov 1), Info from Linda (Halloween/market past), North Clubhouse ice machine, Sanitation Field, Stop sign rules; R60c ice guard.
+  (ended Nov 1), Info from Linda (Halloween/market past), North Clubhouse ice machine, Sanitation Field, Stop sign rules (Sanitation Field + Stop sign drops confirmed by Steven Oct 26 2026 11:22 AM); R60c ice guard.
 - **Carried (still valid / retention rules):** Tony FB notice, Holiday cards (Bill Bender), South Rec officers (Dec 2), Couples Golf
   (Nov 5), Pool food rules, Nov pancakes/coffee volunteers, Shuffleboard, Taste of Golf (Nov 18); chair reports P&E Oct 14 + Golf
   Oct 13 (30-day rule); Megan's Oct 23 Weekly Manager Update (until replaced — expect Oct 30); Did You Know Spectrum + Assessments

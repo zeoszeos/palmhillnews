@@ -93,6 +93,28 @@ for _cr in getattr(C, "CHAIR_REPORTS", []):
     L.ok("R77", bool(_pg) and all(_esc(b, quote=False) in _pg for b in _bits), f"chair wording verbatim: {_cr['page']}")
     L.ok("R77", not re.search(r"(?i)meeting of|\b(19|20)\d\d\b|report\W+report", _cr["title"]), f"chair title has no date / duplicate Report: {_cr['title']}")
 L.ok("R77", len(titles(ch)) == len(set(titles(ch))), "one chair card per committee (newer replaces older)")
+# R79 (Steven Oct 26 2026 11:25 AM): from Nov 1 both Events sections link "See the All Events List" to the All Events page; the
+# page carries Steven's note verbatim, has no Recurring-page event, and lists every window event not on the Recurring pages.
+if getattr(C, "ALL_EVENTS_PAGE", False):
+    _aef = f"{C.ISSUE}-all-events-by-date.html"; _ael = f'href="{lc.BASE}{_aef}" style="color:#3A6B1A;">{C.ALL_EVENTS_LINK_TEXT}</a>'
+    for _sn in ("Events - This Week", "Events - Upcoming"):
+        L.ok("R79", _ael in lc._section(page, _sn), f"{_sn}: link '{C.ALL_EVENTS_LINK_TEXT}' -> {_aef}")
+    _RPg = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"; _aeh = ""
+    for _o in ("date", "name", "location"):   # Steven Oct 26 11:28 AM: same three sorts as Recurring, note on all three
+        _p = _RPg / f"{C.ISSUE}-all-events-by-{_o}.html"; _h = _p.read_text(encoding="utf-8") if _p.exists() else ""
+        L.ok("R79", bool(_h) and f'ph-all-events-note">{C.ALL_EVENTS_NOTE}</p>' in _h and all(f"{C.ISSUE}-all-events-by-{x}.html" in _h for x in ("date", "name", "location")),
+             f"All Events {_o} page exists, note verbatim, sort tabs to all three: {_p.name}")
+        if _o == "date": _aeh = _h
+    _cal = json.load(open(ROOT / "data" / audit["calendar_file"]))["events"] if (ROOT / "data" / audit["calendar_file"]).exists() else json.load(open(audit["calendar_file"]))["events"]
+    _w = C.WINDOWS["RECURRING"]; _asr = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
+    _cre = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
+    _base = [e for e in _cal if e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and _w[0] <= e["date"] <= _w[1]]
+    _rec = {(e["date"], e["name"]) for e in _base if e.get("recurring") or e["name"] in _asr}
+    _exp = {(e["date"], e["name"]) for e in _base if (e["date"], e["name"]) not in _rec and not _cre.search(e["name"]) and e.get("category") not in ("CLOSURE",)
+            and not e.get("allDay") and (e.get("category") != "Meetings" or e["name"] == "Palm Hill MasterPlan Team")}
+    _got = {tuple(x) for x in audit.get("all_events", [])}
+    L.ok("R79", not (_got & _rec), f"All Events has no Recurring-page event {sorted(_got & _rec)}")
+    L.ok("R79", _got == _exp and f'data-activity-count="{len(_exp)}"' in _aeh, f"All Events = every window event not on Recurring ({len(_exp)}); missing {sorted(_exp - _got)} extra {sorted(_got - _exp)}")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
 res = L.results + L2.results

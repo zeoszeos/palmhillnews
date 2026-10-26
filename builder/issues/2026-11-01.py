@@ -13,7 +13,7 @@ STORY_OMIT_DRYRUN_NOTE = "DRY RUN ONLY - no Nov 1 story chosen yet (not an appro
 NOTICES_DROPPED = ["Library Closed starting the week of October 26th",   # closure ends Sun Nov 1
                    "Info from Linda",                                     # Halloween Dance Oct 31 / market Oct 24: past
                    "North Clubhouse Ice Machine Moved",                   # Oct 25 news item (R60c was Oct 25-only)
-                   "Help with maintaining Sanitation Field", "Please observe important stop sign rules"]  # ran Oct 25 (Steven to confirm drop)
+                   "Help with maintaining Sanitation Field", "Please observe important stop sign rules"]  # ran Oct 25; drop confirmed by Steven Oct 26 2026 11:22 AM
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {  # TO REVIEW when Nov 1 content approved -- today's values, carried from Oct 25 (L11 FAIL expected until then)
@@ -385,6 +385,11 @@ PE_1014 = [
     ("p", "The Master Plan sub-committee will meet in late-October. It is working on evaluating HOPH's assets."),
     ("p", "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m."),
 ]
+# R79 (Steven, Oct 26 2026 11:25 AM): "a link named See the All Events List and a note on the all events page that says These are
+# all events that are not on the Recurring Events Page" -- his wording, verbatim (no arrow, no trailing period).
+ALL_EVENTS_PAGE = True
+ALL_EVENTS_LINK_TEXT = "See the All Events List"
+ALL_EVENTS_NOTE = "These are all events that are not on the Recurring Events Page"
 # R78 (Steven, Oct 26 2026 11:15 AM, option (a) of his reply to Tony): no date range in the Committee & Board Meeting Schedules
 # header; one row per committee/board (R54) and agenda-wins (R62/R62b/R62c) unchanged.
 MEETINGS_SHOW_RANGE = False
