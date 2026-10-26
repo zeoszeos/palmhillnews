@@ -45,8 +45,13 @@
 <div class="ph-row-meta">Sep 1, 2026 · Carolyn M. Story, as told by Marge Taylor</div>
 <div class="ph-detail">Marge Taylor, 90, a Palm Hill resident since 1991, on 17 holes-in-one, the day a tornado crossed Hole #6, and earning the title “Queen of the Greens.”</div>
 </div>
+<h2 class="ph-subhead">February 2026</h2>
+<div class="ph-row"><div class="ph-row-line"><a class="ph-row-title" href="https://palmhillnews.vercel.app/pages/2026-02-katra-peck-painting-horizon-west-bay.html">Katra Peck’s Painting Chosen for Display in Horizon West Bay Complex in Downtown Largo →</a><a class="ph-listen" href="https://palmhillnews.vercel.app/pages/2026-02-listen-katra-peck-story.html" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;color:#1d4310;font:bold 15px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a></div>
+<div class="ph-row-meta">Feb 1, 2026</div>
+<div class="ph-detail">The 30 by 40-inch abstract painting purchased by the City of Largo was inspired by the rocks at Sand Key, said Katra.</div>
+</div>
 <h2 class="ph-subhead">January 2026</h2>
-<div class="ph-row"><div class="ph-row-line"><a class="ph-row-title" href="https://palmhillnews.vercel.app/pages/2026-01-couples-golf-17-years.html">Going Strong: Couples Golf Celebrates 17 Years →</a><a class="ph-listen" href="https://palmhillnews.vercel.app/pages/2026-01-listen-couples-golf-story.html" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;color:#1d4310;font:bold 15px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a></div>
+<div class="ph-row ph-alt"><div class="ph-row-line"><a class="ph-row-title" href="https://palmhillnews.vercel.app/pages/2026-01-couples-golf-17-years.html">Going Strong: Couples Golf Celebrates 17 Years →</a><a class="ph-listen" href="https://palmhillnews.vercel.app/pages/2026-01-listen-couples-golf-story.html" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;color:#1d4310;font:bold 15px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a></div>
 <div class="ph-row-meta">Jan 1, 2026 · Carolyn Story with Mac McElhinney</div>
 <div class="ph-detail">How Couples Golf began in 2008 to bring “Yes” and “No” neighbors back together (rule #4: no talking about Palm Hill), and its 17th-anniversary party.</div>
 </div>
@@ -82,7 +87,8 @@
       .filter((el) => !el.closest('nav, .ph-strip, .ph-links, .ph-tap-bar') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
       .filter((el) => !(el.classList.contains('ph-meta') && sent.includes('Sent: ' + el.innerText.trim())));
     let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el))).map((el) => el.innerText.trim()).filter(Boolean);
-    if (!blocks.length) blocks = walkAll(doc, win);
+    // R83: a story page (<main> with an <article>) is read in page order -- byline, article (h2, figures, captions), credit line
+    if (!blocks.length || doc.querySelector('main article')) blocks = walkAll(doc, win);
     return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);
   }
   function walkAll(doc, win) {

@@ -39,7 +39,8 @@
       .filter((el) => !el.closest('nav, .ph-strip, .ph-links, .ph-tap-bar') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
       .filter((el) => !(el.classList.contains('ph-meta') && sent.includes('Sent: ' + el.innerText.trim())));
     let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el))).map((el) => el.innerText.trim()).filter(Boolean);
-    if (!blocks.length) blocks = walkAll(doc, win);
+    // R83: a story page (<main> with an <article>) is read in page order -- byline, article (h2, figures, captions), credit line
+    if (!blocks.length || doc.querySelector('main article')) blocks = walkAll(doc, win);
     return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);
   }
   function walkAll(doc, win) {

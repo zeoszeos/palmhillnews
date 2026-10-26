@@ -357,10 +357,26 @@ def assert_dyk_items(items, multi_approved=None):
 
 # STYLE-RULES R52 (Steven, Oct 20 2026 3:03 PM): no "Palm Hill Link" name inside any article / story / Did You Know page
 # (body, source line or credit). Site navigation in the newsletter (Palm Hill Link Archives etc.) is not an article page.
-def assert_no_link_name(html, name):
+def assert_no_link_name(html, name, credit_line=None):
     import re as _re
     body = _re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<title>[\s\S]*?</title>", "", html)
+    if credit_line:  # R83: the one Steven-approved credit line after </article> is the only allowed Link name
+        assert_story_credit(html, credit_line, name)
+        body = body.replace(f'<p class="source">{credit_line}</p>', "", 1)
     if _re.search(r"Palm\s+Hill\s+Link", body, _re.I): raise SystemExit(f"R52: {name} contains 'Palm Hill Link' (no Link name inside articles)")
+    return html
+
+
+# STYLE-RULES R83 (Steven, Oct 26 2026 12:19 PM, Katra Peck story: "go with first published"): a Community Story page may carry
+# exactly ONE credit line <p class="source">First published in the Palm Hill Link, <Month YYYY></p>, right after </article>,
+# only when the story data's credit_line is set. Anywhere else the R52 no-Link-name rule still applies.
+def assert_story_credit(html, credit_line, name):
+    import re as _re
+    if not _re.fullmatch(r"First published in the Palm Hill Link, (January|February|March|April|May|June|July|August|September|October|November|December) 20\d\d", credit_line):
+        raise SystemExit(f"R83: {name} credit line {credit_line!r} is not 'First published in the Palm Hill Link, <Month YYYY>'")
+    el = f'<p class="source">{credit_line}</p>'
+    if html.count(el) != 1 or f"</article>\n{el}" not in html:
+        raise SystemExit(f"R83: {name} needs exactly one credit line right after </article>")
     return html
 
 

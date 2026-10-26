@@ -5,10 +5,10 @@ VOL_NO = 16
 SHORT = "nov1"
 DEFAULT_REPO = "/workspace/nov1-build"
 DEFAULT_WORK = "/workspace/phnews-consolidation/nov1"
-# Joe Clay (Oct 25) is NOT carried. Set STORY = dict(json="builder/nov1/data/<story>.json", listen="<listen page>", teaser_sentences=1)
-STORY = None
-# PHNEWS_DRYRUN=1 lets the build finish without a story for workspace testing only -- NOT Steven's R45 approval, never publishes.
-STORY_OMIT_DRYRUN_NOTE = "DRY RUN ONLY - no Nov 1 story chosen yet (not an approval)"
+# Community Story (R45/R83, Steven Oct 26 2026 12:19 PM): Katra Peck, Palm Hill Link February 2026 pp 4-5, full length, credit line
+# "First published in the Palm Hill Link, February 2026". Pages written by builder/nov1/stage_nov1_content.py.
+STORY = dict(json="builder/nov1/data/community-story-katra-peck.json", listen="2026-02-listen-katra-peck-story.html", teaser_sentences=1)
+STORY_OMIT_DRYRUN_NOTE = None         # Nov 1 has a story (Katra Peck); never omitted
 # Carry policy (set up Oct 24 2026 8:3x PM; Steven confirms Friday): keep notices still valid on/after Nov 1, drop Oct 25 one-offs.
 NOTICES_DROPPED = ["Library Closed starting the week of October 26th",   # closure ends Sun Nov 1
                    "Info from Linda",                                     # Halloween Dance Oct 31 / market Oct 24: past
@@ -476,7 +476,7 @@ RULES_ARCHIVE_TITLE = "Rules and Regulations Committee Report"
 RULES_ARCHIVE_SOURCE = "Source: Rules and Regulations Committee Report (Bob Newport)"
 
 # ---------- Community Story archive row label (story itself: STORY above) ----------
-STORY_DATE_LABEL = "Oct 2026"   # archive "date_label" for this issue's story row (used only when STORY is set)
+STORY_DATE_LABEL = "Feb 2026"   # archive "date_label" for this issue's story row (used only when STORY is set)
 
 # ---------- Weekly Manager Update (page items, PDF attachment, main-page card) ----------
 # Weekly Manager Update Oct 23 (Megan Leftwich, "Fw: Weekly Update 2026.10.23", palmhillblast Fri Oct 23 4:07 PM ET; her

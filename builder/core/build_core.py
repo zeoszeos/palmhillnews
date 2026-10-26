@@ -384,10 +384,13 @@ if STORY:
     # the community-stories archive row records this issue ("In the newsletter: Oct 18")
     _sd = _aj.load(REPO)[1]["sections"]["community-stories"]["items"]
     _mi = [r for r in _sd if r.get("date") == STORY["date"] and r.get("title") == STORY["archive_title"]]
+    _V2_STORY = ISSUE >= json.load(open(REPO / "scripts/listen_settings.json"))["v2_from"]
     if not _mi:  # Steven Oct 20 4:33 PM: preview builds add the archive row too (was deferred to publish)
         _aj.add_rows(REPO, "community-stories", [{"date": STORY["date"], "date_label": STORY_DATE_LABEL, "title": STORY["archive_title"], "summary": STORY["teaser"],
-                           "page": STORY["page"], "listen": STORY["listen"], "issues": [ISSUE]}])
-    elif ISSUE not in _mi[0].get("issues", []):
+                           "page": STORY["page"], "listen": STORY["listen"], "issues": [ISSUE], **({"listen_v": 2} if _V2_STORY else {})}])
+    elif _V2_STORY and _mi[0].get("listen_v") != 2:   # R83/R76: story carried in a v2 issue gets the v2 listen page
+        _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "listen_v", 2)
+    if _mi and ISSUE not in _mi[0].get("issues", []):
         _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + [ISSUE])
 # Weekly Manager Update page (WMU_* data from the issue content file): built from the previous page's card template, item by item.
 _wp = PAGES / WMU_1023_PAGE

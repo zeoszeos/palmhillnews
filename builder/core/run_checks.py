@@ -9,6 +9,7 @@ Usage: python3 builder/core/run_checks.py [issue.html] with PHNEWS_ISSUE set (de
 import os as _os, sys as _sys; _sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent)); import issue_ctx as _ix; C = _ix.load()  # R71 content file
 import json, re, sys, importlib.util
 from pathlib import Path
+import html as _html; _sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts")); import style_rules as _sr83  # R83
 H = Path(__file__).resolve().parent
 def _load(name, f):
     spec = importlib.util.spec_from_file_location(name, H / f); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
@@ -148,6 +149,19 @@ for _rn, _rw in getattr(C, "R82_CAL_PAGES", {}).items():   # content file: event
     _tf = C.EVENT_PAGE[_rn][0]; _tp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _tf
     L.ok("R82", f'{lc.BASE}{_tf}" style="color:#3A6B1A;">More →</a>' in page and _tp.exists() and _rw in _tp.read_text(encoding="utf-8"),
          f"{_rn}: More → {_tf} with the calendar wording")
+# R83 (Steven Oct 26 2026 12:19 PM): the issue's Community Story -- section teaser + More → the story page, the story page carries
+# exactly one approved credit line after </article> (R52 exception), and no test/review/dry-run wording anywhere in the preview.
+if getattr(C, "STORY", None):
+    _rp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)); _sj = json.load(open(_rp / C.STORY["json"], encoding="utf-8"))
+    _cs = lc._section(page, "Community Stories"); _spf = _rp / "pages" / _sj["live_page_planned"]
+    L.ok("R83", _sj["title"].replace("’", "&#x27;") in _cs or _html.escape(_sj["title"]) in _cs or _sj["title"] in _cs, "Community Stories shows the story title")
+    L.ok("R83", f'{lc.BASE}{_sj["live_page_planned"]}"' in _cs and (_rp / "pages" / C.STORY["listen"]).exists(), "story More → live page; listen page exists")
+    _sp = _spf.read_text(encoding="utf-8") if _spf.exists() else ""
+    try: _sr83.assert_no_link_name(_sp, _spf.name, credit_line=_sj.get("credit_line")); _okc = bool(_sp)
+    except SystemExit: _okc = False
+    L.ok("R83", _okc, f"story page credit line: {_sj.get('credit_line')}")
+_vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
+L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
 res = L.results + L2.results

@@ -924,7 +924,8 @@ for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) fo
   const reportFile = path.join(PAGES, it.page);
   // R76: items dated v2_from or later use the ONE shared v2 page-listen block (scripts/page_listen_v2.html: Tap-to-listen bar)
   // instead of the older chair-only copy; earlier items keep CHAIR_LISTEN_JS byte for byte.
-  const v2 = !!it.date && it.date >= LISTEN_V2_FROM;
+  // R83: a Community Story carried in a v2 issue but dated by its (earlier) Link month is marked listen_v: 2 by the builder.
+  const v2 = (!!it.date && it.date >= LISTEN_V2_FROM) || it.listen_v === 2;
   let base = (built.get(reportFile) ?? fs.readFileSync(reportFile, 'utf8')).replace(CHAIR_BLOCK_RE, '\n');
   if (v2) base = base.replace(PAGE_V2_RE, '\n');
   if (!/<a class="ph-listen" href="[^"]*\/pages\/[^"]*listen[^"]*"/.test(base) || !/<article\b/.test(base)) throw new Error(`pages/${it.page}: clean report page has no date-line Listen link or <article>`);
