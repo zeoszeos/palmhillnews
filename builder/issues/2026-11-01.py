@@ -56,6 +56,8 @@ EVENT_DETAIL = {
     "Pot Luck Supper": "Doors open at 5:00 PM; dinner is at 5:30 PM. Bring your own table setup and drink.",
     "MESCO Spaghetti Dinner Fundraiser": "Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door.",
     "Fall Festival": "Music and food trucks on the South Lawn and Patio.",
+    # Steven Oct 26 2026 11:49 AM: use the calendar's organizer (Mickey Bontrager) for now; detail = calendar listing, light edit (2:00 -> 2:00 PM)
+    "Thanksgiving Dinner": "Dinner served at 2:00 PM.",
     "Bookclub:Foster by Claire Keegan": "Book club discussion of Foster by Claire Keegan.",
     "Bocce Party": "Sign up at either clubhouse or by calling Pat Foor or Joe Cothran. Join us for the fellowship and fun!",
     "Taste of Golf": "Free. New golfers and residents welcome; golf teachers on each hole, treats and a hot dog on the Pro Shop patio. Sign up at the Pro Shop, North or South Clubhouse.",
@@ -69,6 +71,7 @@ EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-go
 EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween-dance.html"),
               "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
               "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
+              "Thanksgiving Dinner": ("More →", BASE + "2026-11-26-thanksgiving-dinner.html"),
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html"),
               "Taste of Golf": ("More →", BASE + "2026-10-14-taste-of-golf-notice.html")}      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
 # R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
@@ -79,7 +82,10 @@ EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
      "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."]),
     # R21 calendar re-pull Sat Oct 17 1:47 PM: start moved 4:00 PM -> 5:00 PM; the More → page date line now comes from the calendar
     "MESCO Spaghetti Dinner Fundraiser": ("2026-11-14-mesco-spaghetti-dinner-fundraiser.html",
-    ["Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door."])}
+    ["Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door."]),
+    # R21/R82 (Steven Oct 26 2026 11:49 AM): calendar listing text (booking 112626-1200-SMH), names exactly as the calendar gives them
+    "Thanksgiving Dinner": ("2026-11-26-thanksgiving-dinner.html",
+    ["Dinner served at 2:00 PM. Mickey Bontrager, Elroy Bontrager, Kate and Jeff Wesolowski."])}
 
 # ---------- Events (2): INFO_COVERED, TITLE + Oct 20/22 calendar re-pull additions (folded into data) ----------
 INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
@@ -388,6 +394,10 @@ PE_1014 = [
 # R79 (Steven, Oct 26 2026 11:25 AM): "a link named See the All Events List and a note on the all events page that says These are
 # all events that are not on the Recurring Events Page" -- his wording, verbatim (no arrow, no trailing period).
 ALL_EVENTS_PAGE = True
+# R81 (Steven approved Oct 24; "go" Oct 26 2026 11:49 AM): Helpful Webpages 9 -> 7 links (docs/NOV1-START.md carry-over a)
+LINKS_SEVEN = True
+# R82 (Steven Oct 26 2026 11:49 AM): More → pages built from the calendar listing only; run_checks checks this calendar wording is on the page
+R82_CAL_PAGES = {"Thanksgiving Dinner": "Mickey Bontrager, Elroy Bontrager, Kate and Jeff Wesolowski"}
 ALL_EVENTS_LINK_TEXT = "See the All Events List"
 ALL_EVENTS_NOTE = "These are all events that are not on the Recurring Events Page"
 # R78 (Steven, Oct 26 2026 11:15 AM, option (a) of his reply to Tony): no date range in the Committee & Board Meeting Schedules

@@ -543,6 +543,20 @@ assert 'Videos - Archives' not in s, 'R25 label'
 sys.path.insert(0, SCRIPTS); import style_rules as _sr  # STYLE-RULES.md (shared)
 s = _sr.enforce_title_months(s)  # full months in titles/bands
 import link_archive_bullet as _lab; s = _lab.add(s)
+# R81 (Steven approved Oct 24 2026; "go" Oct 26 11:49 AM): Helpful Webpages 9 -> 7 links from Nov 1 (content flag LINKS_SEVEN).
+# "Committee Meeting Videos" (videos.html, which now links the Video Archives) replaces Latest + Video Archives; "Palm Hill Link"
+# (palm-hill-link.html, which now starts with the current monthly issue) replaces Link Monthly + Link Archives. Old URLs stay live.
+if globals().get("LINKS_SEVEN", False):
+    _vo = (f'<div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          '
+           f'<div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
+    assert s.count(_vo) == 1, "R81: video bullets not found"
+    s = s.replace(_vo, f'<div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos</a></div>')
+    s, _n81 = re.subn(r'<div>• <a href="https://monthly-media\.com/newsletter_download\.php[^"]*" style="color:#3A6B1A;">Palm Hill Link Monthly</a></div>\s*'
+                      r'<div>• <a href="' + re.escape(_lab.URL) + r'" style="color:#3A6B1A;">Palm Hill Link Archives</a></div>',
+                      f'<div>• <a href="{_lab.URL}" style="color:{G};">Palm Hill Link</a></div>', s)
+    assert _n81 == 1, "R81: Link Monthly + Link Archives bullets not found"
+    _hw = s[s.index("Helpful Webpages</div>"):]; _hw = _hw[:_hw.index("</td>")]
+    assert _hw.count("<div>• ") == 7 and "newsletter_download" not in _hw and "Videos - Latest" not in _hw, "R81/R25: Helpful Webpages must have the 7 approved links"
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
 # STYLE-RULES R40 (Steven, Oct 17 7:23 PM; replaces R22): NO review/test stamp on any copy (previews and test copies included).
 _ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))

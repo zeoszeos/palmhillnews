@@ -326,15 +326,16 @@ function videosPage() {
   // Steven Oct 11: videos.html = Latest only (no How To). Title: Latest Committee & Board Meeting Videos.
   const sec = S.videos;
   const pageTitle = sec.title; // Latest Committee & Board Meeting Videos
-  let out = `${crumbs(pageTitle)}\n<h1 class="ph-section">${esc(pageTitle)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
+  let out = `${crumbs(pageTitle)}\n<h1 class="ph-section">${esc(pageTitle)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n\n<nav class="ph-links ph-video-archives"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Meeting Video Archives →</a></nav>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;  // R81 (Steven approved Oct 24 2026): one link to the Video Archives under the lead
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
   // R46 (Steven, Oct 18 12:07 AM): no lower cross-links on videos.html ('Committee Meeting Video Archives →', 'Did You Know →' removed);
   // the page keeps only the top 'All Archives →' (R44) and its Source line. Guarded below.
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  if (/class="ph-links"/.test(out) || out.includes('meeting-videos.html') || out.includes(`href="${DYK_TILE_HREF}"`))
-    throw new Error('videos.html: R46 lower cross-links (meeting-videos / did-you-know) must not appear');
+  // R81 amends R46: exactly one ph-links row = the 'Committee Meeting Video Archives →' link under the lead; still no Did You Know link.
+  if ((out.match(/class="ph-links/g) || []).length !== 1 || (out.match(/meeting-videos\.html/g) || []).length !== 1 || !out.includes('ph-video-archives"><a href="' + COMMITTEE_VIDEO_ARCHIVE_HREF + '">Committee Meeting Video Archives →</a>') || out.includes(`href="${DYK_TILE_HREF}"`))
+    throw new Error('videos.html: R81/R46 needs exactly one Committee Meeting Video Archives link under the lead and no Did You Know link');
   const topNav = navBar([[HUB, HUB_LABEL]]);  // R44: one 'All Archives →' at the top only
   return shell({ title: `${pageTitle} — Newsletter Archives`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }

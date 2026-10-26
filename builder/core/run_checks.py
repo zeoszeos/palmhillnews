@@ -132,6 +132,22 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
         _bad = [n for n, u in _wanted.items() if not any(_esc(n) in r and f'<a href="{u}" style="color:#3a6b1a;">Webmaster</a>' in r for r in _rows)]
         _extra = [r[:60] for r in _rows if "Webmaster</a>" in r and not any(_esc(n) in r and u in r for n, u in _wanted.items())]
         L.ok("R80", not _bad and not _extra, f"All Events {_o}: Webmaster source on {sorted(_wanted)} only (missing {_bad}, unmapped {_extra})")
+# R81 (Steven approved Oct 24 2026; go Oct 26 11:49 AM): Helpful Webpages has the 7 approved links; the two hub pages carry the moved links.
+if getattr(C, "LINKS_SEVEN", False):
+    _hw = page[page.index("Helpful Webpages</div>"):]; _hw = _hw[:_hw.index("</td>")]
+    _lb = re.findall(r'<div>• <a href="([^"]+)"[^>]*>([^<]+)</a></div>', _hw)
+    L.ok("R81", len(_lb) == 7 and (lc.BASE + "archive/videos.html", "Committee Meeting Videos") in _lb and (lc.BASE + "archive/palm-hill-link.html", "Palm Hill Link") in _lb
+         and not any(t in ("Committee Meeting Videos - Latest", "Committee Meeting Video Archives", "Palm Hill Link Monthly", "Palm Hill Link Archives") for _, t in _lb),
+         f"Helpful Webpages = 7 links {[t for _, t in _lb]}")
+    _RA = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / "archive"
+    _vh = (_RA / "videos.html").read_text(encoding="utf-8"); _lh = (_RA / "palm-hill-link.html").read_text(encoding="utf-8")
+    L.ok("R81", _vh.count("Committee Meeting Video Archives →</a>") == 1 and "meeting-videos.html" in _vh, "videos.html links Committee Meeting Video Archives")
+    L.ok("R81", _lh.split('<h1 class="ph-section">', 1)[1].split("<a ", 1)[1].startswith('href="https://monthly-media.com/newsletter_download.php'), "palm-hill-link.html starts with the current monthly issue link")
+# R82 (Steven Oct 26 2026 11:49 AM): calendar-only More → pages (R82_CAL_PAGES) carry the calendar wording, names exactly as the calendar.
+for _rn, _rw in getattr(C, "R82_CAL_PAGES", {}).items():   # content file: event -> calendar wording its More → page must carry
+    _tf = C.EVENT_PAGE[_rn][0]; _tp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _tf
+    L.ok("R82", f'{lc.BASE}{_tf}" style="color:#3A6B1A;">More →</a>' in page and _tp.exists() and _rw in _tp.read_text(encoding="utf-8"),
+         f"{_rn}: More → {_tf} with the calendar wording")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
 res = L.results + L2.results
