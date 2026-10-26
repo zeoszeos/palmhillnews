@@ -533,3 +533,4 @@ UPCOMING_LABEL_EXPECTED = "November 1 through November 22"   # L08 Upcoming head
 CHAIR_DATES_EXPECTED = ["Wednesday, Oct 14, 2026", "Tuesday, Oct 13, 2026"]   # L14 chair report dates
 CHAIR_DATES_LABEL = "chair dates P&E Oct 14, Golf Oct 13 (3-letter months)"
 RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"
+MEETINGS_SHOW_RANGE = True   # R78: Oct 25 (sent, locked) keeps its Meetings header range

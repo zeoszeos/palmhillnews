@@ -39,7 +39,12 @@ for bad in ("Block Captain", "Test Meeting", "Private Event", "Real Estate Commi
 sec = lc._section(page, "Committee &amp; Board Meeting Schedules")
 L.ok("L05", [norm(x) for x in titles(sec)] == [norm(n) for _, n in audit["meetings"]], f"Meetings rows {titles(sec)}")
 L.ok("L05b", len(titles(sec)) == len(set(titles(sec))), "one meeting per committee")
-L.ok("L26", f">{_W('MEETINGS')}<" in sec, f"Meetings window {_W('MEETINGS')} in header")
+if getattr(C, "MEETINGS_SHOW_RANGE", True):   # R78: Oct 25 and earlier keep the range
+    L.ok("L26", f">{_W('MEETINGS')}<" in sec, f"Meetings window {_W('MEETINGS')} in header")
+else:
+    _hd = sec[:sec.find("<table")]
+    L.ok("R78", " through " not in _hd and not re.search(r"(January|February|March|April|May|June|July|August|September|October|November|December) \d", _hd),
+         "Meetings header has no date range (R78, Nov 1 on)")
 L.ok("L06", sec.count('text-align:right;padding-top:1px;">') >= len(audit["meetings"]), "Meetings: location right-aligned on title line")
 for _mc in C.MEETING_ROW_CHECKS:  # R62/R62b expected wording = content file data
     _mt = text(sec[sec.find(_mc["start"]):]); _mt = _mt[:_mt.find("Source")]

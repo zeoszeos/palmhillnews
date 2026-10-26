@@ -34,6 +34,8 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R60": "shorten the item so its summary is at most 3 lines at 390/660 px (cut, never reword)",
     "R60b": "set HOLIDAY_TITLE / HOLIDAY_SOURCE_LABEL / HOLIDAY_PAGE in the content file to the approved wording",
     "R60c": "set ICE_TITLE / ICE_SOURCE_LABEL / ICE_PAGE and keep the ice notice 3rd in NOTICES",
+    "R77": "put the chair's wording in block by block, drop the meeting date from the title, and list one card per committee",
+    "R78": "from Nov 1 the Meetings header carries no date range: set MEETINGS_SHOW_RANGE = False in the content file (Oct 25 keeps True)",
     "R62": "fix the date/time in MEETING_ROW_CHECKS or MTG_OVERRIDE (agenda/report date beats the calendar)",
     "R62b": "fix the Finance row in MTG_OVERRIDE / MEETING_ROW_CHECKS",
     "R62c": "each MTG_OVERRIDE must cite its agenda/report page and wording (MTG_OVERRIDE_SOURCE)",

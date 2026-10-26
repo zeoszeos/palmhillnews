@@ -385,6 +385,9 @@ PE_1014 = [
     ("p", "The Master Plan sub-committee will meet in late-October. It is working on evaluating HOPH's assets."),
     ("p", "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m."),
 ]
+# R78 (Steven, Oct 26 2026 11:15 AM, option (a) of his reply to Tony): no date range in the Committee & Board Meeting Schedules
+# header; one row per committee/board (R54) and agenda-wins (R62/R62b/R62c) unchanged.
+MEETINGS_SHOW_RANGE = False
 # R77 (Nov 1): Communications Committee Report, meeting of Monday Oct 12, 2026 -- Tony Ciaramitaro (tonysee99@outlook.com) to
 # Chuck Silcox, cc palmhillblast, "Communications Committee Report - October 12, 2026 Meeting", Mon Oct 26 2026 10:01 AM ET
 # (thread 1a17884503342ec9). Tony's wording verbatim, bullet by bullet; his email has a stray line break after the bullet

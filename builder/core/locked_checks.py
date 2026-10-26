@@ -91,7 +91,7 @@ def check_email(page):
     L.ok("L05c", "PH Ladies Golf Assoc" not in sec, "PH Ladies Golf Assoc not in Meetings")
     # L26 (Steven, Oct 10 ~1:40 PM ET): Meetings window inside green header (italic), like This Week / Upcoming.
     # L26b (Steven, Oct 10 ~2:50 PM ET): Recurring email section also date-in-header (no "Recurring activities," lead).
-    L.ok("L26", "Oct 11 through Nov 10" in sec and
+    L.ok("L26", "Oct 11 through Nov 10" in sec and  # Oct 11-era lock; R78 (Nov 1 on) drops the Meetings range, see run_checks.py
          'font-style:italic;color:#FFFFFF;margin-top:3px;">Oct 11 through Nov 10</div>' in page,
          "Meetings: Oct 11 through Nov 10 inside green header (italic subtitle)")
     L.ok("L06", sec.count(RIGHT_LOC_TD) == len(MEETINGS_EXPECTED), "Meetings: location right-aligned on title line, every row")

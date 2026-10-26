@@ -306,7 +306,16 @@ def replace_table(heading, rows, subtitle=None):
     if subtitle: sec = re.sub(r'(margin-top:3px;">)[^<]*(</div></div>)', lambda m: m.group(1) + subtitle + m.group(2), sec, count=1)
     s = s[:a] + sec + s[b:]
 
-replace_table("Committee &amp; Board Meeting Schedules", mtg_rows(), f"{md(MEETINGS[0])} through {md(max(MEETINGS[1], meetings[-1]["date"]))}")
+# R78 (Steven, Oct 26 2026 11:15 AM): from Nov 1 the Meetings header has no date range (one row per committee, R54, is not every
+# meeting in a window). Content flag MEETINGS_SHOW_RANGE (default True = Oct 25 and earlier, byte for byte).
+if globals().get("MEETINGS_SHOW_RANGE", True):
+    replace_table("Committee &amp; Board Meeting Schedules", mtg_rows(), f"{md(MEETINGS[0])} through {md(max(MEETINGS[1], meetings[-1]["date"]))}")
+else:
+    replace_table("Committee &amp; Board Meeting Schedules", mtg_rows())
+    _a, _b = section_span(s, "Committee &amp; Board Meeting Schedules")
+    _sec = re.sub(r'<div style="font-size:14px;font-style:italic;color:#FFFFFF;margin-top:3px;">[^<]*</div>(</div>)', r"\1", s[_a:_b], count=1)
+    assert " through " not in _sec[:_sec.find('<table')], "R78: Meetings header must carry no date range"
+    s = s[:_a] + _sec + s[_b:]
 replace_table("Committee Chair Reports", chair_cards())
 replace_table("Community Notices", notice_rows())
 replace_table("Events - Upcoming", ev_rows(upcoming), f"{md(UPCOMING[0])} through {md(UPCOMING[1])}")
