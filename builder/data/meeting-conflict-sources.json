@@ -1,5 +1,6 @@
 {
-  "_about": "R86 inputs for scripts/meeting_conflict_report.py. Agenda/report 'next meeting' claims: each quote must appear verbatim in its page (checked at run time). RPM values: the recorded RPM calendar values from MEETING-SOURCES-COMPARE.md (Oct 16 2026; RPM portal is a Vantaca app with no headless read, so these are PRIOR values, not fresh; RPM gives no time and no recurring marker).",
+  "_about": "R86 inputs for scripts/meeting_conflict_report.py. Agenda/report 'next meeting' claims: each quote must appear verbatim in its page (checked at run time). RPM values: a live read of the RPM portal calendar (home.resourcepropertymgmt.com/community/calendar, Agenda view Oct 25, 2026 to Feb 20, 2027, from the signed-in box browser session; month PNGs and rpm-entries.json in /workspace/rpm-read-20261027). Each RPM entry has the RPM title, date, start and end time as RPM shows them, and recurring = the circular-arrow recurring icon in RPM month view. RPM is reference only (R86); it never overrides the calendar. Ear Cleaning and RPM Offices Closed entries are not meetings and are left out.",
+  "rpm_fetched": "Tue Oct 27, 2026, about 3:20 PM ET, live read of home.resourcepropertymgmt.com/community/calendar",
   "committees": {
     "Board": "^Board of Directors",
     "Compliance": "^Compliance Committee",
@@ -7,7 +8,8 @@
     "Buildings & Grounds": "^Buildings? (&|and) Grounds",
     "Planning & Environmental": "^Planning (&|and) Environmental",
     "Golf": "^Golf (Advisory )?Committee",
-    "Finance": "^Finance Committee"
+    "Finance": "^Finance Committee",
+    "Annual Meeting": "^Annual (Shareholders|Membership) Meeting"
   },
   "agenda": [
     {
@@ -64,43 +66,99 @@
   "rpm": [
     {
       "committee": "Board",
-      "date": "2026-10-28"
-    },
-    {
-      "committee": "Compliance",
-      "date": "2026-10-29"
-    },
-    {
-      "committee": "Buildings & Grounds",
-      "date": "2026-11-11"
-    },
-    {
-      "committee": "Planning & Environmental",
-      "date": "2026-11-11"
-    },
-    {
-      "committee": "Board",
-      "date": "2026-11-25"
-    },
-    {
-      "committee": "Golf",
-      "date": "2026-12-08"
-    },
-    {
-      "committee": "Buildings & Grounds",
-      "date": "2026-12-09"
-    },
-    {
-      "committee": "Planning & Environmental",
-      "date": "2026-12-09"
+      "rpm_name": "Board Meeting",
+      "date": "2026-10-28",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": false
     },
     {
       "committee": "Communications",
-      "date": "2026-12-14"
+      "rpm_name": "Communications Committee",
+      "date": "2026-11-09",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Golf",
+      "rpm_name": "Golf Committee",
+      "date": "2026-11-10",
+      "time": "14:00",
+      "end": "16:00",
+      "recurring": true
+    },
+    {
+      "committee": "Buildings & Grounds",
+      "rpm_name": "Building & Grounds Committee",
+      "date": "2026-11-11",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Planning & Environmental",
+      "rpm_name": "Planning & Environmental Committee",
+      "date": "2026-11-11",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": true
     },
     {
       "committee": "Board",
-      "date": "2026-12-30"
+      "rpm_name": "Board Meeting",
+      "date": "2026-11-25",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": false
+    },
+    {
+      "committee": "Golf",
+      "rpm_name": "Golf Committee",
+      "date": "2026-12-08",
+      "time": "14:00",
+      "end": "16:00",
+      "recurring": true
+    },
+    {
+      "committee": "Buildings & Grounds",
+      "rpm_name": "Building & Grounds Committee",
+      "date": "2026-12-09",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Planning & Environmental",
+      "rpm_name": "Planning & Environmental Committee",
+      "date": "2026-12-09",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": true
+    },
+    {
+      "committee": "Communications",
+      "rpm_name": "Communications Committee",
+      "date": "2026-12-14",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Board",
+      "rpm_name": "Board Meeting",
+      "date": "2026-12-30",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": false
+    },
+    {
+      "committee": "Annual Meeting",
+      "rpm_name": "Annual Membership Meeting",
+      "date": "2027-01-20",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": true
     }
   ],
   "override_committee": {
