@@ -134,27 +134,28 @@ def tony_rows(R):
     idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
     def prints(r):
         if not r["cal_date"]: return f"Not printed (not on the calendar)"
-        if w[0] <= r["cal_date"] <= w[1]: return f"{fd(r['cal_date'])}, {ft(r['cal_time'])} (calendar)"
+        if w[0] <= r["cal_date"] <= w[1]: return f"{sd(r['cal_date'])}, {ft(r['cal_time'])} (calendar)"
         if r["cal_date"] < R["issue"]: return f"Not in the {idate} issue (meets before it)"
-        return f"Not in the {idate} issue yet (later issue prints the calendar date)"
+        return "A later issue (calendar date and time)"
+    def sd(d): return datetime.strptime(d, "%Y-%m-%d").strftime("%a %b %-d" + (", %Y" if d[:4] != R["issue"][:4] else ""))
     out = []
     for r in R["rows"]:
         ag = [a for a in r["agenda"] if r["cal_date"] != a["date"] or ((a.get("typo") or {}).get("time", a["time"]) and r["cal_time"] and (a.get("typo") or {}).get("time", a["time"]) != r["cal_time"])]
         rp = [p for p in r["rpm"] if r["cal_date"] and (r["cal_date"] != p["date"] or (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")))]
         no_rpm = bool(r["cal_date"]) and not r["rpm"]
         if not (ag or rp or no_rpm or not r["cal_date"]): continue
-        cal = "Not on the calendar" if not r["cal_date"] else f"{fd(r['cal_date'])}, {ftr(r['cal_time'], r.get('cal_end'))}"
+        cal = "Not on the calendar" if not r["cal_date"] else f"{sd(r['cal_date'])}, {ftr(r['cal_time'], r.get('cal_end'))}"
         mv = [e for e in R["moved"] if committee_of(e["name"], R["comm"]) == r["committee"] and (e.get("movedTo") or "").startswith(r["cal_date"] or "x")]
-        if mv: cal += f" (moved from {fd(mv[0]['date'])})"
-        agt = "; ".join(f"{fd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''} ({a['kind'].split(' (')[0]}, {a['email_date'].split(' (')[0]})" for a in ag) or "No difference"
-        rpt = "; ".join(f"{fd(p['date'])}, {ftr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not listed" if no_rpm else "Same as calendar")
+        if mv: cal += f" (moved from {sd(mv[0]['date'])})"
+        agt = "; ".join(f"{sd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''} ({a['kind'].split(' (')[0]} of {a['email_date'].split(', 2026')[0]})" for a in ag) or "Same as calendar"
+        rpt = "; ".join(f"{sd(p['date'])}, {ftr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not listed" if no_rpm else "Same as calendar")
         ask = []
-        if ag: ask += [f"Which date is right: the calendar's {fd(r['cal_date'])[:-6]} or the agenda's {fd(a['date'])[:-6]}?" if a["date"] != r["cal_date"] else "Which time is right?" for a in ag]
+        if ag: ask += [f"Which date is right: the calendar's {sd(r['cal_date'])} or the agenda's {sd(a['date'])}?" if a["date"] != r["cal_date"] else "Which time is right?" for a in ag]
         if not r["cal_date"]: ask.append("Is this meeting planned? If so, please add it to the calendar.")
         for p in rp:
             ask.append("RPM shows a different " + ("day and time" if p["date"] != r["cal_date"] and (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")) else "day" if p["date"] != r["cal_date"] else "time") + ". Is the calendar correct?")
         if no_rpm: ask.append("For your information: RPM does not list this meeting.")
-        if mv and rp: ask[-1] = f"RPM still shows the old date ({fd(mv[0]['date'])[:-6]}). Is the calendar date correct?"
+        if mv and rp: ask[-1] = f"RPM still shows the old date ({sd(mv[0]['date'])}). Is the calendar date correct?"
         out.append(dict(meeting=(r["rpm"][0].get("rpm_name") or r["committee"]) if not r["cal_date"] and r["rpm"] else r["name"].replace(" (agenda only)", ""), calendar=cal, agenda=agt, rpm=rpt, prints=prints(r), confirm=" ".join(ask)))
     return out
 def _intro(R):
@@ -173,14 +174,14 @@ def render_tony(R):
 def render_tony_html(R):
     """HTML version: one clean table, inline CSS only (email-safe), header row shaded, 14px, mobile friendly."""
     rows = tony_rows(R); e = html.escape
-    th = "background:#2D5016;color:#ffffff;font-weight:bold;text-align:left;padding:8px 10px;border:1px solid #2D5016;font-size:14px;"
-    td = "padding:8px 10px;border:1px solid #d0d7cc;vertical-align:top;font-size:14px;line-height:1.4;"
+    th = "background:#2D5016;color:#ffffff;font-weight:bold;text-align:left;padding:7px 8px;border:1px solid #2D5016;font-size:14px;"
+    td = "padding:7px 8px;border:1px solid #d0d7cc;vertical-align:top;font-size:14px;line-height:1.4;"
     h = [f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(TONY_SUBJECT)}</title></head>",
          "<body style='margin:0;padding:16px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;'>",
          "<p style='margin:0 0 12px;font-size:14px;'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;'>{e(_intro(R))}</p>",
          "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
-         "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:640px;'>",
-         "<tr>" + "".join(f"<th style='{th}'>{e(c)}</th>" for c in TONY_COLS) + "</tr>"]
+         "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:620px;max-width:900px;'>",
+         "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{e(c)}</th>" for c, wd in zip(TONY_COLS, (17, 17, 15, 17, 15, 19))) + "</tr>"]
     for i, x in enumerate(rows):
         bg = "#ffffff" if i % 2 == 0 else "#f4f7f1"
         h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'>{e(x['meeting'])}</td>" +
