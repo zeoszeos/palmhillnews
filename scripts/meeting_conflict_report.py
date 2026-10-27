@@ -136,7 +136,7 @@ def tony_rows(R):
         if not r["cal_date"]: return f"Not printed (not on the calendar)"
         if w[0] <= r["cal_date"] <= w[1]: return f"{sd(r['cal_date'])}, {ft(r['cal_time'])} (calendar)"
         if r["cal_date"] < R["issue"]: return f"Not in the {idate} issue (meets before it)"
-        return "A later issue (calendar date and time)"
+        return f"Not in the {idate} issue (a later issue prints it)"
     def sd(d): return datetime.strptime(d, "%Y-%m-%d").strftime("%a %b %-d" + (", %Y" if d[:4] != R["issue"][:4] else ""))
     out = []
     for r in R["rows"]:
@@ -147,7 +147,7 @@ def tony_rows(R):
         cal = "Not on the calendar" if not r["cal_date"] else f"{sd(r['cal_date'])}, {ftr(r['cal_time'], r.get('cal_end'))}"
         mv = [e for e in R["moved"] if committee_of(e["name"], R["comm"]) == r["committee"] and (e.get("movedTo") or "").startswith(r["cal_date"] or "x")]
         if mv: cal += f" (moved from {sd(mv[0]['date'])})"
-        agt = "; ".join(f"{sd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''} ({a['kind'].split(' (')[0]} of {a['email_date'].split(', 2026')[0]})" for a in ag) or "Same as calendar"
+        agt = "; ".join(f"{sd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''} ({a['kind'].split(' (')[0]} of {a['email_date'].split(', 2026')[0]})" for a in ag) or ("Matches the calendar" if r["agenda"] else "No other date given")
         rpt = "; ".join(f"{sd(p['date'])}, {ftr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not listed" if no_rpm else "Same as calendar")
         ask = []
         if ag: ask += [f"Which date is right: the calendar's {sd(r['cal_date'])} or the agenda's {sd(a['date'])}?" if a["date"] != r["cal_date"] else "Which time is right?" for a in ag]
@@ -156,8 +156,9 @@ def tony_rows(R):
             ask.append("RPM shows a different " + ("day and time" if p["date"] != r["cal_date"] and (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")) else "day" if p["date"] != r["cal_date"] else "time") + ". Is the calendar correct?")
         if no_rpm: ask.append("For your information: RPM does not list this meeting.")
         if mv and rp: ask[-1] = f"RPM still shows the old date ({sd(mv[0]['date'])}). Is the calendar date correct?"
-        out.append(dict(meeting=(r["rpm"][0].get("rpm_name") or r["committee"]) if not r["cal_date"] and r["rpm"] else r["name"].replace(" (agenda only)", ""), calendar=cal, agenda=agt, rpm=rpt, prints=prints(r), confirm=" ".join(ask)))
-    return out
+        cat = 0 if ag else 1 if not r["cal_date"] else 3 if (no_rpm or r["committee"] == "Annual Meeting") else 2
+        out.append(dict(cat=cat, sortdate=r["cal_date"] or r["rpm"][0]["date"], meeting=(r["rpm"][0].get("rpm_name") or r["committee"]) if not r["cal_date"] and r["rpm"] else r["name"].replace(" (agenda only)", ""), calendar=cal, agenda=agt, rpm=rpt, prints=prints(r), confirm=" ".join(ask)))
+    return sorted(out, key=lambda x: (x["cat"], x["sortdate"]))   # Steven Oct 27 3:27 PM: agenda conflict, not on calendar, RPM differences, FYI
 def _intro(R):
     idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
     return (f"Below are the meeting dates and times where the committee information or the RPM calendar (read live {R['rpm_fetched'].split(', live')[0].replace('about ', 'at about ')}) "
