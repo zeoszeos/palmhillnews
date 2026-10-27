@@ -185,6 +185,23 @@ if _tel.applies(C.ISSUE):
             _t = _f.read_text(encoding="utf-8"); _x = _tel.find_bare(_t)
             if _x[0] or _x[1] or _tel.tel_mismatches(_t): _bad85.append((_u, _x, _tel.tel_mismatches(_t)))
     L.ok("R85", not _bad85, f"{len(_pg85)} Nov 1+ linked pages: no bare phone, tel: digits match {_bad85}")
+# R86 (Steven Oct 27 2026 1:25 PM): Tony's Palm Hill calendar is the single source of truth for meeting dates/times; the
+# conflict report (scripts/meeting_conflict_report.py) is the guard. It must exist, run, and list every MTG_OVERRIDE as a
+# CONFLICT-OVERRIDDEN-BY-RULE item (the R62/R62b/R62c overrides stay until Steven releases them). Report only; output unchanged.
+_mcr = Path(__file__).resolve().parents[2] / "scripts/meeting_conflict_report.py"
+if C.ISSUE < "2026-11-01": pass   # R86 starts with the Nov 1 issue; Oct 25 stays as approved
+elif _mcr.exists():
+    import tempfile as _tf86, importlib.util as _iu86
+    _sp86 = _iu86.spec_from_file_location("mcr86", _mcr); _m86 = _iu86.module_from_spec(_sp86); _sp86.loader.exec_module(_m86)
+    try:
+        with _tf86.TemporaryDirectory() as _d86: _R86, _ = _m86.main(["--issue", C.ISSUE, "--out", _d86]); _ok86 = True
+    except SystemExit as _e86: _R86, _ok86 = None, str(_e86)
+    L.ok("R86", _ok86 is True, f"meeting conflict report runs for {C.ISSUE} {'' if _ok86 is True else _ok86}")
+    if _R86:
+        _miss86 = [k for k in _R86["overrides"] if not any(r["committee"] == k and any(d[0] == "CONFLICT-OVERRIDDEN-BY-RULE" for d in r["diffs"]) for r in _R86["rows"])]
+        L.ok("R86", not _miss86, f"every MTG_OVERRIDE listed as CONFLICT-OVERRIDDEN-BY-RULE ({sorted(_R86['overrides'])}) {_miss86 or ''}")
+else:
+    L.ok("R86", False, "scripts/meeting_conflict_report.py missing")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

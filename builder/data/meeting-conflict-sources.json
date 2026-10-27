@@ -1,0 +1,33 @@
+{
+ "_about": "R86 inputs for scripts/meeting_conflict_report.py. Agenda/report 'next meeting' claims: each quote must appear verbatim in its page (checked at run time). RPM values: the recorded RPM calendar values from MEETING-SOURCES-COMPARE.md (Oct 16 2026; RPM portal is a Vantaca app with no headless read, so these are PRIOR values, not fresh; RPM gives no time and no recurring marker).",
+ "committees": {
+  "Board": "^Board of Directors",
+  "Compliance": "^Compliance Committee",
+  "Communications": "^Communications Committee",
+  "Buildings & Grounds": "^Buildings? (&|and) Grounds",
+  "Planning & Environmental": "^Planning (&|and) Environmental",
+  "Golf": "^Golf (Advisory )?Committee",
+  "Finance": "^Finance Committee"
+ },
+ "agenda": [
+  {"committee": "Finance", "date": "2026-11-18", "time": null, "page": "pages/2026-10-10-finance-committee-meeting-notice.html",
+   "quote": "12 Set next meeting date November 18, 2026", "kind": "agenda notice email (Palm Hill webmaster)", "email_date": "Sat Oct 10, 2026, 2:20 PM ET"},
+  {"committee": "Planning & Environmental", "date": "2026-11-10", "time": "00:30", "page": "pages/2026-10-14-planning-and-environmental-committee-report.html",
+   "quote": "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m.", "kind": "committee report (Elaine Cole)", "email_date": "Fri Oct 23, 2026, 2:43 PM ET (Blast report of P&E 10/14, palmhillblast)"},
+  {"committee": "Communications", "date": "2026-11-09", "time": "10:00", "page": "pages/2026-10-12-communications-committee-report.html",
+   "quote": "Next meeting: Monday, November 9, 2026 at 10:00 a.m.", "kind": "committee report (Tony Ciaramitaro)", "email_date": "not recorded on the page"},
+  {"committee": "Golf", "date": "2026-11-10", "time": "14:00", "page": "pages/2026-10-13-golf-advisory-committee-report.html",
+   "quote": "November 10, 2026, at 2:00 PM", "kind": "committee report (Carolyn Story)", "email_date": "Sat Oct 17, 2026, 1:20 PM ET (palmhillblast)"},
+  {"committee": "Golf", "date": "2026-11-10", "time": null, "page": "pages/2026-10-13-golf-committee-notice.html",
+   "quote": "Date of Next Meeting: Nov 10, 2026", "kind": "agenda notice email (Palm Hill webmaster)", "email_date": "Thu Oct 8, 2026, 5:39 PM ET"}
+ ],
+ "rpm": [
+  {"committee": "Board", "date": "2026-10-28"}, {"committee": "Compliance", "date": "2026-10-29"},
+  {"committee": "Buildings & Grounds", "date": "2026-11-11"}, {"committee": "Planning & Environmental", "date": "2026-11-11"},
+  {"committee": "Board", "date": "2026-11-25"}, {"committee": "Golf", "date": "2026-12-08"},
+  {"committee": "Buildings & Grounds", "date": "2026-12-09"}, {"committee": "Planning & Environmental", "date": "2026-12-09"},
+  {"committee": "Communications", "date": "2026-12-14"}, {"committee": "Board", "date": "2026-12-30"}
+ ],
+ "override_committee": {"Planning and Environmental Committee Meeting": "Planning & Environmental", "Finance Committee Meeting": "Finance", "Finance Committee": "Finance"},
+ "extra_committee": {"Board of Directors Meeting": "Board"}
+}
