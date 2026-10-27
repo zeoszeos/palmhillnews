@@ -73,7 +73,7 @@ CANON = {"Communications Committee": "Communications Committee Meeting", "Buildi
 meetings, seen = [], set()
 for e in sorted([e for e in events if ok(e) and is_cmte(e) and inw(e, MEETINGS)], key=lambda e: (e["date"], e["start"])):
     nm = CANON.get(e["name"], e["name"]); k = nm.lower().replace(" meeting", "")
-    if k in seen: continue
+    if k in seen and not globals().get("MEETINGS_ALL_IN_WINDOW", False): continue   # R87: Nov 1+ keeps every meeting in the window
     seen.add(k); meetings.append(dict(e, name=nm))
 # L09: Tony "Meetings" category stays out of This Week/Upcoming, except MasterPlan Team (L25, Oct 10).
 MEETINGS_CAT_ALLOWED = {"Palm Hill MasterPlan Team"}
@@ -126,12 +126,17 @@ meetings = sorted(meetings + MTG_EXTRA, key=lambda e: (e["date"], e["start"]))
 # R54 (Steven Oct 20 4:33 PM): no meeting listed twice -- one row per committee/board, the NEXT instance only. MTG_EXTRA rows
 # (agenda/TBC additions) were appended after the calendar's one-per-committee pass, so Board Oct 28 (calendar) + Board Nov 18 (TBC) both showed.
 def _mkey(e): return CANON.get(e["name"], e["name"]).lower().replace(" meeting", "").strip()
+# STYLE-RULES R87 (Steven Oct 27 2026 2:24 PM; Tony's option (c), Oct 26): from Nov 1 (content flag MEETINGS_ALL_IN_WINDOW) every
+# meeting in the Meetings window is listed, repeats and all; only an exact duplicate (same committee, date and time, e.g. a TBC
+# MTG_EXTRA that the calendar now carries) is dropped, keeping the calendar row. Oct 25 keeps R54 (one row per committee).
+_ALLW = globals().get("MEETINGS_ALL_IN_WINDOW", False)
+_rkey = (lambda e: (_mkey(e), e["date"], e["start"])) if _ALLW else _mkey
 _seen = set(); _dropped = []
 for _e in list(meetings):
-    if _mkey(_e) in _seen: meetings.remove(_e); _dropped.append((_e["date"], _e["name"]))
-    else: _seen.add(_mkey(_e))
-print("R54 meetings dropped (already listed):", _dropped)
-assert len({_mkey(e) for e in meetings}) == len(meetings), "R54: a committee/board meeting is listed twice"
+    if _rkey(_e) in _seen: meetings.remove(_e); _dropped.append((_e["date"], _e["name"]))
+    else: _seen.add(_rkey(_e))
+print("R87 exact-duplicate meetings dropped:" if _ALLW else "R54 meetings dropped (already listed):", _dropped)
+assert len({_rkey(e) for e in meetings}) == len(meetings), "R54/R87: a committee/board meeting is listed twice"
 # RESTORED from build_oct11_final.py MEETING_DETAIL (Oct 9-11 rules L27): Webmaster agenda/Zoom notices drive the Oct 11 layout.
 import urllib.parse as _up
 def _nopwd(u):

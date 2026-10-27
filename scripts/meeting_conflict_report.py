@@ -5,7 +5,9 @@ RPM calendar values, and flags any difference. Corrective action: the committee 
 new date right away. Read-only: never writes the calendar, never sends mail.
 
 Run:  python3 scripts/meeting_conflict_report.py --issue 2026-11-01 [--out DIR] [--work DIR]
-Writes DIR/meeting-conflicts-<issue>-<stamp>.md, .html and -email.txt (default DIR = <work>/reports)."""
+Writes DIR/meeting-conflicts-<issue>-<stamp>.md, .html, -email.txt and -tony.txt (default DIR = <work>/reports).
+-tony.txt (Steven, Oct 27 2026 2:26/2:27 PM): plain-text note for Tony in Steven's voice, real conflicts only; its first line is
+always "Subject: " + TONY_SUBJECT (exact, no date, no issue number). Draft text only -- this script never sends anything."""
 import argparse, glob, html, json, os, re, sys
 from datetime import date, datetime
 from pathlib import Path
@@ -13,6 +15,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "builder/core"))
 COLS = ["Committee/Meeting", "Calendar date", "Calendar time", "Agenda / committee-report suggested date (time, source)",
         "RPM calendar date (time)", "Agenda notice email date", "Calendar recurring", "What differs"]
+TONY_SUBJECT = "Calendar Conflicts Report"   # R86 (Steven, Oct 27 2026 2:27 PM): every conflict email to Tony uses exactly this subject
 ACTION = "Corrective action: the committee must have Tony change the calendar to the new date right away (the calendar always rules)."
 def fd(d): return datetime.strptime(d, "%Y-%m-%d").strftime("%a %b %-d, %Y") if d else "—"
 def ft(t):
@@ -100,6 +103,39 @@ def render(R, stamp):
         tx += ["   " + t for _, t in r["diffs"]] + [""]
     tx += ["Calendar moves:"] + ["- " + m for m in moved] + ["", "Notes:"] + ["- " + n for n in NOTES]
     return "\n".join(md) + "\n", "\n".join(h) + "\n", "\n".join(tx) + "\n"
+def render_tony(R):
+    """Plain text for Tony (Steven's voice): only real differences; RPM-only meetings as 'not on the calendar, please confirm'."""
+    import issue_ctx; w = issue_ctx.windows(R["issue"])["MEETINGS"]
+    C = issue_ctx.load(R["issue"]); idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
+    def prints(r):
+        if not r["cal_date"]: return f"Not printed in the {idate} issue (it is not on the calendar)."
+        if w[0] <= r["cal_date"] <= w[1]: return f"{fd(r['cal_date'])}, {ft(r['cal_time'])} (the calendar date and time)."
+        return f"Not in the {idate} issue (outside its meeting window); a later issue will print the calendar date."
+    blocks = []
+    for r in R["rows"]:
+        ag = [a for a in r["agenda"] if r["cal_date"] != a["date"] or (a["time"] and r["cal_time"] and a["time"] != r["cal_time"])]
+        rp = [p for p in r["rpm"] if r["cal_date"] != p["date"]]
+        if not (ag or rp): continue
+        b = [r["name"] + (" -- not on the calendar, please confirm" if not r["cal_date"] else ""),
+             f"  Calendar date: {fd(r['cal_date']) if r['cal_date'] else 'not on the calendar'}",
+             f"  Calendar time: {ft(r['cal_time']) if r['cal_date'] else '--'}"]
+        for a in ag:
+            q = bool(a["time"] and a["time"] < "06:00" and r["cal_time"] and a["time"][3:] == r["cal_time"][3:] and int(a["time"][:2]) % 12 == int(r["cal_time"][:2]) % 12)
+            v = fd(a["date"]) + (" (time: see question below)" if q else ", " + ft(a["time"]) if a["time"] else "")
+            b.append(f"  Agenda/report says: {v} -- from the {a['kind']}, {a['email_date']}")
+            if q:
+                b.append(f'  Question: the report reads "{a["quote"]}" -- I assume that means {ft(r["cal_time"])} like the calendar, but could you check?')
+        for p in rp: b.append(f"  RPM calendar says: {fd(p['date'])} (no time given)")
+        b.append(f"  The newsletter prints: {prints(r)}")
+        blocks.append("\n".join(b))
+    tx = [f"Subject: {TONY_SUBJECT}", "", "Hi Tony,", "",
+          "Here are the dates the newsletter found that differ from the calendar. The "
+          f"{idate} issue prints the calendar date for each one. When you have a minute, please check whether the calendar or "
+          "the committee's information needs to be corrected.", ""]
+    tx += ["\n\n".join(blocks) if blocks else "No differences this time -- everything matches the calendar.", "",
+           "One caveat: the RPM dates come from my Oct 16 notes, not a live read of RPM, so some may already be fixed.", "",
+           "Thanks,", "Steven"]
+    return "\n".join(tx) + "\n"
 def main(argv=None):
     ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--work"); ap.add_argument("--out")
     a = ap.parse_args(argv); os.environ["PHNEWS_ISSUE"] = a.issue
@@ -107,7 +143,7 @@ def main(argv=None):
     work = Path(a.work or os.environ.get("PHNEWS_WORK") or C.DEFAULT_WORK); out = Path(a.out or work / "reports"); out.mkdir(parents=True, exist_ok=True)
     R = build(a.issue, work); stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     md, h, tx = render(R, stamp); base = out / f"meeting-conflicts-{a.issue}-{datetime.now().strftime('%Y%m%d-%H%M')}"
-    for ext, s in ((".md", md), (".html", h), ("-email.txt", tx)): Path(str(base) + ext).write_text(s, encoding="utf-8")
-    print(f"R86 report: {base}.md / .html / -email.txt ({sum(1 for r in R['rows'] if r['diffs'])} of {len(R['rows'])} need attention)")
+    for ext, s in ((".md", md), (".html", h), ("-email.txt", tx), ("-tony.txt", render_tony(R))): Path(str(base) + ext).write_text(s, encoding="utf-8")
+    print(f"R86 report: {base}.md / .html / -email.txt / -tony.txt ({sum(1 for r in R['rows'] if r['diffs'])} of {len(R['rows'])} need attention)")
     return R, base
 if __name__ == "__main__": main()

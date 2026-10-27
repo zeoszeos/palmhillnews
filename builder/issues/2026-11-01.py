@@ -102,19 +102,13 @@ MTG_EXTRA = [dict(  # Oct 25: Finance Oct 22 (agenda email) is past -> dropped; 
              date="2026-11-18", start="13:00", name="Board of Directors Meeting", venue="Board Room South", note="(date to be confirmed)")]
 MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to be confirmed)",
             }
-# STYLE-RULES R62 (Steven Oct 23 6:38 PM): P&E next meeting = Elaine Cole's date (her Oct 14 report): Tuesday Nov 10, 12:30 PM;
-# no "(date to be confirmed)". Data override only; her report page wording is untouched (her "a.m." stays as written).
-MTG_OVERRIDE = {"Planning and Environmental Committee Meeting": dict(date="2026-11-10", start="12:30"),
-                "Finance Committee Meeting": dict(date="2026-11-18"), "Finance Committee": dict(date="2026-11-18")}  # R62b (Finance): date only
-# STYLE-RULES R62b (Steven Oct 24 1:34 PM): Finance next meeting = its own Oct 22 agenda item 12 "Set next meeting date November 18, 2026"
-# (calendar says Mon Nov 16). Date only; calendar time (10:00 AM) and place kept since the agenda gives no time; no TBC note.
-# STYLE-RULES R62c (LOCKED, Steven Oct 24 1:35 PM): a committee's own agenda/report next-meeting date beats the calendar.
-# Every MTG_OVERRIDE entry must cite its agenda/report page, and that page must exist and contain the cited wording.
-MTG_OVERRIDE_SOURCE = {
-    "Planning and Environmental Committee Meeting": ("pages/2026-10-14-planning-and-environmental-committee-report.html", "Nov"),
-    "Finance Committee Meeting": ("pages/2026-10-10-finance-committee-meeting-notice.html", "12 Set next meeting date November 18, 2026"),
-    "Finance Committee": ("pages/2026-10-10-finance-committee-meeting-notice.html", "12 Set next meeting date November 18, 2026"),
-}
+# STYLE-RULES R86 (Steven Oct 27 2026 2:24 PM; Tony Oct 26 "Calendar dates only works for me"): from Nov 1 the Palm Hill calendar
+# rules meeting dates/times. R62/R62b/R62c overrides released for Nov 1: no override keys (Finance = calendar Mon Nov 16, 10:00 AM;
+# P&E = calendar Tue Nov 10, 12:30 PM). Agenda/report differences are listed by scripts/meeting_conflict_report.py.
+MTG_OVERRIDE = {}
+MTG_OVERRIDE_SOURCE = {}
+# STYLE-RULES R87 (Steven Oct 27 2026 2:24 PM, Tony's option (c)): every meeting in the Meetings window, repeats and all.
+MEETINGS_ALL_IN_WINDOW = True
 
 # ---------- Community Notices (1): Tony's Facebook group notice (top row) ----------
 # (title, text, source label, source href or None, listen href or None)
@@ -580,9 +574,9 @@ NOTICE_ARCHIVE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field",
 # CARRIED FROM OCT 25 (Steven to review): the footer row checks below are the Oct 25 values, unchanged.
 # ---------- footer row checks (R62 / R62b / R60b / R60c / L08 / L14) ----------
 MEETING_ROW_CHECKS = [   # R62/R62b: a meetings row must show (need) and must not show (never) these, text before its Source line
-    dict(rule="R62b", start=">Finance Committee<", span=1200,
-         need=["Wednesday, Nov 18, 2026", "10:00 AM", "South Clubhouse Boardroom"], never=["to be confirmed", "Nov 16"]),
-    dict(rule="R62", start="Planning and Environmental Committee Meeting", span=1500,
+    dict(rule="R87", start=">Finance Committee<", span=1200,   # R86/R87 (Oct 27): calendar date, Mon Nov 16 (agenda said Nov 18)
+         need=["Monday, Nov 16, 2026", "10:00 AM", "South Clubhouse Boardroom"], never=["to be confirmed", "Nov 18"]),
+    dict(rule="R87", start="Planning and Environmental Committee Meeting", span=1500,
          need=["Tuesday, Nov 10, 2026", "12:30 PM"], never=["to be confirmed"]),
 ]
 HOLIDAY_SOURCE_LABEL = "Bill Bender email"            # R60b linked Source wording

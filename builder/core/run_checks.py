@@ -39,7 +39,10 @@ for bad in ("Block Captain", "Test Meeting", "Private Event", "Real Estate Commi
 # L05/L26 Meetings = audit (calendar) rows, window in header
 sec = lc._section(page, "Committee &amp; Board Meeting Schedules")
 L.ok("L05", [norm(x) for x in titles(sec)] == [norm(n) for _, n in audit["meetings"]], f"Meetings rows {titles(sec)}")
-L.ok("L05b", len(titles(sec)) == len(set(titles(sec))), "one meeting per committee")
+if getattr(C, "MEETINGS_ALL_IN_WINDOW", False):   # R87 (Nov 1+): repeats allowed, exact date+committee duplicates never
+    L.ok("L05b", len(audit["meetings"]) == len({tuple(x) for x in audit["meetings"]}), "no meeting listed twice for the same date (R87)")
+else:
+    L.ok("L05b", len(titles(sec)) == len(set(titles(sec))), "one meeting per committee")
 if getattr(C, "MEETINGS_SHOW_RANGE", True):   # R78: Oct 25 and earlier keep the range
     L.ok("L26", f">{_W('MEETINGS')}<" in sec, f"Meetings window {_W('MEETINGS')} in header")
 else:
@@ -50,7 +53,7 @@ L.ok("L06", sec.count('text-align:right;padding-top:1px;">') >= len(audit["meeti
 for _mc in C.MEETING_ROW_CHECKS:  # R62/R62b expected wording = content file data
     _mt = text(sec[sec.find(_mc["start"]):]); _mt = _mt[:_mt.find("Source")]
     L.ok(_mc["rule"], all(x in _mt for x in _mc["need"]) and not any(x in _mt for x in _mc["never"]),
-         f"{'Finance' if _mc['rule'] == 'R62b' else 'P&E'} row {_mt[:90]}")
+         f"{'Finance' if 'Finance' in _mc['start'] else 'P&E'} row {_mt[:90]}")
 # L07/L08 This Week / Upcoming = audit rows; treat-as-recurring never there
 tw = lc._section(page, "Events - This Week"); up = lc._section(page, "Events - Upcoming")
 L.ok("L07", [norm(x) for x in titles(tw)] == [norm(n) for _, n in audit["this_week"]] and f">{_W('THIS_WEEK')}<" in tw, f"This Week rows {titles(tw)}")
@@ -194,14 +197,42 @@ elif _mcr.exists():
     import tempfile as _tf86, importlib.util as _iu86
     _sp86 = _iu86.spec_from_file_location("mcr86", _mcr); _m86 = _iu86.module_from_spec(_sp86); _sp86.loader.exec_module(_m86)
     try:
-        with _tf86.TemporaryDirectory() as _d86: _R86, _ = _m86.main(["--issue", C.ISSUE, "--out", _d86]); _ok86 = True
+        with _tf86.TemporaryDirectory() as _d86:
+            _R86, _b86 = _m86.main(["--issue", C.ISSUE, "--out", _d86]); _ok86 = True
+            _tn86 = Path(str(_b86) + "-tony.txt"); _subj86 = _tn86.read_text(encoding="utf-8").split("\n", 1)[0] if _tn86.exists() else None
     except SystemExit as _e86: _R86, _ok86 = None, str(_e86)
+    if _ok86 is True:   # Steven Oct 27 2026 2:27 PM: every conflict email to Tony has exactly this subject
+        L.ok("R86", _m86.TONY_SUBJECT == "Calendar Conflicts Report" and _subj86 == "Subject: " + _m86.TONY_SUBJECT,
+             f"Tony file subject line is exactly 'Subject: Calendar Conflicts Report' ({_subj86!r})")
     L.ok("R86", _ok86 is True, f"meeting conflict report runs for {C.ISSUE} {'' if _ok86 is True else _ok86}")
     if _R86:
-        _miss86 = [k for k in _R86["overrides"] if not any(r["committee"] == k and any(d[0] == "CONFLICT-OVERRIDDEN-BY-RULE" for d in r["diffs"]) for r in _R86["rows"])]
-        L.ok("R86", not _miss86, f"every MTG_OVERRIDE listed as CONFLICT-OVERRIDDEN-BY-RULE ({sorted(_R86['overrides'])}) {_miss86 or ''}")
+        # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
+        # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.
+        _ovr86 = [r["name"] for r in _R86["rows"] if any(d[0] == "CONFLICT-OVERRIDDEN-BY-RULE" for d in r["diffs"])]
+        L.ok("R86", not _ovr86 and not _R86["overrides"], f"no CONFLICT-OVERRIDDEN-BY-RULE rows (calendar only) {_ovr86 or ''}")
+        _ad86 = {c: [d[0] for r in _R86["rows"] if c in r["name"] and r["cal_date"] for d in r["diffs"]] for c in ("Finance", "Planning")}
+        L.ok("R86", all(v and all(k.startswith("Agenda:") or k.startswith("RPM:") for k in v) and any(k.startswith("Agenda:") for k in v) for v in _ad86.values()),
+             f"Finance and P&E listed as agenda-differs only {_ad86}")
 else:
     L.ok("R86", False, "scripts/meeting_conflict_report.py missing")
+# R87 (Steven Oct 27 2026 2:24 PM, Tony's option c): from Nov 1 (MEETINGS_ALL_IN_WINDOW) the Meetings rows are every calendar
+# committee/board meeting in the window, none missing, none twice; Finance prints the calendar's Mon Nov 16 10:00 AM; no overrides.
+if C.ISSUE >= "2026-11-01" and getattr(C, "MEETINGS_ALL_IN_WINDOW", False):
+    _cal87 = json.load(open(audit["calendar_file"])) if Path(str(audit.get("calendar_file", ""))).exists() else None
+    if _cal87 is None: L.ok("R87", False, f"calendar snapshot {audit.get('calendar_file')} missing")
+    else:
+
+        import issue_ctx as _ix87; _w87 = _ix87.windows(C.ISSUE)["MEETINGS"]
+        _re87 = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
+        _exp87 = sorted({(e["date"], e["start"], e["name"].lower().replace("&", "and").replace("building ", "buildings ").replace(" meeting", "").strip())
+                         for e in _cal87["events"] if e.get("category") == "Meetings" and _re87.search(e["name"]) and e.get("status") == "CONFIRMED"
+                         and e["name"] != "Private Event" and "test" not in e["name"].lower() and _w87[0] <= e["date"] <= _w87[1]})
+        _got87 = [(d, n.lower().replace(" meeting", "").strip()) for d, n in audit["meetings"]]
+        _miss87 = [x for x in _exp87 if (x[0], x[2]) not in _got87]
+        L.ok("R87", not _miss87 and len(_got87) == len(set(_got87)) and len(_got87) == len(_exp87),
+             f"Meetings rows = every calendar meeting {_w87[0]}..{_w87[1]} ({len(_got87)} rows, {len(_exp87)} on calendar) missing {_miss87}")
+        # Finance row = calendar Mon Nov 16 10:00 AM: content-file MEETING_ROW_CHECKS (rule R87) above (R71b: no issue text in core)
+        L.ok("R87", not getattr(C, "MTG_OVERRIDE", {}) and not getattr(C, "MTG_OVERRIDE_SOURCE", {}), "no MTG_OVERRIDE keys in the Nov 1 content")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
