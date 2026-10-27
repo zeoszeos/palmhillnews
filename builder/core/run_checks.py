@@ -210,9 +210,15 @@ elif _mcr.exists():
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.
         _ovr86 = [r["name"] for r in _R86["rows"] if any(d[0] == "CONFLICT-OVERRIDDEN-BY-RULE" for d in r["diffs"])]
         L.ok("R86", not _ovr86 and not _R86["overrides"], f"no CONFLICT-OVERRIDDEN-BY-RULE rows (calendar only) {_ovr86 or ''}")
-        _ad86 = {c: [d[0] for r in _R86["rows"] if c in r["name"] and r["cal_date"] for d in r["diffs"]] for c in ("Finance", "Planning")}
-        L.ok("R86", all(v and all(k.startswith("Agenda:") or k.startswith("RPM:") for k in v) and any(k.startswith("Agenda:") for k in v) for v in _ad86.values()),
-             f"Finance and P&E listed as agenda-differs only {_ad86}")
+        # Oct 27 2026 2:43 PM: P&E "a.m." is a known typo (reference only); RPM day differences on calendar dates are reference only.
+        _cal86 = [r for r in _R86["rows"] if r["cal_date"]]
+        _fin86 = [d[0] for r in _cal86 if "Finance" in r["name"] for d in r["diffs"]]
+        _pe86 = [r for r in _cal86 if "Planning" in r["name"]]
+        L.ok("R86", _fin86 and all(k.startswith("Agenda:") for k in _fin86), f"Finance listed as agenda-differs only {_fin86}")
+        L.ok("R86", _pe86 and all(not r["diffs"] and any(k == "Agenda: known typo" for k, _ in r["refs"]) for r in _pe86),
+             "P&E a.m. wording is a known typo, not counted")
+        _rpm86 = [r["name"] for r in _cal86 if any(k.startswith("RPM") for k, _ in r["diffs"])]
+        L.ok("R86", not _rpm86 and any(not r["cal_date"] for r in _R86["rows"]), f"RPM differences on calendar dates are reference only {_rpm86}; RPM-only meetings stay items")
 else:
     L.ok("R86", False, "scripts/meeting_conflict_report.py missing")
 # R87 (Steven Oct 27 2026 2:24 PM, Tony's option c): from Nov 1 (MEETINGS_ALL_IN_WINDOW) the Meetings rows are every calendar

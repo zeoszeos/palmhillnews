@@ -16,6 +16,7 @@ sys.path.insert(0, str(REPO / "builder/core"))
 COLS = ["Committee/Meeting", "Calendar date", "Calendar time", "Agenda / committee-report suggested date (time, source)",
         "RPM calendar date (time)", "Agenda notice email date", "Calendar recurring", "What differs"]
 TONY_SUBJECT = "Calendar Conflicts Report"   # R86 (Steven, Oct 27 2026 2:27 PM): every conflict email to Tony uses exactly this subject
+# RPM (Steven Oct 27 2026 2:43 PM): reference only, to spot dates missing from the calendar; never overrides, never counted on calendar dates.
 ACTION = "Corrective action: the committee must have Tony change the calendar to the new date right away (the calendar always rules)."
 def fd(d): return datetime.strptime(d, "%Y-%m-%d").strftime("%a %b %-d, %Y") if d else "—"
 def ft(t):
@@ -54,30 +55,33 @@ def build(issue, work, repo=REPO):
         if i not in used_a and a["date"] >= since:
             rows.append(dict(committee=a["committee"], name=a["committee"] + " (agenda only)", cal_date=None, cal_time=None, recurring=None, agenda=[a], rpm=[], override=ovr.get(a["committee"]), note=None))
     for r in rows:   # verbatim check + differences
-        diffs = []
+        diffs, refs = [], []   # refs = reference-only notes (known typos, RPM day notes): shown, never counted (R86, Oct 27 2:43 PM)
         for a in r["agenda"]:
             t = (repo / a["page"]).read_text(encoding="utf-8") if (repo / a["page"]).exists() else ""
             if html.unescape(a["quote"]) not in re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t))): raise SystemExit(f"R86: quote not found in {a['page']}: {a['quote']!r}")
-            day = r["cal_date"] != a["date"]; tm = bool(a["time"]) and r["cal_time"] and a["time"] != r["cal_time"]
+            at = (a.get("typo") or {}).get("time", a["time"])
+            if a.get("typo"): refs.append(("Agenda: known typo", f'The {a["kind"]} says "{a["quote"]}": {a["typo"]["note"]}.'))
+            day = r["cal_date"] != a["date"]; tm = bool(at) and r["cal_time"] and at != r["cal_time"]
             if day or tm: diffs.append(("Agenda: " + ("both (day and time)" if day and tm else "day" if day else "time"),
                 f"The calendar date is {fd(r['cal_date'])}, the calendar time is {ft(r['cal_time'])}, the agenda information is different "
                 f"(agenda says {fd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''}; {a['kind']}, {a['page'].split('/')[-1]})."))
         for p in r["rpm"]:
-            if r["cal_date"] and r["cal_date"] != p["date"]: diffs.append(("RPM: day", f"The calendar date is {fd(r['cal_date'])}, the calendar time is {ft(r['cal_time'])}, the RPM calendar is different (RPM says {fd(p['date'])})."))
+            if r["cal_date"] and r["cal_date"] != p["date"]: refs.append(("RPM note (reference only)", f"The calendar date is {fd(r['cal_date'])}, the calendar time is {ft(r['cal_time'])}, RPM says {fd(p['date'])}. RPM is reference only (it never overrides the calendar)."))
         if not r["cal_date"]: diffs.insert(0, ("Not on the Palm Hill calendar", "No meeting for this committee on the Palm Hill calendar that month; " + ("RPM lists " + ", ".join(fd(p["date"]) for p in r["rpm"]) if r["rpm"] else "only the agenda/report lists it") + ". If the meeting is real, the committee must ask Tony to add it to the calendar."))
         if r.get("note") and r["cal_date"]: diffs.append(("Builder note", f"The calendar has this meeting CONFIRMED, but the content file still adds a note: {r['note']}. Under R86 the calendar rules."))
         if r["override"]: diffs.insert(0, ("CONFLICT-OVERRIDDEN-BY-RULE", f"Nov 1 rows still use the locked R62/R62b override (" + ", ".join(f"{k} {fd(v) if k == 'date' else ft(v)}" for k, v in r['override'].items()) + ") until Steven releases R62/R62b/R62c."))
-        r["diffs"] = diffs
+        r["diffs"], r["refs"] = diffs, refs
     return dict(issue=issue, calf=calf, cal=cal, rows=rows, moved=moved, overrides=ovr)
 def cells(r):
     ag = "; ".join(f"{fd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''} ({a['kind']}, {a['page'].split('/')[-1]})" for a in r["agenda"]) or "—"
     rp = "; ".join(f"{fd(p['date'])} (time not recorded)" for p in r["rpm"]) or "—"
     em = "; ".join(a["email_date"] for a in r["agenda"]) or "—"
     rec = "—" if r["recurring"] is None else ("☑" if r["recurring"] else "☐")
-    st = "; ".join(k for k, _ in r["diffs"]) or "match"
+    st = ("; ".join(k for k, _ in r["diffs"]) or "match") + "".join(f" [{k}]" for k, _ in r["refs"])
     return [r["name"], fd(r["cal_date"]), ft(r["cal_time"]), ag, rp, em, rec, st]
 NOTES = ["The Palm Hill calendar (Tony Ciaramitaro's booking-system feed) is the single source of truth (R86).",
          "RPM values are the recorded RPM calendar values (Oct 16 2026 notes), not a fresh read: the RPM portal can't be read automatically. RPM gives no time.",
+         "RPM is reference only: it helps spot meetings missing from the Palm Hill calendar and never overrides it. RPM day differences on calendar meetings are 'RPM note (reference only)' and are not counted; RPM-only meetings stay as items.",
          "Calendar recurring: ☑ = the calendar marks the entry as part of a recurring series, ☐ = not recurring (the feed's own 'recurring' marker).",
          "RPM recurring column left out: the RPM data has no recurring marker.",
          ACTION]
@@ -88,6 +92,7 @@ def render(R, stamp):
     md = [f"# {head.splitlines()[0]}", "", head.splitlines()[1], "", f"**{len(conf)} of {len(rows)} meetings need attention.**", "",
           "| " + " | ".join(COLS) + " |", "|" + "---|" * len(COLS)] + ["| " + " | ".join(c.replace("|", "/") for c in x) + " |" for x in rows]
     md += ["", "## Conflicts in plain words", ""] + [f"- **{r['name']}**: " + " ".join(t for _, t in r["diffs"]) for r in conf]
+    md += ["", "## Reference notes (not counted)", ""] + [f"- **{r['name']}**: " + " ".join(t for _, t in r["refs"]) for r in R["rows"] if r["refs"]]
     md += ["", "## Calendar moves", ""] + [f"- {m}" for m in moved] + ["", "## Notes", ""] + [f"- {n}" for n in NOTES]
     h = ["<!doctype html><meta charset='utf-8'><title>PHNEWS meeting conflicts " + R["issue"] + "</title>",
          "<style>body{font-family:Arial,sans-serif;max-width:1200px;margin:20px auto;color:#333}table{border-collapse:collapse;font-size:13px}"
@@ -96,11 +101,12 @@ def render(R, stamp):
          "<table><tr>" + "".join(f"<th>{html.escape(c)}</th>" for c in COLS) + "</tr>"]
     h += [f"<tr{' class=c' if r['diffs'] else ''}>" + "".join(f"<td>{html.escape(c)}</td>" for c in x) + "</tr>" for r, x in zip(R["rows"], rows)]
     h += ["</table><h2>Conflicts in plain words</h2><ul>"] + [f"<li><b>{html.escape(r['name'])}</b>: {html.escape(' '.join(t for _, t in r['diffs']))}</li>" for r in conf]
+    h += ["</ul><h2>Reference notes (not counted)</h2><ul>"] + [f"<li><b>{html.escape(r['name'])}</b>: {html.escape(' '.join(t for _, t in r['refs']))}</li>" for r in R["rows"] if r["refs"]]
     h += ["</ul><h2>Calendar moves</h2><ul>"] + [f"<li>{html.escape(m)}</li>" for m in moved] + ["</ul><h2>Notes</h2><ul>"] + [f"<li>{html.escape(n)}</li>" for n in NOTES] + ["</ul>"]
     tx = [head, "", f"{len(conf)} of {len(rows)} meetings need attention.", ""]
     for r, x in zip(R["rows"], rows):
         tx += [f"{COLS[i]}: {v}" for i, v in enumerate(x)]
-        tx += ["   " + t for _, t in r["diffs"]] + [""]
+        tx += ["   " + t for _, t in r["diffs"]] + ["   (reference only) " + t for _, t in r["refs"]] + [""]
     tx += ["Calendar moves:"] + ["- " + m for m in moved] + ["", "Notes:"] + ["- " + n for n in NOTES]
     return "\n".join(md) + "\n", "\n".join(h) + "\n", "\n".join(tx) + "\n"
 def render_tony(R):
@@ -111,20 +117,19 @@ def render_tony(R):
         if not r["cal_date"]: return f"Not printed in the {idate} issue (it is not on the calendar)."
         if w[0] <= r["cal_date"] <= w[1]: return f"{fd(r['cal_date'])}, {ft(r['cal_time'])} (the calendar date and time)."
         return f"Not in the {idate} issue (outside its meeting window); a later issue will print the calendar date."
-    blocks = []
+    blocks, fyi = [], []
     for r in R["rows"]:
-        ag = [a for a in r["agenda"] if r["cal_date"] != a["date"] or (a["time"] and r["cal_time"] and a["time"] != r["cal_time"])]
+        ag = [a for a in r["agenda"] if r["cal_date"] != a["date"] or ((a.get("typo") or {}).get("time", a["time"]) and r["cal_time"] and (a.get("typo") or {}).get("time", a["time"]) != r["cal_time"])]
         rp = [p for p in r["rpm"] if r["cal_date"] != p["date"]]
+        if r["cal_date"] and not ag:   # RPM-only difference on a calendar meeting: short FYI line, not a conflict
+            fyi += [f"- {r['name']}: calendar {fd(r['cal_date'])}; RPM shows {fd(p['date'])}." for p in rp]; continue
         if not (ag or rp): continue
         b = [r["name"] + (" -- not on the calendar, please confirm" if not r["cal_date"] else ""),
              f"  Calendar date: {fd(r['cal_date']) if r['cal_date'] else 'not on the calendar'}",
              f"  Calendar time: {ft(r['cal_time']) if r['cal_date'] else '--'}"]
         for a in ag:
-            q = bool(a["time"] and a["time"] < "06:00" and r["cal_time"] and a["time"][3:] == r["cal_time"][3:] and int(a["time"][:2]) % 12 == int(r["cal_time"][:2]) % 12)
-            v = fd(a["date"]) + (" (time: see question below)" if q else ", " + ft(a["time"]) if a["time"] else "")
+            v = fd(a["date"]) + (", " + ft(a["time"]) if a["time"] else "")
             b.append(f"  Agenda/report says: {v} -- from the {a['kind']}, {a['email_date']}")
-            if q:
-                b.append(f'  Question: the report reads "{a["quote"]}" -- I assume that means {ft(r["cal_time"])} like the calendar, but could you check?')
         for p in rp: b.append(f"  RPM calendar says: {fd(p['date'])} (no time given)")
         b.append(f"  The newsletter prints: {prints(r)}")
         blocks.append("\n".join(b))
@@ -132,7 +137,9 @@ def render_tony(R):
           "Here are the dates the newsletter found that differ from the calendar. The "
           f"{idate} issue prints the calendar date for each one. When you have a minute, please check whether the calendar or "
           "the committee's information needs to be corrected.", ""]
-    tx += ["\n\n".join(blocks) if blocks else "No differences this time -- everything matches the calendar.", "",
+    tx += ["\n\n".join(blocks) if blocks else "No differences this time -- everything matches the calendar.", ""]
+    if fyi: tx += ["FYI only (no action needed, the calendar rules): RPM shows a different day for these:"] + fyi + [""]
+    tx += [
            "One caveat: the RPM dates come from my Oct 16 notes, not a live read of RPM, so some may already be fixed.", "",
            "Thanks,", "Steven"]
     return "\n".join(tx) + "\n"
