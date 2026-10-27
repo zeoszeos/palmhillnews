@@ -629,6 +629,11 @@ def _r1_inset(m):
     return re.sub(r'^<a ([^>]*?)style="([^"]*)"', lambda k: f'<a {k.group(1)}style="{k.group(2).rstrip(";")};white-space:nowrap;display:inline-block;{LISTEN_INSET}"', a, count=1)
 s = re.sub(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', _r1_inset, s)
 assert all(LISTEN_INSET in m.group(0) for m in re.finditer(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', s)), "R1 Listen inset missing"
+# STYLE-RULES R85 (Steven Oct 27 2026 12:25 AM): from TEL_FROM on, every printed phone number is a tel: link (preview -> SEND).
+sys.path.insert(0, SCRIPTS); import tel_links as _tel
+if _tel.applies(ISSUE):
+    s = _tel.linkify(s)
+    if _tel.find_bare(s)[0] or _tel.tel_mismatches(s): raise SystemExit(f"R85: bare/mismatched phone in NL: {_tel.find_bare(s)} {_tel.tel_mismatches(s)}")
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 # STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): from listen_settings v2_from on, every page this NL links with ?listen=1
@@ -715,3 +720,10 @@ import check_preview_send_stamp as _r70
 print("R70 synced:", _r70.sync(LOCAL / f"PHNEWS-{ISSUE}-preview.html", REPO, ISSUE))
 _r70f, _ = _r70.check(ISSUE, ROOT, REPO)
 if _r70f: raise SystemExit("; ".join(_r70f))
+# R85: Nov 1+ generated pages this issue links (date prefix >= TEL_FROM) get the same tel: links; older published pages untouched.
+if _tel.applies(ISSUE):
+    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s))):
+        _f = PAGES / _u
+        if _f.exists() and _tel.dated_from(_u):
+            _t = _f.read_text(encoding="utf-8"); _n = _tel.linkify(_t)
+            if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R85 tel links:", _u)

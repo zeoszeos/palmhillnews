@@ -170,6 +170,21 @@ if getattr(C, "STORY", None):
         L.ok("R84", _ph["src"].startswith("https://palmhillnews.vercel.app/assets/") and _pf.exists() and _ph["alt"].strip() != "", f"cover photo {_pf.name} in public/, absolute URL, alt text")
         L.ok("R84", _fig in _sp.split("<article>")[0], "cover photo at the top of the story page")
         L.ok("R84", _fig in _lp.split("<article>")[0], "cover photo at the top of the Listen page")
+# R85 (Steven Oct 27 2026 12:25 AM): from TEL_FROM, no bare phone number in the NL (preview = SEND body) or the Nov 1+ pages it links;
+# every tel: href digits = the visible digits (+1 added). 7-digit numbers would need Steven's OK for the area code.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts")); import tel_links as _tel
+if _tel.applies(C.ISSUE):
+    _rp85 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _b10, _b7 = _tel.find_bare(page)
+    L.ok("R85", not _b10 and not _b7 and not _tel.tel_mismatches(page), f"NL (preview/SEND): every phone a tel: link with matching digits {_b10 + _b7 + _tel.tel_mismatches(page)}")
+    _pg85 = sorted({u for u in re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', page) if _tel.dated_from(u)} | ({C.STORY["listen"]} if getattr(C, "STORY", None) else set()))
+    _bad85 = []
+    for _u in _pg85:
+        _f = _rp85 / "pages" / _u
+        if _f.exists():
+            _t = _f.read_text(encoding="utf-8"); _x = _tel.find_bare(_t)
+            if _x[0] or _x[1] or _tel.tel_mismatches(_t): _bad85.append((_u, _x, _tel.tel_mismatches(_t)))
+    L.ok("R85", not _bad85, f"{len(_pg85)} Nov 1+ linked pages: no bare phone, tel: digits match {_bad85}")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
