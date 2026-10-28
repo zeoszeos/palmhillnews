@@ -209,6 +209,9 @@ elif _mcr.exists():
         import re as _re86
         L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86,
              "Tony HTML email exists, has exactly one table with a header row, inline CSS only, title = exact subject")
+        # Steven Oct 27 2026 11:40 PM: simplified Tony table wording; a plain "Mismatch" reason column; Palm Hill and RPM recurring flags shown On/Off
+        L.ok("R86", all(f"<th" in _html86 and c in _html86 for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
+             "Tony table has a Mismatch column plus Palm Hill recurring and RPM recurring columns showing On/Off")
         L.ok("R86", bool(_R86.get("rpm_fetched")) and "Oct 16" not in _R86["rpm_fetched"] and _ttx86 and "Oct 16" not in _ttx86,
              f"RPM values carry a live-read stamp ({_R86.get('rpm_fetched')}); no Oct 16 notes in the Tony email")
     L.ok("R86", _ok86 is True, f"meeting conflict report runs for {C.ISSUE} {'' if _ok86 is True else _ok86}")
