@@ -249,6 +249,19 @@ if C.ISSUE >= "2026-11-01" and getattr(C, "MEETINGS_ALL_IN_WINDOW", False):
              f"Meetings rows = every calendar meeting {_w87[0]}..{_w87[1]} ({len(_got87)} rows, {len(_exp87)} on calendar) missing {_miss87}")
         # Finance row = calendar Mon Nov 16 10:00 AM: content-file MEETING_ROW_CHECKS (rule R87) above (R71b: no issue text in core)
         L.ok("R87", not getattr(C, "MTG_OVERRIDE", {}) and not getattr(C, "MTG_OVERRIDE_SOURCE", {}), "no MTG_OVERRIDE keys in the Nov 1 content")
+# R88 (Steven Oct 29 2026 11:11 AM): new Did You Know items from the content file's DYK_NEW_JSON are the top R57 blocks, in order,
+# title + verbatim teaser + More -> to the final page, which exists with one Listen and no retyped phone number; archive row present.
+if getattr(C, "DYK_NEW_JSON", None):
+    _R = Path(__file__).resolve().parents[2]; _dn = json.load(open(_R / C.DYK_NEW_JSON, encoding="utf-8"))
+    _bl = re.findall(r'class="ph-dyk-title"[^>]*>([^<]*)</div><div[^>]*>([^<]*)</div><div class="ph-dyk-more"[^>]*><a href="([^"]+)"', page)
+    for _n, _it in enumerate(_dn["items"]):
+        _pg = _dn["page_prefix"] + _it["preview_page"]; _pf = _R / "pages" / _pg
+        _ok = (len(_bl) > _n and _html.unescape(_bl[_n][0]) == _it["title_display"] and _html.unescape(_bl[_n][1]) == _it["teaser"]
+               and _bl[_n][2].endswith("/pages/" + _pg) and _sr83.dyk_summary_ok(_it["teaser"], _it["paragraphs"]))
+        _pt = _pf.read_text(encoding="utf-8") if _pf.exists() else ""
+        _ok = _ok and _pt.count('class="ph-listen"') == 1 and not re.search(r"\d{3}-\d{3}-\d{4}", text(_pt.split("<main>")[1].split("</main>")[0]) if "<main>" in _pt else "x")
+        _ai = (_R / "archive/archive-items.json").read_text(encoding="utf-8")
+        L.ok("R88", _ok and f'"page": "{_pg}"' in _ai, f"new Did You Know {_it['id']} is block {_n + 1} (title, verbatim teaser, More -> {_pg}), page has Listen, archive row")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

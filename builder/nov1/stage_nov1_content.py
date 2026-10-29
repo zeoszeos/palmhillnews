@@ -53,6 +53,24 @@ def _page(T):
     return out
 for f, t in {LIVE: "pages/2026-09-marge-taylor-love-of-the-game.html", LST: "pages/2026-09-listen-marge-taylor-story.html"}.items():
     (ROOT / "pages" / f).write_text(_page((ROOT / t).read_text(encoding="utf-8")), encoding="utf-8"); print("wrote pages/" + f)
+# 3) R88 (Steven Oct 29 2026 11:11 AM): new Did You Know item(s) -> final page pages/<prefix><page>, in the published Oct 25
+#    Did You Know shell (pages/2026-10-25-did-you-know-spectrum-music-channels.html = template: archive nav, Listen, R49 reader).
+#    Same inner markup as builder/oct25/stage_oct25_content.py (content card, byline, Did You Know Archives line). Template untouched.
+DN = json.load(open(D / "dyk-spectrum-unplugging.json", encoding="utf-8"))
+_TPL = (ROOT / "pages/2026-10-25-did-you-know-spectrum-music-channels.html").read_text(encoding="utf-8")
+for it in DN["items"]:
+    assert _sr.dyk_summary_ok(it["teaser"], it["paragraphs"]), ("R88/R39: teaser must be verbatim body sentence(s)", it["id"])
+    assert not re.search(r"\d{3}-\d{3}-\d{4}", " ".join(it["paragraphs"])), "R88: no retyped phone number in a DYK body"
+    ps = "".join(f"<p>{html.escape(p)}</p>" for p in it["paragraphs"])
+    if it.get("byline"): ps += f'<p class="dyk-byline">{html.escape(it["byline"])}</p>'
+    t = "Did You Know? " + it["title_display"]
+    out = re.sub(r"<title>.*?</title>", lambda m: f"<title>{html.escape(t)} — Palm Hill Country Club</title>", _TPL, count=1)
+    out = re.sub(r'(<h1 class="ph-section" style="margin:0">).*?(</h1>)', lambda m: m.group(1) + html.escape(t) + m.group(2), out, count=1)
+    out = re.sub(r'<div class="content-card">[\s\S]*?</div>\n', lambda m: f'<div class="content-card">{ps}</div>\n', out, count=1)
+    assert "music channels" not in out.lower() and out.count('class="ph-listen"') == 1
+    f = DN["page_prefix"] + it["preview_page"]
+    _sr.assert_no_link_name(out, f)  # R52
+    (ROOT / "pages" / f).write_text(out, encoding="utf-8"); print("wrote pages/" + f)
 if "--story-only" not in sys.argv:
     CORE = ROOT / "builder/core"
     sys.argv = [str(CORE / "stage_check.py"), "--issue", "2026-11-01"]

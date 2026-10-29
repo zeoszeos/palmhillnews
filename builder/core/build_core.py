@@ -510,6 +510,22 @@ assert _DYK3_TEASER == DYK_RULES_ITEM_TEASER_APPROVED, _DYK3_TEASER  # Steven's 
 assert not any("rule_items" in _it for _it in _DYK25["items"]), "R66: new Rules DYK item needs an _R66_PHRASES entry / review"
 DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, BASE + _dyk_final(_DYK3["preview_page"]))))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
 DYK_MULTI_APPROVED = _DYK25["dyk_multi_approved"] + "; " + _DYK3["multi_approved"]
+# R88 (Steven Oct 29 2026 11:11 AM): an issue may add NEW Did You Know items from its own data file (content flag DYK_NEW_JSON,
+# default None = Oct 25 and earlier, byte for byte). Newest at the top (R50), same R57 block, final page pages/<prefix><page>
+# (written by the issue's stage script), own archive row dated row_date (R59). Teaser = verbatim body sentence(s) (R39).
+_DYKN = json.load(open(REPO / C.DYK_NEW_JSON, encoding="utf-8")) if globals().get("DYK_NEW_JSON") else None
+_DYKN_ROWS = []
+if _DYKN:
+    for _it in reversed(_DYKN["items"]):
+        assert _sr_dyk.dyk_summary_ok(_it["teaser"], _it["paragraphs"]), ("R88/R39 teaser not verbatim", _it["id"])
+        _pg = _DYKN["page_prefix"] + _it["preview_page"]
+        assert (REPO / "pages" / _pg).exists(), f"R88: DYK page pages/{_pg} missing -- run builder/nov1/stage_nov1_content.py"
+        DYK_ITEMS.insert(0, (_it["id"], _dyk_row(_it["title_display"], _it["teaser"], BASE + _pg)))
+        _r = dict(date=_DYKN["row_date"], id=_it["id"].replace(_DYKN["page_prefix"], ""), title=_it["title_display"], text=_it["teaser"],
+                  page=_pg, issues=[_DYKN["row_date"]])
+        if _it.get("byline"): _r["source_label"] = _it["byline"]
+        _DYKN_ROWS.insert(0, _r)
+    DYK_MULTI_APPROVED += "; " + _DYKN["approved_add"]
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
@@ -524,6 +540,7 @@ for _it in _DYK25["items"]:
     if _it.get("byline"): _r["source_label"] = _it["byline"]
     _DYK_ROWS.append(_r)
 _aj.add_rows(REPO, "did-you-know", _DYK_ROWS)
+if _DYKN_ROWS: _aj.add_rows(REPO, "did-you-know", _DYKN_ROWS)  # R88
 # R66b (Steven Oct 24 3:16 PM): current-issue Rules DYK archive row uses the same R66 teaser as the main page (past rows untouched)
 _ai2 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), DYK_ROW_DATE, _DYK_ROWS[0]["id"], _DYK3_TEASER)
 _aj.save_text(REPO, _ai2, json.loads(_ai2))
@@ -537,7 +554,7 @@ _TR_TEASER, _trp = _sr_dyk.rules_dyk_teaser(_TR_ITEMS, _TR_PHRASES)
 _sr_dyk.assert_rules_dyk(_TR_TEASER, _TR_ITEMS, _trp, R66C_ROW_ID)
 _ai3 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), R66C_ROW_DATE, R66C_ROW_ID, _TR_TEASER)
 _aj.save_text(REPO, _ai3, json.loads(_ai3))
-ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYK_ROWS]
+ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYKN_ROWS + _DYK_ROWS]
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
 _NOTICE_ROWS = NOTICE_ARCHIVE_ROWS
 _aj.add_rows(REPO, "community-notices", _NOTICE_ROWS)
