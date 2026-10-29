@@ -262,6 +262,19 @@ if getattr(C, "DYK_NEW_JSON", None):
         _ok = _ok and _pt.count('class="ph-listen"') == 1 and not re.search(r"\d{3}-\d{3}-\d{4}", text(_pt.split("<main>")[1].split("</main>")[0]) if "<main>" in _pt else "x")
         _ai = (_R / "archive/archive-items.json").read_text(encoding="utf-8")
         L.ok("R88", _ok and f'"page": "{_pg}"' in _ai, f"new Did You Know {_it['id']} is block {_n + 1} (title, verbatim teaser, More -> {_pg}), page has Listen, archive row")
+# R89 (Steven Oct 29 2026 11:33 AM): with DYK_CARRY_PREVIOUS=False the main page Did You Know is exactly this issue's new items,
+# then one Did You Know Archives line; the previous issue's items are not on the page but keep their pages and archive rows.
+if getattr(C, "DYK_NEW_JSON", None) and not getattr(C, "DYK_CARRY_PREVIOUS", True):
+    _R = Path(__file__).resolve().parents[2]; _dn = json.load(open(_R / C.DYK_NEW_JSON, encoding="utf-8"))
+    _a89 = page.find(">Did You Know?</span>"); _seg89 = page[_a89:page.find("Did You Know Archives →", _a89)]
+    _t89 = [_html.unescape(t) for t in re.findall(r'class="ph-dyk-title"[^>]*>([^<]*)</div>', _seg89)]
+    L.ok("R89", _a89 > 0 and _t89 == [i["title_display"] for i in _dn["items"]] and page.count("Did You Know Archives →") == 1,
+         f"main page Did You Know = only this issue's new items {_t89}, one Did You Know Archives line")
+    _ai89 = json.loads((_R / "archive/archive-items.json").read_text(encoding="utf-8"))
+    _prev = [r for r in _ai89["sections"]["did-you-know"]["items"] if r.get("date") == C.DYK_ROW_DATE]
+    _arch = (_R / "pages/archive/did-you-know.html").read_text(encoding="utf-8")
+    _gone = [r["page"] for r in _prev if not (_R / "pages" / r["page"]).exists() or r["page"] not in _arch or ("/pages/" + r["page"]) in page]
+    L.ok("R89", bool(_prev) and not _gone, f"previous issue's {len(_prev)} Did You Know items keep page + archive row, off the main page {_gone}")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

@@ -526,6 +526,15 @@ if _DYKN:
         if _it.get("byline"): _r["source_label"] = _it["byline"]
         _DYKN_ROWS.insert(0, _r)
     DYK_MULTI_APPROVED += "; " + _DYKN["approved_add"]
+# R89 (Steven Oct 29 2026 11:33 AM "Remove last week's dyk items from the main nl page"): content flag DYK_CARRY_PREVIOUS
+# (default True = Oct 25 and earlier, byte for byte). False: the main page shows only this issue's new items (DYK_NEW_JSON);
+# the previous issue's items keep their pages and archive rows (still added/kept below), they just leave the main page.
+_DYK_CARRY = globals().get("DYK_CARRY_PREVIOUS", True)
+if not _DYK_CARRY:
+    assert _DYKN and _DYKN["items"], "R89: DYK_CARRY_PREVIOUS=False needs this issue's own DYK_NEW_JSON items"
+    _new_ids = [_it["id"] for _it in _DYKN["items"]]
+    DYK_ITEMS = [x for x in DYK_ITEMS if x[0] in _new_ids]
+    assert [i for i, _ in DYK_ITEMS] == _new_ids, "R89: main page Did You Know must be exactly the new items"
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
@@ -554,7 +563,7 @@ _TR_TEASER, _trp = _sr_dyk.rules_dyk_teaser(_TR_ITEMS, _TR_PHRASES)
 _sr_dyk.assert_rules_dyk(_TR_TEASER, _TR_ITEMS, _trp, R66C_ROW_ID)
 _ai3 = _sr_dyk.sync_rules_dyk_archive_text(_AI.read_text(encoding="utf-8"), R66C_ROW_DATE, R66C_ROW_ID, _TR_TEASER)
 _aj.save_text(REPO, _ai3, json.loads(_ai3))
-ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYKN_ROWS + _DYK_ROWS]
+ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYKN_ROWS + (_DYK_ROWS if _DYK_CARRY else [])]  # R89: dropped items stay archived, not on the issue
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
 _NOTICE_ROWS = NOTICE_ARCHIVE_ROWS
 _aj.add_rows(REPO, "community-notices", _NOTICE_ROWS)

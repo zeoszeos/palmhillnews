@@ -28,6 +28,7 @@ L_FAMILY = {  # locked checks (run_checks.py / locked_checks.py), by number
 }
 FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES.md)
     "R88": "set DYK_NEW_JSON items (title_display, verbatim teaser, preview_page) and rerun builder/nov1/stage_nov1_content.py + the build",
+    "R89": "set DYK_CARRY_PREVIOUS = False and DYK_NEW_JSON in the content file; never delete the previous items' pages or archive rows",
     "R18b": "cut the teaser to its first source sentence(s); never reword",
     "R21": "add an EVENT_PAGE / EVENT_LINK entry for the event in the content file (or Steven drops the detail)",
     "R42": "one source email = one notice: merge the split notice or add the missing section",

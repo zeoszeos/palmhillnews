@@ -552,6 +552,8 @@ DYK_RULES_ITEM_TEASER_APPROVED = "Information on home transfer fees, monthly mai
 DYK_ROW_DATE = "2026-10-25"; DYK_ROW_ISSUES = ["2026-10-25"]   # archive rows for these DYK items (R59/R66b)
 # R88 (Steven Oct 29 2026 11:11 AM "add the spectrum warning"): new Nov 1 DYK item, top of the section. WORDING PENDING Steven.
 DYK_NEW_JSON = "builder/nov1/data/dyk-spectrum-unplugging.json"
+# R89 (Steven Oct 29 2026 11:33 AM "Remove last week's dyk items from the main nl page"): Oct 25 items stay in the archive only
+DYK_CARRY_PREVIOUS = False
 # R66c (Steven Oct 24 3:34 PM): Oct 18 Traffic Rules archive row teaser in R66 style (archive row only)
 R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_DATE = "2026-10-18"; R66C_ROW_ID = "traffic-rules"
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
