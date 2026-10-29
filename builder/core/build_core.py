@@ -530,9 +530,21 @@ if _DYKN:
 # (default True = Oct 25 and earlier, byte for byte). False: the main page shows only this issue's new items (DYK_NEW_JSON);
 # the previous issue's items keep their pages and archive rows (still added/kept below), they just leave the main page.
 _DYK_CARRY = globals().get("DYK_CARRY_PREVIOUS", True)
+# R91 (Steven Oct 29 2026 7:33 PM): DYK_REPRISE = earlier-issue Did You Know items re-run as-is (title = its live page heading,
+# teaser = the text printed then, More -> its existing live page). No new page, no new archive row.
+_REP = globals().get("DYK_REPRISE") or []
+for _it in reversed(_REP):
+    _txt = _html.unescape(globals()[_it["text_html"]])
+    _pgf = PAGES / _it["href"].split("/pages/", 1)[1]
+    assert _pgf.exists() and _html.escape(_txt, quote=True).replace("&#x27;", "'") in _pgf.read_text(encoding="utf-8") and _it["title"] in _pgf.read_text(encoding="utf-8"), f"R91: {_it['id']} teaser/title not verbatim on its live page"
+    if _it.get("sentences"):  # R18c: cut at a sentence end (no rewording) so the teaser fits 3 lines
+        _txt = " ".join(re.split(r"(?<=[.?!])\s+", _txt)[:_it["sentences"]])
+    DYK_ITEMS.insert(0, (_it["id"], _dyk_row(_it["title"], _txt, _it["href"])))
+for _pp in globals().get("DYK_PARKED_PAGES") or []:
+    assert not any(_pp in r for _, r in DYK_ITEMS), f"R91: parked page {_pp} still on the main page"
 if not _DYK_CARRY:
-    assert _DYKN and _DYKN["items"], "R89: DYK_CARRY_PREVIOUS=False needs this issue's own DYK_NEW_JSON items"
-    _new_ids = [_it["id"] for _it in _DYKN["items"]]
+    _new_ids = [_it["id"] for _it in _REP] + ([_it["id"] for _it in _DYKN["items"]] if _DYKN else [])
+    assert _new_ids, "R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE)"
     DYK_ITEMS = [x for x in DYK_ITEMS if x[0] in _new_ids]
     assert [i for i, _ in DYK_ITEMS] == _new_ids, "R89: main page Did You Know must be exactly the new items"
 _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50

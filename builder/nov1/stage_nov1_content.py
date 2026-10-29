@@ -56,7 +56,9 @@ for f, t in {LIVE: "pages/2026-09-marge-taylor-love-of-the-game.html", LST: "pag
 # 3) R88 (Steven Oct 29 2026 11:11 AM): new Did You Know item(s) -> final page pages/<prefix><page>, in the published Oct 25
 #    Did You Know shell (pages/2026-10-25-did-you-know-spectrum-music-channels.html = template: archive nav, Listen, R49 reader).
 #    Same inner markup as builder/oct25/stage_oct25_content.py (content card, byline, Did You Know Archives line). Template untouched.
-DN = json.load(open(D / "dyk-spectrum-unplugging.json", encoding="utf-8"))
+_dnj = re.search(r'^DYK_NEW_JSON = (.+?)(?:\s+#.*)?$', (ROOT / "builder/issues/2026-11-01.py").read_text(encoding="utf-8"), re.M).group(1)
+# PARKED (Oct 29 7:32 PM): content file DYK_NEW_JSON = None -> no Did You Know page is written (data file kept for restore)
+DN = json.load(open(ROOT / eval(_dnj), encoding="utf-8")) if eval(_dnj) else {"items": []}
 _TPL = (ROOT / "pages/2026-10-25-did-you-know-spectrum-music-channels.html").read_text(encoding="utf-8")
 for it in DN["items"]:
     assert _sr.dyk_summary_ok(it["teaser"], it["paragraphs"]), ("R88/R39: teaser must be verbatim body sentence(s)", it["id"])

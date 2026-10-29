@@ -264,8 +264,10 @@ if getattr(C, "DYK_NEW_JSON", None):
         L.ok("R88", _ok and f'"page": "{_pg}"' in _ai, f"new Did You Know {_it['id']} is block {_n + 1} (title, verbatim teaser, More -> {_pg}), page has Listen, archive row")
 # R89 (Steven Oct 29 2026 11:33 AM): with DYK_CARRY_PREVIOUS=False the main page Did You Know is exactly this issue's new items,
 # then one Did You Know Archives line; the previous issue's items are not on the page but keep their pages and archive rows.
-if getattr(C, "DYK_NEW_JSON", None) and not getattr(C, "DYK_CARRY_PREVIOUS", True):
-    _R = Path(__file__).resolve().parents[2]; _dn = json.load(open(_R / C.DYK_NEW_JSON, encoding="utf-8"))
+if not getattr(C, "DYK_CARRY_PREVIOUS", True):
+    _R = Path(__file__).resolve().parents[2]
+    _dn = json.load(open(_R / C.DYK_NEW_JSON, encoding="utf-8")) if getattr(C, "DYK_NEW_JSON", None) else {"items": []}
+    _dn = {"items": [{"title_display": r["title"]} for r in (getattr(C, "DYK_REPRISE", None) or [])] + _dn["items"]}
     _a89 = page.find(">Did You Know?</span>"); _seg89 = page[_a89:page.find("Did You Know Archives →", _a89)]
     _t89 = [_html.unescape(t) for t in re.findall(r'class="ph-dyk-title"[^>]*>([^<]*)</div>', _seg89)]
     L.ok("R89", _a89 > 0 and _t89 == [i["title_display"] for i in _dn["items"]] and page.count("Did You Know Archives →") == 1,
@@ -285,6 +287,17 @@ if getattr(C, "DYK_NEW_JSON", None):
         _m = re.search(r'<div class="content-card">([\s\S]*?)</div>\n<p class="source dyk-email-source"[^>]*>([^<]*)</p>\n<p class="source"[^>]*><a [^>]*>Did You Know Archives →', _pt)
         _ok = bool(_m) and _html.unescape(_m.group(2)) == _it["source_line"] and _m.group(1).endswith(f'<p class="dyk-byline">{_html.escape(_it["byline"])}</p>') if _it.get("byline") else bool(_m)
         L.ok("R90", _ok and _pt.count("dyk-email-source") == 1, f"{_it['id']} page cites its source email: {_it['source_line']!r}")
+# R91 (Steven Oct 29 2026 7:33 PM): DYK_REPRISE items are the top blocks (title, teaser = text printed then, More -> existing live
+# page, no new archive row); parked pages (DYK_PARKED_PAGES) are not in the repo tree, the issue, or any archive row/page.
+if getattr(C, "DYK_REPRISE", None) or getattr(C, "DYK_PARKED_PAGES", None):
+    _R = Path(__file__).resolve().parents[2]
+    _bl91 = re.findall(r'class="ph-dyk-title"[^>]*>([^<]*)</div><div[^>]*>([^<]*)</div><div class="ph-dyk-more"[^>]*><a href="([^"]+)"', page)
+    for _n, _it in enumerate(getattr(C, "DYK_REPRISE", None) or []):
+        _ok = len(_bl91) > _n and _html.unescape(_bl91[_n][0]) == _it["title"] and _html.unescape(getattr(C, _it["text_html"])).startswith(_html.unescape(_bl91[_n][1])) and _html.unescape(_bl91[_n][1])[-1:] in ".?!" and _bl91[_n][2] == _it["href"]
+        L.ok("R91", _ok and (_R / "pages" / _it["href"].split("/pages/", 1)[1]).exists(), f"Did You Know block {_n + 1} = {_it['title']!r} re-run as printed, More -> {_it['href']}")
+    _arch91 = [(_R / "archive/archive-items.json").read_text(encoding="utf-8"), (_R / "pages/archive/did-you-know.html").read_text(encoding="utf-8"), (_R / "pages/archive/archive-index.json").read_text(encoding="utf-8")]
+    for _pp in getattr(C, "DYK_PARKED_PAGES", None) or []:
+        L.ok("R91", not (_R / "pages" / _pp).exists() and _pp not in page and not any(_pp in t for t in _arch91), f"parked {_pp}: not in the tree, issue or archive")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

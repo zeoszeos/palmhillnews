@@ -551,7 +551,16 @@ _R66_PHRASES = {"2026-10-25-assessments-due": ["home transfer fees", ["monthly m
 DYK_RULES_ITEM_TEASER_APPROVED = "Information on home transfer fees, monthly maintenance fee due dates, and late fees."  # Steven's chosen option 2 (R66)
 DYK_ROW_DATE = "2026-10-25"; DYK_ROW_ISSUES = ["2026-10-25"]   # archive rows for these DYK items (R59/R66b)
 # R88 (Steven Oct 29 2026 11:11 AM "add the spectrum warning"): new Nov 1 DYK item, top of the section. WORDING PENDING Steven.
-DYK_NEW_JSON = "builder/nov1/data/dyk-spectrum-unplugging.json"
+# PARKED (Steven Oct 29 2026 7:32 PM, via Mail Scan): Spectrum unplugging item pulled until a proper answer is agreed in the
+# palmhillblast thread (no official Spectrum source). Data kept: builder/nov1/data/dyk-spectrum-unplugging.json; full item
+# (page, preview, guards) at branch nov1-dyk-spectrum-parked (a2b4659). RESTORE: set DYK_NEW_JSON back to that path, set
+# DYK_REPRISE = None, rerun builder/nov1/stage_nov1_content.py + the build (page + archive row are regenerated).
+DYK_NEW_JSON = None   # was "builder/nov1/data/dyk-spectrum-unplugging.json"
+DYK_PARKED_PAGES = ["2026-11-01-did-you-know-spectrum-unplugging.html"]   # must not be linked or archived while parked
+# R91 (Steven Oct 29 2026 7:33 PM): Facebook Did You Know (ran Oct 18) in place of the pulled Spectrum item. Source wording only:
+# title = the live page's own heading, teaser = DYK_FB_TEXT (as printed Oct 18), More -> the live Oct 18 page (QR code there).
+DYK_REPRISE = [{"id": "2026-10-18-did-you-know-facebook-group", "title": "Palm Hill Residents Facebook Group",
+                "text_html": "DYK_FB_TEXT", "sentences": 2, "href": FBPAGE_DYK}]   # R18c: first 2 source sentences (full text is 5 lines at 390 px; never reword)
 # R89 (Steven Oct 29 2026 11:33 AM "Remove last week's dyk items from the main nl page"): Oct 25 items stay in the archive only
 DYK_CARRY_PREVIOUS = False
 # R66c (Steven Oct 24 3:34 PM): Oct 18 Traffic Rules archive row teaser in R66 style (archive row only)
