@@ -1,8 +1,9 @@
 {
- "_about": "Nov 1, 2026 Did You Know (R88). Source: Steven Leonowicz, Oct 29 2026 11:11 AM ET chat ('add the spectrum warning about unplugging their modem over time will require a support phone call to spectrum to reactivate the equipment'), and Chuck Silcox email to Tony Ciaramitaro, Oct 29 2026 10:32 AM ET (Steven cc'd). Wording composed only from those facts; PENDING Steven's wording approval. Oct 29 11:18 AM: reworded as one resident's report plus advice -- no official Spectrum source says an extended unplug needs a support call (Spectrum only documents a 30-60 s unplug as a normal reboot).",
+ "_about": "Nov 1, 2026 Did You Know (R88). Source: Steven Leonowicz, Oct 29 2026 11:11 AM ET chat ('add the spectrum warning about unplugging their modem over time will require a support phone call to spectrum to reactivate the equipment'), and Chuck Silcox email to Tony Ciaramitaro, Oct 29 2026 10:32 AM ET (Steven cc'd). Wording composed only from those facts; PENDING Steven's wording approval. Oct 29 11:18 AM: reworded as one resident's report plus advice -- no official Spectrum source says an extended unplug needs a support call (Spectrum only documents a 30-60 s unplug as a normal reboot). Oct 29 12:50 PM (Steven: use Chuck's new Webmaster email as the source reference): PRIMARY source = Webmaster email \"Spectrum Equipment\" from Chuck Silcox (noreply@palmhillcountryclub.net), Thu Oct 29 2026 11:21 AM ET; the Chuck-to-Tony email of Oct 29 10:32 AM ET says the same thing. Body wording unchanged.",
  "source_facts": [
   "add the spectrum warning about unplugging their modem over time will require a support phone call to spectrum to reactivate the equipment",
-  "I was advised that someone went traveling for a couple weeks and while gone they unplugged their modem, WiFi and tv. When they returned they had to spend about a half hour with Spectrum on the phone to reset up the entire account. And then had to set up all the other channels like Peacock etc. Maybe we need to put out a blast to not unplug your equipment during any absence."
+  "I was advised that someone went traveling for a couple weeks and while gone they unplugged their modem, WiFi and tv. When they returned they had to spend about a half hour with Spectrum on the phone to reset up the entire account. And then had to set up all the other channels like Peacock etc. Maybe we need to put out a blast to not unplug your equipment during any absence.",
+  "Webmaster email 'Spectrum Equipment', Chuck Silcox, Oct 29 2026 11:21 AM ET (verbatim, typos as sent): Just remember when traveling do not unplug your equipment. I was advised that someone went traveling for a couple weeks and while gone they unplugged their modum,WiFi and tv. When they returned they had to spend about a half hour with spectrum on the phone to reset up the entire account. And than had to set up all the other channels like peacock etc. Chuck Silcox"
  ],
  "items": [
   {
@@ -14,7 +15,14 @@
    ],
    "teaser": "One resident went traveling for a couple of weeks and unplugged their modem, WiFi and TV while away.",
    "byline": "Chuck Silcox",
-   "preview_page": "did-you-know-spectrum-unplugging.html"
+   "preview_page": "did-you-know-spectrum-unplugging.html",
+   "source_line": "Source: Webmaster email \"Spectrum Equipment\" from Chuck Silcox, Oct 29, 2026.",
+   "source_email": {
+    "from": "Webmaster (Replies Not Accepted) <noreply@palmhillcountryclub.net>",
+    "subject": "Spectrum Equipment",
+    "sent": "2026-10-29T11:21:55-04:00",
+    "signed": "Chuck Silcox"
+   }
   }
  ],
  "page_prefix": "2026-11-01-",

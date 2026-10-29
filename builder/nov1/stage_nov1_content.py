@@ -67,6 +67,12 @@ for it in DN["items"]:
     out = re.sub(r"<title>.*?</title>", lambda m: f"<title>{html.escape(t)} — Palm Hill Country Club</title>", _TPL, count=1)
     out = re.sub(r'(<h1 class="ph-section" style="margin:0">).*?(</h1>)', lambda m: m.group(1) + html.escape(t) + m.group(2), out, count=1)
     out = re.sub(r'<div class="content-card">[\s\S]*?</div>\n', lambda m: f'<div class="content-card">{ps}</div>\n', out, count=1)
+    # R90 (Steven Oct 29 2026 12:50 PM): an item built from an email cites it as a plain source line (no link; not published online),
+    # outside the content card (R33: byline stays the card's last paragraph), just above the Did You Know Archives line.
+    if it.get("source_line"):
+        _arch = '<p class="source" style="font-size:14px;color:#666"><a href="/pages/archive/did-you-know.html"'
+        assert out.count(_arch) == 1 and it["source_line"].startswith("Source: ")
+        out = out.replace(_arch, f'<p class="source dyk-email-source" style="font-size:14px;color:#666">{html.escape(it["source_line"])}</p>\n' + _arch)
     assert "music channels" not in out.lower() and out.count('class="ph-listen"') == 1
     f = DN["page_prefix"] + it["preview_page"]
     _sr.assert_no_link_name(out, f)  # R52

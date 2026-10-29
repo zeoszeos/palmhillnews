@@ -275,6 +275,16 @@ if getattr(C, "DYK_NEW_JSON", None) and not getattr(C, "DYK_CARRY_PREVIOUS", Tru
     _arch = (_R / "pages/archive/did-you-know.html").read_text(encoding="utf-8")
     _gone = [r["page"] for r in _prev if not (_R / "pages" / r["page"]).exists() or r["page"] not in _arch or ("/pages/" + r["page"]) in page]
     L.ok("R89", bool(_prev) and not _gone, f"previous issue's {len(_prev)} Did You Know items keep page + archive row, off the main page {_gone}")
+# R90 (Steven Oct 29 2026 12:50 PM): a Did You Know item built from an email/message (source_line in DYK_NEW_JSON) shows that
+# source line, plain (no link), outside the content card right above the Did You Know Archives line; byline stays last in the card (R33).
+if getattr(C, "DYK_NEW_JSON", None):
+    _R = Path(__file__).resolve().parents[2]; _dn = json.load(open(_R / C.DYK_NEW_JSON, encoding="utf-8"))
+    for _it in _dn["items"]:
+        if not _it.get("source_line"): continue
+        _pt = (_R / "pages" / (_dn["page_prefix"] + _it["preview_page"])).read_text(encoding="utf-8")
+        _m = re.search(r'<div class="content-card">([\s\S]*?)</div>\n<p class="source dyk-email-source"[^>]*>([^<]*)</p>\n<p class="source"[^>]*><a [^>]*>Did You Know Archives →', _pt)
+        _ok = bool(_m) and _html.unescape(_m.group(2)) == _it["source_line"] and _m.group(1).endswith(f'<p class="dyk-byline">{_html.escape(_it["byline"])}</p>') if _it.get("byline") else bool(_m)
+        L.ok("R90", _ok and _pt.count("dyk-email-source") == 1, f"{_it['id']} page cites its source email: {_it['source_line']!r}")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
