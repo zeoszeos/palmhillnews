@@ -60,6 +60,8 @@ def ptime(v):
     h, m = map(int, v.split(":")); return f"{(h-1)%12+1}:{m:02d} {'AM' if h<12 else 'PM'}"
 def inw(e, w): return w[0] <= e["date"] <= w[1]
 COMMITTEE_RE = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
+# R87b (Steven Oct 30 2026 11:21 AM): content flag MEETINGS_NAME_RE_EXTRA widens the meeting-name match (default None = Oct 25 byte for byte)
+if globals().get("MEETINGS_NAME_RE_EXTRA"): COMMITTEE_RE = re.compile(COMMITTEE_RE.pattern + "|" + MEETINGS_NAME_RE_EXTRA, re.I)
 def is_cmte(e): return e.get("category") == "Meetings" and bool(COMMITTEE_RE.search(e["name"]))
 def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower()
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}

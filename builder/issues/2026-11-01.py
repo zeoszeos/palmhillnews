@@ -98,8 +98,11 @@ TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan
 
 # ---------- Meetings: committee/board extras, notes and agenda/report overrides (R62/R62b/R62c) ----------
 # Steven, Oct 16 (MEETING-SOURCES-COMPARE.md): Finance from agenda email (no Zoom link yet); Palm Hill dates for Nov conflicts, flagged TBC
-MTG_EXTRA = [dict(  # Oct 25: Finance Oct 22 (agenda email) is past -> dropped; no newer Finance agenda in palmhillblast as of Oct 20 2:4x PM
-             date="2026-11-18", start="13:00", name="Board of Directors Meeting", venue="Board Room South", note="(date to be confirmed)")]
+# R86/R87 (Steven Oct 30 2026 11:21 AM "follow the Palm Hill calendar"): no MTG_EXTRA rows -- the calendar now shows the Nov 18
+# Board of Directors meeting RESCHEDULED (moved to Fri Nov 20, 1:00 PM, which the calendar lists CONFIRMED). Was: Nov 18 TBC row.
+MTG_EXTRA = []
+# R87b (same message): the calendar's "Board Meeting" (Meetings category, e.g. Thu Nov 5 1:00 PM) is a board meeting too.
+MEETINGS_NAME_RE_EXTRA = r"\bboard meeting\b"
 MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to be confirmed)",
             }
 # STYLE-RULES R86 (Steven Oct 27 2026 2:24 PM; Tony Oct 26 "Calendar dates only works for me"): from Nov 1 the Palm Hill calendar

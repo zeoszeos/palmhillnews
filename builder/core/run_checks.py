@@ -239,7 +239,7 @@ if C.ISSUE >= "2026-11-01" and getattr(C, "MEETINGS_ALL_IN_WINDOW", False):
     else:
 
         import issue_ctx as _ix87; _w87 = _ix87.windows(C.ISSUE)["MEETINGS"]
-        _re87 = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
+        _re87 = re.compile(r"\bcommittee\b|\bboard of directors\b" + ("|" + C.MEETINGS_NAME_RE_EXTRA if getattr(C, "MEETINGS_NAME_RE_EXTRA", None) else ""), re.I)  # R87b
         _exp87 = sorted({(e["date"], e["start"], e["name"].lower().replace("&", "and").replace("building ", "buildings ").replace(" meeting", "").strip())
                          for e in _cal87["events"] if e.get("category") == "Meetings" and _re87.search(e["name"]) and e.get("status") == "CONFIRMED"
                          and e["name"] != "Private Event" and "test" not in e["name"].lower() and _w87[0] <= e["date"] <= _w87[1]})
