@@ -39,6 +39,10 @@ def add_inplace(t):
     t = re.sub(r"\n?<!-- ph-inplace-listen:start -->.*?<!-- ph-inplace-listen:end -->", "", t, flags=re.S)
     i = t.lower().rfind("</body>")
     return t[:i] + INPLACE.strip() + "\n" + t[i:] if i >= 0 else t + INPLACE
+INPLACE_RE = re.compile(r"\n?<!-- ph-inplace-listen:start -->.*?<!-- ph-inplace-listen:end -->\n?", re.S)
+def strip_inplace(t):
+    """R94: the review/live preview minus its in-place Listen block (for preview-vs-SEND comparisons)."""
+    return INPLACE_RE.sub("\n", t, count=1) if "<!-- ph-inplace-listen:start -->" in t else t
 def add(t):
     """R49b (Steven, Oct 18 2:05 AM): give a page working Listen -- the shared script AND the standard button -- without
     changing any other visible content. Button placement follows the page's layout:

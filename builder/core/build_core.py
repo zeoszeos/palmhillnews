@@ -772,6 +772,13 @@ for _ap, _pg in ARCHIVE_BACKED:
     for _u in ("https://palmhillnews.vercel.app/pages/" + _pg, "https://palmhillnews.vercel.app/pages/archive/../" + _pg): _ld = _ld.replace('href="' + _u, 'href="../' + _pg)
     assert 'href="../' + _pg in _ld, f"R59: local DYK archive copy missing {_pg}"
 (LOCAL / "archive/did-you-know.html").write_text(_ld, encoding="utf-8"); (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
+# STYLE-RULES R94 (Steven, Oct 30 2026 4:02 PM): the REVIEW / live-preview copy (a web page, never emailed) gets the same in-place
+# Listen block as the archive pages (scripts/listen_inplace.html), so a main-page Listen reads that item on the FIRST press.
+# Links stay plain hrefs (no speech / file:// / load failure -> opens the ?listen=1 page). OUTF (-> SEND / email) stays script-free.
+if _plv.v2_for(ISSUE):
+    _loc = _plv.add_inplace(_loc); (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
+    assert _plv.strip_inplace(_loc).lower().count("<script") == 0, "R94: review copy may carry only the in-place Listen block"
+assert "<script" not in OUTF.read_text(encoding="utf-8").lower(), "R76c/R94: the NL output feeding SEND/email must stay script-free"
 print("local review copy:", sorted(str(p.relative_to(LOCAL)) for p in LOCAL.rglob("*") if p.is_file()))
 print("DRY-RUN TODOs:", len(DRYRUN_TODO)) if DRYRUN else None
 # STYLE-RULES R70 (Steven, Oct 24 2026 9:56 PM; PR #139, carried into the shared builder in batch 4): the live preview page is synced
