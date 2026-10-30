@@ -488,49 +488,48 @@ RULES_ARCHIVE_SOURCE = "Source: Rules and Regulations Committee Report (Bob Newp
 STORY_DATE_LABEL = "Feb 2026"   # archive "date_label" for this issue's story row (used only when STORY is set)
 
 # ---------- Weekly Manager Update (page items, PDF attachment, main-page card) ----------
-# Weekly Manager Update Oct 23 (Megan Leftwich, "Fw: Weekly Update 2026.10.23", palmhillblast Fri Oct 23 4:07 PM ET; her
-# original went to the Board at 4:03 PM) replaces Oct 16 (retention rule). The page is built here from the Oct 16 page's
-# card template with Megan's wording item by item (never hand-edited); decorative emoji in the insurance scenarios dropped.
-WMU_1023_PAGE = "2026-10-23-weekly-manager-update.html"
+# Weekly Manager Update Oct 30 (Megan Leftwich, "Fw: Weekly Update 2026.10.30", palmhillblast Fri Oct 30 4:03 PM ET; her
+# original went to the Board at 3:59 PM) replaces Oct 23 (retention rule; Friday evening check Oct 30 ~6:10 PM). Built from the
+# Oct 23 page's card template with Megan's wording item by item (never hand-edited). Her opening line "I hope everyone has a
+# happy Halloween tomorrow!" is left out (past by the issue date). Oct 23 page/archive row stay as published.
+WMU_1023_PAGE = "2026-10-30-weekly-manager-update.html"
 WMU_1023 = [
-    "We had a complaint regarding the temperature of the water in the north pool. Staff have checked over the heaters, and they are working properly and maintaining the correct temperatures. We will not be changing the temperature, as it has been established and is maintained year-round.",
-    "At the Finance committee meeting, I confirmed the placement of the requested CDs. You now have 4 in your reserve account and 3 in your savings. All are $100,000 and have staggered due dates.",
-    "The City of Largo picked up the trash compactor to empty on Friday, and their truck broke down with the unit on it. They dropped off an open-top container temporarily but were able to get the compactor back to us just now.",
-    "The election equipment will be dropped off on Thursday morning next week, with the election on Tuesday the following week.",
-    "Toni has begun preparing the First Notice for the annual meeting. It is scheduled to go out on or before November 20th.",
-    "We received the second grease trap permit from the City of Largo this week. They are posted in the south clubhouse.",
-    "We had a motorcycle in the community on Needle today. I spoke to them, and we sent them a letter regarding it.",
-    ("David had asked if the insurance coverage was necessary and Lauren responded with the following:", [
-        "The coverage is not mandatory, but a recommendation considering the prior policy included the coverage.",
-        "Below are examples of claim scenarios that would preclude coverage without implementing such a policy:",
-        "<strong>Scenario 1 – Neighbor Dispute Turns Physical</strong><br>Two residents get into a heated argument over a parking space in a common lot. The dispute escalates and one resident strikes the other. The injured party sues the park, alleging negligent security and failure to address prior complaints about the aggressive neighbor.",
-        "<strong>Scenario 2 – Pool / Common Area Altercation</strong><br>A fight breaks out between teenagers at the community pool. A bystander resident is injured trying to break it up. The park is named in the lawsuit for failing to provide adequate supervision or security.",
-        "<strong>Scenario 3 – On-Site Manager Involvement</strong><br>A park manager physically confronts a resident who is violating community rules. The resident alleges excessive force and files a claim against both the manager and the park ownership entity."]),
-    "Lynntina with Duke confirmed receipt of the payment for the transformer. She has requested the signed waiver before they will schedule the work.",
-    "Manhole inspections were conducted today. I have reached out to them to confirm they have completed them. We will submit the required paperwork by the November 6th deadline.",
-    "Attached is a paper from RPM regarding minutes and some guidelines as to what to include. Please let me know if you have any questions, and I will share them with the committees.",
+    "We had reports that the temperature in the North pool was not holding correctly. Maintenance initially checked the heating units and found no issues. After additional reports, the vendor was contacted, came out, and assessed the units. They determined that the compressors on 2 of the 3 units were not working. Henry has authorized the repairs, and they are on the agenda for ratification at the regular November Board meeting.",
+    "We have had reports that there is regularly a grocery bag with trash being dumped in the area by the golf lean-to between the north and south. The person reporting it has tried to identify the person but has been unable to do so. In the meantime, maintenance will pick it up any time they see the bag there.",
+    "I have notified your insurance broker that the Board voted to obtain the lower coverage option for the insurance. The premium quoted was for an annual policy. They will ask that it expire at the same time as the other policies so the premium will be less than originally quoted. I will provide that information once it is received.",
+    "Chuck has been repairing the lights at the Palm Forest mailboxes, the camera at the sanitation field gate, and the golf solar this week. We have ordered a new battery for him and are reimbursing him for a few other electrical components, totaling $171.25.",
+    "The replacement refrigerator for the south clubhouse arrived on Thursday. Since this was an extremely large fridge, it took some maneuvering to get it into place.",
+    "The manhole inspections were completed on Monday. I have reached out to confirm that the report is being provided to the City of Largo to ensure compliance.",
+    "Green clay has now been ordered for the Bocce courts. It is expected to arrive in two weeks, but we will not have a firm date until closer to delivery.",
+    "The lights in the north pool are not working. The vendor has provided a quote for the replacement, which Henry has signed. Triangle will be replacing them as soon as they are in stock. Attached is the quote provided.",
+    "We had a couple of reports that the tow truck drivers were speeding in the community. I have spoken to their supervisor and reminded them that the speed limit in the community is 15mph. He stated that the vehicles have GPS and speed monitoring, and he would check in with them. We have not had any new reports since the discussion, but we will monitor if anyone has any additional concerns.",
+    "We have received the attached site plan for 82 Pindo West. They are looking to replace the home at this address and have submitted this for approval to move forward. I've asked if this can also be included in the 11/5 meeting to keep this moving forward. If not, it will be included in the meeting for 11/20.",
+    "We had a fire inspection for the south clubhouse on Thursday. There were a few issues raised. Anthony will replace the battery in two emergency lights that are not functioning. I have provided documentation on repairs made after the inspection, as well as the Ansul system repair in the north. I have also contacted Pye Barker regarding an expired tag on the Ansul system in the south. They will be onsite on 11/3. They checked the keys that they have in the Knox box and we replaced one key and the fob that were inside.",
+    "The fire alarm was set off on Thursday by a fog machine for the haunted library. It was placed outside, but went in through a propped open door and set off the alarm. The fire department responded, but went to the south clubhouse. I have contacted Cross security and updated the address that they have for each to ensure they respond to the correct location if there is an actual fire.",
+    "The contract for Valet Trash has been reviewed by the attorney and a redline version and clean version were sent back to the vendor. If they have no objection to the requested changes I have asked that they sign and return the contract. If they have any requested changes they will let us know.",
 ]
-WMU_TEMPLATE = "2026-10-16-weekly-manager-update.html"   # previous update page = card template
+WMU_TEMPLATE = "2026-10-23-weekly-manager-update.html"   # previous update page = card template
 WMU_GREETING = "Good Afternoon Everyone,"
-WMU_TEMPLATE_DATE = "2026-10-16"                         # must not survive in the new page (above the Listen block)
-WMU_REPLACE = [("October 16, 2026", "October 23, 2026"), ("Oct 16, 2026", "Oct 23, 2026"),
-               ("2026-10-16-weekly-manager-update", "2026-10-23-weekly-manager-update"), ("2026.10.16", "2026.10.23")]
-# STYLE-RULES R65 (Steven-approved Oct 24 2:26 PM): Megan's attached RPM paper ("Recording Minutes at Meetings", 2 pages, from her
-# "Weekly Update 2026.10.23" email) is hosted as a PDF and linked in an Attachments card on her Oct 23 page (Oct 9 page layout).
-# Applied by the builder to the existing page (idempotent); a copy, the source PDF is never moved.
-WMU_1023_PDF_SRC = "source/megan-1023/minutes-M100.pdf"   # R72: source PDF, relative to PHNEWS_WORK (copied, never moved)
-WMU_1023_PDF = "assets/manager/2026-10-23-rpm-recording-minutes-at-meetings.pdf"
-WMU_1023_PDF_TITLE = "Recording Minutes at Meetings"
-WMU_1023_PDF_DESC = "Paper from RPM on what to include in minutes · PDF, 2 pages"
+WMU_TEMPLATE_DATE = "2026-10-23"                         # must not survive in the new page (above the Listen block)
+WMU_REPLACE = [("October 23, 2026", "October 30, 2026"), ("Oct 23, 2026", "Oct 30, 2026"),
+               ("2026-10-23-weekly-manager-update", "2026-10-30-weekly-manager-update"), ("2026.10.23", "2026.10.30")]
+# R65b: Megan's Oct 30 attachments (SIteplanFinal.pdf = site plan for 82 Pindo West; the north pool lights quote) are HELD for
+# Steven's decision -- a resident's home site plan; not hosted, no Attachments card. Set the four values below to host one (R65).
+WMU_1023_PDF_SRC = None
+WMU_1023_PDF = None
+WMU_1023_PDF_TITLE = None
+WMU_1023_PDF_DESC = None
 ARCHIVE_ROWS_LATE = [   # archive rows added after the weekly update page is built (R59)
     ("weekly-manager-updates", {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
-                                         "page": WMU_1023_PAGE, "issues": ["2026-10-25"]}),
+                                         "page": "2026-10-23-weekly-manager-update.html", "issues": ["2026-10-25"]}),
+    ("weekly-manager-updates", {"date": "2026-10-30", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
+                                         "page": WMU_1023_PAGE, "issues": ["2026-11-01"]}),
 ]
 # Main-page Weekly Manager Update card: the seed card to replace (title + a phrase proving it is the old one) and the new date line/teaser
 WMU_CARD_OLD = '<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'
 WMU_CARD_OLD_MARK = "Duke Energy Waiver"
-WMU_CARD_DATE = "Friday, Oct 23, 2026"
-WMU_CARD_TEASER = "The election equipment will be dropped off on Thursday morning next week, with the election on Tuesday the following week."
+WMU_CARD_DATE = "Friday, Oct 30, 2026"
+WMU_CARD_TEASER = "Green clay has now been ordered for the Bocce courts. It is expected to arrive in two weeks, but we will not have a firm date until closer to delivery."
 
 # ---------- Manager reports with a Listen on the title line ----------
 MANAGER_LISTEN = [("Shareholders Report — September 30 Board Meeting", BASE + "2026-09-30-shareholders-report.html"),

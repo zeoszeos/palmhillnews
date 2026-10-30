@@ -435,21 +435,27 @@ if not _wp.exists():  # published page (nav/Listen kept current by build_archive
     _wp.write_text(_tpl, encoding="utf-8")
 # R65: the weekly update's attached PDF (WMU_1023_PDF*, content file) is copied (never moved) and linked in an Attachments card.
 # R72 (batch 6, Steven Oct 24 2026 10:40 PM "do them all"): the PDF source is a content-file path relative to the work tree.
-if Path(WMU_1023_PDF_SRC).is_absolute(): raise SystemExit("R72 FAIL: WMU_1023_PDF_SRC must be relative to PHNEWS_WORK, not a fixed folder. Why: builds must not depend on one machine's folders. Fix: copy the PDF into <work>/source/ and set the relative path in the content file.")
-WMU_1023_PDF_SRC = ROOT / WMU_1023_PDF_SRC
-if not WMU_1023_PDF_SRC.exists(): raise SystemExit(f"R72 FAIL: weekly update PDF {WMU_1023_PDF_SRC} is missing. Why: the Attachments card would link a missing file. Fix: copy the PDF there (copy, never move).")
-_pdf = PAGES / WMU_1023_PDF
-if not _pdf.exists():
-    import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
-_wt = _wp.read_text(encoding="utf-8")
-if WMU_1023_PDF not in _wt:
-    _att = ('<section class="content-card attachments" aria-labelledby="att-h"><h2 id="att-h">Attachments</h2>\n<ul class="att-docs">\n'
-            f'<li><a href="/pages/{WMU_1023_PDF}" target="_blank" rel="noopener"><span class="att-icon" aria-hidden="true">📄</span>'
-            f'<span><b>{WMU_1023_PDF_TITLE}</b><small>{WMU_1023_PDF_DESC}</small></span></a></li>\n</ul>\n</section>\n')
-    _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
-    _wt = _wt[:_k] + _att + _wt[_k:]
-    _wp.write_text(_wt, encoding="utf-8")
-assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: weekly update PDF link/copy missing"
+# R65b (Nov 1 Fri evening check, Oct 30 2026): WMU_1023_PDF_SRC = None means the update's attachments are held for Steven's
+# decision -- no PDF is hosted and the page carries no Attachments card (the template's card is already removed above).
+if WMU_1023_PDF_SRC is None:
+    _wt = _wp.read_text(encoding="utf-8")
+    assert 'class="content-card attachments"' not in _wt and "/pages/assets/manager/" not in _wt, "R65b: weekly update page must not carry another update's attachment"
+else:
+    if Path(WMU_1023_PDF_SRC).is_absolute(): raise SystemExit("R72 FAIL: WMU_1023_PDF_SRC must be relative to PHNEWS_WORK, not a fixed folder. Why: builds must not depend on one machine's folders. Fix: copy the PDF into <work>/source/ and set the relative path in the content file.")
+    WMU_1023_PDF_SRC = ROOT / WMU_1023_PDF_SRC
+    if not WMU_1023_PDF_SRC.exists(): raise SystemExit(f"R72 FAIL: weekly update PDF {WMU_1023_PDF_SRC} is missing. Why: the Attachments card would link a missing file. Fix: copy the PDF there (copy, never move).")
+    _pdf = PAGES / WMU_1023_PDF
+    if not _pdf.exists():
+        import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
+    _wt = _wp.read_text(encoding="utf-8")
+    if WMU_1023_PDF not in _wt:
+        _att = ('<section class="content-card attachments" aria-labelledby="att-h"><h2 id="att-h">Attachments</h2>\n<ul class="att-docs">\n'
+                f'<li><a href="/pages/{WMU_1023_PDF}" target="_blank" rel="noopener"><span class="att-icon" aria-hidden="true">📄</span>'
+                f'<span><b>{WMU_1023_PDF_TITLE}</b><small>{WMU_1023_PDF_DESC}</small></span></a></li>\n</ul>\n</section>\n')
+        _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
+        _wt = _wt[:_k] + _att + _wt[_k:]
+        _wp.write_text(_wt, encoding="utf-8")
+    assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: weekly update PDF link/copy missing"
 for _sec, _row in ARCHIVE_ROWS_LATE: _arch_row(_sec, _row)
 # Weekly Manager Update card on the main page: the newest update replaces the seed card (retention rule); WMU_CARD_* in the content file
 _W_OLD = s[s.find(WMU_CARD_OLD):]
