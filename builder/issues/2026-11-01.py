@@ -597,7 +597,9 @@ MEETING_ROW_CHECKS = [   # R62/R62b: a meetings row must show (need) and must no
 ]
 HOLIDAY_SOURCE_LABEL = "Bill Bender email"            # R60b linked Source wording
 ICE_SOURCE_LABEL = "Oct P&E Committee Report"         # R60c linked Source wording
-UPCOMING_LABEL_EXPECTED = "November 1 through November 22"   # L08 Upcoming header label
+# R92 (Steven Oct 30 2026 11:40 AM): Events - Next Week (Nov 8-14) directly under This Week; label derived from ISSUE (L08).
+NEXT_WEEK_SECTION = True
+UPCOMING_LABEL_EXPECTED = None   # unused with NEXT_WEEK_SECTION (was stale Oct 25 carry-over "November 1 through November 22")
 CHAIR_DATES_EXPECTED = ["Wednesday, Oct 14, 2026", "Tuesday, Oct 13, 2026", "Monday, Oct 12, 2026"]   # L14 chair report dates
 CHAIR_DATES_LABEL = "chair dates P&E Oct 14, Golf Oct 13, Communications Oct 12 (3-letter months)"
 RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"

@@ -33,6 +33,10 @@ ORDER = ["Committee &amp; Board Meeting Schedules", "Committee Chair Reports", "
          "Community Notices", "Monthly Shareholders Report", "Weekly Manager Update", "Events - Upcoming", "Community Stories",
          "From the Board President", "Did You Know?", "Residents Reference Guide"]
 got = [t for _, t in lc._headings(page)]
+_NWS = getattr(C, "NEXT_WEEK_SECTION", False)   # R92 (Steven Oct 30 2026 11:40 AM)
+UPH = "Events - Next Week" if _NWS else "Events - Upcoming"
+if _NWS:
+    ORDER.remove("Events - Upcoming"); ORDER.insert(ORDER.index("Events - This Week") + 1, "Events - Next Week")
 L.ok("L03", got == ORDER, f"section order {got}")
 for bad in ("Block Captain", "Test Meeting", "Private Event", "Real Estate Committee Report", "Rules and Regulations Committee Report"):
     L.ok("L04", bad not in page, f'"{bad}" absent')
@@ -55,9 +59,14 @@ for _mc in C.MEETING_ROW_CHECKS:  # R62/R62b expected wording = content file dat
     L.ok(_mc["rule"], all(x in _mt for x in _mc["need"]) and not any(x in _mt for x in _mc["never"]),
          f"{'Finance' if 'Finance' in _mc['start'] else 'P&E'} row {_mt[:90]}")
 # L07/L08 This Week / Upcoming = audit rows; treat-as-recurring never there
-tw = lc._section(page, "Events - This Week"); up = lc._section(page, "Events - Upcoming")
+tw = lc._section(page, "Events - This Week"); up = lc._section(page, UPH)
 L.ok("L07", [norm(x) for x in titles(tw)] == [norm(n) for _, n in audit["this_week"]] and f">{_W('THIS_WEEK')}<" in tw, f"This Week rows {titles(tw)}")
-L.ok("L08", [norm(x) for x in titles(up)] == [norm(n) for _, n in audit["upcoming"]] and f">{C.UPCOMING_LABEL_EXPECTED}<" in up, f"Upcoming rows {titles(up)}")
+L.ok("L08", [norm(x) for x in titles(up)] == [norm(n) for _, n in audit["upcoming"]] and f">{_W('NEXT_WEEK') if _NWS else C.UPCOMING_LABEL_EXPECTED}<" in up, f"{UPH} rows {titles(up)}")
+if _NWS:   # R92 guard: Next Week directly under This Week, header range = issue day +7..+13, every row inside it, no Upcoming section
+    _nw = C.WINDOWS["NEXT_WEEK"]
+    L.ok("R92", got.index("Events - Next Week") == got.index("Events - This Week") + 1 and "Events - Upcoming" not in got
+         and all(_nw[0] <= d <= _nw[1] for d, _ in audit["upcoming"]) and f">{_W('NEXT_WEEK')}<" in up,
+         f"Next Week directly under This Week, {_W('NEXT_WEEK')}, {len(audit['upcoming'])} rows in window")
 # A3: one shared treat-as-recurring list
 b25 = (H / "build_core.py").read_text(encoding="utf-8")
 _as = lambda src: set(eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))
@@ -101,8 +110,14 @@ L.ok("R77", len(titles(ch)) == len(set(titles(ch))), "one chair card per committ
 # page carries Steven's note verbatim, has no Recurring-page event, and lists every window event not on the Recurring pages.
 if getattr(C, "ALL_EVENTS_PAGE", False):
     _aef = f"{C.ISSUE}-all-events-by-date.html"; _ael = f'href="{lc.BASE}{_aef}" style="color:#3A6B1A;">{C.ALL_EVENTS_LINK_TEXT}</a>'
-    for _sn in ("Events - This Week", "Events - Upcoming"):
-        L.ok("R79", _ael in lc._section(page, _sn), f"{_sn}: link '{C.ALL_EVENTS_LINK_TEXT}' -> {_aef}")
+    for _sn in ("Events - This Week", UPH):
+        _sx = lc._section(page, _sn)
+        if _NWS:   # R92b: link is the FIRST row of the section, under the header/date range
+            _t = _sx.find('style="margin:4px 0 12px 0;">'); _fr = _sx[_t:_sx.find("</tr>", _t)]
+            L.ok("R92b", f'href="{lc.BASE}{_aef}"' in _fr and f">{C.ALL_EVENTS_LINK_TEXT}</a>" in _fr and _sx.count(_aef) == 1,
+                 f"{_sn}: '{C.ALL_EVENTS_LINK_TEXT}' is the top row (once)")
+        else:
+            L.ok("R79", _ael in _sx, f"{_sn}: link '{C.ALL_EVENTS_LINK_TEXT}' -> {_aef}")
     _RPg = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"; _aeh = ""
     for _o in ("date", "name", "location"):   # Steven Oct 26 11:28 AM: same three sorts as Recurring, note on all three
         _p = _RPg / f"{C.ISSUE}-all-events-by-{_o}.html"; _h = _p.read_text(encoding="utf-8") if _p.exists() else ""
@@ -150,7 +165,8 @@ if getattr(C, "LINKS_SEVEN", False):
 # R82 (Steven Oct 26 2026 11:49 AM): calendar-only More → pages (R82_CAL_PAGES) carry the calendar wording, names exactly as the calendar.
 for _rn, _rw in getattr(C, "R82_CAL_PAGES", {}).items():   # content file: event -> calendar wording its More → page must carry
     _tf = C.EVENT_PAGE[_rn][0]; _tp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _tf
-    L.ok("R82", f'{lc.BASE}{_tf}" style="color:#3A6B1A;">More →</a>' in page and _tp.exists() and _rw in _tp.read_text(encoding="utf-8"),
+    _inbody = _rn in {n for _, n in audit["this_week"] + audit["upcoming"]}   # R92: events after Next Week live on All Events only
+    L.ok("R82", (not _inbody or f'{lc.BASE}{_tf}" style="color:#3A6B1A;">More →</a>' in page) and _tp.exists() and _rw in _tp.read_text(encoding="utf-8"),
          f"{_rn}: More → {_tf} with the calendar wording")
 # R83 (Steven Oct 26 2026 12:19 PM): the issue's Community Story -- section teaser + More → the story page, the story page carries
 # exactly one approved credit line after </article> (R52 exception), and no test/review/dry-run wording anywhere in the preview.

@@ -23,7 +23,7 @@ def content_data(c):
             if not k.startswith("__") and k not in skip and not isinstance(v, types.ModuleType)}
 def windows(issue):
     d = date.fromisoformat(issue); f = lambda n: (d + timedelta(days=n)).isoformat()
-    return {"THIS_WEEK": (f(0), f(6)), "UPCOMING": (f(7), f(28)), "RECURRING": (f(0), f(29)), "MEETINGS": (f(0), f(30)),
+    return {"THIS_WEEK": (f(0), f(6)), "UPCOMING": (f(7), f(28)), "NEXT_WEEK": (f(7), f(13)), "RECURRING": (f(0), f(29)), "MEETINGS": (f(0), f(30)),
             "CAL_WINDOW": (f(-7), f(60))}
 def content_path(issue): return ISSUES_DIR / f"{issue}.py"
 def check(c, issue):

@@ -84,6 +84,11 @@ def evsel(w):
                    and e["name"] not in AS_RECURRING and e.get("category") != "CLOSURE" and not e.get("allDay")
                    and (e.get("category") != "Meetings" or e["name"] in MEETINGS_CAT_ALLOWED)],
                   key=lambda e: (e["date"], e["start"]))
+# R92 (Steven Oct 30 2026 11:40 AM): from Nov 1 "Events - Upcoming" becomes "Events - Next Week" = the following Sun-Sat week only
+# (issue day +7..+13, from ISSUE via issue_ctx.windows), placed directly under Events - This Week. Later events live on the All
+# Events List only (R79). Content flag NEXT_WEEK_SECTION (default False = Oct 25 and earlier, byte for byte).
+_NW = bool(globals().get("NEXT_WEEK_SECTION", False))
+if _NW: UPCOMING = C.WINDOWS["NEXT_WEEK"]
 this_week, upcoming = evsel(THIS_WEEK), evsel(UPCOMING)
 
 # Event text/links/More → pages (EVENT_DETAIL, EVENT_EXTRA_SRC, EVENT_LINK, PHONE_OK_PAGES, EVENT_PAGE, INFO_COVERED, TITLE) come
@@ -333,14 +338,24 @@ all_events = evsel(RECURRING) if _AE else []
 AE_FILE = f"{ISSUE}-all-events-by-date.html"  # default sort, like the Recurring link
 def _ae_link():
     if not _AE: return ""
+    if _NW:  # R92b (Steven Oct 30 2026 11:42 AM): link sits at the TOP of the section (first row, under the header/date range),
+        # centred, bold, underlined like the archive strip (ph-archive-bar) under the title on subsection pages
+        return (f'<tr><td align="center" class="ph-ae-top" style="padding:6px 8px 8px 8px;text-align:center;"><a href="{BASE}{AE_FILE}" '
+                f'style="color:#1d4310;font:bold 16px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;">'
+                f'{escape(ALL_EVENTS_LINK_TEXT)}</a></td></tr>')
     return f'<tr><td style="padding:6px 8px;font-size:14px;"><a href="{BASE}{AE_FILE}" style="color:{G};">{escape(ALL_EVENTS_LINK_TEXT)}</a></td></tr>'
-replace_table("Events - Upcoming", ev_rows(upcoming) + _ae_link(), f"{md(UPCOMING[0])} through {md(UPCOMING[1])}")
+replace_table("Events - Upcoming", (_ae_link() + ev_rows(upcoming)) if _NW else (ev_rows(upcoming) + _ae_link()), f"{md(UPCOMING[0])} through {md(UPCOMING[1])}")
 # Events - This Week (cloned from Upcoming shell) placed per L03 order
 a, b = section_span(s, "Events - Upcoming"); up = s[a:b]
 tw = up.replace("events-upcoming-detailed", "events-this-week-detailed").replace(">Events - Upcoming<", ">Events - This Week<").replace('data-heading-variant="upcoming_events"', 'data-heading-variant="this_week"')
 r0, _ = section_span(s, "Recurring Meetings &amp; Events")
 s = s[:r0] + tw + s[r0:]   # L03: This Week sits between Chair Reports and Recurring
-replace_table("Events - This Week", ev_rows(this_week) + _ae_link(), f"{md(THIS_WEEK[0])} through {md(THIS_WEEK[1])}")
+replace_table("Events - This Week", (_ae_link() + ev_rows(this_week)) if _NW else (ev_rows(this_week) + _ae_link()), f"{md(THIS_WEEK[0])} through {md(THIS_WEEK[1])}")
+if _NW:  # R92: rename Upcoming -> Next Week (icon kept) and move it directly after This Week
+    a, b = section_span(s, "Events - Upcoming"); nw = s[a:b]; s = s[:a] + s[b:]
+    nw = nw.replace(">Events - Upcoming<", ">Events - Next Week<").replace('data-heading-variant="upcoming_events"', 'data-heading-variant="next_week"')
+    _, t1 = section_span(s, "Events - This Week")
+    s = s[:t1] + nw + s[t1:]
 if _AE:  # R79 All Events pages are written by recurring.py + recurring_grouped.py (same shell and sorts as Recurring)
     assert not any(e.get("recurring") or e["name"] in AS_RECURRING for e in all_events), "R79: an All Events row is on the Recurring pages"
     for _o in ("date", "name", "location"):
