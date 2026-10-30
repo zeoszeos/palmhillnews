@@ -19,9 +19,16 @@ def sync(local_preview, repo, issue):
 
 def check(issue, root, repo):
     pv = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"; sd = Path(root) / f"PHNEWS-{issue}-SEND.html"
-    p = stamps(pv.read_text(encoding="utf-8"))
-    if not sd.exists(): return [], p
-    s = stamps(sd.read_text(encoding="utf-8")); fails = []
+    pt = pv.read_text(encoding="utf-8"); p = stamps(pt); fails = []
+    # R94 (Steven Oct 30 2026 4:02 PM): from v2_from the live preview carries exactly one in-place Listen block and no other
+    # script; the SEND/email copy carries none. Comparisons with SEND ignore only that block (page_listen.strip_inplace).
+    sys.path.insert(0, str(Path(__file__).resolve().parent)); import page_listen as pl
+    if pl.v2_for(issue):
+        if pt.count("<!-- ph-inplace-listen:start -->") != 1: fails.append("R94: live preview lacks the in-place Listen block")
+        if "<script" in pl.strip_inplace(pt).lower(): fails.append("R94: live preview has a script other than the in-place Listen block")
+    if not sd.exists(): return fails, p
+    st = sd.read_text(encoding="utf-8"); s = stamps(st)
+    if "<script" in st.lower(): fails.append("R94/R76c: SEND copy contains <script>")
     if p[0] != s[0]: fails.append(f"R70: preview footer '{p[0]}' != SEND footer '{s[0]}'")
     if p[1] != s[1]: fails.append(f"R70: preview masthead time '{p[1]}' != SEND masthead time '{s[1]}'")
     return fails, p

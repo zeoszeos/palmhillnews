@@ -4,7 +4,9 @@
   2. an archive page's Listen reads IN PLACE (no page change), the button turns to Stop, a second tap stops;
   3. the Nov 1 issue web copy (preview + the in-place block, as build_archive writes pages/archive/issues/<date>.html)
      reads a card's Listen in place;
-  4. the Nov 1 preview / SEND-like file has no <script>.
+  4. the Nov 1 SEND file has no <script>; the live preview carries ONLY the in-place block (R94);
+  5. R94: the live preview's first Community Notice Listen reads in place on the FIRST press; a blocked ?listen=1 page starts
+     on the first touch/click anywhere (not only the bar); on file:// the Listen link falls back to normal navigation.
 Usage: /workspace/pwvenv/bin/python tests/test_listen_v2.py [--shots DIR]"""
 import os, sys, re, mimetypes
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(R, "scripts"))
@@ -25,6 +27,7 @@ ISSUE_WEB = PL.add_inplace(open(os.path.join(R, PREV), encoding="utf-8").read())
 def serve(route):
     from urllib.parse import urlparse
     u = urlparse(route.request.url)
+    if u.scheme == "file": return route.continue_()
     if u.hostname != "palmhillnews.vercel.app": return route.continue_() if re.search(r"\.(png|jpe?g|gif|webp|svg|css|woff2?)$", u.path) else route.abort()
     p = u.path.lstrip("/")
     if p == f"pages/archive/issues/{ISSUE}.html": return route.fulfill(body=ISSUE_WEB, content_type="text/html")
@@ -37,7 +40,10 @@ B = "https://palmhillnews.vercel.app/"
 def main():
     from playwright.sync_api import sync_playwright
     fails = []; ok = lambda c, m: (print(("PASS " if c else "FAIL ") + m), c or fails.append(m))
-    ok("<script" not in open(os.path.join(R, PREV), encoding="utf-8").read().lower(), "Nov 1 preview (= SEND body) has no <script>")
+    _pv = open(os.path.join(R, PREV), encoding="utf-8").read()
+    ok("<script" not in PL.strip_inplace(_pv).lower() and _pv.count("ph-inplace-listen:start") == 1, "R94: Nov 1 live preview = in-place Listen block only")
+    _sd = os.path.join(os.environ.get("PHNEWS_WORK", "/workspace/phnews-consolidation/nov1"), f"PHNEWS-{ISSUE}-SEND.html")
+    if os.path.exists(_sd): ok("<script" not in open(_sd, encoding="utf-8").read().lower(), "Nov 1 SEND (email) has no <script>")
     with sync_playwright() as pw:
         b = pw.chromium.launch()
         for name, opts in (("desktop", {"viewport": {"width": 1280, "height": 900}}), ("iphone", pw.devices["iPhone 13"])):
@@ -52,7 +58,11 @@ def main():
             first = pg.evaluate("() => window.__spoken[0] || ''")
             ok(bool(first) and first.replace(" ", "")[:15] in h1.replace(" ", "").replace("\n", ""), f"{name}: tap on bar starts reading from the title ({first[:40]!r})")
             ok(pg.query_selector(".ph-tap-bar") is None, f"{name}: bar gone after tap")
-            for label, url, sel in (("archive", B + ARCH, "a.ph-listen"), ("issue page", B + f"pages/archive/issues/{ISSUE}.html", 'a[href*="listen=1"]')):
+            # R94: first touch anywhere (not the bar, not a link) on a blocked ?listen=1 page starts the read once
+            pg = ctx.new_page(); pg.goto(B + NOTICE + "?listen=1", wait_until="load"); pg.wait_for_selector(".ph-tap-bar", state="visible", timeout=2500)
+            hb = pg.locator("h1").bounding_box(); (pg.touchscreen.tap if name == "iphone" else pg.mouse.click)(hb["x"] + 5, hb["y"] + hb["height"] / 2); pg.wait_for_timeout(300)
+            ok(len(pg.evaluate("() => window.__spoken")) > 0 and pg.query_selector(".ph-tap-bar") is None, f"{name}: first touch anywhere on a blocked page starts reading")
+            for label, url, sel in (("live preview notice", B + PREV, 'a[href*="notice-join-the-palm-hill"][href*="listen=1"]'), ("archive", B + ARCH, "a.ph-listen"), ("issue page", B + f"pages/archive/issues/{ISSUE}.html", 'a[href*="listen=1"]')):
                 pg = ctx.new_page(); pg.goto(url, wait_until="load"); a = pg.locator(sel).first; a.scroll_into_view_if_needed()
                 if SHOTS and name == "iphone" and label == "issue page":
                     pg.evaluate("(s) => { const a = document.querySelector(s); const r = a.closest('table') || a.parentElement; r.style.outline = '3px dashed #c00'; }", sel)
@@ -70,6 +80,12 @@ def main():
         pg = ctx.new_page(); pg.goto(B + ARCH, wait_until="load"); href = pg.locator("a.ph-listen").first.get_attribute("href")
         pg.locator("a.ph-listen").first.click(); pg.wait_for_load_state("load")
         ok(pg.url.split("?")[0] == href.split("?")[0], "no speech support: Listen link opens the listen page (fallback)")
+        # R94: the local review copy opened from disk (file://) cannot read the notice in place -> normal navigation
+        _loc = os.path.join(os.environ.get("PHNEWS_WORK", "/workspace/phnews-consolidation/nov1"), "local-nov1", f"PHNEWS-{ISSUE}-preview.html")
+        if os.path.exists(_loc):
+            ctx = b.new_context(); ctx.add_init_script(SLOW_BLOCK); ctx.route("**/*", serve); pg = ctx.new_page(); pg.goto("file://" + _loc, wait_until="load")
+            a = pg.locator('a[href*="notice-join-the-palm-hill"][href*="listen=1"]').first; href = a.get_attribute("href"); a.click(); pg.wait_for_url(lambda u: u.startswith("https:"), timeout=5000)
+            ok(pg.url.split("?")[0] == href.split("?")[0], f"file:// review copy: Listen falls back to opening {href.split('/')[-1]}")
         b.close()
     print("test_listen_v2:", "PASS" if not fails else f"FAIL ({len(fails)})"); return 1 if fails else 0
 if __name__ == "__main__": sys.exit(main())

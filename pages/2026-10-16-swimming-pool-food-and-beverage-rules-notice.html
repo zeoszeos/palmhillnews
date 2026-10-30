@@ -90,11 +90,11 @@
     bar = document.createElement('button');
     bar.type = 'button'; bar.className = 'ph-tap-bar'; bar.setAttribute('aria-label', 'Tap to listen to this page');
     bar.textContent = '\u25B6 Tap to listen';
-    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;display:block;width:100%;box-sizing:border-box;margin:0;min-height:72px;padding:18px 16px;border:0;border-bottom:4px solid #e0b300;background:#1d4310;color:#ffffff;font:bold 28px/1.2 Arial,Helvetica,sans-serif;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none';
-    bar.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); hideBar(); start(false); });
+    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;display:block;width:100%;box-sizing:border-box;margin:0;min-height:80px;padding:20px 16px;border:0;border-bottom:4px solid #e0b300;background:#1d4310;color:#ffffff;font:bold 30px/1.2 Arial,Helvetica,sans-serif;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none';
+    bar.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); firstOff(); hideBar(); start(false); });
     document.body.insertBefore(bar, document.body.firstChild);
     window.scrollTo(0, 0);
-    document.body.style.paddingTop = '80px';
+    document.body.style.paddingTop = '88px';
   }
   function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
   function start(auto) {
@@ -114,11 +114,23 @@
     next();
     if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); showBar(); } }, 1500);
   }
-  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  // R94 (Steven, Oct 30 2026 4:02 PM): opened from the email (?listen=1), the first tap / key anywhere on the page starts
+  // the read once (a browser only allows speech after a user gesture on this page), not only the Tap to listen bar.
+  // Links and buttons keep their own action. Scroll is not a user gesture for speech, so it is not used.
+  const FIRST = ['pointerdown', 'touchstart', 'keydown'];
+  const firstOff = () => FIRST.forEach((t) => document.removeEventListener(t, onFirst, true));
+  function onFirst(e) {
+    if (e.target && e.target.closest && e.target.closest('a,button,input,select,textarea')) return;
+    firstOff();
+    if (playing && started) return;
+    start(false);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); firstOff(); if (playing) stop(); else start(false); });
   window.addEventListener('pagehide', stop);
   const q = new URLSearchParams(location.search);
   const auto = q.get('autoplay') !== '0' && (q.get('listen') === '1' || q.get('autoplay') === '1' || document.body.dataset.phAutoplay === '1');
   if (auto) {
+    FIRST.forEach((t) => document.addEventListener(t, onFirst, {capture: true, passive: true}));
     const go = () => start(true);
     if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
   }
