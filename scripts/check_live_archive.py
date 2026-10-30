@@ -26,8 +26,8 @@ for dp, _, fs in os.walk(os.path.join(R, "pages", "archive")):
         s = live.decode("utf-8", "ignore")
         v = SR.archive_top_violations(s, is_hub=(rel == "pages/archive/main.html"))
         if v: bad.append(f"{rel}: R44 {'; '.join(v)}")
-        if rel == "pages/archive/videos.html" and ('class="ph-links"' in s or "Committee Meeting Video Archives →" in s):
-            bad.append(f"{rel}: R46 lower cross-links present")
+        if rel == "pages/archive/videos.html" and (s.count('class="ph-links') != 1 or s.count("Committee Meeting Video Archives →") != 1 or "did-you-know.html" in s.split("<h1", 1)[-1]):
+            bad.append(f"{rel}: R81/R46 want exactly one Committee Meeting Video Archives link, no other cross-links")
 # STYLE-RULES R49: every Listen page, as served by production, reads all visible content
 import subprocess as _sp49
 _lc_py = os.environ.get("PHNEWS_VR_PY", "/workspace/.venv-vr/bin/python")

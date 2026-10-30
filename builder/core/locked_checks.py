@@ -10,6 +10,7 @@ change, with Steven's OK and the date. Never delete a check to make a build pass
 
 These are read-only string/structure checks. They never modify the page.
 """
+import os as _os, sys as _sys; _sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent)); import issue_ctx as _ix; C = _ix.load()  # R71 content file
 import re
 from pathlib import Path
 
@@ -22,17 +23,10 @@ SECTION_ORDER_NO_THIS_WEEK = [h for h in SECTION_ORDER if h != "Events - This We
 MEETINGS_EXPECTED = []  # Oct 18: run_checks.py fills Meetings / This Week / Upcoming from build-audit-oct18.json (calendar pull)
 THIS_WEEK_EXPECTED = []  # L07 (Oct 11 ~10:09 AM ET, Steven item 13: Karaoke Obi-Time moved to Recurring -> This Week empty for Oct 11)
 UPCOMING_EXPECTED = []  # filled by run_checks.py from build-audit-oct18.json
-TREAT_AS_RECURRING = ["Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"]  # A3 (Oct 24): + Writing Club; run_checks_oct25 asserts this equals build_oct25/recurring_oct25 AS_RECURRING  # + Karaoke Obi-Time (Steven, Oct 11 ~10:09 AM ET, Tony item 13)
+TREAT_AS_RECURRING = ["Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"]  # A3 (Oct 24): + Writing Club; run_checks asserts this equals core build_core/recurring AS_RECURRING  # + Karaoke Obi-Time (Steven, Oct 11 ~10:09 AM ET, Tony item 13)
 # L09/L19 (I Got It all dates, Steven Oct 9 ~8:35 PM; on Recurring pages ~8:45 PM)
-NOTICES_EXPECTED = [  # A2 (Oct 24): L11 locked for Oct 25 as approved (format-locked-2026-10-25-proof + R60b/R60c), in order
-    "Join the Palm Hill Residents Group on Facebook", "A convenient way to send holiday cards for Palm Hill residents",
-    "North Clubhouse Ice Machine Moved", "Library Closed starting the week of October 26th", "Help with maintaining Sanitation Field",
-    "Please observe important stop sign rules", "2027 South Rec Club Seeking Officers", "Couples Golf League",
-    "Swimming Pool Food and Beverage Rules", "November Coffee and Pancake Volunteers", "Shuffleboard Season Reminders",
-    "Taste of Golf — November 18", "Info from Linda"]
-CHAIR_EXPECTED = {  # A1 (Oct 24): L13 refreshed for Oct 25 -- P&E (Oct 14) + Golf (Oct 13); title -> intro
-    "Planning and Environmental Committee": "Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.",
-    "Golf Advisory Committee": "The amended Code of Conduct was unanimously approved by the Board of Directors on September 26, 2026."}
+NOTICES_EXPECTED = None  # R71 (batch 5): L11 list lives in the issue content file LOCKED (in order)
+CHAIR_EXPECTED = None    # R71 (batch 5): L13 title -> intro lives in the issue content file LOCKED
 FULL_MONTHS = ("January","February","March","April","May","June","July","August","September","October","November","December")
 # L21 CODE POLICY M3 (Steven, Oct 9, 2026 ~8:57 PM ET): every user-visible month is 3 letters. "May" is already 3 letters.
 FULL_MONTH_RE = re.compile(r'\b(January|February|March|April|June|July|August|September|October|November|December)\b')
@@ -73,17 +67,17 @@ def check_email(page):
     L = Locks()
     # L01 Vol/No left of the address, build time right of it
     L.ok("L01", page.count('<span class="header-time header-volno"') == 1 and
-         re.search(r'header-volno"[^>]*>Vol\. 1, No\. 15</span></td><td align="center"[^>]*><span class="address-text"[^>]*>1800 Seminole Blvd, Largo, FL 33778</span></td><td width="80" align="right"[^>]*><span class="header-time"[^>]*>\d{1,2}:\d{2} (AM|PM)</span>', page) is not None,
-         "address bar = [Vol. 1, No. 15] [1800 Seminole Blvd…] [build time h:mm AM/PM]")
+         re.search(r'header-volno"[^>]*>' + re.escape(C.VOLNO) + r'</span></td><td align="center"[^>]*><span class="address-text"[^>]*>1800 Seminole Blvd, Largo, FL 33778</span></td><td width="80" align="right"[^>]*><span class="header-time"[^>]*>\d{1,2}:\d{2} (AM|PM)</span>', page) is not None,
+         f"address bar = [{C.VOLNO}] [1800 Seminole Blvd…] [build time h:mm AM/PM]")
     # L02 issue date + masthead palm
-    L.ok("L02", page.count('>October 25, 2026</span>') == 1 and '>October 4, 2026</span>' not in page and '>Oct 4, 2026</span>' not in page
+    L.ok("L02", page.count('>' + C.ISSUE_LONG + '</span>') == 1 and '>October 4, 2026</span>' not in page and '>Oct 4, 2026</span>' not in page
          and page.count('masthead-palm-hd-320x334-v1.png') == 2, "issue date Oct 11, 2026 (L21 3-letter month); HD palm x2")
     # L03 section order (This Week omitted when empty — L07, Steven Oct 11 ~1:00 PM ET)
     got = [t for _, t in _headings(page)]
     expect = SECTION_ORDER if THIS_WEEK_EXPECTED else SECTION_ORDER_NO_THIS_WEEK
     L.ok("L03", got == expect, f"section order {got}")
     # L03b replaced by R45 (Steven, Oct 18 12:07 AM): the Oct 11 omission was never approved; a story row is required
-    import sys as _s; _s.path.insert(0, "/workspace/oct18-batch/scripts"); import style_rules as _sr45
+    import sys as _s; _s.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO), "scripts")); import style_rules as _sr45
     L.ok("L03b", not _sr45.community_stories_violations(page), f"R45 Community Stories section {_sr45.community_stories_violations(page) or 'present'}")
     # L04 hard exclusions
     for bad in ("Block Captain", "Test Meeting", "Private Event", "Message from Board President Henry Klain",
@@ -97,7 +91,7 @@ def check_email(page):
     L.ok("L05c", "PH Ladies Golf Assoc" not in sec, "PH Ladies Golf Assoc not in Meetings")
     # L26 (Steven, Oct 10 ~1:40 PM ET): Meetings window inside green header (italic), like This Week / Upcoming.
     # L26b (Steven, Oct 10 ~2:50 PM ET): Recurring email section also date-in-header (no "Recurring activities," lead).
-    L.ok("L26", "Oct 11 through Nov 10" in sec and
+    L.ok("L26", "Oct 11 through Nov 10" in sec and  # Oct 11-era lock; R78 (Nov 1 on) drops the Meetings range, see run_checks.py
          'font-style:italic;color:#FFFFFF;margin-top:3px;">Oct 11 through Nov 10</div>' in page,
          "Meetings: Oct 11 through Nov 10 inside green header (italic subtitle)")
     L.ok("L06", sec.count(RIGHT_LOC_TD) == len(MEETINGS_EXPECTED), "Meetings: location right-aligned on title line, every row")
@@ -424,6 +418,7 @@ WEBMASTER_SOURCE_LINKS = {  # Source owner -> Vercel page the "Webmaster" link m
     "November Coffee and Pancake Volunteers": "2026-10-15-november-pancakes-and-coffee-volunteers-notice.html",
     "Shuffleboard Season Reminders": "2026-10-12-shuffleboard-information-notice.html",
     "Taste of Golf — November 18": "2026-10-14-taste-of-golf-notice.html",
+    "Taste of Golf": "2026-10-14-taste-of-golf-notice.html",   # R93 (Nov 1+): same notice, title without its date
     "Info from Linda": "2026-10-08-info-from-linda-notice.html",
     "Property Fraud Alert": "2026-09-30-property-fraud-alert-notice.html",
     "Halloween Dance Party": "2026-10-08-info-from-linda-notice.html",
@@ -529,3 +524,10 @@ def check_link_monthly_latest(L, email):
     )
     return L
 
+
+# R71: per-issue expectation overrides from the content file (LOCKED = {"NAME": value}); unknown names stop the checks.
+for _k, _v in C.LOCKED.items():
+    if _k not in globals(): raise SystemExit(f"R71: {C.ISSUE} LOCKED override {_k!r} is not a locked_checks name")
+    globals()[_k] = _v
+for _k in ("NOTICES_EXPECTED", "CHAIR_EXPECTED"):
+    if globals()[_k] is None: raise SystemExit(f"R71: {C.ISSUE} content file LOCKED must set {_k}")

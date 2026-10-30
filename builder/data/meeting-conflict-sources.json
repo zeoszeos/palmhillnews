@@ -1,0 +1,172 @@
+{
+  "_about": "R86 inputs for scripts/meeting_conflict_report.py. Agenda/report 'next meeting' claims: each quote must appear verbatim in its page (checked at run time). RPM values: a live read of the RPM portal calendar (home.resourcepropertymgmt.com/community/calendar, Agenda view Oct 25, 2026 to Feb 20, 2027, from the signed-in box browser session; month PNGs and rpm-entries.json in /workspace/rpm-read-20261027). Each RPM entry has the RPM title, date, start and end time as RPM shows them, and recurring = the circular-arrow recurring icon in RPM month view. RPM is reference only (R86); it never overrides the calendar. Ear Cleaning and RPM Offices Closed entries are not meetings and are left out.",
+  "rpm_fetched": "Tue Oct 27, 2026, about 3:20 PM ET, live read of home.resourcepropertymgmt.com/community/calendar",
+  "committees": {
+    "Board": "^Board of Directors",
+    "Compliance": "^Compliance Committee",
+    "Communications": "^Communications Committee",
+    "Buildings & Grounds": "^Buildings? (&|and) Grounds",
+    "Planning & Environmental": "^Planning (&|and) Environmental",
+    "Golf": "^Golf (Advisory )?Committee",
+    "Finance": "^Finance Committee",
+    "Annual Meeting": "^Annual (Shareholders|Membership) Meeting"
+  },
+  "agenda": [
+    {
+      "committee": "Finance",
+      "date": "2026-11-18",
+      "time": null,
+      "page": "pages/2026-10-10-finance-committee-meeting-notice.html",
+      "quote": "12 Set next meeting date November 18, 2026",
+      "kind": "agenda notice email (Palm Hill webmaster)",
+      "email_date": "Sat Oct 10, 2026, 2:20 PM ET"
+    },
+    {
+      "committee": "Planning & Environmental",
+      "date": "2026-11-10",
+      "time": "00:30",
+      "page": "pages/2026-10-14-planning-and-environmental-committee-report.html",
+      "quote": "The next meeting will be on Tuesday, Nov. 10, at 12:30 a.m.",
+      "kind": "committee report (Elaine Cole)",
+      "email_date": "Fri Oct 23, 2026, 2:43 PM ET (Blast report of P&E 10/14, palmhillblast)",
+      "typo": {
+        "time": "12:30",
+        "note": "typo, treated as 12:30 PM, matches the calendar",
+        "by": "Steven Oct 27 2026 2:43 PM (Susan agreed by email)"
+      }
+    },
+    {
+      "committee": "Communications",
+      "date": "2026-11-09",
+      "time": "10:00",
+      "page": "pages/2026-10-12-communications-committee-report.html",
+      "quote": "Next meeting: Monday, November 9, 2026 at 10:00 a.m.",
+      "kind": "committee report (Tony Ciaramitaro)",
+      "email_date": "not recorded on the page"
+    },
+    {
+      "committee": "Golf",
+      "date": "2026-11-10",
+      "time": "14:00",
+      "page": "pages/2026-10-13-golf-advisory-committee-report.html",
+      "quote": "November 10, 2026, at 2:00 PM",
+      "kind": "committee report (Carolyn Story)",
+      "email_date": "Sat Oct 17, 2026, 1:20 PM ET (palmhillblast)"
+    },
+    {
+      "committee": "Golf",
+      "date": "2026-11-10",
+      "time": null,
+      "page": "pages/2026-10-13-golf-committee-notice.html",
+      "quote": "Date of Next Meeting: Nov 10, 2026",
+      "kind": "agenda notice email (Palm Hill webmaster)",
+      "email_date": "Thu Oct 8, 2026, 5:39 PM ET"
+    }
+  ],
+  "rpm": [
+    {
+      "committee": "Board",
+      "rpm_name": "Board Meeting",
+      "date": "2026-10-28",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": false
+    },
+    {
+      "committee": "Communications",
+      "rpm_name": "Communications Committee",
+      "date": "2026-11-09",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Golf",
+      "rpm_name": "Golf Committee",
+      "date": "2026-11-10",
+      "time": "14:00",
+      "end": "16:00",
+      "recurring": true
+    },
+    {
+      "committee": "Buildings & Grounds",
+      "rpm_name": "Building & Grounds Committee",
+      "date": "2026-11-11",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Planning & Environmental",
+      "rpm_name": "Planning & Environmental Committee",
+      "date": "2026-11-11",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": true
+    },
+    {
+      "committee": "Board",
+      "rpm_name": "Board Meeting",
+      "date": "2026-11-25",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": false
+    },
+    {
+      "committee": "Golf",
+      "rpm_name": "Golf Committee",
+      "date": "2026-12-08",
+      "time": "14:00",
+      "end": "16:00",
+      "recurring": true
+    },
+    {
+      "committee": "Buildings & Grounds",
+      "rpm_name": "Building & Grounds Committee",
+      "date": "2026-12-09",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Planning & Environmental",
+      "rpm_name": "Planning & Environmental Committee",
+      "date": "2026-12-09",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": true
+    },
+    {
+      "committee": "Communications",
+      "rpm_name": "Communications Committee",
+      "date": "2026-12-14",
+      "time": "10:00",
+      "end": "12:00",
+      "recurring": true
+    },
+    {
+      "committee": "Board",
+      "rpm_name": "Board Meeting",
+      "date": "2026-12-30",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": false
+    },
+    {
+      "committee": "Annual Meeting",
+      "rpm_name": "Annual Membership Meeting",
+      "date": "2027-01-20",
+      "time": "13:00",
+      "end": "15:00",
+      "recurring": true
+    }
+  ],
+  "override_committee": {
+    "Planning and Environmental Committee Meeting": "Planning & Environmental",
+    "Finance Committee Meeting": "Finance",
+    "Finance Committee": "Finance"
+  },
+  "extra_committee": {
+    "Board of Directors Meeting": "Board"
+  }
+}

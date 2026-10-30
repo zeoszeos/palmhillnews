@@ -28,6 +28,7 @@ def story(it):
     return f'<span class="ph-dot"> · </span><a href="{B}{s["page"]}">Community Story: {e(s["title"])} →</a>' if s else ""
 body = f'''<main class="ph-body">
 <h1 class="ph-section">Palm Hill Link Archives</h1>
+<nav class="ph-links ph-link-current"><a href="{e(D["current_download"])}">Palm Hill Link Monthly →</a></nav>
 <p class="ph-lead">The Palm Hill Link is our park’s monthly magazine. The current issue comes first, then earlier issues, newest first. Each issue opens as a PDF.</p>
 <section class="ph-feature" aria-label="Current Issue">
 <p class="ph-feature-kicker">Current Issue</p>
@@ -50,4 +51,6 @@ body += '''<p class="ph-source">Source: Palm Hill Link PDFs as published by mont
 </body>
 </html>
 '''
+# R81 guard: the current monthly issue link (Helpful Webpages' old 'Palm Hill Link Monthly') is the first link under the title
+assert (head + body).split('<h1 class="ph-section">', 1)[1].split("<a ", 1)[1].startswith('href="https://monthly-media.com/newsletter_download.php'), "R81: current monthly issue link must lead palm-hill-link.html"
 open(f"{R}/pages/archive/palm-hill-link.html", "w", encoding="utf-8").write(_SR.assert_archive_top(head + body, "palm-hill-link.html")); print("wrote pages/archive/palm-hill-link.html")  # R44

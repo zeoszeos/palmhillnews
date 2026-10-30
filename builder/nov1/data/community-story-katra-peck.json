@@ -1,0 +1,83 @@
+{
+ "_about": "Nov 1, 2026 Community Story (R45/R83). Palm Hill Link February 2026, pp 4-5 (PDF pages 4-5). Steven chose it Oct 26 2026 12:19 PM: full length, verbatim; past-date references left as printed. Extraction fixes only: PDF line breaks rejoined; drop-cap 'P alm' rejoined; 'Director for the City of Largo.' (printed on its own indented line) rejoined to its sentence; the photo caption 'Katra Peck and / Victoria Richards' that ran into the p4 body removed from the text and used as the photo caption; page headers/footers/page numbers dropped. Printed italics (the parenthetical painting note and the press-release Note) are kept as plain text. Title/second head given in title case as Steven wrote them (print is all caps).",
+ "title": "Katra Peck’s Painting Chosen for Display in Horizon West Bay Complex in Downtown Largo",
+ "kicker": "Cover Photo",
+ "second_head": "Creative Art Space Attracts Palm Hill Residents on Tuesdays in South Rec Hall",
+ "cover_line": "Katra Peck, Palm Hill Artist",
+ "byline": "Story and photos by Susan Kerr, LINK Editor",
+ "photo": {
+  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/katra-peck-cover-clean-february-2026.jpg",
+  "w": 450,
+  "h": 406,
+  "alt": "Katra Peck smiling beside her painting of pink flamingos by the water",
+  "caption": "Katra Peck, Palm Hill Artist",
+  "note": "Feb 2026 Link cover photo. The PDF holds it as six 450x75 JPEG strips (Im0-Im5) under vector cover text, so the stitched photo has no print on it: no inpainting needed (Joe's Oct cover needed it). Only the flat frame-colour bands were cropped (22 px top, 22 px bottom); pixels otherwise unchanged; re-saved JPEG q95. Native 450x450, ~73 ppi: low-res. Caption = the cover line as printed."
+ },
+ "paragraphs": [
+  "Palm Hill resident Katra Peck is a self-taught artist whose artwork attracted the attention of the City of Largo as a permanent fixture in the soon-to-be-opened Horizon West Bay complex in downtown Largo.",
+  "Katra’s artwork was spotted at the Largo Community Arts Center, where Largo officials were seeking local artists’ works to display in the new City Hall complex under construction.",
+  "“We specifically sought artists whose modern abstract styles aligned with the building's design. While some of the art is from out of state, we primarily focused on local and regional artists. We were thrilled to discover Katra Peck's work through the Largo Art Association,” said Kate Oyer, Communications and Engagement Director for the City of Largo.",
+  "“We selected and purchased an original piece from Katra, which will be displayed in the office space, most likely on the second floor. Although we will also have a rotating gallery in the lobby, Katra's work is one of approximately 40 pieces purchased for the interior office space to be permanently displayed. Two other Largo artists are Georgia Wildrick and Leslie Jeffery,” Ms. Oyer said. She said the downtown complex is expected to open the center in the Spring.",
+  "The 30 by 40-inch abstract painting purchased by the City of Largo was inspired by the rocks at Sand Key, said Katra. (A photo of the chosen painting was not available to the LINK, but will be on view this Spring at Horizon West Bay.)",
+  "Note: From the City’s Press release: Horizon West Bay will be the new home of City Hall and will be a mixed-use development designed to spark economic growth, strengthen community connections and bring new energy to the West Bay Drive corridor. It will include public gathering spaces, including night markets, live music, art pop-ups and seasonal celebrations.",
+  {
+   "h2": "Creative Art Space Attracts Palm Hill Residents on Tuesdays in South Rec Hall",
+   "print": "CREATIVE ART SPACE ATTRACTS PALM HILL RESIDENTS ON TUESDAYS IN SOUTH REC HALL"
+  },
+  {
+   "figure": "katra"
+  },
+  "Katra also has organized an art space for Palm Hill residents that meets on Tuesdays in the South Rec Hall. As many as 14 residents have come on Tuesdays from 1 to 4 p.m. to the South Rec Hall sessions, which offer a quiet and peaceful place to work, Katra said. She invites Palm Hillers to bring their supplies to enjoy the art space. The ample amount of tables and chairs in the South Rec Hall allows artists to work alone, spread out, or work in small groups. (The sessions are for artists, not crafters.)",
+  "In the past few years in St. Petersburg, Katra has been involved in the Warehouse art district monthly shows and in the Five Deuces Art Gallery juried monthly shows, as well as at the Beach Art Association shows in Indian Rocks Beach, where she won the “People’s Choice” award.",
+  "She has long been involved in art communities where she has lived, and is happy to be facilitating the creation of an “art space” in Palm Hill. “Come and see what we are doing,” said Katra, who is looking forward to more residents discovering the peace and camaraderie of a community of artists here in Palm Hill.",
+  {
+   "figure": "artspace"
+  }
+ ],
+ "figures": {
+  "katra": {
+   "caption": "Katra Peck and Victoria Richards",
+   "images": [
+    {
+     "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/katra-peck-victoria-richards-link-feb-2026.jpg",
+     "w": 119,
+     "h": 177,
+     "alt": "Katra Peck and Victoria Richards"
+    }
+   ]
+  },
+  "artspace": {
+   "caption": "Above: Left to Right: Lois Marshall, Sandy Wickstrom and Teri Bach at the Tuesday Palm Hill ArtSpace",
+   "images": [
+    {
+     "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/artspace-1-link-feb-2026.jpg",
+     "w": 271,
+     "h": 312,
+     "alt": "Lois Marshall at the Tuesday Palm Hill ArtSpace"
+    },
+    {
+     "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/artspace-2-link-feb-2026.jpg",
+     "w": 167,
+     "h": 290,
+     "alt": "Sandy Wickstrom at the Tuesday Palm Hill ArtSpace"
+    },
+    {
+     "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/artspace-3-link-feb-2026.jpg",
+     "w": 176,
+     "h": 248,
+     "alt": "Teri Bach at the Tuesday Palm Hill ArtSpace"
+    }
+   ]
+  }
+ },
+ "photo_note": "Embedded JPEGs extracted byte-for-byte with pdfimages from Link-2026-02.pdf (pp 4-5); no edits. Small originals (119x177 to 271x312 px). Photos by Susan Kerr (byline).",
+ "credit_line": "First published in the Palm Hill Link, February 2026",
+ "credit_status": "Steven Oct 26 2026 12:19 PM: \"yes, and go with first published but lets keep it full length\" (R83 credit-line exception to R52)",
+ "teaser_candidate": "The 30 by 40-inch abstract painting purchased by the City of Largo was inspired by the rocks at Sand Key, said Katra.",
+ "live_page_planned": "2026-02-katra-peck-painting-horizon-west-bay.html",
+ "listen_page": "2026-02-listen-katra-peck-story.html",
+ "date_line": "Feb 1, 2026",
+ "date_long": "February 1, 2026",
+ "date_iso": "2026-02-01",
+ "teaser_note": "R18: the first sentence (205 chars) wraps to 5 lines at 390 px (max 3); this verbatim source sentence (para 5, sentence 1) is used instead. No rewording."
+}

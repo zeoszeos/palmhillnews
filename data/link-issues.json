@@ -1,5 +1,7 @@
 {"_about": "Palm Hill Link (club monthly magazine) issues. Steven OK'd hosting Oct 16, 2026 7:21 PM ET; moved out of the Vercel deployment Oct 17, 2026 (Deployment Storage). Each PDF lives on branch link-pdf-store (served by jsDelivr as application/pdf, 'url') and as an asset of GitHub release link-pdfs; /pages/archive/link/<pdf> redirects to 'url' (vercel.json via scripts/link_store.py). Current issue also at monthly-media NID=121.",
  "current_hub": "https://monthly-media.com/mmnewsletter.php?NID=121",
+ "current_download": "https://monthly-media.com/newsletter_download.php?t=06fb49ca231b5bd3004032fbc710a472&type=newsletter",
+ "_current_download": "R81 (Steven Oct 24/26 2026): the current monthly issue link at the top of palm-hill-link.html; was Helpful Webpages 'Palm Hill Link Monthly'. Refresh with locked_checks.resolve_latest_link_download() when a new Link comes out.",
  "issues": [
   {"month": "2026-10", "pdf": "Link-2026-10.pdf", "pages": 60, "story": {"title": "97½ and Still Chasing Birdies Instead of Birthdays", "page": "2026-10-04-mary-leslie-chasing-birdies.html"}, "bytes": 11318158, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-10.pdf"},
   {"month": "2026-09", "pdf": "Link-2026-09.pdf", "story": {"title": "For the Love of the Game: Marge Taylor", "page": "2026-09-marge-taylor-love-of-the-game.html"}, "bytes": 10292774, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-09.pdf"},

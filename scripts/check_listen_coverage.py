@@ -28,6 +28,38 @@ MOCK = """(() => {
   Object.defineProperty(window, 'speechSynthesis', {value: synth, configurable: true});
   window.SpeechSynthesisUtterance = function (t) { this.text = t; };
 })();"""
+# R76 (Oct 25 2026): a fake voice that BLOCKS like iPhone Safari opened from an email -- speak() is silent (no 'start')
+# until the first call made during a real tap; after that, speech works (the browser is unlocked).
+MOCK_BLOCK = """(() => {
+  window.__spoken = []; let unlocked = false;
+  const synth = {speaking: false, pending: false, paused: false, getVoices: () => [], cancel() {}, pause() {}, resume() {},
+    speak(u) { if (!unlocked && !(navigator.userActivation && navigator.userActivation.isActive)) return; unlocked = true;
+      if (u.text.trim()) window.__spoken.push(u.text); setTimeout(() => { u.onstart && u.onstart({}); u.onend && u.onend({}); }, 0); },
+    addEventListener() {}, removeEventListener() {}};
+  Object.defineProperty(window, 'speechSynthesis', {value: synth, configurable: true});
+  window.SpeechSynthesisUtterance = function (t) { this.text = t; };
+})();"""
+V2_MARK = 'data-ph-listen-v="2"'
+def blocked_case(ctxb, base, rel):
+    """R76: ?listen=1 with blocked autoplay must show the Tap to listen bar within 2.5 s (nothing spoken), and one tap on
+    the bar must start reading from the title. Returns a list of problems (empty = pass)."""
+    pg = ctxb.new_page(); out = []
+    try:
+        pg.goto(f"{base}/{rel}?listen=1&cb={os.getpid()}", wait_until="load", timeout=30000)
+        try: pg.wait_for_selector(".ph-tap-bar", state="visible", timeout=2500)
+        except Exception: return ["blocked autoplay: no 'Tap to listen' bar within 2.5 s (silent wait)"]
+        bar = pg.query_selector(".ph-tap-bar"); txt = bar.inner_text(); box = bar.bounding_box()
+        if "Tap to listen" not in txt: out.append(f"bar text is {txt!r}")
+        if not box or box["y"] > 5 or box["height"] < 56: out.append(f"bar not big at the top: {box}")
+        if pg.evaluate("() => window.__spoken.length"): out.append("spoke before the tap")
+        bar.click(); pg.wait_for_timeout(600)
+        first = pg.evaluate("() => window.__spoken[0] || ''"); h1 = pg.evaluate("() => (document.querySelector('h1') || {}).textContent || ''")
+        if not first: out.append("tap on the bar did not start reading")
+        elif norm(h1) and not norm(first).startswith(norm(h1)[:20]): out.append(f"after tap starts with '{first[:40]}', not the title")
+        if pg.query_selector(".ph-tap-bar"): out.append("bar still shown after the tap")
+    finally:
+        pg.close()
+    return out
 VISIBLE = r"""() => {
   const root = document.querySelector('main') || document.querySelector('article') || document.body;
   const BLOCK = 'p,li,blockquote,h2,h3,h4,h5,h6,figcaption,td,th,dd,dt,pre,caption';
@@ -64,7 +96,7 @@ def _pages():
         if "/archive" in dp or "/previews" in dp or "/shared" in dp or "/assets" in dp: continue
         for f in fs:
             if f.endswith(".html"): yield os.path.relpath(os.path.join(dp, f), R)
-def has_script(t): return "speechSynthesis" in t
+def has_script(t): return "speechSynthesis" in re.sub(r"<!-- ph-inplace-listen:start -->.*?<!-- ph-inplace-listen:end -->", "", t, flags=re.S)  # R76: the website in-place block is not a page reader
 def has_button(t): return 'class="ph-listen"' in t
 def listen_pages():
     """(1) every page with any Listen part (script or button)."""
@@ -101,7 +133,8 @@ def required_pages():
 def _default_send():  # A6 (Oct 24): the current issue's SEND file (PHNEWS_ISSUE or newest preview folder)
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import style_rules as _s
     iss = _s.current_issue(R)
-    for c in (f"/workspace/phnews-consolidation/oct18/PHNEWS-{iss}-SEND.html", f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"):
+    _w = os.environ.get("PHNEWS_WORK")  # R67 (batch 2): the issue work tree, when set, is checked first
+    for c in ((f"{_w}/PHNEWS-{iss}-SEND.html",) if _w else ()) + (f"/workspace/phnews-consolidation/oct18/PHNEWS-{iss}-SEND.html", f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"):
         if os.path.exists(c): return c
     return f"/workspace/oct18-additions/PHNEWS-{iss}-SEND.html"
 DEFAULT_SEND = os.environ.get("PHNEWS_SEND_HTML") or _default_send()
@@ -164,7 +197,10 @@ def main(args, live=None, nl=None, nl_only=False):
     fails = {}
     with sync_playwright() as pw:
         b = pw.chromium.launch(); ctx = b.new_context(); ctx.add_init_script(MOCK)
-        if not live: ctx.route(re.compile(r"^https?://(?!127\.0\.0\.1).*"), lambda r: r.abort())  # offline: fonts/images from production not needed
+        ctxb = b.new_context(); ctxb.add_init_script(MOCK_BLOCK); v2n = [0, 0]
+        if not live:
+            ctx.route(re.compile(r"^https?://(?!127\.0\.0\.1).*"), lambda r: r.abort())
+            ctxb.route(re.compile(r"^https?://(?!127\.0\.0\.1).*"), lambda r: r.abort())  # offline: fonts/images from production not needed
         base = live.rstrip("/") if live else f"http://127.0.0.1:{port}"
         for rel in pages:
             src_p = os.path.join(R, rel)
@@ -213,6 +249,9 @@ def main(args, live=None, nl=None, nl_only=False):
                         elif norm(h1) and not norm(first).startswith(norm(h1)[:20]): miss.insert(0, f"?listen=1 starts with '{first[:40]}', not the title")
                     finally:
                         pg2.close()
+                    if V2_MARK in src:  # R76 blocked-autoplay case (v2 pages)
+                        v2n[0] += 1; miss[:0] = blocked_case(ctxb, base, rel)
+                    else: v2n[1] += 1
                 if miss: fails[rel] = miss
             except Exception as e:
                 fails[rel] = [f"page error: {str(e).splitlines()[0][:160]}"]
@@ -222,7 +261,7 @@ def main(args, live=None, nl=None, nl_only=False):
     srv.shutdown()
     print(f"R49 Listen coverage{' (LIVE ' + live + ')' if live else ''}: {len(pages)} pages checked "
           f"({len([p for p in pages if p in req_all])} required-type, {len([p for p in pages if p in targets])} ?listen=1 targets from {len(nlf)} NL file(s)), "
-          f"{len(fails)} failing")
+          f"{len(fails)} failing; R76 blocked-autoplay bar: {v2n[0]} v2 target(s) tested, {v2n[1]} v1 target(s) without bar")
     for rel, m in fails.items():
         print("  FAIL " + rel); [print("      " + x) for x in m[:8]]; len(m) > 8 and print(f"      ... +{len(m) - 8} more")
     return 1 if fails else 0

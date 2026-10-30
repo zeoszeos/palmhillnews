@@ -118,7 +118,30 @@ function listenLink(listen, extra = '') {
   return `<a class="ph-listen" href="${pageUrl(listen)}" style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:none;border:0;padding:0;${extra ? extra + ';' : ''}color:#1d4310;font:bold 15px/1.5 ${F};text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="${LISTEN_ICON}" alt="" width="24" height="24" style="display:inline-block;width:24px;height:24px;border:0;margin:0;vertical-align:middle">Listen</a>`;
 }
 
+// STYLE-RULES R10 (Steven, Oct 24 2026 9:05 PM, batch 1): locked as-sent pages are never rewritten by this builder.
+// write() skips them, and the run fails if either page's bytes differ at the end from what they were at the start.
+const R10_LOCKED = ['pages/2026-09-30-shareholders-report.html', 'pages/2026-10-09-weekly-manager-update.html'];
+const R10_SHA = (rel) => { const f = path.join(ROOT, rel); return fs.existsSync(f) ? require('crypto').createHash('sha256').update(fs.readFileSync(f)).digest('hex') : null; };
+const R10_START = Object.fromEntries(R10_LOCKED.map((r) => [r, R10_SHA(r)]));
+const r10Skipped = [];
+// STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): website Listen plays IN PLACE on the archive hub/section pages (once the
+// current issue is on/after listen_settings.json v2_from) and on archived issue copies dated v2_from or later. Same block
+// and reader as scripts/page_listen.py (listen_inplace.html + listen_reader.js). The emailed SEND copy is never touched.
+const LISTEN_V2_FROM = JSON.parse(fs.readFileSync(path.join(__dirname, 'listen_settings.json'), 'utf8')).v2_from;
+const LISTEN_READER = fs.readFileSync(path.join(__dirname, 'listen_reader.js'), 'utf8').replace(/\n+$/, '');
+const INPLACE_BLOCK = fs.readFileSync(path.join(__dirname, 'listen_inplace.html'), 'utf8').replace('/*READER*/', () => LISTEN_READER).trim();
+const CUR_ISSUE = process.env.PHNEWS_ISSUE || (() => { try { return fs.readdirSync(path.join(ROOT, 'pages/previews')).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().pop() || ''; } catch (e) { return ''; } })();
+function inplace(rel, content) {
+  const m = rel.match(/^pages\/archive\/(?:issues\/(\d{4}-\d{2}-\d{2})|[^/]+)\.html$/);
+  if (!m || !(m[1] ? m[1] >= LISTEN_V2_FROM : CUR_ISSUE >= LISTEN_V2_FROM)) return content;
+  if (!/class="ph-listen"|listen=1|>\s*Listen\s*(?:→|&rarr;)?\s*<\/a>/.test(content)) return content;
+  const t = content.replace(/\n?<!-- ph-inplace-listen:start -->[\s\S]*?<!-- ph-inplace-listen:end -->/, '');
+  const i = t.toLowerCase().lastIndexOf('</body>');
+  return i < 0 ? t : t.slice(0, i) + INPLACE_BLOCK + '\n' + t.slice(i);
+}
 function write(file, content) {
+  content = inplace(path.relative(ROOT, file).split(path.sep).join('/'), content);
+  if (R10_LOCKED.includes(path.relative(ROOT, file).split(path.sep).join('/'))) { r10Skipped.push(path.relative(ROOT, file)); return; }
   built.set(file, content);
   const prev = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
   if (prev === content) return;
@@ -303,15 +326,16 @@ function videosPage() {
   // Steven Oct 11: videos.html = Latest only (no How To). Title: Latest Committee & Board Meeting Videos.
   const sec = S.videos;
   const pageTitle = sec.title; // Latest Committee & Board Meeting Videos
-  let out = `${crumbs(pageTitle)}\n<h1 class="ph-section">${esc(pageTitle)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;
+  let out = `${crumbs(pageTitle)}\n<h1 class="ph-section">${esc(pageTitle)}</h1>\n<p class="ph-lead">${esc(sec.lead)}</p>\n\n<nav class="ph-links ph-video-archives"><a href="${COMMITTEE_VIDEO_ARCHIVE_HREF}">Committee Meeting Video Archives →</a></nav>\n<h2 class="ph-subhead">Recordings, newest first</h2>\n`;  // R81 (Steven approved Oct 24 2026): one link to the Video Archives under the lead
   [...sec.items].sort((a, b) => b.date.localeCompare(a.date)).forEach((v, n) => {
     out += `<div class="ph-video${n % 2 ? ' ph-alt' : ''}"><a class="ph-play" href="${esc(v.url)}" aria-label="Play the ${esc(v.group)} recording from ${midDate(v.date)}">▶</a><div><div class="ph-row-title"><a href="${esc(v.url)}">${esc(v.group)}</a></div><div class="ph-row-meta">${longDate(v.date)}</div></div></div>\n`;
   });
   // R46 (Steven, Oct 18 12:07 AM): no lower cross-links on videos.html ('Committee Meeting Video Archives →', 'Did You Know →' removed);
   // the page keeps only the top 'All Archives →' (R44) and its Source line. Guarded below.
   out += `<p class="ph-source">Source: <a href="https://www.palmhillcountryclub.net/committees/">Committees of Palm Hill Webpage</a></p>\n`;
-  if (/class="ph-links"/.test(out) || out.includes('meeting-videos.html') || out.includes(`href="${DYK_TILE_HREF}"`))
-    throw new Error('videos.html: R46 lower cross-links (meeting-videos / did-you-know) must not appear');
+  // R81 amends R46: exactly one ph-links row = the 'Committee Meeting Video Archives →' link under the lead; still no Did You Know link.
+  if ((out.match(/class="ph-links/g) || []).length !== 1 || (out.match(/meeting-videos\.html/g) || []).length !== 1 || !out.includes('ph-video-archives"><a href="' + COMMITTEE_VIDEO_ARCHIVE_HREF + '">Committee Meeting Video Archives →</a>') || out.includes(`href="${DYK_TILE_HREF}"`))
+    throw new Error('videos.html: R81/R46 needs exactly one Committee Meeting Video Archives link under the lead and no Did You Know link');
   const topNav = navBar([[HUB, HUB_LABEL]]);  // R44: one 'All Archives →' at the top only
   return shell({ title: `${pageTitle} — Newsletter Archives`, issuedate: 'Newsletter Archives', body: out, canonical: archUrl('videos.html'), topNav });
 }
@@ -888,6 +912,8 @@ const CHAIR_LISTEN_JS = `<!-- ph-chair-listen:start -->
 })();
 </script>
 <!-- ph-chair-listen:end -->`;
+const PAGE_V2_BLOCK = fs.readFileSync(path.join(__dirname, 'page_listen_v2.html'), 'utf8').replace('/*READER*/', () => LISTEN_READER).trim();
+const PAGE_V2_RE = /\n?<!-- ph-page-listen:start -->[\s\S]*?<!-- ph-page-listen:end -->\n?/g;
 const CHAIR_BLOCK_RE = /\n?<!-- ph-chair-listen:start -->[\s\S]*?<!-- ph-chair-listen:end -->\n?/g;
 const chairListenPages = new Set();
 // Steven Oct 11 (2nd pass): the SAME clean listen page for "clean_listen" sections -- President's Message (Henry
@@ -896,9 +922,14 @@ const chairListenPages = new Set();
 for (const k of SECTION_ORDER) if (S[k].dateline_listen || S[k].clean_listen) for (const it of S[k].items) {
   if (!it.page || !it.listen || chairListenPages.has(it.listen)) continue;
   const reportFile = path.join(PAGES, it.page);
-  const base = (built.get(reportFile) ?? fs.readFileSync(reportFile, 'utf8')).replace(CHAIR_BLOCK_RE, '\n');
+  // R76: items dated v2_from or later use the ONE shared v2 page-listen block (scripts/page_listen_v2.html: Tap-to-listen bar)
+  // instead of the older chair-only copy; earlier items keep CHAIR_LISTEN_JS byte for byte.
+  // R83: a Community Story carried in a v2 issue but dated by its (earlier) Link month is marked listen_v: 2 by the builder.
+  const v2 = (!!it.date && it.date >= LISTEN_V2_FROM) || it.listen_v === 2;
+  let base = (built.get(reportFile) ?? fs.readFileSync(reportFile, 'utf8')).replace(CHAIR_BLOCK_RE, '\n');
+  if (v2) base = base.replace(PAGE_V2_RE, '\n');
   if (!/<a class="ph-listen" href="[^"]*\/pages\/[^"]*listen[^"]*"/.test(base) || !/<article\b/.test(base)) throw new Error(`pages/${it.page}: clean report page has no date-line Listen link or <article>`);
-  const report = base.replace(/\n?<\/body>/i, () => '\n' + CHAIR_LISTEN_JS + '\n</body>');
+  const report = base.replace(/\n?<\/body>/i, () => '\n' + (v2 ? PAGE_V2_BLOCK : CHAIR_LISTEN_JS) + '\n</body>');
   write(reportFile, report);
   let listen = report
     .replace(/<body([^>]*)>/i, (m, a) => `<body${a} data-ph-autoplay="1">\n${CHAIR_LISTEN_MARK}pages/${it.page} on every build; edit the report page or archive-items.json, not this file. -->`)
@@ -1067,4 +1098,6 @@ write(path.join(OUT, 'archive-index.json'), JSON.stringify(index, null, 2) + '\n
 if (Object.keys(report).length) console.log(JSON.stringify(report, null, 2));
 console.log(`${CHECK ? 'would change' : 'changed'} ${changed.length} file(s)`);
 changed.forEach((f) => console.log('  ' + f));
+if (r10Skipped.length) console.log(`R10: locked page(s) left as sent: ${[...new Set(r10Skipped)].join(', ')}`);
+for (const r of R10_LOCKED) if (R10_SHA(r) !== R10_START[r]) throw new Error(`R10: locked page ${r} changed during build_archive.js (must stay byte-for-byte as sent)`);
 if (CHECK && changed.length) process.exit(1);

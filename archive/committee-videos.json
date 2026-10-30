@@ -310,6 +310,20 @@
   "link_status": "ok"
  },
  {
+  "date": "2026-10-28",
+  "group": "board",
+  "meeting": "",
+  "note": "",
+  "host": "drive.google.com",
+  "url": "https://drive.google.com/file/d/1Rmquna2I_oO7Uba3fhuHiepHG4aJPaRV/view?usp=sharing",
+  "source": "Club Committees page (live, pulled 2026-10-30)",
+  "flags": [],
+  "http": 200,
+  "status": "OK (opens)",
+  "last_checked": "2026-10-30",
+  "link_status": "ok"
+ },
+ {
   "date": "2025-05-14",
   "group": "buildings-and-grounds",
   "meeting": "",

@@ -357,10 +357,26 @@ def assert_dyk_items(items, multi_approved=None):
 
 # STYLE-RULES R52 (Steven, Oct 20 2026 3:03 PM): no "Palm Hill Link" name inside any article / story / Did You Know page
 # (body, source line or credit). Site navigation in the newsletter (Palm Hill Link Archives etc.) is not an article page.
-def assert_no_link_name(html, name):
+def assert_no_link_name(html, name, credit_line=None):
     import re as _re
     body = _re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<title>[\s\S]*?</title>", "", html)
+    if credit_line:  # R83: the one Steven-approved credit line after </article> is the only allowed Link name
+        assert_story_credit(html, credit_line, name)
+        body = body.replace(f'<p class="source">{credit_line}</p>', "", 1)
     if _re.search(r"Palm\s+Hill\s+Link", body, _re.I): raise SystemExit(f"R52: {name} contains 'Palm Hill Link' (no Link name inside articles)")
+    return html
+
+
+# STYLE-RULES R83 (Steven, Oct 26 2026 12:19 PM, Katra Peck story: "go with first published"): a Community Story page may carry
+# exactly ONE credit line <p class="source">First published in the Palm Hill Link, <Month YYYY></p>, right after </article>,
+# only when the story data's credit_line is set. Anywhere else the R52 no-Link-name rule still applies.
+def assert_story_credit(html, credit_line, name):
+    import re as _re
+    if not _re.fullmatch(r"First published in the Palm Hill Link, (January|February|March|April|May|June|July|August|September|October|November|December) 20\d\d", credit_line):
+        raise SystemExit(f"R83: {name} credit line {credit_line!r} is not 'First published in the Palm Hill Link, <Month YYYY>'")
+    el = f'<p class="source">{credit_line}</p>'
+    if html.count(el) != 1 or f"</article>\n{el}" not in html:
+        raise SystemExit(f"R83: {name} needs exactly one credit line right after </article>")
     return html
 
 
@@ -453,19 +469,10 @@ def assert_rules_dyk(teaser, rule_items, phrases, name=""):
 # R66b (Steven, Oct 24 2026 3:16 PM): the Did You Know Archives teaser for a current-issue Rules DYK item is the SAME
 # R66 teaser as the main page (one source: rules_dyk_teaser). Past issues' rows stay exactly as sent.
 def sync_rules_dyk_archive_text(ai_text, issue_date, row_id, teaser):
-    """Set the archive-items.json DYK row text (issue_date, row_id) to the R66 teaser; returns new json text."""
-    import json as _j
-    d = _j.loads(ai_text); rows = d["sections"]["did-you-know"]["items"]
-    hit = [r for r in rows if r.get("id") == row_id and r.get("date") == issue_date]
-    if len(hit) != 1: raise SystemExit(f"R66b: expected one DYK archive row {issue_date}/{row_id}, found {len(hit)}")
-    old = hit[0]["text"]
-    if old == teaser: return ai_text
-    pat = '"id": "' + row_id + '", '
-    i = ai_text.find(pat); j = ai_text.find('"text": ', i) + len('"text": ')
-    k = j + len(_j.dumps(old, ensure_ascii=False))
-    assert ai_text[j:k] == _j.dumps(old, ensure_ascii=False), "R66b: archive row text not found verbatim"
-    out = ai_text[:j] + _j.dumps(teaser, ensure_ascii=False) + ai_text[k:]
-    _j.loads(out); return out
+    """Set the archive-items.json DYK row text (issue_date, row_id) to the R66 teaser; returns new json text (R68 helper)."""
+    import os as _os, sys as _sys; _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))); import archive_items as _aj
+    try: return _aj.set_field_text(ai_text, "did-you-know", {"id": row_id, "date": issue_date}, "text", teaser)
+    except SystemExit as e: raise SystemExit("R66b: " + str(e))
 
 def assert_rules_dyk_archive(archive_html, row_id, main_teaser):
     """R66b guard: the rendered Did You Know Archives row equals the main-page teaser of the same build."""
@@ -474,3 +481,16 @@ def assert_rules_dyk_archive(archive_html, row_id, main_teaser):
     if not m: raise SystemExit(f"R66b: DYK archive row {row_id!r} not found")
     got = _h.unescape(m.group(1)).strip()
     if got != main_teaser: raise SystemExit(f"R66b: DYK archive teaser {row_id!r} differs from main page: {got!r} != {main_teaser!r}")
+
+# STYLE-RULES R10 (Steven, Oct 24 2026 9:05 PM, coding batch 1): the two locked as-sent pages are pinned byte-for-byte.
+# build_archive.js never rewrites them (R10_LOCKED); this guard fails the build if either page's bytes differ from the pin.
+R10_LOCKED_SHA256 = {
+    "pages/2026-09-30-shareholders-report.html": "9ab8daa1e31fba1e2d556979ec9e7480413ff21ce4910fb290556f9b01bd3b98",
+    "pages/2026-10-09-weekly-manager-update.html": "b2976e40840afa02ce8e84fc08fee4336cb03e18cea38a6ca49f83dbd2c127db",
+}
+def assert_r10_locked_pages(repo):
+    import hashlib, os as _os
+    for rel, want in R10_LOCKED_SHA256.items():
+        f = _os.path.join(str(repo), rel)
+        got = hashlib.sha256(open(f, "rb").read()).hexdigest() if _os.path.exists(f) else None
+        if got != want: raise SystemExit(f"R10: locked page {rel} changed (sha256 {got}, pinned {want}); it must stay exactly as sent")

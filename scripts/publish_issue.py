@@ -9,13 +9,13 @@ STYLE-RULES asserts as publish_oct18 (R18 R22 R39-R49b), and writes the SEND fil
 ROOT/nas-layout/<yyyy-mm>/<issue>/sent-final/PHNEWS-<issue>-FINAL.html. Emails nothing.
 --dry-run: writes ONLY the SEND/NAS-layout files; no repo page is written or touched (the R47 Listen add is checked, not done).
 """
-import argparse, re, sys, time
+import argparse, os, re, sys, time
 from pathlib import Path
 _T0 = time.time() - 1
 HERE = Path(__file__).resolve().parent; REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import style_rules as _sr, summary_trim as _st, source_sections as _ss, notice_listen as _nl, readability as _rd, check_listen_coverage as _lc
-ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--root", default="/workspace/phnews-consolidation/oct18")
+ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--root", default=os.environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18")  # R67: env PHNEWS_WORK
 ap.add_argument("--repo", default=str(REPO)); ap.add_argument("--dry-run", action="store_true"); a = ap.parse_args()
 I = a.issue; ROOT = Path(a.root); REPO = Path(a.repo); assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", I), I
 from datetime import date
@@ -57,6 +57,7 @@ else:
     if missing: raise SystemExit(f"R47 (dry run): linked source pages missing {missing}")
 s = _sr.assert_webmaster_more(s, NAME, REPO)
 s = _sr.assert_event_sources(s, NAME)  # R48
+if "<script" in s.lower(): raise SystemExit("R76: the SEND copy must contain no <script> (email Listen = plain links)")
 out = ROOT / f"PHNEWS-{I}-SEND.html"; out.write_text(s, encoding="utf-8")
 nas = ROOT / f"nas-layout/{I[:7]}/{I}/sent-final"; nas.mkdir(parents=True, exist_ok=True); (nas / NAME).write_text(s, encoding="utf-8")
 print(("DRY RUN: " if a.dry_run else "") + f"{I}: {len(MAP)} preview pages mapped {list(MAP.values())}; SEND -> {out}")
