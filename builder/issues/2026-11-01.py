@@ -16,21 +16,16 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th",   # closu
                    "Help with maintaining Sanitation Field", "Please observe important stop sign rules"]  # ran Oct 25; drop confirmed by Steven Oct 26 2026 11:22 AM
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
-LOCKED = {  # TO REVIEW when Nov 1 content approved -- today's values, carried from Oct 25 (L11 FAIL expected until then)
-    "NOTICES_EXPECTED": [
+LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
+    "NOTICES_EXPECTED": [   # Steven Oct 30 2026 12:13 PM "yes to all" (R93): approved Nov 1 notice list, in order
         'Join the Palm Hill Residents Group on Facebook',
         'A convenient way to send holiday cards for Palm Hill residents',
-        'North Clubhouse Ice Machine Moved',
-        'Library Closed starting the week of October 26th',
-        'Help with maintaining Sanitation Field',
-        'Please observe important stop sign rules',
         '2027 South Rec Club Seeking Officers',
         'Couples Golf League',
         'Swimming Pool Food and Beverage Rules',
         'November Coffee and Pancake Volunteers',
         'Shuffleboard Season Reminders',
-        'Taste of Golf — November 18',
-        'Info from Linda',
+        'Taste of Golf',
     ],
     "CHAIR_EXPECTED": {
         'Planning and Environmental Committee': 'Motion to the Board: pay $857.33 to WindowFilm LLC, to provide privacy coverings for wellness classes.',
@@ -304,7 +299,7 @@ NOTICES = [
     ("Shuffleboard Season Reminders",
      "Please don't walk on the courts; return discs to their holders under the benches and cue sticks to the wall hangers; close windows and turn off lights and fans when you leave. Anyone under 18 must be with an adult, no smoking, and wear closed-toe shoes. On the north courts with embedded beads, don't drop the disc onto the beaded surface — set it outside the playing area and push it forward into the kitchen.",
      "Webmaster", BASE + WM_COPY_SHUFFLE),  # L27/L29: "(Shuffleboard Club)" is a sender name -> dropped
-    ("Taste of Golf — November 18",
+    ("Taste of Golf",   # R93: was "Taste of Golf — November 18" (date moved to NOTICE_DATE_LINE)
      "New golfers and residents are welcome on Wednesday, Nov 18 at 10:00 AM. Meet at the Pro Shop; it's free. Golf teachers on each hole cover etiquette, warm-up, driving, chipping, putting and reading the green, with treats on each hole and a hot dog on the Pro Shop patio. Not a golfer? Walk, watch and enjoy the course. Sign-up sheets are at the Pro Shop and both clubhouses.",
      "Webmaster", BASE + WM_COPY_GOLF),  # L27/L29
     # STYLE-RULES R42 (Steven, Oct 17 10:29 PM): one source email = one notice. Linda Keehl's "Info from Linda" (Webmaster, Thu Oct 8
@@ -323,6 +318,23 @@ NOTICES = [
      "Reminder: BrightView's next tentative resident mowing date is Tuesday, Oct 27. The schedule may change.",
      "RPM", BASE + "2026-09-29-mowing-dates-notice.html"),
 ]
+# R93 (Steven Oct 30 2026 11:58 AM; approved 12:13 PM "yes to all"): every notice shows a brief date line directly under its title,
+# "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
+NOTICE_DATES = True
+NOTICE_DATE_LINE = {
+    "A convenient way to send holiday cards for Palm Hill residents":
+        "Distribution: approximately 1 week before Hanukkah or Christmas · If you are leaving: please drop off before you depart",  # Bill Bender flyer
+    "2027 South Rec Club Seeking Officers": "Deadline: December 2, 2026 at the close of the business meeting",   # Webmaster Oct 21
+    "Couples Golf League": "Starts: November 5th",                                                               # Webmaster Oct 20
+    "November Coffee and Pancake Volunteers":
+        "Coffees: month of November (North Clubhouse) · Pancakes: November 14th, arrival time 7:30 AM",         # Webmaster Oct 15
+    "Taste of Golf": "Event: November 18, 2026; 10 AM · Meet at Pro Shop",                                       # Webmaster Oct 14
+}
+NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to all": leave undated
+    "Join the Palm Hill Residents Group on Facebook": "Steven Oct 30 2026 12:13 PM",
+    "Swimming Pool Food and Beverage Rules": "Steven Oct 30 2026 12:13 PM",
+    "Shuffleboard Season Reminders": "Steven Oct 30 2026 12:13 PM",
+}
 # Steven Oct 20 3:03 PM: drop stale carried-over notices (Linda's Oct 24 market email, Oct 27 mowing date, Taste of Golf notice --
 # Taste of Golf stays as an event row). Guard: none of these titles may appear in Community Notices.
 NOTICES_DROPPED_OCT25 = {"October Mowing Date", "Property Fraud Alert"}  # Steven Oct 21 8:43 PM: Property Fraud Alert dropped (its Vercel page stays live)  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)

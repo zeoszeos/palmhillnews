@@ -76,6 +76,24 @@ for n in lc.TREAT_AS_RECURRING:
 # L11 Community Notices (locked list, not scraped)
 cn = lc._section(page, "Community Notices")
 L.ok("L11", titles(cn) == lc.NOTICES_EXPECTED, f"Notices rows {titles(cn)}")
+# R93 (Steven Oct 30 2026 11:58 AM; approved 12:13 PM): notice titles carry no dates; each notice has a date line under its title
+# (source wording, dates found in its source page) or an approved No date. Teaser line count = visual guard R18 (390/660px).
+if getattr(C, "NOTICE_DATES", False):
+    _MON = r"(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?"
+    _DT = re.compile(_MON + r"\s+\d{1,2}(st|nd|rd|th)?\b|\b\d{1,2}(st|nd|rd|th)\b|\b\d{1,2}/\d{1,2}\b|\b(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\b", re.I)
+    _TOK = re.compile(_MON + r"\s+\d{1,2}(st|nd|rd|th)?(,\s*\d{4})?|\b\d{1,2}(:\d\d)?\s*(AM|PM)\b|month of \w+|\d+ week before [A-Za-z ]+?(?= ·|$)|before you depart", re.I)
+    _items = [(t, h) for t, _x, _s, h in C.NOTICES if t in titles(cn)]
+    for _t in titles(cn):
+        L.ok("R93", not _DT.search(_t) and " — " not in _t, f"notice title has no date: {_t}")
+        _dl = C.NOTICE_DATE_LINE.get(_t)
+        L.ok("R93", bool(_dl) != (_t in C.NOTICE_NO_DATE), f"{_t}: date line or approved No date (not both)")
+        if _dl:
+            L.ok("R93", f'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">{_html.escape(_dl)}</div>' in cn,
+                 f"{_t}: date line directly under the title")
+            _h = dict(_items).get(_t); _sp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _h.rsplit("/", 1)[1] if _h else None
+            _st = " ".join(re.sub(r"<[^>]+>", " ", _html.unescape(_sp.read_text(encoding="utf-8"))).split()).lower() if _sp and _sp.exists() else ""
+            _miss = [m.group(0) for m in _TOK.finditer(_dl) if " ".join(m.group(0).split()).lower() not in _st]
+            L.ok("R93", bool(_st) and not _miss and all(": " in seg for seg in _dl.split(" · ") if _TOK.search(seg)) and ": " in _dl.split(" · ")[0], f"{_t}: date line words in source page {_miss}")
 L.ok("L11b", "From the Board President" not in cn, "President not inside Notices")
 # L12 Board President section
 bp = lc._section(page, "From the Board President")

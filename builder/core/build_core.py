@@ -245,6 +245,8 @@ def notice_rows():
         rowbg = "#FFF3B0" if ph else bg(i)
         rows.append(f'<tr style="background:{rowbg};page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;{"border:2px dashed #B8860B;" if ph else ""}">'
                     + title_row(escape(t), right)
+                    + (f'<div class="ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">{escape(NOTICE_DATE_LINE[t])}</div>'
+                       if globals().get("NOTICE_DATES") and t in NOTICE_DATE_LINE else "")   # R93 date line under the title (event-row grey)
                     + f'<div style="font-size:15px;color:#333333;margin-top:3px;">{txt if "<a " in txt else escape(txt)}</div>'
                     + f'<div style="font-size:13px;color:#666666;margin-top:5px;">{src}</div></td></tr>')
     return "".join(rows)
