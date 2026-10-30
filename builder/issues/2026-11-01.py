@@ -103,8 +103,8 @@ TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan
 MTG_EXTRA = []
 # R87b (same message): the calendar's "Board Meeting" (Meetings category, e.g. Thu Nov 5 1:00 PM) is a board meeting too.
 MEETINGS_NAME_RE_EXTRA = r"\bboard meeting\b"
-MTG_NOTE = {("2026-11-10", "Buildings and Grounds Committee Meeting"): "(date to be confirmed)",
-            }
+# Steven Oct 30 2026 11:30 AM: B&G Nov 10 calendar date is firm -- "(date to be confirmed)" note removed.
+MTG_NOTE = {}
 # STYLE-RULES R86 (Steven Oct 27 2026 2:24 PM; Tony Oct 26 "Calendar dates only works for me"): from Nov 1 the Palm Hill calendar
 # rules meeting dates/times. R62/R62b/R62c overrides released for Nov 1: no override keys (Finance = calendar Mon Nov 16, 10:00 AM;
 # P&E = calendar Tue Nov 10, 12:30 PM). Agenda/report differences are listed by scripts/meeting_conflict_report.py.
