@@ -46,6 +46,10 @@ import tel_links as _tel  # R85/R85b: trim re-inserts source text (e.g. "608-312
 if _tel.applies(I):
     s = _tel.linkify(s)
     if _tel.find_bare(s)[0] or _tel.tel_mismatches(s): raise SystemExit(f"R85: bare/mismatched phone in SEND: {_tel.find_bare(s)} {_tel.tel_mismatches(s)}")
+import email_dark_mode as _dm  # R97: Gmail iOS dark mode black bands -> pale tint on white rows/cells + color-scheme light only
+if _dm.applies(I):
+    s = _dm.apply(s)
+    if _dm.find_white(s) or not _dm.head_ok(s): raise SystemExit(f"R97: pure-white background left in SEND: {_dm.find_white(s)[:3]}")
 s = _sr.assert_archive_labels(_sr.archive_labels(s), NAME)  # R41/R43
 s = _sr.assert_source_credits(s, NAME)
 s = _sr.assert_community_stories(s, NAME, None)  # R45
