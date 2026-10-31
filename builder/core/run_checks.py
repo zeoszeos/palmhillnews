@@ -6,6 +6,7 @@ locked_checks.py -- never scraped from the page being checked (old L11 scrape re
 guards; they are rewritten here against the current markup instead of being silently skipped.
 Usage: python3 builder/core/run_checks.py [issue.html] with PHNEWS_ISSUE set (default WORK/PHNEWS-<issue>-preview.html). build_core.py runs it.
 """
+import html
 import os as _os, sys as _sys; _sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent)); import issue_ctx as _ix; C = _ix.load()  # R71 content file
 import json, re, sys, importlib.util
 from pathlib import Path
@@ -352,6 +353,15 @@ if _dm97.applies(C.ISSUE):
 if C.ISSUE >= "2026-11-01":
     _p98 = [page] + ([(ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8")] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
     L.ok("R98", not any(re.search(r"<td[^>]*border-left:\s*\d+px", x) for x in _p98), "no border-left accent bar on table cells (chair reports, Did You Know)")
+# R99: optional TOP_BANNER present exactly once in its own banner above the first section (preview + SEND); absent otherwise.
+_tb99 = getattr(C, "TOP_BANNER", None)
+for _n99, _x99 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+    _c99 = _x99.count('class="ph-top-banner"')
+    if not _tb99: L.ok("R99", _c99 == 0, f"{_n99}: no top banner (issue defines none)"); continue
+    _i99 = _x99.find('class="ph-top-banner"'); _f99 = min([i for i in (_x99.find('<div class="canonical-section">'), _x99.find('<div class="section04">')) if i > 0] or [len(_x99)])
+    _body99 = html.escape(_tb99["body"], quote=False); _hd99 = html.escape(_tb99["heading"].lstrip("\u23f0").strip(), quote=False)
+    L.ok("R99", _c99 == 1 and 0 < _i99 < _f99, f"{_n99}: exactly one top banner, above the first section")
+    L.ok("R99", _x99.count(_body99) == 1 and _x99.count(_hd99) == 1 and _x99.count("&#9200;") == 2, f"{_n99}: banner heading/body verbatim once, two clock icons")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

@@ -18,7 +18,6 @@ R60C_ICE_NOTICE = False               # the ice machine notice is dropped for No
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Steven Oct 30 2026 12:13 PM "yes to all" (R93): approved Nov 1 notice list, in order
-        'Join the Palm Hill Residents Group on Facebook',
         'Cornhole Tournament',                              # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
         'Senior Empowerment Lunch & Learn',                 # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
         'Worship Service',                                  # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
@@ -762,3 +761,9 @@ UPCOMING_LABEL_EXPECTED = None   # unused with NEXT_WEEK_SECTION (was stale Oct 
 CHAIR_DATES_EXPECTED = ["Wednesday, Oct 14, 2026", "Tuesday, Oct 13, 2026", "Monday, Oct 12, 2026"]   # L14 chair report dates
 CHAIR_DATES_LABEL = "chair dates P&E Oct 14, Golf Oct 13, Communications Oct 12 (3-letter months)"
 RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"
+
+# R100 (Steven Oct 31 2026 6:07 PM "Drop community notice"): Tony's Facebook group notice off the main page; Did You Know item kept.
+TONY_FB_NOTICE = False
+# R99 (Steven Oct 31 2026, "Put it in its own banner, and add some tasteful clock icons"): DST banner, wording verbatim.
+TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back?",
+                  body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Remember to turn your clocks back one hour. Enjoy the extra hour!")

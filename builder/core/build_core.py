@@ -238,7 +238,9 @@ NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_ISSUE]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
 def notice_rows():
-    rows, items = [], [(TONY_FB[0], TONY_FB_TXT, TONY_FB_SOURCE, None)] + NOTICES
+    # R100: content flag TONY_FB_NOTICE (default True = Oct 25 and earlier). False drops the Facebook notice row from the main page
+    # only; its page/Listen URL stays published (existing URLs stay valid).
+    rows, items = [], ([(TONY_FB[0], TONY_FB_TXT, TONY_FB_SOURCE, None)] if globals().get("TONY_FB_NOTICE", True) else []) + NOTICES
     for i, (t, txt, sl, sh) in enumerate(items):
         ph = t == TONY_FB[0] and TONY_FB_PLACEHOLDER
         lh = (NOTICE_LISTEN_OVERRIDE.get(t, sh) + "?listen=1") if sh else (FB_LISTEN if t == TONY_FB[0] else None)
@@ -334,6 +336,18 @@ else:
     assert " through " not in _sec[:_sec.find('<table')], "R78: Meetings header must carry no date range"
     s = s[:_a] + _sec + s[_b:]
 replace_table("Committee Chair Reports", chair_cards())
+# R99 (Steven Oct 31 2026): optional one-issue TOP_BANNER (content file dict heading/body, verbatim) in its own light banner
+# directly under the masthead, above the first section, with a clock icon each side of the heading. Off unless the issue defines it.
+if globals().get("TOP_BANNER"):
+    _tb = TOP_BANNER; _a99, _ = section_span(s, "Committee &amp; Board Meeting Schedules")
+    assert not re.search(r'<div class="(canonical-section|section04)">', s[:_a99]), "R99: banner must sit above the first section"
+    _h99 = escape(_tb["heading"]); _ic = '<span aria-hidden="true" style="font-size:22px;line-height:26px;">&#9200;</span>'
+    _h99 = _h99[len("\u23f0"):].strip() if _h99.startswith("\u23f0") else _h99   # heading's own leading clock becomes the left icon
+    _ban = ('<table class="ph-top-banner" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px 0;border-collapse:separate;">'
+            '<tr><td bgcolor="#FFF9E6" align="center" style="background:#FFF9E6;border:2px solid #8B6914;border-radius:6px;padding:12px 14px;text-align:center;">'
+            f'<div style="font:700 20px/26px Arial,sans-serif;color:#2D5016;">{_ic}&nbsp;&nbsp;{_h99}&nbsp;&nbsp;{_ic}</div>'
+            f'<div style="font:16px/23px Arial,sans-serif;color:#333333;margin-top:6px;">{escape(_tb["body"])}</div></td></tr></table>')
+    s = s[:_a99] + _ban + s[_a99:]
 replace_table("Community Notices", notice_rows())
 # R79 (Steven, Oct 26 2026 11:25 AM): from Nov 1 both Events sections end with a link to the All Events page = every event in the
 # issue's Recurring window that is not on the Recurring pages, chosen with the same rule as This Week/Upcoming (evsel).
