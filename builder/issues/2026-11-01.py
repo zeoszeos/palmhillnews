@@ -19,6 +19,11 @@ DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as 
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Steven Oct 30 2026 12:13 PM "yes to all" (R93): approved Nov 1 notice list, in order
         'Join the Palm Hill Residents Group on Facebook',
+        'Missing Amazon Package',                       # Steven Oct 30 2026 8:29 PM: five Oct 29 emails added
+        'South Potable Water Shut off',
+        'Social Shuffle',
+        "Palm Hill Men's Golf Association Meeting",
+        'Spaghetti Tickets - Still Available',
         'A convenient way to send holiday cards for Palm Hill residents',
         '2027 South Rec Club Seeking Officers',
         'Couples Golf League',
@@ -133,8 +138,37 @@ WM_COPY_COUPLES = "2026-10-20-couples-golf-league-notice.html"                  
 WM_COPY_LIBRARY = "2026-10-22-library-closed-notice.html"                             # gotwicz 1a164ed6011d050d (Steven Oct 23 6:38 PM)
 WM_COPY_STOP = "2026-10-21-stop-sign-rules-notice.html"                                # gotwicz 1a15eb6fba34f8ab (Steven Oct 23 6:38 PM; RPM duplicate ignored)
 WM_COPY_SOUTHREC = "2026-10-21-south-rec-club-seeking-officers-notice.html"            # gotwicz 1a15eb2704b3f9a0 (Steven Oct 23 6:38 PM; image-only email)
+# Steven Oct 30 2026 8:29 PM: five Oct 29 Palm Hill emails (gotwicz) added as Community Notices (R93 date lines, source wording)
+WM_COPY_AMAZON = "2026-10-29-missing-amazon-package-notice.html"                       # gotwicz 1a188f3c35f60e0b
+WM_COPY_WATER_S = "2026-10-29-south-potable-water-shut-off-notice.html"                # gotwicz 1a188c43d05d7df5 (RPM #XN9409838)
+WM_COPY_SOCIAL_SHUFFLE = "2026-10-29-social-shuffle-begins-notice.html"                # gotwicz 1a188b1bcff509fa
+WM_COPY_MENS_GOLF = "2026-10-29-mens-golf-association-meeting-notice.html"             # gotwicz 1a1882f2503385a3
+WM_COPY_SPAGHETTI = "2026-10-29-spaghetti-tickets-still-available-notice.html"         # gotwicz 1a1880b577f20ce7
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Oct 29 emails (Steven Oct 30 2026 8:29 PM), verbatim; the 5th element (optional) = notice_page.render keywords (R95)
+    (WM_COPY_AMAZON, "Missing Amazon Package", "Thursday, Oct 29, 2026, 1:54 PM ET", [
+        ("p", "We are search for an Amazon package that was delivered to the wrong address.  If you happen to see it please get in touch with Teddi McCune 727-481-1855 at 31 Thatch Palm W."),
+        ("p", "Thank you!"), ("p", "Teddi McCune")]),
+    (WM_COPY_WATER_S, "Message from Home Owners of Palm Hill, Inc - South Potable Water Shut off  Wednesday, November 4, 2026 from 10:00am for approximately 2 hours", "Thursday, Oct 29, 2026, 1:45 PM ET", [
+        ("p", "Resident requested - South Potable Water Shut off  Wednesday, November 4, 2026 from 10:00am for approximately 2 hours"),
+        ("p", "Sincerely,"), ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
+        ("p", "(727) 581-2662 | www.resourcepropertymgmt.com")],
+        dict(source="Source: Resource Property Management message to residents, copied as sent.", sender="Resource Property Management",
+             title="South Potable Water Shut off")),
+    (WM_COPY_SOCIAL_SHUFFLE, "Social Shuffle Begins Monday. November 2nd", "Thursday, Oct 29, 2026, 12:36 PM ET", [
+        ("p", "Join us for Social Shuffle in the North Shuffleboard Courts on Monday\u2019s at 11:00am, beginning November 2nd, 2026."),
+        ("p", "This is a weekly event which runs through March of 2027. Social Shuffle is a great way to learn more about the game of Shuffleboard. All skill levels are welcome."),
+        ("p", "Please remember to wear closed toe shoes for your safety."),
+        ("p", "If you have any questions, call Stewart."), ("p", "702-544-2649")]),
+    (WM_COPY_MENS_GOLF, "Palm Hill Men's Golf Association Meeting", "Thursday, Oct 29, 2026, 10:43 AM ET", [
+        ("h", "Palm Hill Men's Golf Association Meeting"),
+        ("p", "When:   Monday, November 2, 2026"), ("p", "Time:   10:30 AM"), ("p", "Where:  North Clubhouse"),
+        ("p", "If you have any questions please let one of us know."),
+        ("p", "Jeff Wesolowski, President"), ("p", "Randy Mitchell, Vice President"), ("p", "Wayne Marshall, Secretary"), ("p", "Tom Locher, Treasurer")]),
+    (WM_COPY_SPAGHETTI, "Spaghetti Tickets - Still Available", "Thursday, Oct 29, 2026, 10:13 AM ET", [
+        ("p", "If anyone wants Spaghetti tickets for Sat November 14th please contact Mary Lou Shaw at 608-312 -6958.I was called back to Massachusetts on a family emergency. Sorry for any inconvenience."),
+        ("p", "Joe Martin"), ("p", "Mesco")]),
     (WM_COPY_LIBRARY, "Library Closed starting the week of October 26th", "Thursday, Oct 22, 2026, 1:48 PM ET", [
         ("p", "We are very excited to offer our residents and their guests the experience of our Haunted Library again this year.  Our designer, Duane Smathers, along with Judy Flannigan, will be creating another Library that will definitely reflect the Halloween spirit."),
         ("p", "As additional animatronics will be featured, they will need the upcoming week to transform the room.   Therefore the Library will be closed beginning MONDAY, OCTOBER 26TH through SUNDAY, NOVEMBER 1ST."),
@@ -279,6 +313,22 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Steven Oct 30 2026 8:29 PM: five Oct 29 emails, newest first (sent 1:54, 1:45, 12:36, 10:43, 10:13 AM ET); teasers = source sentences (R18)
+    ("Missing Amazon Package",
+     "We are search for an Amazon package that was delivered to the wrong address. If you happen to see it please get in touch with Teddi McCune 727-481-1855 at 31 Thatch Palm W.",
+     "Webmaster", BASE + WM_COPY_AMAZON),
+    ("South Potable Water Shut off",
+     "Resident requested - South Potable Water Shut off Wednesday, November 4, 2026 from 10:00am for approximately 2 hours.",
+     "RPM", BASE + WM_COPY_WATER_S),
+    ("Social Shuffle",   # R93: subject "Social Shuffle Begins Monday. November 2nd" -> date moved to the date line
+     "Join us for Social Shuffle in the North Shuffleboard Courts on Monday\u2019s at 11:00am, beginning November 2nd, 2026. This is a weekly event which runs through March of 2027. All skill levels are welcome.",
+     "Webmaster", BASE + WM_COPY_SOCIAL_SHUFFLE),
+    ("Palm Hill Men's Golf Association Meeting",
+     "When: Monday, November 2, 2026. Time: 10:30 AM. Where: North Clubhouse. If you have any questions please let one of us know.",
+     "Webmaster", BASE + WM_COPY_MENS_GOLF),
+    ("Spaghetti Tickets - Still Available",
+     "If anyone wants Spaghetti tickets for Sat November 14th please contact Mary Lou Shaw at 608-312 -6958. I was called back to Massachusetts on a family emergency. Sorry for any inconvenience.",
+     "Webmaster", BASE + WM_COPY_SPAGHETTI),
     # Steven Oct 24 11:38 AM: Bill Bender's flyer (resident notice; Source = Bill Bender, linked to its page)
     (HOLIDAY_TITLE, HOLIDAY_TEASER, "Bill Bender email", BASE + HOLIDAY_PAGE),
     # Steven Oct 24 1:27 PM: position 3 (right after Bill Bender); Source links the Oct 14 P&E report page
@@ -322,6 +372,10 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    "South Potable Water Shut off": "Shut off: Wednesday, November 4, 2026 from 10:00am for approximately 2 hours",   # RPM Oct 29
+    "Social Shuffle": "Begins: November 2nd, 2026 at 11:00am · Runs: weekly through March of 2027",                # Webmaster Oct 29
+    "Palm Hill Men's Golf Association Meeting": "Meeting: Monday, November 2, 2026, 10:30 AM · North Clubhouse",     # Webmaster Oct 29 (calendar: 10:00-11:30 AM North Main Hall -- flagged)
+    "Spaghetti Tickets - Still Available": "Dinner: Sat November 14th",                                             # Webmaster Oct 29
     "A convenient way to send holiday cards for Palm Hill residents":
         "Distribution: approximately 1 week before Hanukkah or Christmas · If you are leaving: please drop off before you depart",  # Bill Bender flyer
     "2027 South Rec Club Seeking Officers": "Deadline: December 2, 2026 at the close of the business meeting",   # Webmaster Oct 21
@@ -331,6 +385,7 @@ NOTICE_DATE_LINE = {
     "Taste of Golf": "Event: November 18, 2026; 10 AM · Meet at Pro Shop",                                       # Webmaster Oct 14
 }
 NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to all": leave undated
+    "Missing Amazon Package": "Steven Oct 30 2026 8:29 PM added it; its email gives no date (flagged for Steven)",
     "Join the Palm Hill Residents Group on Facebook": "Steven Oct 30 2026 12:13 PM",
     "Swimming Pool Food and Beverage Rules": "Steven Oct 30 2026 12:13 PM",
     "Shuffleboard Season Reminders": "Steven Oct 30 2026 12:13 PM",
@@ -513,12 +568,16 @@ WMU_GREETING = "Good Afternoon Everyone,"
 WMU_TEMPLATE_DATE = "2026-10-23"                         # must not survive in the new page (above the Listen block)
 WMU_REPLACE = [("October 23, 2026", "October 30, 2026"), ("Oct 23, 2026", "Oct 30, 2026"),
                ("2026-10-23-weekly-manager-update", "2026-10-30-weekly-manager-update"), ("2026.10.23", "2026.10.30")]
-# R65b: Megan's Oct 30 attachments (SIteplanFinal.pdf = site plan for 82 Pindo West; the north pool lights quote) are HELD for
-# Steven's decision -- a resident's home site plan; not hosted, no Attachments card. Set the four values below to host one (R65).
-WMU_1023_PDF_SRC = None
-WMU_1023_PDF = None
-WMU_1023_PDF_TITLE = None
-WMU_1023_PDF_DESC = None
+# R65c (Steven Oct 30 2026 8:29 PM "post both", overrides R65b for Oct 30): Megan's attachments are hosted (copied, never moved)
+# under pages/assets/manager/2026-10-30/ with their original file names, listed in the Attachments card AND linked at the item
+# whose words say so (WMU_PDF_INLINE: exact phrase in her item -> link). Only SIteplanFinal.pdf was attached to the forwarded
+# email (palmhillblast 1a18e68a364397fc; the other parts are signature logos) -- the north pool lights quote was NOT in it (flagged).
+WMU_1023_PDF_SRC = "source/megan-1030/SIteplanFinal.pdf"   # R72: relative to PHNEWS_WORK
+WMU_1023_PDF = "assets/manager/2026-10-30/SIteplanFinal.pdf"
+WMU_1023_PDF_TITLE = "Site plan for 82 Pindo West"
+WMU_1023_PDF_DESC = "SIteplanFinal.pdf · PDF, 1 page"
+WMU_PDF_INLINE = {"attached site plan for 82 Pindo West": WMU_1023_PDF}
+WMU_PDF_MISSING = ["the quote provided (north pool lights)"]   # named in her text, not attached to the email; no link, wording unchanged
 ARCHIVE_ROWS_LATE = [   # archive rows added after the weekly update page is built (R59)
     ("weekly-manager-updates", {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
                                          "page": "2026-10-23-weekly-manager-update.html", "issues": ["2026-10-25"]}),

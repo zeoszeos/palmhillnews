@@ -17,6 +17,22 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Steven Oct 30 2026 8:29 PM: five Oct 29 emails (gotwicz) -> Nov 1 notices; one email = one notice, one section each
+    "2026-10-29-missing-amazon-package-notice.html": dict(
+        subject="Missing Amazon Package", notice_title="Missing Amazon Package", use_existing_page=True,
+        sections=[dict(heading="Missing Amazon package", keys=["Amazon package"])], approved_omit=[]),
+    "2026-10-29-south-potable-water-shut-off-notice.html": dict(
+        subject="South Potable Water Shut off", notice_title="South Potable Water Shut off", use_existing_page=True,
+        sections=[dict(heading="South potable water shut off", keys=["South Potable Water Shut off"])], approved_omit=[]),
+    "2026-10-29-social-shuffle-begins-notice.html": dict(
+        subject="Social Shuffle Begins Monday. November 2nd", notice_title="Social Shuffle", use_existing_page=True,
+        sections=[dict(heading="Social Shuffle", keys=["Social Shuffle"])], approved_omit=[]),
+    "2026-10-29-mens-golf-association-meeting-notice.html": dict(
+        subject="Palm Hill Men's Golf Association Meeting", notice_title="Palm Hill Men's Golf Association Meeting", use_existing_page=True,
+        sections=[dict(heading="Men's Golf Association meeting", keys=["North Clubhouse"])], approved_omit=[]),
+    "2026-10-29-spaghetti-tickets-still-available-notice.html": dict(
+        subject="Spaghetti Tickets - Still Available", notice_title="Spaghetti Tickets - Still Available", use_existing_page=True,
+        sections=[dict(heading="Spaghetti tickets contact", keys=["Spaghetti tickets"])], approved_omit=[]),
     "2026-10-08-info-from-linda-notice.html": dict(
         subject="Info from Linda", sent="Thursday, Oct 8, 2026, 5:25 PM ET", sender="Webmaster (Linda Keehl)",
         notice_title="Info from Linda", use_existing_page=True, event_source_of_truth=False,

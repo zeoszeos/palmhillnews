@@ -22,7 +22,7 @@ L = lc.Locks()
 _W = lambda k: f"{_ix.md_full(C.WINDOWS[k][0])} through {_ix.md_full(C.WINDOWS[k][1])}"  # R69 window label
 T = r'font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">([^<]+)<'
 norm = lambda x: re.sub(r"[^a-z0-9]", "", x.lower().replace("&amp;", "&"))
-titles = lambda sec: re.findall(T, sec)
+titles = lambda sec: [_html.unescape(t) for t in re.findall(T, sec)]   # R95: compare titles as text (an apostrophe is &#x27; in the HTML)
 text = lambda h: " ".join(re.sub(r"<[^>]+>", " ", h).split())
 
 # L01/L02 masthead
