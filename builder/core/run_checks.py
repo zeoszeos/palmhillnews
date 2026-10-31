@@ -348,6 +348,10 @@ if _dm97.applies(C.ISSUE):
         _s97 = _sd97.read_text(encoding="utf-8")
         L.ok("R97", not _dm97.find_white(_s97), f"SEND: no pure-white row/cell/table backgrounds {_dm97.find_white(_s97)[:3]}")
         L.ok("R97", _dm97.head_ok(_s97), "SEND head: color-scheme / supported-color-schemes light only + :root{color-scheme:light only}")
+# R98 (Steven Oct 30 2026 10:39 PM): no border-left accent on chair-report rows or Did You Know items (preview + SEND), from Nov 1.
+if C.ISSUE >= "2026-11-01":
+    _p98 = [page] + ([(ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8")] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
+    L.ok("R98", not any(re.search(r"<td[^>]*border-left:\s*\d+px", x) for x in _p98), "no border-left accent bar on table cells (chair reports, Did You Know)")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

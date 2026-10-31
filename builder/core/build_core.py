@@ -108,6 +108,8 @@ def _todo(msg):
     """Content guards stop a real build; with PHNEWS_DRYRUN=1 (and the issue's DRYRUN_OK) they are listed as TODOs instead (never publishes)."""
     if not (DRYRUN and C.DRYRUN_OK): raise SystemExit(msg)
     DRYRUN_TODO.append(msg); print("DRY-RUN TODO:", msg); print(_why(msg))  # R75 why/fix line
+# R98 (Steven Oct 30 2026 10:39 PM): no dark green left bar on Committee & Community Reports rows or Did You Know items from Nov 1.
+LEFTBAR = "" if ISSUE >= "2026-11-01" else "border-left:4px solid #2D5016;"
 def bg(i): return "#EAF4E4" if i % 2 else "#FFFFFF"
 def src_cal(extra=None):
     s = f'Source: <a href="{CAL}" style="color:{G};">Calendar</a>'
@@ -282,7 +284,7 @@ def chair_cards():
     print("chair reports dropped (30-day rule):", [(c[0], c[1]) for c in latest.values() if c[1] < cutoff])
     # President's Message + weekly/monthly Manager reports: stay until replaced by a newer one or Steven overrides (no age cutoff)
     for i, (t, d, s, full, lis) in enumerate(sorted(shown, key=lambda c: c[1], reverse=True)):
-        out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-bottom:1px solid #ddd;border-left:4px solid #2D5016;">'
+        out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-bottom:1px solid #ddd;{LEFTBAR}">'
                    # R63 (Steven Oct 24 2026): Listen on the card's TITLE line, right-justified (like the other sections), not beside Read Full Report
                    f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr><td valign="top" align="left" style="font-size:16px;line-height:20px;font-weight:bold;color:#333333;text-align:left;padding-right:8px;">{escape(t)}</td>'
                    f'<td valign="top" align="right" style="font-size:15px;line-height:20px;text-align:right;white-space:nowrap;width:1%;">{listen(lis)}</td></tr></table>'
@@ -517,7 +519,7 @@ _DYK3 = json.load(open(REPO / DYK_RULES_ITEM_JSON, encoding="utf-8"))
 # R57 (Steven Oct 21 11:22 AM): each Did You Know item is its own block -- bold title (the item's source heading), teaser, then
 # More → on its own line; a white gap + green left bar separates items. Guard: style_rules.assert_dyk_blocks.
 def _dyk_row(title, text, href):
-    return (f'<tr class="ph-dyk-item" style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-left:4px solid #2D5016;border-bottom:10px solid #FFFFFF;">'
+    return (f'<tr class="ph-dyk-item" style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;{LEFTBAR}border-bottom:10px solid #FFFFFF;">'
             f'<div class="ph-dyk-title" style="font-size:16px;font-weight:bold;color:#333333;">{_html.escape(title)}</div>'
             f'<div style="font-size:15px;color:#333333;margin-top:4px;">{_html.escape(text)}</div>'
             f'<div class="ph-dyk-more" style="font-size:14px;margin-top:6px;"><a href="{href}" style="color:{G};white-space:nowrap;">More →</a></div></td></tr>')
