@@ -19,6 +19,9 @@ DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as 
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Steven Oct 30 2026 12:13 PM "yes to all" (R93): approved Nov 1 notice list, in order
         'Join the Palm Hill Residents Group on Facebook',
+        'Cornhole Tournament',                              # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
+        'Senior Empowerment Lunch & Learn',                 # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
+        'Worship Service',                                  # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
         'How to access the Palm Hill Community Channel',   # Sat Oct 31 morning sweep: STAGED in draft PR only, pending Steven's OK
         'December Link Deadline',                          # Sat Oct 31 morning sweep: STAGED in draft PR only, pending Steven's OK
         'Missing Amazon Package',                       # Steven Oct 30 2026 8:29 PM: five Oct 29 emails added
@@ -69,13 +72,16 @@ EVENT_DETAIL = {
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html",
-                   "Taste of Golf": BASE + "2026-10-14-taste-of-golf-notice.html"}
+                   "Taste of Golf": BASE + "2026-10-14-taste-of-golf-notice.html",
+                   # Sat Oct 31 6 PM sweep (staged pending Steven): R56 -- calendar row + Webmaster reminder notice (calendar facts only, More -> notice)
+                   "Senior Empowerment Luncheon": BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"}
 EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween-dance.html"),
               "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
               "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
               "Thanksgiving Dinner": ("More →", BASE + "2026-11-26-thanksgiving-dinner.html"),
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html"),
-              "Taste of Golf": ("More →", BASE + "2026-10-14-taste-of-golf-notice.html")}      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
+              "Taste of Golf": ("More →", BASE + "2026-10-14-taste-of-golf-notice.html"),
+              "Senior Empowerment Luncheon": ("More →", BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html")}   # Sat Oct 31 6 PM sweep (staged, R56)      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
 # R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
 # has explicitly OK'd (PHONE_OK_PAGES; Bocce Party approved Oct 16 11:37 PM). Issue summaries never carry them.
 PHONE_OK_PAGES = {"Bocce Party"}
@@ -149,8 +155,43 @@ WM_COPY_SPAGHETTI = "2026-10-29-spaghetti-tickets-still-available-notice.html"  
 # Sat Oct 31 2026 morning sweep (STAGED in a draft PR, pending Steven's OK): two Fri Oct 30 evening Webmaster emails (leonowicz)
 WM_COPY_LINK_DEC = "2026-10-30-december-link-deadline-notice.html"                     # leonowicz 1a18f12ee530aafa (Lisa Bria)
 WM_COPY_CHANNEL = "2026-10-30-palm-hill-community-channel-xumo-notice.html"            # leonowicz 1a18f3dd208ede75 (Gail Stott)
+# Sat Oct 31 2026 6 PM deadline sweep (STAGED in a draft PR, pending Steven's OK): three Sat Oct 31 Webmaster emails (leonowicz)
+WM_COPY_CORNHOLE = "2026-10-31-cornhole-tournament-notice.html"                        # leonowicz 1a1928943f130516 (image-only flyer)
+WM_COPY_SENIOR_LL = "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"        # leonowicz 1a1923d6204ee46a (Bonnie Swanson)
+WM_COPY_WORSHIP = "2026-10-31-worship-service-notice.html"                             # leonowicz 1a191d8809626222 (Claudia Hartz)
+CORNHOLE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/827E9BE2-A63E-4981-99FA-CFDD9C846292.png"
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Sat Oct 31 6 PM sweep: Sat Oct 31 Webmaster emails, verbatim (staged pending Steven); flyer shown as sent, its words as text (R60a)
+    (WM_COPY_CORNHOLE, "Cornhole Tournament", "Saturday, Oct 31, 2026, 11:11 AM ET", [
+        ("img", (CORNHOLE_IMG, "Cornhole Tournament. Palm Hill Country Club. Saturday, November 28, 2026. Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan.")),
+        # the email body is one flyer image (no text); shown as sent, its words as text (R60a; personal phone number left out -- flagged for Steven)
+        ("p", "Cornhole Tournament, Palm Hill Country Club"),
+        ("p", "Saturday, November 28, 2026"), ("p", "Registration ends at 10:15AM"),
+        ("p", "$5 per player, includes hot dog lunch"), ("p", "All levels welcome"),
+        ("p", "Sign up in both clubhouses"), ("p", "Contact Earl & Sandy Sullivan")]),
+    (WM_COPY_SENIOR_LL, "REMINDER: Senior Empowerment Lunch & Learn", "Saturday, Oct 31, 2026, 9:53 AM ET", [
+        ("h", "Senior Empowerment Lunch & Learn"),
+        ("p", "When: Wednesday, November 4"), ("p", "Time: 10 a.m.\u20131 p.m."), ("p", "Where: South Clubhouse"),
+        ("p", "A few friendly reminders:"),
+        ("p", "Please arrive no earlier than 10 a.m."),
+        ("p", "Lunch registration is now closed. Advance sign-up was required to receive lunch."),
+        ("p", "You may still attend without signing up."),
+        ("p", "Please plan to stay until 1 p.m. to hear from all healthcare providers and visit each table."),
+        ("p", "Please sign in when you arrive."),
+        ("p", "We look forward to seeing you there!"),
+        ("p", "Your Palm Hill Wellness Team & Largo Police Senior Services"),
+        ("p", "Respectfully submitted,"), ("p", "Bonnie Swanson")],
+        dict(title="Senior Empowerment Lunch & Learn")),
+    (WM_COPY_WORSHIP, "Reminder - Worship Service Tomorrow", "Saturday, Oct 31, 2026, 8:02 AM ET", [
+        ("h", "Worship Service"),
+        ("p", "Sunday, November 1"), ("p", "4:00 p.m.  (Doors open at 3:30)"),
+        ("p", "Please join us at our Palm Hill Worship service on Sunday, November 1 at 4 o\u2019clock in the North Club House."),
+        ("p", "Communion will be served and the Palm Hill Worship Choir, along with Barbara Brubaker on the piano, will fill the hall with music.   If you would like to sing with the choir or play an instrument,  please contact Mollie at 269-317-6890."),
+        ("p", "This is a non-denominational service and all are welcome.   Our mission is to provide a place for all to connect with God. Our purpose is to Love God,  Love People, Reach Up,  Reach Out and Reach In."),
+        ("p", "For information please contact our Worship Team: Claudia Hartz  (315) 368-8166, Steve or Maureen Livers (727) 481-8142, Mollie Cardno (269) 317-6890, Bernadette Witkiewicz (585) 749-2348, Bonnie Swanson (716) 870-3208."),
+        ("p", "Submitted by:"), ("p", "Claudia  Hartz"), ("p", "Worship Team")],
+        dict(title="Worship Service")),
     # Sat Oct 31 morning sweep: Fri Oct 30 evening Webmaster emails, verbatim (staged pending Steven)
     (WM_COPY_CHANNEL, "How to access the Palm Hill Community Channel", "Friday, Oct 30, 2026, 7:54 PM ET", [
         ("h", "How to Watch the Palm Hill Community Channel"), ("h", "Using Your XUMO Remote"),
@@ -339,6 +380,16 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Sat Oct 31 6 PM sweep (STAGED pending Steven): Sat Oct 31 Webmaster emails, newest first (11:11, 9:53, 8:02 AM ET); teasers = source wording (R18)
+    ("Cornhole Tournament",
+     "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses.",
+     "Webmaster", BASE + WM_COPY_CORNHOLE),
+    ("Senior Empowerment Lunch & Learn",
+     "Lunch registration is now closed. Advance sign-up was required to receive lunch. You may still attend without signing up. Please sign in when you arrive.",
+     "Webmaster", BASE + WM_COPY_SENIOR_LL),
+    ("Worship Service",
+     "Please join us at our Palm Hill Worship service on Sunday, November 1 at 4 o\u2019clock in the North Club House. This is a non-denominational service and all are welcome.",
+     "Webmaster", BASE + WM_COPY_WORSHIP),
     # Sat Oct 31 morning sweep (STAGED pending Steven): Fri Oct 30 evening Webmaster emails, newest first (7:54, 6:44 PM ET); teasers = source sentences (R18)
     ("How to access the Palm Hill Community Channel",
      "Using Your XUMO Remote: Follow these simple steps to access Palm Hill Community News and Meetings on your television. Step 1: Turn on your television. Step 2: Select Spectrum and go to any TV channel.",
@@ -405,6 +456,9 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    "Cornhole Tournament": "Tournament: Saturday, November 28, 2026 · Registration ends: 10:15AM",               # Webmaster Oct 31 flyer (staged)
+    "Senior Empowerment Lunch & Learn": "When: Wednesday, November 4, 10 a.m.\u20131 p.m. · South Clubhouse",       # Webmaster Oct 31 (staged)
+    "Worship Service": "Service: Sunday, November 1, 4:00 p.m. (Doors open at 3:30) · North Club House",                    # Webmaster Oct 31 (staged)
     "December Link Deadline": "Deadline: Thursday, November 5",                                                     # Webmaster Oct 30 (staged)
     "South Potable Water Shut off": "Shut off: Wednesday, November 4, 2026 from 10:00am for approximately 2 hours",   # RPM Oct 29
     "Social Shuffle": "Begins: November 2nd, 2026 at 11:00am · Runs: weekly through March of 2027",                # Webmaster Oct 29
