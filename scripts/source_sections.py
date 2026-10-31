@@ -17,6 +17,13 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Sat Oct 31 2026 morning sweep (staged pending Steven): two Fri Oct 30 Webmaster emails (leonowicz) -> Nov 1 notices
+    "2026-10-30-palm-hill-community-channel-xumo-notice.html": dict(
+        subject="How to access the Palm Hill Community Channel", notice_title="How to access the Palm Hill Community Channel", use_existing_page=True,
+        sections=[dict(heading="XUMO remote steps", keys=["XUMO"])], approved_omit=[]),
+    "2026-10-30-december-link-deadline-notice.html": dict(
+        subject="December Link Deadline", notice_title="December Link Deadline", use_existing_page=True,
+        sections=[dict(heading="December Link deadline", keys=["December Link"])], approved_omit=[]),
     # Steven Oct 30 2026 8:29 PM: five Oct 29 emails (gotwicz) -> Nov 1 notices; one email = one notice, one section each
     "2026-10-29-missing-amazon-package-notice.html": dict(
         subject="Missing Amazon Package", notice_title="Missing Amazon Package", use_existing_page=True,

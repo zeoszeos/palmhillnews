@@ -9,6 +9,9 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Sat Oct 31 2026 morning sweep (staged pending Steven): Fri Oct 30 Webmaster emails; cut, never reworded; More → = the copied email (R47)
+ ("Using Your XUMO Remote: Follow these simple steps", "Using Your XUMO Remote: Follow these simple steps to access Palm Hill Community News and Meetings on your television.", B + "2026-10-30-palm-hill-community-channel-xumo-notice.html"),
+ ("The next Link Deadline arrives this Thursday, November 5.", "Anything you need or want to appear in the December Link needs to be submitted by November 5.", B + "2026-10-30-december-link-deadline-notice.html"),
  # Steven Oct 30 2026 8:29 PM: five Oct 29 emails (gotwicz) as Nov 1 notices; cut, never reworded; More → = the copied email (R47)
  ("We are search for an Amazon package that was delivered", "We are search for an Amazon package that was delivered to the wrong address. If you happen to see it please get in touch.", B + "2026-10-29-missing-amazon-package-notice.html"),
  ("Resident requested - South Potable Water Shut off", "Resident requested - South Potable Water Shut off Wednesday, November 4, 2026 from 10:00am for approximately 2 hours.", B + "2026-10-29-south-potable-water-shut-off-notice.html"),
