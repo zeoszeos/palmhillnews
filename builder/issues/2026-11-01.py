@@ -19,6 +19,8 @@ DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as 
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Steven Oct 30 2026 12:13 PM "yes to all" (R93): approved Nov 1 notice list, in order
         'Join the Palm Hill Residents Group on Facebook',
+        'How to access the Palm Hill Community Channel',   # Sat Oct 31 morning sweep: STAGED in draft PR only, pending Steven's OK
+        'December Link Deadline',                          # Sat Oct 31 morning sweep: STAGED in draft PR only, pending Steven's OK
         'Missing Amazon Package',                       # Steven Oct 30 2026 8:29 PM: five Oct 29 emails added
         'South Potable Water Shut off',
         'Social Shuffle',
@@ -144,8 +146,32 @@ WM_COPY_WATER_S = "2026-10-29-south-potable-water-shut-off-notice.html"         
 WM_COPY_SOCIAL_SHUFFLE = "2026-10-29-social-shuffle-begins-notice.html"                # gotwicz 1a188b1bcff509fa
 WM_COPY_MENS_GOLF = "2026-10-29-mens-golf-association-meeting-notice.html"             # gotwicz 1a1882f2503385a3
 WM_COPY_SPAGHETTI = "2026-10-29-spaghetti-tickets-still-available-notice.html"         # gotwicz 1a1880b577f20ce7
+# Sat Oct 31 2026 morning sweep (STAGED in a draft PR, pending Steven's OK): two Fri Oct 30 evening Webmaster emails (leonowicz)
+WM_COPY_LINK_DEC = "2026-10-30-december-link-deadline-notice.html"                     # leonowicz 1a18f12ee530aafa (Lisa Bria)
+WM_COPY_CHANNEL = "2026-10-30-palm-hill-community-channel-xumo-notice.html"            # leonowicz 1a18f3dd208ede75 (Gail Stott)
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Sat Oct 31 morning sweep: Fri Oct 30 evening Webmaster emails, verbatim (staged pending Steven)
+    (WM_COPY_CHANNEL, "How to access the Palm Hill Community Channel", "Friday, Oct 30, 2026, 7:54 PM ET", [
+        ("h", "How to Watch the Palm Hill Community Channel"), ("h", "Using Your XUMO Remote"),
+        ("p", "Follow these simple steps to access Palm Hill Community News and Meetings on your television."),
+        ("p", "Step 1: Turn on your television."),
+        ("p", "Step 2: Select Spectrum and go to any TV channel."),
+        ("p", "Step 3: Press the Back button on your XUMO remote twice."),
+        ("p", "Step 4: At the top of your TV screen, you should see the following menu:"),
+        ("p", "Home | Live TV | My Library | On Demand"),
+        ("p", "Make sure Home is highlighted."),
+        ("p", "Step 5: Using the large center navigation button on your XUMO remote, continue moving down through the Home screen until you reach the bottom."),
+        ("p", "Step 6: Look for \u201cMy Community Channel.\u201d"),
+        ("p", "Step 7: Highlight the bright blue \u201cView Now\u201d button and press the center OK/Select button on your remote."),
+        ("p", "Step 8: Your Palm Hill Community Channel will open!"),
+        ("p", "You\u2019re all set!"),
+        ("p", "You can now enjoy Palm Hill Community News, meetings, and other important community information right from your television."),
+        ("p", "Gail Stott"), ("p", "Webmaster"), ("p", "Palmhill.webmaster1@gmail.com")]),
+    (WM_COPY_LINK_DEC, "December Link Deadline", "Friday, Oct 30, 2026, 6:44 PM ET", [
+        ("p", "The next Link Deadline arrives this Thursday, November 5. Anything you need or want to appear in the December Link needs to be submitted by November 5."),
+        ("p", "Submit your information to:"), ("p", "phcclink@gmail.com"),
+        ("p", "Thank you,"), ("p", "Lisa Bria"), ("p", "727- 417-6742")]),
     # Oct 29 emails (Steven Oct 30 2026 8:29 PM), verbatim; the 5th element (optional) = notice_page.render keywords (R95)
     (WM_COPY_AMAZON, "Missing Amazon Package", "Thursday, Oct 29, 2026, 1:54 PM ET", [
         ("p", "We are search for an Amazon package that was delivered to the wrong address.  If you happen to see it please get in touch with Teddi McCune 727-481-1855 at 31 Thatch Palm W."),
@@ -313,6 +339,13 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Sat Oct 31 morning sweep (STAGED pending Steven): Fri Oct 30 evening Webmaster emails, newest first (7:54, 6:44 PM ET); teasers = source sentences (R18)
+    ("How to access the Palm Hill Community Channel",
+     "Using Your XUMO Remote: Follow these simple steps to access Palm Hill Community News and Meetings on your television. Step 1: Turn on your television. Step 2: Select Spectrum and go to any TV channel.",
+     "Webmaster", BASE + WM_COPY_CHANNEL),
+    ("December Link Deadline",
+     "The next Link Deadline arrives this Thursday, November 5. Anything you need or want to appear in the December Link needs to be submitted by November 5. Submit your information to: phcclink@gmail.com",
+     "Webmaster", BASE + WM_COPY_LINK_DEC),
     # Steven Oct 30 2026 8:29 PM: five Oct 29 emails, newest first (sent 1:54, 1:45, 12:36, 10:43, 10:13 AM ET); teasers = source sentences (R18)
     ("Missing Amazon Package",
      "We are search for an Amazon package that was delivered to the wrong address. If you happen to see it please get in touch with Teddi McCune 727-481-1855 at 31 Thatch Palm W.",
@@ -372,6 +405,7 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    "December Link Deadline": "Deadline: Thursday, November 5",                                                     # Webmaster Oct 30 (staged)
     "South Potable Water Shut off": "Shut off: Wednesday, November 4, 2026 from 10:00am for approximately 2 hours",   # RPM Oct 29
     "Social Shuffle": "Begins: November 2nd, 2026 at 11:00am · Runs: weekly through March of 2027",                # Webmaster Oct 29
     "Palm Hill Men's Golf Association Meeting": "Meeting: Monday, November 2, 2026, 10:30 AM · North Clubhouse",     # Webmaster Oct 29 (calendar: 10:00-11:30 AM North Main Hall -- flagged)
@@ -385,6 +419,7 @@ NOTICE_DATE_LINE = {
     "Taste of Golf": "Event: November 18, 2026; 10 AM · Meet at Pro Shop",                                       # Webmaster Oct 14
 }
 NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to all": leave undated
+    "How to access the Palm Hill Community Channel": "Sat Oct 31 morning sweep (staged); its email gives no date (flagged for Steven)",
     "Missing Amazon Package": "Steven Oct 30 2026 8:29 PM added it; its email gives no date (flagged for Steven)",
     "Join the Palm Hill Residents Group on Facebook": "Steven Oct 30 2026 12:13 PM",
     "Swimming Pool Food and Beverage Rules": "Steven Oct 30 2026 12:13 PM",
