@@ -10,7 +10,7 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
  # Sat Oct 31 2026 6 PM deadline sweep (staged pending Steven): Sat Oct 31 Webmaster emails; cut, never reworded; More → = the copied email (R47)
- ("Registration ends at 10:15AM. $5 per player", "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses.", B + "2026-10-31-cornhole-tournament-notice.html"),
+ ("Registration ends at 10:15AM. $5 per player", "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. Contact Earl & Sandy Sullivan 518-866-2079.", B + "2026-10-31-cornhole-tournament-notice.html"),
  ("Lunch registration is now closed. Advance sign-up", "Lunch registration is now closed. Advance sign-up was required to receive lunch. You may still attend without signing up.", B + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"),
  ("Please join us at our Palm Hill Worship service", "Please join us at our Palm Hill Worship service on Sunday, November 1 at 4 o\u2019clock in the North Club House.", B + "2026-10-31-worship-service-notice.html"),
  # Sat Oct 31 2026 morning sweep (staged pending Steven): Fri Oct 30 Webmaster emails; cut, never reworded; More → = the copied email (R47)

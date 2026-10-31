@@ -353,15 +353,32 @@ if _dm97.applies(C.ISSUE):
 if C.ISSUE >= "2026-11-01":
     _p98 = [page] + ([(ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8")] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
     L.ok("R98", not any(re.search(r"<td[^>]*border-left:\s*\d+px", x) for x in _p98), "no border-left accent bar on table cells (chair reports, Did You Know)")
-# R99: optional TOP_BANNER present exactly once in its own banner above the first section (preview + SEND); absent otherwise.
-_tb99 = getattr(C, "TOP_BANNER", None)
+# R99/R101: optional TOP_BANNERS (or TOP_BANNER) each exactly once, in order, all above the first section (preview + SEND);
+# compact size (R101: heading 17px, padding 8px 12px); none otherwise.
+_tbs99 = list(getattr(C, "TOP_BANNERS", None) or ([C.TOP_BANNER] if getattr(C, "TOP_BANNER", None) else []))
 for _n99, _x99 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
     _c99 = _x99.count('class="ph-top-banner"')
-    if not _tb99: L.ok("R99", _c99 == 0, f"{_n99}: no top banner (issue defines none)"); continue
-    _i99 = _x99.find('class="ph-top-banner"'); _f99 = min([i for i in (_x99.find('<div class="canonical-section">'), _x99.find('<div class="section04">')) if i > 0] or [len(_x99)])
-    _body99 = html.escape(_tb99["body"], quote=False); _hd99 = html.escape(_tb99["heading"].lstrip("\u23f0").strip(), quote=False)
-    L.ok("R99", _c99 == 1 and 0 < _i99 < _f99, f"{_n99}: exactly one top banner, above the first section")
-    L.ok("R99", _x99.count(_body99) == 1 and _x99.count(_hd99) == 1 and _x99.count("&#9200;") == 2, f"{_n99}: banner heading/body verbatim once, two clock icons")
+    if not _tbs99: L.ok("R99", _c99 == 0, f"{_n99}: no top banner (issue defines none)"); continue
+    _f99 = min([i for i in (_x99.find('<div class="canonical-section">'), _x99.find('<div class="section04">')) if i > 0] or [len(_x99)])
+    _ps99 = [m.start() for m in re.finditer('class="ph-top-banner"', _x99)]
+    L.ok("R99", _c99 == len(_tbs99) and all(0 < i < _f99 for i in _ps99), f"{_n99}: exactly {len(_tbs99)} top banner(s), above the first section")
+    _last = -1
+    for _tb in _tbs99:
+        _bd = html.escape(_tb["body"]); _hd = html.escape(_tb["heading"].split(" ", 1)[1])
+        _ih = _x99.find(_hd)
+        L.ok("R99", _x99.count(_bd) == 1 and _x99.count(_hd) == 1 and _ih > _last, f"{_n99}: banner '{_hd}' verbatim once, in order")
+        _last = _ih
+    L.ok("R99", _x99.count("&#9200;") == 2, f"{_n99}: two clock icons")
+    _seg = _x99[_ps99[0]:_f99] if _ps99 else ""
+    L.ok("R101", "font:700 20px" not in _seg and "padding:12px 14px" not in _seg and _seg.count("font:700 17px/22px") == len(_tbs99), f"{_n99}: banners compact (17px heading, 8px 12px padding)")
+# R102 (Steven Oct 31 2026 7:33 PM): each REQUIRED_TEL number appears as a tap-to-call link in preview, SEND and its copy page.
+for _lb101, _num101, _pg101 in getattr(C, "REQUIRED_TEL", []):
+    _h101 = 'href="tel:+1' + re.sub(r"\D", "", _num101) + '"'
+    _srcs101 = [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
+    _pp101 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _pg101
+    _srcs101.append(("page " + _pg101, _pp101.read_text(encoding="utf-8") if _pp101.exists() else ""))
+    for _n101, _x101 in _srcs101:
+        L.ok("R102", _h101 in _x101 and _num101 in _x101, f"{_n101}: {_lb101} phone {_num101} is a tel: link")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})

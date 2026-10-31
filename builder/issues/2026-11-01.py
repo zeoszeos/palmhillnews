@@ -163,12 +163,12 @@ SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Re
 WM_COPIES = [
     # Sat Oct 31 6 PM sweep: Sat Oct 31 Webmaster emails, verbatim (staged pending Steven); flyer shown as sent, its words as text (R60a)
     (WM_COPY_CORNHOLE, "Cornhole Tournament", "Saturday, Oct 31, 2026, 11:11 AM ET", [
-        ("img", (CORNHOLE_IMG, "Cornhole Tournament. Palm Hill Country Club. Saturday, November 28, 2026. Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan.")),
-        # the email body is one flyer image (no text); shown as sent, its words as text (R60a; personal phone number left out -- flagged for Steven)
+        ("img", (CORNHOLE_IMG, "Cornhole Tournament. Palm Hill Country Club. Saturday, November 28, 2026. Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan 518-866-2079.")),
+        # the email body is one flyer image (no text); shown as sent, its words as text (R60a; R101: flyer phone number included -- Steven Oct 31 7:33 PM)
         ("p", "Cornhole Tournament, Palm Hill Country Club"),
         ("p", "Saturday, November 28, 2026"), ("p", "Registration ends at 10:15AM"),
         ("p", "$5 per player, includes hot dog lunch"), ("p", "All levels welcome"),
-        ("p", "Sign up in both clubhouses"), ("p", "Contact Earl & Sandy Sullivan")]),
+        ("p", "Sign up in both clubhouses"), ("p", "Contact Earl & Sandy Sullivan 518-866-2079")]),
     (WM_COPY_SENIOR_LL, "REMINDER: Senior Empowerment Lunch & Learn", "Saturday, Oct 31, 2026, 9:53 AM ET", [
         ("h", "Senior Empowerment Lunch & Learn"),
         ("p", "When: Wednesday, November 4"), ("p", "Time: 10 a.m.\u20131 p.m."), ("p", "Where: South Clubhouse"),
@@ -381,7 +381,7 @@ HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings
 NOTICES = [
     # Sat Oct 31 6 PM sweep (STAGED pending Steven): Sat Oct 31 Webmaster emails, newest first (11:11, 9:53, 8:02 AM ET); teasers = source wording (R18)
     ("Cornhole Tournament",
-     "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses.",
+     "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan 518-866-2079.",
      "Webmaster", BASE + WM_COPY_CORNHOLE),
     ("Senior Empowerment Lunch & Learn",
      "Lunch registration is now closed. Advance sign-up was required to receive lunch. You may still attend without signing up. Please sign in when you arrive.",
@@ -765,5 +765,12 @@ RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"
 # R100 (Steven Oct 31 2026 6:07 PM "Drop community notice"): Tony's Facebook group notice off the main page; Did You Know item kept.
 TONY_FB_NOTICE = False
 # R99 (Steven Oct 31 2026, "Put it in its own banner, and add some tasteful clock icons"): DST banner, wording verbatim.
+# R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
+# in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
+REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE)]
 TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back?",
                   body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Remember to turn your clocks back one hour. Enjoy the extra hour!")
+# R101 (Steven Oct 31 2026 7:34 PM, voice: "don't forget to vote on Tuesday" / "you can vote here in the park"): second small
+# banner under the DST one; his wording, light polish. The in-park location is Steven's word (not from a source). No hours/links.
+VOTE_BANNER = dict(heading="\U0001F5F3\ufe0f Don't forget to vote on Tuesday!", body="You can vote here in the park.")
+TOP_BANNERS = [TOP_BANNER, VOTE_BANNER]

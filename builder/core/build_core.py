@@ -338,15 +338,23 @@ else:
 replace_table("Committee Chair Reports", chair_cards())
 # R99 (Steven Oct 31 2026): optional one-issue TOP_BANNER (content file dict heading/body, verbatim) in its own light banner
 # directly under the masthead, above the first section, with a clock icon each side of the heading. Off unless the issue defines it.
-if globals().get("TOP_BANNER"):
-    _tb = TOP_BANNER; _a99, _ = section_span(s, "Committee &amp; Board Meeting Schedules")
+# R101 (Steven Oct 31 2026 7:34 PM): banners are compact (heading 17px, body 14px, padding 8px 12px) and an issue may stack
+# several (TOP_BANNERS list, in order) -- each its own table, an icon each side of the heading (the heading's own leading icon).
+BANNER_ICONS = {"\u23f0": "&#9200;", "\U0001F5F3\ufe0f": "&#128499;&#65039;", "\U0001F5F3": "&#128499;&#65039;"}
+_tbs = list(globals().get("TOP_BANNERS") or ([TOP_BANNER] if globals().get("TOP_BANNER") else []))
+if _tbs:
+    _a99, _ = section_span(s, "Committee &amp; Board Meeting Schedules")
     assert not re.search(r'<div class="(canonical-section|section04)">', s[:_a99]), "R99: banner must sit above the first section"
-    _h99 = escape(_tb["heading"]); _ic = '<span aria-hidden="true" style="font-size:22px;line-height:26px;">&#9200;</span>'
-    _h99 = _h99[len("\u23f0"):].strip() if _h99.startswith("\u23f0") else _h99   # heading's own leading clock becomes the left icon
-    _ban = ('<table class="ph-top-banner" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px 0;border-collapse:separate;">'
-            '<tr><td bgcolor="#FFF9E6" align="center" style="background:#FFF9E6;border:2px solid #8B6914;border-radius:6px;padding:12px 14px;text-align:center;">'
-            f'<div style="font:700 20px/26px Arial,sans-serif;color:#2D5016;">{_ic}&nbsp;&nbsp;{_h99}&nbsp;&nbsp;{_ic}</div>'
-            f'<div style="font:16px/23px Arial,sans-serif;color:#333333;margin-top:6px;">{escape(_tb["body"])}</div></td></tr></table>')
+    _ban = ""
+    for _tb in _tbs:
+        _h99 = _tb["heading"]; _ent = next((v for k, v in BANNER_ICONS.items() if _h99.startswith(k)), None)
+        assert _ent, "R101: banner heading must start with a known icon"
+        _h99 = escape(_h99[len(next(k for k in BANNER_ICONS if _h99.startswith(k))):].strip())
+        _ic = f'<span aria-hidden="true" style="font-size:18px;line-height:22px;">{_ent}</span>'
+        _ban += ('<table class="ph-top-banner" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px 0;border-collapse:separate;">'
+                 '<tr><td bgcolor="#FFF9E6" align="center" style="background:#FFF9E6;border:2px solid #8B6914;border-radius:6px;padding:8px 12px;text-align:center;">'
+                 f'<div style="font:700 17px/22px Arial,sans-serif;color:#2D5016;">{_ic}&nbsp;&nbsp;{_h99}&nbsp;&nbsp;{_ic}</div>'
+                 f'<div style="font:14px/20px Arial,sans-serif;color:#333333;margin-top:4px;">{escape(_tb["body"])}</div></td></tr></table>')
     s = s[:_a99] + _ban + s[_a99:]
 replace_table("Community Notices", notice_rows())
 # R79 (Steven, Oct 26 2026 11:25 AM): from Nov 1 both Events sections end with a link to the All Events page = every event in the
