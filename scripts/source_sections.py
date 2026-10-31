@@ -17,6 +17,16 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Sat Oct 31 2026 6 PM deadline sweep (staged pending Steven): three Sat Oct 31 Webmaster emails (leonowicz) -> Nov 1 notices
+    "2026-10-31-cornhole-tournament-notice.html": dict(
+        subject="Cornhole Tournament", notice_title="Cornhole Tournament", use_existing_page=True,
+        sections=[dict(heading="Cornhole Tournament flyer", keys=["Registration ends"])], approved_omit=[]),
+    "2026-10-31-senior-empowerment-lunch-and-learn-notice.html": dict(
+        subject="REMINDER: Senior Empowerment Lunch & Learn", notice_title="Senior Empowerment Lunch & Learn", use_existing_page=True,
+        sections=[dict(heading="Lunch & Learn reminders", keys=["Lunch registration"])], approved_omit=[]),
+    "2026-10-31-worship-service-notice.html": dict(
+        subject="Reminder - Worship Service Tomorrow", notice_title="Worship Service", use_existing_page=True,
+        sections=[dict(heading="Worship Service", keys=["Worship service"])], approved_omit=[]),
     # Sat Oct 31 2026 morning sweep (staged pending Steven): two Fri Oct 30 Webmaster emails (leonowicz) -> Nov 1 notices
     "2026-10-30-palm-hill-community-channel-xumo-notice.html": dict(
         subject="How to access the Palm Hill Community Channel", notice_title="How to access the Palm Hill Community Channel", use_existing_page=True,
