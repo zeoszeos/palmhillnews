@@ -214,7 +214,7 @@ if _tel.applies(C.ISSUE):
     _rp85 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
     _b10, _b7 = _tel.find_bare(page)
     L.ok("R85", not _b10 and not _b7 and not _tel.tel_mismatches(page), f"NL (preview/SEND): every phone a tel: link with matching digits {_b10 + _b7 + _tel.tel_mismatches(page)}")
-    _pg85 = sorted({u for u in re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', page) if _tel.dated_from(u)} | ({C.STORY["listen"]} if getattr(C, "STORY", None) else set()))
+    _pg85 = sorted({u for u in re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', page) if _tel.dated_from(u) or u in {w[0] for w in getattr(C, "WM_COPIES", [])} | {q["page"] for q in getattr(C, "NOTICE_PAGES", [])}} | ({C.STORY["listen"]} if getattr(C, "STORY", None) else set()))
     _bad85 = []
     for _u in _pg85:
         _f = _rp85 / "pages" / _u
