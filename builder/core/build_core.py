@@ -223,8 +223,8 @@ for _sv, _spg, _smsg in SOURCE_VERBATIM:
 for _p in NOTICE_PAGES:
     (PAGES / _p["page"]).write_text(_np.render(_p["subject"], _p["sent"], _p["blocks"], **_p["kw"]), encoding="utf-8")
     _np.notice_listen.add(str(REPO), _p["page"])
-for _n, _subj, _sent, _blocks in WM_COPIES:
-    _np.write(str(REPO), _n, _subj, _sent, _blocks)
+for _w in WM_COPIES:   # R95: optional 5th element = render keywords (e.g. an RPM message's own source line/sender)
+    _np.write(str(REPO), *_w[:4], **(_w[4] if len(_w) > 4 else {}))
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
 # Per-issue carry policy (content file NOTICES_DROPPED): keep notices still valid on/after the issue date, drop the previous
 # issue's one-offs that are expired or were news for that week only. Re-check every kept notice against the Friday inbox sweep.
@@ -435,21 +435,36 @@ if not _wp.exists():  # published page (nav/Listen kept current by build_archive
     _wp.write_text(_tpl, encoding="utf-8")
 # R65: the weekly update's attached PDF (WMU_1023_PDF*, content file) is copied (never moved) and linked in an Attachments card.
 # R72 (batch 6, Steven Oct 24 2026 10:40 PM "do them all"): the PDF source is a content-file path relative to the work tree.
-if Path(WMU_1023_PDF_SRC).is_absolute(): raise SystemExit("R72 FAIL: WMU_1023_PDF_SRC must be relative to PHNEWS_WORK, not a fixed folder. Why: builds must not depend on one machine's folders. Fix: copy the PDF into <work>/source/ and set the relative path in the content file.")
-WMU_1023_PDF_SRC = ROOT / WMU_1023_PDF_SRC
-if not WMU_1023_PDF_SRC.exists(): raise SystemExit(f"R72 FAIL: weekly update PDF {WMU_1023_PDF_SRC} is missing. Why: the Attachments card would link a missing file. Fix: copy the PDF there (copy, never move).")
-_pdf = PAGES / WMU_1023_PDF
-if not _pdf.exists():
-    import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
-_wt = _wp.read_text(encoding="utf-8")
-if WMU_1023_PDF not in _wt:
-    _att = ('<section class="content-card attachments" aria-labelledby="att-h"><h2 id="att-h">Attachments</h2>\n<ul class="att-docs">\n'
-            f'<li><a href="/pages/{WMU_1023_PDF}" target="_blank" rel="noopener"><span class="att-icon" aria-hidden="true">📄</span>'
-            f'<span><b>{WMU_1023_PDF_TITLE}</b><small>{WMU_1023_PDF_DESC}</small></span></a></li>\n</ul>\n</section>\n')
-    _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
-    _wt = _wt[:_k] + _att + _wt[_k:]
-    _wp.write_text(_wt, encoding="utf-8")
-assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == 1 and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: weekly update PDF link/copy missing"
+# R65b (Nov 1 Fri evening check, Oct 30 2026): WMU_1023_PDF_SRC = None means the update's attachments are held for Steven's
+# decision -- no PDF is hosted and the page carries no Attachments card (the template's card is already removed above).
+if WMU_1023_PDF_SRC is None:
+    _wt = _wp.read_text(encoding="utf-8")
+    assert 'class="content-card attachments"' not in _wt and "/pages/assets/manager/" not in _wt, "R65b: weekly update page must not carry another update's attachment"
+else:
+    if Path(WMU_1023_PDF_SRC).is_absolute(): raise SystemExit("R72 FAIL: WMU_1023_PDF_SRC must be relative to PHNEWS_WORK, not a fixed folder. Why: builds must not depend on one machine's folders. Fix: copy the PDF into <work>/source/ and set the relative path in the content file.")
+    WMU_1023_PDF_SRC = ROOT / WMU_1023_PDF_SRC
+    if not WMU_1023_PDF_SRC.exists(): raise SystemExit(f"R72 FAIL: weekly update PDF {WMU_1023_PDF_SRC} is missing. Why: the Attachments card would link a missing file. Fix: copy the PDF there (copy, never move).")
+    _pdf = PAGES / WMU_1023_PDF
+    if not _pdf.exists():
+        import shutil as _shp; _pdf.parent.mkdir(parents=True, exist_ok=True); _shp.copy2(WMU_1023_PDF_SRC, _pdf)
+    _wt = _wp.read_text(encoding="utf-8")
+    if WMU_1023_PDF not in _wt:
+        _att = ('<section class="content-card attachments" aria-labelledby="att-h"><h2 id="att-h">Attachments</h2>\n<ul class="att-docs">\n'
+                f'<li><a href="/pages/{WMU_1023_PDF}" target="_blank" rel="noopener"><span class="att-icon" aria-hidden="true">📄</span>'
+                f'<span><b>{WMU_1023_PDF_TITLE}</b><small>{WMU_1023_PDF_DESC}</small></span></a></li>\n</ul>\n</section>\n')
+        _k = _wt.index("</section>", _wt.index('<p class="signoff">')) + len("</section>\n")
+        _wt = _wt[:_k] + _att + _wt[_k:]
+        _wp.write_text(_wt, encoding="utf-8")
+    # R65c (Steven Oct 30 2026 8:29 PM): also link the attachment at the item whose words name it (phrase kept, only wrapped)
+    _inl = globals().get("WMU_PDF_INLINE") or {}
+    for _ph, _hr in _inl.items():
+        _lk = f'<a href="/pages/{_hr}" target="_blank" rel="noopener">{_ph}</a>'
+        if _lk not in _wt:
+            assert _wt.count(_ph) == 1, f"R65c: inline attachment phrase must appear exactly once in the update page: {_ph!r}"
+            _wt = _wt.replace(_ph, _lk); _wp.write_text(_wt, encoding="utf-8")
+        assert _wt.count(_lk) == 1, f"R65c: inline attachment link missing for {_ph!r}"
+    _nlink = 1 + sum(1 for _h in _inl.values() if _h == WMU_1023_PDF)
+    assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == _nlink and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: weekly update PDF link/copy missing"
 for _sec, _row in ARCHIVE_ROWS_LATE: _arch_row(_sec, _row)
 # Weekly Manager Update card on the main page: the newest update replaces the seed card (retention rule); WMU_CARD_* in the content file
 _W_OLD = s[s.find(WMU_CARD_OLD):]
@@ -779,6 +794,38 @@ if _plv.v2_for(ISSUE):
     _loc = _plv.add_inplace(_loc); (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
     assert _plv.strip_inplace(_loc).lower().count("<script") == 0, "R94: review copy may carry only the in-place Listen block"
 assert "<script" not in OUTF.read_text(encoding="utf-8").lower(), "R76c/R94: the NL output feeding SEND/email must stay script-free"
+# STYLE-RULES R96 (Oct 30 2026, after the 4:3x PM RCCA on the Omen review folder): the local review copy is self-contained --
+# every pages/<name>.html the review preview links (More →, Source, Listen ?listen=1, cards) is copied (never moved) beside it and
+# linked relatively, and each copied page's site-root refs (/pages/...: CSS, JS, images, PDF attachments) are copied too and made
+# relative, so new pages and attachments open on the Omen before the PR is merged. Box scratch copy only; repo pages untouched.
+_loc = (LOCAL / f"PHNEWS-{ISSUE}-preview.html").read_text(encoding="utf-8")
+_r96 = sorted(set(m for m in re.findall(re.escape(BASE) + r'([A-Za-z0-9._-]+\.html)', _loc) if (PAGES / m).is_file()))
+_r96_assets = set(); _q96 = list(_r96)
+while _q96:   # closure: pages the copied pages link relatively (e.g. all-events by name / location) are copied too
+    _t = (PAGES / _q96.pop()).read_text(encoding="utf-8")
+    for _x in re.findall(r'href="(?:/pages/)?([A-Za-z0-9._-]+\.html)', _t):
+        if (PAGES / _x).is_file() and _x not in _r96: _r96.append(_x); _q96.append(_x)
+for _pg in _r96:
+    _t = (PAGES / _pg).read_text(encoding="utf-8")
+    for _a in re.findall(r'(?:href|src)="/pages/([^"?#]+)', _t):
+        if (PAGES / _a).is_file() and not _a.endswith(".html"): _r96_assets.add(_a)
+    for _a in re.findall(r'(?:href|src)="(?!https?:|#|mailto:|tel:|data:|javascript:|/)([^"?#]+)', _t):
+        if (PAGES / _a).is_file() and not _a.endswith(".html"): _r96_assets.add(_a)
+    _t = re.sub(r'((?:href|src)=")/pages/([^"?#]+\.html)', lambda m: m.group(1) + (m.group(2) if (PAGES / m.group(2)).is_file() and m.group(2) in _r96 else "https://palmhillnews.vercel.app/pages/" + m.group(2)), _t)
+    _t = re.sub(r'((?:href|src)=")/pages/(?![^"]*\.html)', r'\1', _t)
+    _t = re.sub(r'((?:href|src)=")/(?!/)', r'\1https://palmhillnews.vercel.app/', _t)
+    (LOCAL / _pg).write_text(_t, encoding="utf-8")
+    _loc = _loc.replace(BASE + _pg, _pg)
+for _a in sorted(_r96_assets):
+    (LOCAL / _a).parent.mkdir(parents=True, exist_ok=True); _sh.copy2(PAGES / _a, LOCAL / _a)
+(LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
+_miss96 = [m for m in set(re.findall(r'href="([A-Za-z0-9._/-]+\.(?:html|pdf))', _loc)) if not (LOCAL / m).is_file()]
+assert not _miss96, f"R96: local review copy links missing local files: {_miss96}"
+for _pg in _r96:
+    _t = (LOCAL / _pg).read_text(encoding="utf-8")
+    _m2 = [m for m in re.findall(r'(?:href|src)="(?!https?:|#|mailto:|tel:|data:|javascript:|//)([^"?#]+)', _t) if not (LOCAL / m).is_file()]
+    assert not _m2, f"R96: local copy of {_pg} refers to missing local files: {_m2[:5]}"
+print(f"R96 local review copy: {len(_r96)} linked page(s) + {len(_r96_assets)} asset(s) copied beside the preview")
 print("local review copy:", sorted(str(p.relative_to(LOCAL)) for p in LOCAL.rglob("*") if p.is_file()))
 print("DRY-RUN TODOs:", len(DRYRUN_TODO)) if DRYRUN else None
 # STYLE-RULES R70 (Steven, Oct 24 2026 9:56 PM; PR #139, carried into the shared builder in batch 4): the live preview page is synced

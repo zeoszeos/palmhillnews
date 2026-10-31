@@ -9,6 +9,12 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Steven Oct 30 2026 8:29 PM: five Oct 29 emails (gotwicz) as Nov 1 notices; cut, never reworded; More → = the copied email (R47)
+ ("We are search for an Amazon package that was delivered", "We are search for an Amazon package that was delivered to the wrong address. If you happen to see it please get in touch.", B + "2026-10-29-missing-amazon-package-notice.html"),
+ ("Resident requested - South Potable Water Shut off", "Resident requested - South Potable Water Shut off Wednesday, November 4, 2026 from 10:00am for approximately 2 hours.", B + "2026-10-29-south-potable-water-shut-off-notice.html"),
+ ("Join us for Social Shuffle in the North Shuffleboard Courts", "Join us for Social Shuffle in the North Shuffleboard Courts on Monday\u2019s at 11:00am, beginning November 2nd, 2026.", B + "2026-10-29-social-shuffle-begins-notice.html"),
+ ("When: Monday, November 2, 2026. Time: 10:30 AM.", "When: Monday, November 2, 2026. Time: 10:30 AM. Where: North Clubhouse.", B + "2026-10-29-mens-golf-association-meeting-notice.html"),
+ ("If anyone wants Spaghetti tickets for Sat November 14th", "If anyone wants Spaghetti tickets for Sat November 14th please contact Mary Lou Shaw at 608-312 -6958.", B + "2026-10-29-spaghetti-tickets-still-available-notice.html"),
  ("Bus loads at 8:00 AM for the arts and crafts festival", "Bus loads at 8:00 AM for the arts and crafts festival. $35 per seat, payable at coffee.", B + "2026-10-24-mount-dora-trip.html"),
  ("Palm Hill now has a private Facebook group just for residents,", "Palm Hill now has a private Facebook group just for residents.", None),
  # Steven Oct 23 5:09 AM: new Webmaster notices (gotwicz); teaser already short, trim adds the inline More → (R23/R47)
