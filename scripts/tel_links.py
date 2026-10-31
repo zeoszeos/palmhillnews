@@ -5,8 +5,9 @@ Visible text is never changed; the href carries +1 and the digits. Gated from TE
 import re
 TEL_FROM = "2026-11-01"
 LINK_STYLE = "color:#3A6B1A;white-space:nowrap;"   # = the NL's standard nowrap link style (G)
+# R85b: tolerate one stray space/nbsp around the last separator ("608-312 -6958"); visible text kept.
 # 10-digit (with optional +1 / ext.) or toll-free; separators - . space; (727) form
-PHONE = re.compile(r"(?<![\w/=.+-])(?:\+?1[ .-]?)?(?:\(\d{3}\)[ \u00a0]?|\d{3}[ .\u00a0-])\d{3}[.-]\d{4}(?:\s*(?:ext\.?|x)\s*\d{1,5})?(?![\w-])")
+PHONE = re.compile(r"(?<![\w/=.+-])(?:\+?1[ .-]?)?(?:\(\d{3}\)[ \u00a0]?|\d{3}[ .\u00a0-])\d{3}[ \u00a0]?[.-][ \u00a0]?\d{4}(?:\s*(?:ext\.?|x)\s*\d{1,5})?(?![\w-])")
 SEVEN = re.compile(r"(?<![\w/=.()+-])(?<!\) )\d{3}-\d{4}(?![\w-])")
 _SKIP = re.compile(r"(<script\b[\s\S]*?</script>|<style\b[\s\S]*?</style>|<!--[\s\S]*?-->|<a\b[\s\S]*?</a>|<title\b[\s\S]*?</title>|<head\b[\s\S]*?</head>|<[^>]+>)", re.I)
 def applies(issue): return issue >= TEL_FROM

@@ -42,6 +42,10 @@ _sr.assert_no_stamp(s, NAME)  # R40
 s = s.replace(f"PHNEWS {LONG} — DRAFT (not sent)", f"PHNEWS {LONG}")
 assert f"previews/{I}" not in s and "DRAFT" not in s and "noindex" not in s, "preview-only text left in the SEND file"
 s = _st.trim(_sr.enforce_title_months(s))  # R18 (no listen_fix: the builder already applied the R1/R18c Listen inset, Oct 24)
+import tel_links as _tel  # R85/R85b: trim re-inserts source text (e.g. "608-312 -6958"), so re-link phones and guard, same as the builder
+if _tel.applies(I):
+    s = _tel.linkify(s)
+    if _tel.find_bare(s)[0] or _tel.tel_mismatches(s): raise SystemExit(f"R85: bare/mismatched phone in SEND: {_tel.find_bare(s)} {_tel.tel_mismatches(s)}")
 s = _sr.assert_archive_labels(_sr.archive_labels(s), NAME)  # R41/R43
 s = _sr.assert_source_credits(s, NAME)
 s = _sr.assert_community_stories(s, NAME, None)  # R45

@@ -220,6 +220,7 @@ sys.path.insert(0, SCRIPTS); import notice_page as _np
 # R60c-style source checks + generated notice pages (NOTICE_PAGES, content file) + Webmaster copy pages (WM_COPIES)
 for _sv, _spg, _smsg in SOURCE_VERBATIM:
     assert _sv in (PAGES / _spg).read_text(encoding="utf-8"), _smsg
+_R85_GEN = {_p["page"] for _p in NOTICE_PAGES} | {_w[0] for _w in WM_COPIES}  # R85b: copy pages this build renders (may carry a pre-Nov-1 source date)
 for _p in NOTICE_PAGES:
     (PAGES / _p["page"]).write_text(_np.render(_p["subject"], _p["sent"], _p["blocks"], **_p["kw"]), encoding="utf-8")
     _np.notice_listen.add(str(REPO), _p["page"])
@@ -734,6 +735,13 @@ json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in m
            **({"all_events": [(e["date"], e["name"]) for e in all_events]} if _AE else {})}, open(ROOT / f"build-audit-{C.SHORT}.json", "w"), indent=1)
 print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week), "| upcoming", len(upcoming))
 # STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
+# R85: Nov 1+ generated pages this issue links (date prefix >= TEL_FROM) get the same tel: links; older published pages untouched. Runs before run_checks and the R96 local copy (R85b).
+if _tel.applies(ISSUE):
+    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s))):
+        _f = PAGES / _u
+        if _f.exists() and (_tel.dated_from(_u) or _u in _R85_GEN):
+            _t = _f.read_text(encoding="utf-8"); _n = _tel.linkify(_t)
+            if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R85 tel links:", _u)
 _rc = _sp2.run([sys.executable, str(HERE / "run_checks.py"), str(OUTF)], capture_output=True, text=True)
 print((_rc.stdout or "").strip().splitlines()[-1:] or _rc.stderr[-400:])
 if _rc.returncode != 0: _todo(f"R64: run_checks ({ISSUE}) FAIL\n" + "\n".join(l for l in _rc.stdout.splitlines() if "FAIL" in l or l.startswith("    why")) + _rc.stderr[-600:])
@@ -836,10 +844,3 @@ import check_preview_send_stamp as _r70
 print("R70 synced:", _r70.sync(LOCAL / f"PHNEWS-{ISSUE}-preview.html", REPO, ISSUE))
 _r70f, _ = _r70.check(ISSUE, ROOT, REPO)
 if _r70f: raise SystemExit("; ".join(_r70f))
-# R85: Nov 1+ generated pages this issue links (date prefix >= TEL_FROM) get the same tel: links; older published pages untouched.
-if _tel.applies(ISSUE):
-    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s))):
-        _f = PAGES / _u
-        if _f.exists() and _tel.dated_from(_u):
-            _t = _f.read_text(encoding="utf-8"); _n = _tel.linkify(_t)
-            if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R85 tel links:", _u)
