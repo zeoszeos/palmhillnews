@@ -339,6 +339,15 @@ if _pl94.v2_for(C.ISSUE):
     L.ok("R94", "<script" not in page.lower(), "NL output (preview -> SEND/email) has no <script>")
     _sd94 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
     if _sd94.exists(): L.ok("R94", "<script" not in _sd94.read_text(encoding="utf-8").lower(), "SEND copy has no <script>")
+# R97 (Steven Oct 30 2026 10:11 PM): SEND/email copy has no pure-white table/tr/td backgrounds (Gmail iOS dark mode -> black
+# bands with dark text); they carry EMAIL_TINT on the row AND each cell (style + bgcolor), and the head says color-scheme light only.
+import email_dark_mode as _dm97
+if _dm97.applies(C.ISSUE):
+    _sd97 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sd97.exists():
+        _s97 = _sd97.read_text(encoding="utf-8")
+        L.ok("R97", not _dm97.find_white(_s97), f"SEND: no pure-white row/cell/table backgrounds {_dm97.find_white(_s97)[:3]}")
+        L.ok("R97", _dm97.head_ok(_s97), "SEND head: color-scheme / supported-color-schemes light only + :root{color-scheme:light only}")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
