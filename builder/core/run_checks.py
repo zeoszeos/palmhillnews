@@ -371,6 +371,16 @@ for _n99, _x99 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SE
     L.ok("R99", _x99.count("&#9200;") == 2, f"{_n99}: two clock icons")
     _seg = _x99[_ps99[0]:_f99] if _ps99 else ""
     L.ok("R101", "font:700 20px" not in _seg and "padding:12px 14px" not in _seg and _seg.count("font:700 17px/22px") == len(_tbs99), f"{_n99}: banners compact (17px heading, 8px 12px padding)")
+# R101b (Steven Oct 31 2026 7:57 PM): vote banner uses two US flags, no ballot-box icon (preview + SEND).
+for _n101b, _x101b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+    if any("vote" in _b.get("heading", "").lower() for _b in getattr(C, "TOP_BANNERS", [])):
+        L.ok("R101b", _x101b.count("&#127482;&#127480;") == 2 and "&#128499;" not in _x101b and "\U0001F5F3" not in _x101b, f"{_n101b}: vote banner has two US flags, no ballot box")
+# R103 (Steven Oct 31 2026, via Susan): the issue's FIRST_NOTICE is the first Community Notice row (preview + SEND).
+if getattr(C, "FIRST_NOTICE", None):
+    for _n103, _x103 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _cn103 = lc._section(_x103, "Community Notices") or ""
+        _pos = [(_cn103.find(__import__("html").escape(t)), t) for t in lc.NOTICES_EXPECTED if _cn103.find(__import__("html").escape(t)) >= 0]
+        L.ok("R103", bool(_pos) and min(_pos)[1] == C.FIRST_NOTICE and lc.NOTICES_EXPECTED[0] == C.FIRST_NOTICE, f"{_n103}: first Community Notice is {C.FIRST_NOTICE}")
 # R102 (Steven Oct 31 2026 7:33 PM): each REQUIRED_TEL number appears as a tap-to-call link in preview, SEND and its copy page.
 for _lb101, _num101, _pg101 in getattr(C, "REQUIRED_TEL", []):
     _h101 = 'href="tel:+1' + re.sub(r"\D", "", _num101) + '"'
