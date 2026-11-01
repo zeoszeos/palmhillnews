@@ -664,6 +664,14 @@ if globals().get("LINKS_SEVEN", False):
     _hw = s[s.index("Helpful Webpages</div>"):]; _hw = _hw[:_hw.index("</td>")]
     assert _hw.count("<div>• ") == 7 and "newsletter_download" not in _hw and "Videos - Latest" not in _hw, "R81/R25: Helpful Webpages must have the 7 approved links"
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
+# R104 (Steven Nov 1 2026 11:55 AM): a section with no current item shows no header -- the content file's HIDE_SECTIONS
+# {heading: reason} removes the whole section (header + rows) from the main page; archive pages and their URLs are untouched.
+SECTION_KEYS = {"president": "From the Board President", "story": "Community Stories", "chair": "Committee Chair Reports", "manager": "Weekly Manager Update", "shareholders": "Monthly Shareholders Report", "dyk": "Did You Know?"}  # R104
+for _k104 in (globals().get("HIDE_SECTIONS") or {}):
+    _h104 = SECTION_KEYS[_k104]
+    _a104, _b104 = section_span(s, _h104); s = s[:_a104] + s[_b104:]
+    assert f">{_h104}</span>" not in s, f"R104: {_h104} still on the page"
+    print(f"R104 hidden section: {_h104} ({HIDE_SECTIONS[_k104]})")
 # STYLE-RULES R40 (Steven, Oct 17 7:23 PM; replaces R22): NO review/test stamp on any copy (previews and test copies included).
 _ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)
@@ -751,6 +759,18 @@ if _plv.v2_for(ISSUE):
         if "pages/" + _rel in _r10 or not _f.exists(): continue
         _t = _f.read_text(encoding="utf-8"); _n = _plv.upgrade(_t)
         if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R76 v2 listen:", _rel)
+# R85d (Steven Nov 1 2026 2:03 PM follow-up): a page this build re-renders keeps the v2 Listen block it already had
+# (git HEAD), even when its notice has dropped off the issue and the NL no longer links it.
+import subprocess as _sp2
+def _head_has(_u, _needle):
+    _r = _sp2.run(["git", "-C", str(REPO), "show", f"HEAD:pages/{_u}"], capture_output=True, text=True)
+    return _r.returncode == 0 and _needle in _r.stdout
+if _plv.v2_for(ISSUE):
+    for _rel in sorted(_R85_GEN):
+        _f = PAGES / _rel
+        if "pages/" + _rel in _r10 or not _f.exists() or not _head_has(_rel, _plv.V2_MARK): continue
+        _t = _f.read_text(encoding="utf-8"); _n = _plv.upgrade(_t)
+        if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R85d keep v2 listen:", _rel)
 sys.path.insert(0, SCRIPTS); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
@@ -762,7 +782,10 @@ print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week),
 # STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
 # R85: Nov 1+ generated pages this issue links (date prefix >= TEL_FROM) get the same tel: links; older published pages untouched. Runs before run_checks and the R96 local copy (R85b).
 if _tel.applies(ISSUE):
-    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s))):
+    # R85d (Steven Nov 1 2026 2:03 PM follow-up): a copy page this build re-renders keeps its tel: links even after its notice
+    # drops off the issue -- re-linkify every rendered page whose committed (git HEAD) version already had tel: links.
+    _keep85 = {_u for _u in _R85_GEN if _head_has(_u, 'href="tel:')}
+    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s)) | _keep85):
         _f = PAGES / _u
         if _f.exists() and (_tel.dated_from(_u) or _u in _R85_GEN):
             _t = _f.read_text(encoding="utf-8"); _n = _tel.linkify(_t)
