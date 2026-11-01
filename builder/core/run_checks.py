@@ -364,9 +364,9 @@ for _n99, _x99 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SE
     L.ok("R99", _c99 == len(_tbs99) and all(0 < i < _f99 for i in _ps99), f"{_n99}: exactly {len(_tbs99)} top banner(s), above the first section")
     _last = -1
     for _tb in _tbs99:
-        _bd = html.escape(_tb["body"]); _hd = html.escape(_tb["heading"].split(" ", 1)[1])
+        _bd = html.escape(_tb.get("body") or ""); _hd = html.escape(_tb["heading"].split(" ", 1)[1])
         _ih = _x99.find(_hd)
-        L.ok("R99", _x99.count(_bd) == 1 and _x99.count(_hd) == 1 and _ih > _last, f"{_n99}: banner '{_hd}' verbatim once, in order")
+        L.ok("R99", (not _bd or _x99.count(_bd) == 1) and _x99.count(_hd) == 1 and _ih > _last, f"{_n99}: banner '{_hd}' verbatim once, in order")
         _last = _ih
     L.ok("R99", _x99.count("&#9200;") == 2, f"{_n99}: two clock icons")
     _seg = _x99[_ps99[0]:_f99] if _ps99 else ""
@@ -376,6 +376,8 @@ for _n101b, _x101b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE
     if any("vote" in _b.get("heading", "").lower() for _b in getattr(C, "TOP_BANNERS", [])):
         L.ok("R101b", _x101b.count("&#127482;&#127480;") == 2 and "&#128499;" not in _x101b and "\U0001F5F3" not in _x101b, f"{_n101b}: vote banner has two US flags, no ballot box")
         L.ok("R101c", "vote on Tuesday, November 3!" in _x101b, f"{_n101b}: vote banner heading shows the date (Tuesday, November 3)")  # R101c (Steven Oct 31 2026 9:13 PM)
+        L.ok("R101d", "Did you set your clocks back one hour?" in _x101b and "Enjoy the extra hour!" in _x101b and "Remember to turn your clocks back" not in _x101b, f"{_n101b}: clock banner says 'Did you set your clocks back one hour?', no 'Remember' line")  # R101d (Steven Oct 31 2026 10:18 PM)
+        L.ok("R101e", "vote on Tuesday, November 3!" in _x101b and "vote here in the park" not in _x101b, f"{_n101b}: vote banner is heading only, no 'vote here in the park' line")  # R101e (Steven Oct 31 2026 10:18 PM)
 # R103 (Steven Oct 31 2026, via Susan): the issue's FIRST_NOTICE is the first Community Notice row (preview + SEND).
 if getattr(C, "FIRST_NOTICE", None):
     for _n103, _x103 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):

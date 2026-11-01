@@ -769,11 +769,11 @@ TONY_FB_NOTICE = False
 # R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
 # in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
 REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE)]
-TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back?",
-                  body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Remember to turn your clocks back one hour. Enjoy the extra hour!")
+TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back one hour?",
+                  body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Enjoy the extra hour!")
 # R101 (Steven Oct 31 2026 7:34 PM, voice: "don't forget to vote on Tuesday" / "you can vote here in the park"): second small
 # banner under the DST one; his wording, light polish. The in-park location is Steven's word (not from a source). No hours/links.
-VOTE_BANNER = dict(heading="\U0001F1FA\U0001F1F8 Don't forget to vote on Tuesday, November 3!", body="You can vote here in the park.")
+VOTE_BANNER = dict(heading="\U0001F1FA\U0001F1F8 Don't forget to vote on Tuesday, November 3!", body="")  # R101e (Steven Oct 31 10:18 PM): body line removed
 TOP_BANNERS = [TOP_BANNER, VOTE_BANNER]
 
 # R103 (Steven Oct 31 2026, via Susan's proof note): the Webmaster December Link Deadline notice is the first Community Notice

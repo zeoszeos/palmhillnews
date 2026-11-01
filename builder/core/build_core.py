@@ -354,7 +354,8 @@ if _tbs:
         _ban += ('<table class="ph-top-banner" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px 0;border-collapse:separate;">'
                  '<tr><td bgcolor="#FFF9E6" align="center" style="background:#FFF9E6;border:2px solid #8B6914;border-radius:6px;padding:8px 12px;text-align:center;">'
                  f'<div style="font:700 17px/22px Arial,sans-serif;color:#2D5016;">{_ic}&nbsp;&nbsp;{_h99}&nbsp;&nbsp;{_ic}</div>'
-                 f'<div style="font:14px/20px Arial,sans-serif;color:#333333;margin-top:4px;">{escape(_tb["body"])}</div></td></tr></table>')
+                 + (f'<div style="font:14px/20px Arial,sans-serif;color:#333333;margin-top:4px;">{escape(_tb["body"])}</div>' if _tb.get("body") else '')  # R101e: heading-only banner allowed
+                 + '</td></tr></table>')
     s = s[:_a99] + _ban + s[_a99:]
 replace_table("Community Notices", notice_rows())
 # R79 (Steven, Oct 26 2026 11:25 AM): from Nov 1 both Events sections end with a link to the All Events page = every event in the
