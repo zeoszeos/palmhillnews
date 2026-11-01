@@ -375,6 +375,7 @@ for _n99, _x99 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SE
 for _n101b, _x101b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
     if any("vote" in _b.get("heading", "").lower() for _b in getattr(C, "TOP_BANNERS", [])):
         L.ok("R101b", _x101b.count("&#127482;&#127480;") == 2 and "&#128499;" not in _x101b and "\U0001F5F3" not in _x101b, f"{_n101b}: vote banner has two US flags, no ballot box")
+        L.ok("R101c", "vote on Tuesday, November 3!" in _x101b, f"{_n101b}: vote banner heading shows the date (Tuesday, November 3)")  # R101c (Steven Oct 31 2026 9:13 PM)
 # R103 (Steven Oct 31 2026, via Susan): the issue's FIRST_NOTICE is the first Community Notice row (preview + SEND).
 if getattr(C, "FIRST_NOTICE", None):
     for _n103, _x103 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
