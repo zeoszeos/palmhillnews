@@ -229,6 +229,19 @@ if _tel.applies(C.ISSUE):
             _t = _f.read_text(encoding="utf-8"); _x = _tel.find_bare(_t)
             if _x[0] or _x[1] or _tel.tel_mismatches(_t): _bad85.append((_u, _x, _tel.tel_mismatches(_t)))
     L.ok("R85", not _bad85, f"{len(_pg85)} Nov 1+ linked pages: no bare phone, tel: digits match {_bad85}")
+    # R85d (Steven Nov 1 2026 2:03 PM follow-up): no published page that had tel: links (git HEAD) may lose any of them.
+    import subprocess as _sp85
+    _lost85 = []
+    for _u in _sp85.run(["git", "-C", str(_rp85), "grep", "-l", 'href="tel:', "HEAD", "--", "pages/"], capture_output=True, text=True).stdout.split():
+        _u = _u.split(":", 1)[1]; _old = _sp85.run(["git", "-C", str(_rp85), "show", f"HEAD:{_u}"], capture_output=True, text=True).stdout
+        _new = (_rp85 / _u).read_text(encoding="utf-8") if (_rp85 / _u).exists() else ""
+        if set(re.findall(r'href="tel:[^"]+"', _old)) - set(re.findall(r'href="tel:[^"]+"', _new)): _lost85.append(_u)
+    _v2lost = []
+    for _u in _sp85.run(["git", "-C", str(_rp85), "grep", "-l", 'data-ph-listen-v="2"', "HEAD", "--", "pages/"], capture_output=True, text=True).stdout.split():
+        _u = _u.split(":", 1)[1]
+        if (_rp85 / _u).exists() and 'data-ph-listen-v="2"' not in (_rp85 / _u).read_text(encoding="utf-8"): _v2lost.append(_u)
+    L.ok("R85d", not _v2lost, f"published pages keep their v2 Listen block (vs git HEAD) {_v2lost}")
+    L.ok("R85d", not _lost85, f"published pages keep their tel: links (vs git HEAD) {_lost85}")
 # R86 (Steven Oct 27 2026 1:25 PM): Tony's Palm Hill calendar is the single source of truth for meeting dates/times; the
 # conflict report (scripts/meeting_conflict_report.py) is the guard. It must exist, run, and list every MTG_OVERRIDE as a
 # CONFLICT-OVERRIDDEN-BY-RULE item (the R62/R62b/R62c overrides stay until Steven releases them). Report only; output unchanged.

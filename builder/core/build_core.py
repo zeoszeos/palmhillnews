@@ -759,6 +759,18 @@ if _plv.v2_for(ISSUE):
         if "pages/" + _rel in _r10 or not _f.exists(): continue
         _t = _f.read_text(encoding="utf-8"); _n = _plv.upgrade(_t)
         if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R76 v2 listen:", _rel)
+# R85d (Steven Nov 1 2026 2:03 PM follow-up): a page this build re-renders keeps the v2 Listen block it already had
+# (git HEAD), even when its notice has dropped off the issue and the NL no longer links it.
+import subprocess as _sp2
+def _head_has(_u, _needle):
+    _r = _sp2.run(["git", "-C", str(REPO), "show", f"HEAD:pages/{_u}"], capture_output=True, text=True)
+    return _r.returncode == 0 and _needle in _r.stdout
+if _plv.v2_for(ISSUE):
+    for _rel in sorted(_R85_GEN):
+        _f = PAGES / _rel
+        if "pages/" + _rel in _r10 or not _f.exists() or not _head_has(_rel, _plv.V2_MARK): continue
+        _t = _f.read_text(encoding="utf-8"); _n = _plv.upgrade(_t)
+        if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R85d keep v2 listen:", _rel)
 sys.path.insert(0, SCRIPTS); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading
 # STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
@@ -770,7 +782,10 @@ print("wrote", OUTF, "| meetings", len(meetings), "| this week", len(this_week),
 # STYLE-RULES R64 (A2, Steven-approved Oct 24 2:26 PM): the Oct 25 locked checks run on every build and stop it on any FAIL
 # R85: Nov 1+ generated pages this issue links (date prefix >= TEL_FROM) get the same tel: links; older published pages untouched. Runs before run_checks and the R96 local copy (R85b).
 if _tel.applies(ISSUE):
-    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s))):
+    # R85d (Steven Nov 1 2026 2:03 PM follow-up): a copy page this build re-renders keeps its tel: links even after its notice
+    # drops off the issue -- re-linkify every rendered page whose committed (git HEAD) version already had tel: links.
+    _keep85 = {_u for _u in _R85_GEN if _head_has(_u, 'href="tel:')}
+    for _u in sorted(set(re.findall(r'palmhillnews\.vercel\.app/pages/([^"?#]+\.html)', s)) | _keep85):
         _f = PAGES / _u
         if _f.exists() and (_tel.dated_from(_u) or _u in _R85_GEN):
             _t = _f.read_text(encoding="utf-8"); _n = _tel.linkify(_t)
