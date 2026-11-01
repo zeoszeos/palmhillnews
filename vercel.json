@@ -13,6 +13,16 @@
       "permanent": false
     },
     {
+      "source": "/pages/archive/how-to-videos.html",
+      "destination": "/pages/archive/did-you-know.html",
+      "permanent": false
+    },
+    {
+      "source": "/pages/archive/link/Link-2026-11.pdf",
+      "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@4b8fc3402daa3654834369589f75704a74fce40c/Link-2026-11.pdf",
+      "permanent": false
+    },
+    {
       "source": "/pages/archive/link/Link-2026-10.pdf",
       "destination": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-10.pdf",
       "permanent": false
@@ -50,11 +60,6 @@
     {
       "source": "/pages/archive/link/:file",
       "destination": "https://github.com/zeoszeos/palmhillnews/releases/download/link-pdfs/:file",
-      "permanent": false
-    },
-    {
-      "source": "/pages/archive/how-to-videos.html",
-      "destination": "/pages/archive/did-you-know.html",
       "permanent": false
     }
   ]

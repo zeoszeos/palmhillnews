@@ -664,6 +664,14 @@ if globals().get("LINKS_SEVEN", False):
     _hw = s[s.index("Helpful Webpages</div>"):]; _hw = _hw[:_hw.index("</td>")]
     assert _hw.count("<div>• ") == 7 and "newsletter_download" not in _hw and "Videos - Latest" not in _hw, "R81/R25: Helpful Webpages must have the 7 approved links"
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
+# R104 (Steven Nov 1 2026 11:55 AM): a section with no current item shows no header -- the content file's HIDE_SECTIONS
+# {heading: reason} removes the whole section (header + rows) from the main page; archive pages and their URLs are untouched.
+SECTION_KEYS = {"president": "From the Board President", "story": "Community Stories", "chair": "Committee Chair Reports", "manager": "Weekly Manager Update", "shareholders": "Monthly Shareholders Report", "dyk": "Did You Know?"}  # R104
+for _k104 in (globals().get("HIDE_SECTIONS") or {}):
+    _h104 = SECTION_KEYS[_k104]
+    _a104, _b104 = section_span(s, _h104); s = s[:_a104] + s[_b104:]
+    assert f">{_h104}</span>" not in s, f"R104: {_h104} still on the page"
+    print(f"R104 hidden section: {_h104} ({HIDE_SECTIONS[_k104]})")
 # STYLE-RULES R40 (Steven, Oct 17 7:23 PM; replaces R22): NO review/test stamp on any copy (previews and test copies included).
 _ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)

@@ -33,6 +33,9 @@ L.ok("L02", page.count(f">Sunday, {C.ISSUE_LONG}</span>") == 1 and page.count("m
 ORDER = ["Committee &amp; Board Meeting Schedules", "Committee Chair Reports", "Events - This Week", "Recurring Meetings &amp; Events",
          "Community Notices", "Monthly Shareholders Report", "Weekly Manager Update", "Events - Upcoming", "Community Stories",
          "From the Board President", "Did You Know?", "Residents Reference Guide"]
+_SK104 = {"president": "From the Board President", "story": "Community Stories", "chair": "Committee Chair Reports", "manager": "Weekly Manager Update", "shareholders": "Monthly Shareholders Report", "dyk": "Did You Know?"}
+_HID = {_SK104[k]: v for k, v in (getattr(C, "HIDE_SECTIONS", None) or {}).items()}   # R104 (Steven Nov 1 2026 11:55 AM): no current items -> no section header
+ORDER = [h for h in ORDER if h.replace("&amp;", "&") not in _HID and h not in _HID]
 got = [t for _, t in lc._headings(page)]
 _NWS = getattr(C, "NEXT_WEEK_SECTION", False)   # R92 (Steven Oct 30 2026 11:40 AM)
 UPH = "Events - Next Week" if _NWS else "Events - Upcoming"
@@ -97,9 +100,12 @@ if getattr(C, "NOTICE_DATES", False):
             L.ok("R93", bool(_st) and not _miss and all(": " in seg for seg in _dl.split(" · ") if _TOK.search(seg)) and ": " in _dl.split(" · ")[0], f"{_t}: date line words in source page {_miss}")
 L.ok("L11b", "From the Board President" not in cn, "President not inside Notices")
 # L12 Board President section
-bp = lc._section(page, "From the Board President")
-L.ok("L12", page.count(">From the Board President</span>") == 1 and ">Read Full Message →</a>" in bp and ">President's Message Archives →</a>" in bp
-     and "Source: Henry Klain, Board President" in bp and ">Listen</a>" in bp, "Board President: Read Full Message, Archives, Listen, Source")
+if "From the Board President" in _HID:
+    L.ok("R104", ">From the Board President</span>" not in page and "President's Message Archives" not in page, "Board President hidden: no header, no rows (no current message)")
+else:
+  bp = lc._section(page, "From the Board President")
+  L.ok("L12", page.count(">From the Board President</span>") == 1 and ">Read Full Message →</a>" in bp and ">President's Message Archives →</a>" in bp
+       and "Source: Henry Klain, Board President" in bp and ">Listen</a>" in bp, "Board President: Read Full Message, Archives, Listen, Source")
 # L13-L16 Chair reports
 ch = lc._section(page, "Committee Chair Reports")
 L.ok("L13", titles(ch) == list(lc.CHAIR_EXPECTED), f"chair rows {titles(ch)}")
@@ -378,6 +384,7 @@ for _n101b, _x101b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE
         L.ok("R101c", "vote on Tuesday, November 3!" in _x101b, f"{_n101b}: vote banner heading shows the date (Tuesday, November 3)")  # R101c (Steven Oct 31 2026 9:13 PM)
         L.ok("R101d", "Did you set your clocks back one hour?" in _x101b and "Enjoy the extra hour!" in _x101b and "Remember to turn your clocks back" not in _x101b, f"{_n101b}: clock banner says 'Did you set your clocks back one hour?', no 'Remember' line")  # R101d (Steven Oct 31 2026 10:18 PM)
         L.ok("R101e", "vote on Tuesday, November 3!" in _x101b and "vote here in the park" not in _x101b, f"{_n101b}: vote banner is heading only, no 'vote here in the park' line")  # R101e (Steven Oct 31 2026 10:18 PM)
+    if C.ISSUE >= "2026-11-01":
         _nb101f = [c for c in _x101b if ord(c) > 0xFFFF] + [m for m in re.findall(r"&#(x[0-9a-fA-F]+|\d+);", _x101b) if int(m[1:], 16) > 0xFFFF if m[0] in "xX"] + [m for m in re.findall(r"&#(\d+);", _x101b) if int(m) > 0xFFFF]
         L.ok("R101f", not _nb101f, f"{_n101b}: no non-BMP characters or entities (MyNetWire shows them as ???): {_nb101f[:5]}")  # R101f (Steven Nov 1 2026 12:32 AM)
 # R103 (Steven Oct 31 2026, via Susan): the issue's FIRST_NOTICE is the first Community Notice row (preview + SEND).
@@ -394,6 +401,12 @@ for _lb101, _num101, _pg101 in getattr(C, "REQUIRED_TEL", []):
     _srcs101.append(("page " + _pg101, _pp101.read_text(encoding="utf-8") if _pp101.exists() else ""))
     for _n101, _x101 in _srcs101:
         L.ok("R102", _h101 in _x101 and _num101 in _x101, f"{_n101}: {_lb101} phone {_num101} is a tel: link")
+# R104 (Steven Nov 1 2026 11:55 AM): hidden sections absent from preview + SEND; every section shown has at least one item row.
+for _n104, _x104 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+    for _h in _HID: L.ok("R104", f">{html.escape(_h)}</span>" not in _x104 and f">{_h}</span>" not in _x104, f"{_n104}: hidden section '{_h}' has no header")
+    if C.ISSUE >= "2026-11-08":
+        _empty = [t for _, t in lc._headings(_x104) if "<tr" not in lc._section(_x104, t) and "<a " not in lc._section(_x104, t)]
+        L.ok("R104", not _empty, f"{_n104}: no section header without items {_empty}")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
@@ -406,3 +419,4 @@ for r in res:
 fails = [r for r in res if r[1] == "FAIL"]
 print(f"run_checks {C.ISSUE}: {len(res) - len(fails)} PASS, {len(fails)} FAIL")
 sys.exit(1 if fails else 0)
+
