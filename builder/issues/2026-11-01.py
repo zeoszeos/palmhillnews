@@ -18,11 +18,11 @@ R60C_ICE_NOTICE = False               # the ice machine notice is dropped for No
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Steven Oct 30 2026 12:13 PM "yes to all" (R93): approved Nov 1 notice list, in order
+        'December Link Deadline',                          # R103 (Steven Oct 31 2026 evening, via Susan's proof note): Webmaster notice at the TOP
         'Cornhole Tournament',                              # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
         'Senior Empowerment Lunch & Learn',                 # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
         'Worship Service',                                  # Sat Oct 31 6 PM sweep: STAGED in draft PR only, pending Steven's OK
         'How to access the Palm Hill Community Channel',   # Sat Oct 31 morning sweep: STAGED in draft PR only, pending Steven's OK
-        'December Link Deadline',                          # Sat Oct 31 morning sweep: STAGED in draft PR only, pending Steven's OK
         'Missing Amazon Package',                       # Steven Oct 30 2026 8:29 PM: five Oct 29 emails added
         'South Potable Water Shut off',
         'Social Shuffle',
@@ -379,6 +379,10 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # R103 (Steven Oct 31 2026, via Susan): Webmaster December Link Deadline notice first in Community Notices
+    ("December Link Deadline",
+     "The next Link Deadline arrives this Thursday, November 5. Anything you need or want to appear in the December Link needs to be submitted by November 5. Submit your information to: phcclink@gmail.com",
+     "Webmaster", BASE + WM_COPY_LINK_DEC),
     # Sat Oct 31 6 PM sweep (STAGED pending Steven): Sat Oct 31 Webmaster emails, newest first (11:11, 9:53, 8:02 AM ET); teasers = source wording (R18)
     ("Cornhole Tournament",
      "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan 518-866-2079.",
@@ -393,9 +397,6 @@ NOTICES = [
     ("How to access the Palm Hill Community Channel",
      "Using Your XUMO Remote: Follow these simple steps to access Palm Hill Community News and Meetings on your television. Step 1: Turn on your television. Step 2: Select Spectrum and go to any TV channel.",
      "Webmaster", BASE + WM_COPY_CHANNEL),
-    ("December Link Deadline",
-     "The next Link Deadline arrives this Thursday, November 5. Anything you need or want to appear in the December Link needs to be submitted by November 5. Submit your information to: phcclink@gmail.com",
-     "Webmaster", BASE + WM_COPY_LINK_DEC),
     # Steven Oct 30 2026 8:29 PM: five Oct 29 emails, newest first (sent 1:54, 1:45, 12:36, 10:43, 10:13 AM ET); teasers = source sentences (R18)
     ("Missing Amazon Package",
      "We are search for an Amazon package that was delivered to the wrong address. If you happen to see it please get in touch with Teddi McCune 727-481-1855 at 31 Thatch Palm W.",
@@ -768,9 +769,13 @@ TONY_FB_NOTICE = False
 # R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
 # in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
 REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE)]
-TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back?",
-                  body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Remember to turn your clocks back one hour. Enjoy the extra hour!")
+TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back one hour?",
+                  body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Enjoy the extra hour!")
 # R101 (Steven Oct 31 2026 7:34 PM, voice: "don't forget to vote on Tuesday" / "you can vote here in the park"): second small
 # banner under the DST one; his wording, light polish. The in-park location is Steven's word (not from a source). No hours/links.
-VOTE_BANNER = dict(heading="\U0001F5F3\ufe0f Don't forget to vote on Tuesday!", body="You can vote here in the park.")
+VOTE_BANNER = dict(heading="\u2605 Don't forget to vote on Tuesday, November 3!"  # R101f (Steven Nov 1 12:32 AM)
+                  , body="")  # R101e (Steven Oct 31 10:18 PM): body line removed
 TOP_BANNERS = [TOP_BANNER, VOTE_BANNER]
+
+# R103 (Steven Oct 31 2026, via Susan's proof note): the Webmaster December Link Deadline notice is the first Community Notice
+FIRST_NOTICE = "December Link Deadline"

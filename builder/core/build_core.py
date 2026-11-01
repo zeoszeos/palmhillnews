@@ -340,7 +340,7 @@ replace_table("Committee Chair Reports", chair_cards())
 # directly under the masthead, above the first section, with a clock icon each side of the heading. Off unless the issue defines it.
 # R101 (Steven Oct 31 2026 7:34 PM): banners are compact (heading 17px, body 14px, padding 8px 12px) and an issue may stack
 # several (TOP_BANNERS list, in order) -- each its own table, an icon each side of the heading (the heading's own leading icon).
-BANNER_ICONS = {"\u23f0": "&#9200;", "\U0001F5F3\ufe0f": "&#128499;&#65039;", "\U0001F5F3": "&#128499;&#65039;"}
+BANNER_ICONS = {"\u23f0": "&#9200;", "\U0001F1FA\U0001F1F8": "&#127482;&#127480;", "\u2605": "&#9733;"}  # R101f: BMP star (MyNetWire turns non-BMP into ???)  # R101b (Steven Oct 31 7:57 PM): US flags on the vote banner, no ballot box
 _tbs = list(globals().get("TOP_BANNERS") or ([TOP_BANNER] if globals().get("TOP_BANNER") else []))
 if _tbs:
     _a99, _ = section_span(s, "Committee &amp; Board Meeting Schedules")
@@ -354,7 +354,8 @@ if _tbs:
         _ban += ('<table class="ph-top-banner" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px 0;border-collapse:separate;">'
                  '<tr><td bgcolor="#FFF9E6" align="center" style="background:#FFF9E6;border:2px solid #8B6914;border-radius:6px;padding:8px 12px;text-align:center;">'
                  f'<div style="font:700 17px/22px Arial,sans-serif;color:#2D5016;">{_ic}&nbsp;&nbsp;{_h99}&nbsp;&nbsp;{_ic}</div>'
-                 f'<div style="font:14px/20px Arial,sans-serif;color:#333333;margin-top:4px;">{escape(_tb["body"])}</div></td></tr></table>')
+                 + (f'<div style="font:14px/20px Arial,sans-serif;color:#333333;margin-top:4px;">{escape(_tb["body"])}</div>' if _tb.get("body") else '')  # R101e: heading-only banner allowed
+                 + '</td></tr></table>')
     s = s[:_a99] + _ban + s[_a99:]
 replace_table("Community Notices", notice_rows())
 # R79 (Steven, Oct 26 2026 11:25 AM): from Nov 1 both Events sections end with a link to the All Events page = every event in the
