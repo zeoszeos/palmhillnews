@@ -374,10 +374,12 @@ for _n99, _x99 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SE
 # R101b (Steven Oct 31 2026 7:57 PM): vote banner uses two US flags, no ballot-box icon (preview + SEND).
 for _n101b, _x101b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
     if any("vote" in _b.get("heading", "").lower() for _b in getattr(C, "TOP_BANNERS", [])):
-        L.ok("R101b", _x101b.count("&#127482;&#127480;") == 2 and "&#128499;" not in _x101b and "\U0001F5F3" not in _x101b, f"{_n101b}: vote banner has two US flags, no ballot box")
+        L.ok("R101b", _x101b.count("&#9733;") == 2 and "&#127482;" not in _x101b and "&#128499;" not in _x101b and "\U0001F5F3" not in _x101b, f"{_n101b}: vote banner has two BMP stars (R101f), no flags or ballot box")
         L.ok("R101c", "vote on Tuesday, November 3!" in _x101b, f"{_n101b}: vote banner heading shows the date (Tuesday, November 3)")  # R101c (Steven Oct 31 2026 9:13 PM)
         L.ok("R101d", "Did you set your clocks back one hour?" in _x101b and "Enjoy the extra hour!" in _x101b and "Remember to turn your clocks back" not in _x101b, f"{_n101b}: clock banner says 'Did you set your clocks back one hour?', no 'Remember' line")  # R101d (Steven Oct 31 2026 10:18 PM)
         L.ok("R101e", "vote on Tuesday, November 3!" in _x101b and "vote here in the park" not in _x101b, f"{_n101b}: vote banner is heading only, no 'vote here in the park' line")  # R101e (Steven Oct 31 2026 10:18 PM)
+        _nb101f = [c for c in _x101b if ord(c) > 0xFFFF] + [m for m in re.findall(r"&#(x[0-9a-fA-F]+|\d+);", _x101b) if int(m[1:], 16) > 0xFFFF if m[0] in "xX"] + [m for m in re.findall(r"&#(\d+);", _x101b) if int(m) > 0xFFFF]
+        L.ok("R101f", not _nb101f, f"{_n101b}: no non-BMP characters or entities (MyNetWire shows them as ???): {_nb101f[:5]}")  # R101f (Steven Nov 1 2026 12:32 AM)
 # R103 (Steven Oct 31 2026, via Susan): the issue's FIRST_NOTICE is the first Community Notice row (preview + SEND).
 if getattr(C, "FIRST_NOTICE", None):
     for _n103, _x103 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
