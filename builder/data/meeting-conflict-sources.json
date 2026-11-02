@@ -9,7 +9,8 @@
   "Planning & Environmental": "^Planning (&|and) Environmental",
   "Golf": "^Golf (Advisory )?Committee",
   "Finance": "^Finance Committee",
-  "Annual Meeting": "^Annual (Shareholders|Membership) Meeting"
+  "Annual Meeting": "^Annual (Shareholders|Membership) Meeting",
+  "Board Meeting": "^Board Meeting"
  },
  "agenda": [
   {
@@ -70,6 +71,15 @@
    "kind": "weekly manager update (Megan Leftwich)",
    "email_date": "Fri Oct 30, 2026, 4:03 PM ET (Weekly Update 2026.10.30, palmhillblast)",
    "quote": "If not, it will be included in the meeting for 11/20"
+  },
+  {
+   "committee": "Board Meeting",
+   "date": "2026-11-05",
+   "time": null,
+   "page": "pages/2026-10-30-weekly-manager-update.html",
+   "kind": "weekly manager update (Megan Leftwich)",
+   "email_date": "Fri Oct 30, 2026, 4:03 PM ET (Weekly Update 2026.10.30, palmhillblast)",
+   "quote": "I've asked if this can also be included in the 11/5 meeting to keep this moving forward."
   }
  ],
  "rpm": [

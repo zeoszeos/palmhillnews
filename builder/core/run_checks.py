@@ -311,6 +311,11 @@ elif _mcr.exists():
              and any(x["level"] == "red" and x["meeting"].startswith("Finance") and x["mismatch"].startswith("Conflict") for x in _tr105)
              and "agenda" not in _ttx86.lower() and "agenda" not in _html86.lower(), "No agenda column or wording in the Tony report (Steven Nov 2 2026 12:07 AM); red Finance row still Conflict")
         L.ok("R105", "let me know" not in _ttx86.lower() and "let me know" not in _html86.lower(), "No 'let me know if ... need to change' line in the Tony report (Steven Nov 2 2026 12:11 AM)")
+        _cm105 = json.load(open(Path(__file__).resolve().parents[2] / "builder/data/meeting-conflict-sources.json", encoding="utf-8"))["committees"]
+        _nm105 = {r["rpm_name"] for r in json.load(open(Path(__file__).resolve().parents[2] / "builder/data/meeting-conflict-sources.json", encoding="utf-8"))["rpm"]}
+        _nm105 |= {e["name"] for e in json.load(open(_R86["calf"], encoding="utf-8"))["events"] if _re86.search(r"\b(committee|board)\b", e["name"], _re86.I)}
+        L.ok("R105", _nm105 and all(_m86.committee_of(n, _cm105) for n in _nm105) and _m86.WINDOW_DAYS == 60,
+             "R105e: meeting-name pattern covers Board Meeting and every committee; 60-day window (Steven Nov 2 2026 8:19 AM)")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say

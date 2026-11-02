@@ -11,7 +11,7 @@ always "Subject: " + TONY_SUBJECT (exact, no date, no issue number). -tony.html 
 one professional HTML table (inline CSS only). Draft text only -- this script never sends anything.
 RPM (Steven, Oct 27 2026 3:16 PM): the RPM values must be a timely live read (rpm_fetched in the sources file), never old notes."""
 import argparse, glob, html, json, os, re, sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "builder/core"))
@@ -25,6 +25,7 @@ def ft(t):
     if not t: return "—"
     h, m = map(int, t.split(":")); return f"{(h % 12) or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
 def ftr(s, e): return ft(s) + (" to " + ft(e) if e else "")
+WINDOW_DAYS = 60
 def load_cal(work):
     fs = sorted(glob.glob(str(Path(work) / "data/cal-*.json")))
     if not fs: raise SystemExit("R86: no calendar snapshot data/cal-*.json in " + str(work))
@@ -43,6 +44,8 @@ def build(issue, work, repo=REPO):
     import issue_ctx; C = issue_ctx.load(issue)
     calf, cal = load_cal(work); comm = src["committees"]
     since = min(issue, date.today().isoformat())   # still-upcoming meetings before the issue date are compared too
+    until = (date.today() + timedelta(days=WINDOW_DAYS)).isoformat()   # Steven Nov 2 2026 8:19 AM: ANY committee/board meeting in the next 60 days
+    cal = dict(cal, events=[e for e in cal["events"] if e["date"] <= until]); src = dict(src, rpm=[r for r in src["rpm"] if r["date"] <= until], agenda=[a for a in src["agenda"] if a["date"] <= until])
     mtgs = [e for e in cal["events"] if committee_of(e["name"], comm) and e["date"] >= since and e.get("status") != "RESCHEDULED"]
     moved = [e for e in cal["events"] if committee_of(e["name"], comm) and e["date"] >= since and e.get("status") == "RESCHEDULED"]
     notes = {}   # builder-side TBC notes on calendar-confirmed meetings (MTG_EXTRA / MTG_NOTE)
