@@ -279,6 +279,23 @@ elif _mcr.exists():
         L.ok("R105b", len(_top105) == 3 and _top105[0].startswith("Report run: ") and _top105[0].endswith(" ET") and _top105[1].startswith("Palm Hill calendar pulled ")
              and _top105[2].startswith("RPM read ") and all(_html86.find(_html.escape(t)) != -1 and _html86.find(_html.escape(t)) < _html86.find("<table") for t in _top105) and _html86.count("Report run: ") == 1,
              f"report run, calendar pull and RPM read times on top of text and HTML {_top105}")
+        L.ok("R105", all(x[k] in ("On", "Off", "n/a") or set(x[k].split(" / ")) <= {"On", "Off"} for x in _tr105 for k in ("phrec", "rpmrec")),
+             "recurring columns read On / Off / n/a (no dash)")
+        L.ok("R105", not any(_re86.search(r"\d (AM|PM)\s*[-\u2013]\s*\d", x[k]) for x in _tr105 for k in ("calendar", "rpm", "agenda")),
+             "Tony table cells show start times only (no time ranges)")
+        _nc105 = sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar")
+        L.ok("R105", _html86.count("data-notoncal='1'") == _nc105 and (not _nc105 or _m86.NOT_ON_CAL_BG in _html86) and "pink = not on the Palm Hill calendar" in _m86.COLOR_KEY
+             and _m86.NOT_ON_CAL_BG.lower() not in (_m86.LEVEL_ROW["red"].lower(), _m86.LEVEL_BADGE["red"].lower()), f"{_nc105} 'Not on the calendar' cell(s) pink, in the colour key")
+        # Steven Nov 1 2026 10:32 PM: only date + start time count; an end-time-only difference or a recurring flag never makes a mismatch
+        _bad105 = [x["meeting"] for x in _tr105 if "Recurring" in x["mismatch"]]
+        for _r105 in _R86["rows"]:
+            for _p105 in _r105["rpm"]:
+                if _r105["cal_date"] == _p105["date"] and _r105["cal_time"] == _p105.get("time") and not _r105["agenda"] and any(x["meeting"] == _r105["name"] and x["calendar"].startswith(_m86.datetime.strptime(_r105["cal_date"], "%Y-%m-%d").strftime("%a %b %-d")) and x["level"] != "green" for x in _tr105):
+                    _bad105.append(_r105["name"] + " " + _r105["cal_date"])
+        L.ok("R105", not _bad105, f"end-time-only and recurring-flag differences never make a mismatch {_bad105}")
+        _n2 = "Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."
+        L.ok("R105", _n2 in _m86.NOTES_FOR_TONY and "Notes for Tony\n" in _ttx86 and _n2 in _ttx86 and ">Notes for Tony</p>" in _html86 and _html.escape(_n2) in _html86
+             and "Dave" not in _ttx86 and _html86.find(">Notes for Tony<") > _html86.find("</table>"), "Notes for Tony block (Note 2 verbatim) under the table, text and HTML")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
