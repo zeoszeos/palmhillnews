@@ -172,6 +172,9 @@ NOT_ON_CAL_BG, NOT_ON_CAL_FG = "#F8BBD9", "#880E4F"   # Steven Nov 1 2026 10:31 
 CLUB_CALENDAR_URL = "https://www.palmhillcountryclub.net/calendar-1/"
 NOTES_FOR_TONY_LABEL = "Notes for Tony"
 NOTES_FOR_TONY = ["Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."]
+def th_text(c):
+    """Steven Nov 1 2026 10:38 PM: two-line headers ("Palm Hill<br>calendar", "RPM<br>recurring") so the table is narrower."""
+    return "<br>".join(html.escape(x) for x in c.rsplit(" ", 1)) if " " in c else html.escape(c)
 def run_lines(R):
     """R105b (Steven Nov 1 2026 10:18 PM): report run time, calendar pull time and RPM read time at the top."""
     m = re.search(r"cal-(\d{8})-(\d{4})", os.path.basename(R["calf"]))
@@ -204,7 +207,7 @@ def render_tony_html(R):
          "<p style='margin:0 0 12px;font-size:14px;'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;'>{e(_intro(R))}</p>",
          "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
          "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:680px;max-width:900px;'>",
-         "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{e(c)}</th>" for c, wd in zip(TONY_COLS, (15, 17, 17, 16, 8, 8, 19))) + "</tr>"]
+         "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{th_text(c)}</th>" for c, wd in zip(TONY_COLS, (15, 17, 17, 16, 8, 8, 19))) + "</tr>"]
     for i, x in enumerate(rows):
         bg = LEVEL_ROW[x["level"]]; bd = LEVEL_BADGE[x["level"]]
         cells = "".join(f"<td style='{td}background:{NOT_ON_CAL_BG};color:{NOT_ON_CAL_FG};font-weight:bold;' data-notoncal='1'>{e(x[k])}</td>" if k == "calendar" and x[k] == "Not on the calendar"

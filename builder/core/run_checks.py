@@ -264,7 +264,7 @@ elif _mcr.exists():
         L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86,
              "Tony HTML email exists, has exactly one table with a header row, inline CSS only, title = exact subject")
         # Steven Oct 27 2026 11:40 PM: simplified Tony table wording; a plain "Mismatch" reason column; Palm Hill and RPM recurring flags shown On/Off
-        L.ok("R86", all(f"<th" in _html86 and c in _html86 for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
+        L.ok("R86", all(f"<th" in _html86 and c in _html86.replace("<br>", " ") for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
              "Tony table has a Mismatch column plus Palm Hill recurring and RPM recurring columns showing On/Off")
         L.ok("R86", bool(_R86.get("rpm_fetched")) and "Oct 16" not in _R86["rpm_fetched"] and _ttx86 and "Oct 16" not in _ttx86,
              f"RPM values carry a live-read stamp ({_R86.get('rpm_fetched')}); no Oct 16 notes in the Tony email")
@@ -300,7 +300,7 @@ elif _mcr.exists():
         _ml105 = _re86.findall(r"<tr style='background:[^']*;'><td [^>]*><a href='([^']+)'", _html86)
         L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
              f"every Meeting cell links to the newsletter's club calendar URL ({len(_ml105)}/{len(_tr105)})")
-        L.ok("R105", ">RPM calendar</th>" in _html86 and ">RPM</th>" not in _html86 and "Not listed" not in _html86 + _ttx86
+        L.ok("R105", ">RPM<br>calendar</th>" in _html86 and ">RPM</th>" not in _html86 and all(f">{_m86.th_text(c)}</th>" in _html86 for c in _m86.TONY_COLS) and ">Palm Hill<br>recurring</th>" in _html86 and "Not listed" not in _html86 + _ttx86
              and all(x["rpm"] != "Not on calendar" or x["mismatch"].endswith("Not on RPM") for x in _tr105) and _html86.count("data-notoncal='1'") == sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar"),
              "RPM column headed 'RPM calendar'; missing RPM entries read 'Not on calendar' (not pink)")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
