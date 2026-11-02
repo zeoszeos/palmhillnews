@@ -17,7 +17,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "builder/core"))
 COLS = ["Committee/Meeting", "Calendar date", "Calendar time", "Agenda / committee-report suggested date (time, source)",
         "RPM calendar date (time)", "Agenda notice email date", "Calendar recurring", "RPM recurring", "What differs"]
-TONY_SUBJECT = "Calendar Conflicts Report"   # R86 (Steven, Oct 27 2026 2:27 PM): every conflict email to Tony uses exactly this subject
+TONY_SUBJECT = "Calendar Mismatches Report"   # R86 (Steven, Oct 27 2026 2:27 PM): every conflict email to Tony uses exactly this subject
 # RPM (Steven Oct 27 2026 2:43 PM): reference only, to spot dates missing from the calendar; never overrides, never counted on calendar dates.
 ACTION = "Corrective action: the committee must have Tony change the calendar to the new date right away (the calendar always rules)."
 def fd(d): return datetime.strptime(d, "%Y-%m-%d").strftime("%a %b %-d, %Y") if d else "—"
@@ -110,7 +110,7 @@ def render(R, stamp):
     moved = [f"{e['name']} {fd(e['date'])}: calendar marks RESCHEDULED, moved to {e.get('movedTo')}" for e in R["moved"]]
     md = [f"# {head.splitlines()[0]}", "", *head.splitlines()[1:], "", f"**{len(conf)} of {len(rows)} meetings need attention.**", "",
           "| " + " | ".join(COLS) + " |", "|" + "---|" * len(COLS)] + ["| " + " | ".join(c.replace("|", "/") for c in x) + " |" for x in rows]
-    md += ["", "## Conflicts in plain words", ""] + [f"- **{r['name']}**: " + " ".join(t for _, t in r["diffs"]) for r in conf]
+    md += ["", "## Mismatches in plain words", ""] + [f"- **{r['name']}**: " + " ".join(t for _, t in r["diffs"]) for r in conf]
     md += ["", "## Reference notes (not counted)", ""] + [f"- **{r['name']}**: " + " ".join(t for _, t in r["refs"]) for r in R["rows"] if r["refs"]]
     md += ["", "## Calendar moves", ""] + [f"- {m}" for m in moved] + ["", "## Notes", ""] + [f"- {n}" for n in notes(R)]
     h = ["<!doctype html><meta charset='utf-8'><title>PHNEWS meeting conflicts " + R["issue"] + "</title>",
@@ -119,7 +119,7 @@ def render(R, stamp):
          f"<h1>{html.escape(head.splitlines()[0])}</h1><p>{'<br>'.join(html.escape(x) for x in head.splitlines()[1:])}</p><p><b>{len(conf)} of {len(rows)} meetings need attention.</b></p>",
          "<table><tr>" + "".join(f"<th>{html.escape(c)}</th>" for c in COLS) + "</tr>"]
     h += [f"<tr{' class=c' if r['diffs'] else ''}>" + "".join(f"<td>{html.escape(c)}</td>" for c in x) + "</tr>" for r, x in zip(R["rows"], rows)]
-    h += ["</table><h2>Conflicts in plain words</h2><ul>"] + [f"<li><b>{html.escape(r['name'])}</b>: {html.escape(' '.join(t for _, t in r['diffs']))}</li>" for r in conf]
+    h += ["</table><h2>Mismatches in plain words</h2><ul>"] + [f"<li><b>{html.escape(r['name'])}</b>: {html.escape(' '.join(t for _, t in r['diffs']))}</li>" for r in conf]
     h += ["</ul><h2>Reference notes (not counted)</h2><ul>"] + [f"<li><b>{html.escape(r['name'])}</b>: {html.escape(' '.join(t for _, t in r['refs']))}</li>" for r in R["rows"] if r["refs"]]
     h += ["</ul><h2>Calendar moves</h2><ul>"] + [f"<li>{html.escape(m)}</li>" for m in moved] + ["</ul><h2>Notes</h2><ul>"] + [f"<li>{html.escape(n)}</li>" for n in notes(R)] + ["</ul>"]
     tx = [head, "", f"{len(conf)} of {len(rows)} meetings need attention.", ""]

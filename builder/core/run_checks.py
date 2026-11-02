@@ -257,8 +257,8 @@ elif _mcr.exists():
             _th86 = Path(str(_b86) + "-tony.html"); _html86 = _th86.read_text(encoding="utf-8") if _th86.exists() else ""; _ttx86 = _tn86.read_text(encoding="utf-8") if _tn86.exists() else ""
     except SystemExit as _e86: _R86, _ok86 = None, str(_e86)
     if _ok86 is True:   # Steven Oct 27 2026 2:27 PM: every conflict email to Tony has exactly this subject
-        L.ok("R86", _m86.TONY_SUBJECT == "Calendar Conflicts Report" and _subj86 == "Subject: " + _m86.TONY_SUBJECT,
-             f"Tony file subject line is exactly 'Subject: Calendar Conflicts Report' ({_subj86!r})")
+        L.ok("R86", _m86.TONY_SUBJECT == "Calendar Mismatches Report" and _subj86 == "Subject: " + _m86.TONY_SUBJECT,
+             f"Tony file subject line is exactly 'Subject: Calendar Mismatches Report' ({_subj86!r})")
     if _ok86 is True:   # Steven Oct 27 2026 3:16/3:17 PM: Tony email is one HTML table; RPM values are a timely live read
         import re as _re86
         L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86,
