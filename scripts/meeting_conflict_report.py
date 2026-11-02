@@ -147,7 +147,7 @@ def tony_rows(R):
         agt = "; ".join(f"{sd(a['date'])}{', ' + _ct(a['time']) if a['time'] else ''} (notice email {a['email_date'].split(', 2026')[0]})" for a in ag) or "\u2014"
         rpt = "; ".join(f"{sd(p['date'])}, {_ctr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not on calendar" if no_rpm else "Same as calendar")   # Steven Nov 1 2026 10:36 PM
         why = []
-        for a in ag: why.append("Agenda " + ("date" if a["date"] != r["cal_date"] else "time"))
+        # Steven Nov 2 2026 12:07 AM: "Don't mention agenda date" -- agenda differences still make the row red, but are not named
         if not r["cal_date"]: why.append("Not on the Palm Hill calendar")
         for p in rp: why.append("RPM " + ("day and time" if p["date"] != r["cal_date"] and r["cal_time"] != p.get("time") else "day" if p["date"] != r["cal_date"] else "time"))
         if no_rpm: why.append("Not on RPM")
@@ -157,14 +157,14 @@ def tony_rows(R):
         cat = 0 if ag else 1 if not r["cal_date"] else 3 if (no_rpm or r["committee"] == "Annual Meeting") else 2
         out.append(dict(cat=cat, sortdate=r["cal_date"] or r["rpm"][0]["date"], meeting=(r["rpm"][0].get("rpm_name") or r["committee"]) if not r["cal_date"] and r["rpm"] else r["name"].replace(" (agenda only)", ""),
                         calendar=cal, rpm=rpt, agenda=agt, phrec=_onoff(r["recurring"]), rpmrec=" / ".join(_onoff(p.get("recurring")) for p in r["rpm"]) or "n/a",
-                        level=level, mismatch=LEVEL_LABEL[level] + (": " + "; ".join(why) if why else "")))
+                        level=level, mismatch=LEVEL_LABEL[level] + ((("; " if level == "red" else ": ") + "; ".join(why)) if why else "")))
     return sorted(out, key=lambda x: (("red", "amber", "green").index(x["level"]), x["sortdate"]))   # Steven Oct 27 3:27 PM: agenda conflict, not on calendar, RPM differences, FYI
 # R105 (Steven Nov 1 2026 10:13 PM): colour code; the text label keeps the meaning without colour.
 LEVEL_LABEL = {"red": "Conflict", "amber": "Check", "green": "Match"}
 LEVEL_ROW = {"red": "#fde2e1", "amber": "#fff3cd", "green": "#e6f4ea"}
 LEVEL_BADGE = {"red": "#b3261e", "amber": "#8a5a00", "green": "#1e6b34"}
 COLOR_KEY = ("Color key (only the date and start time are compared): green = Match (all sources agree); amber = Check (reference-only difference in date or start time, or not on RPM); "
-             "red = Conflict (an agenda or committee note gives a different date or time than the Palm Hill calendar); pink = not on the Palm Hill calendar.")
+             "red = Conflict (a committee source gives a different date or time than the Palm Hill calendar); pink = not on the Palm Hill calendar.")
 NOT_ON_CAL_BG, NOT_ON_CAL_FG = "#F8BBD9", "#880E4F"   # Steven Nov 1 2026 10:31 PM (final): pink "Not on the calendar" cells, distinct from red Conflict
 # Steven Nov 1 2026 10:33/10:34 PM: "Notes for Tony" block under the colour key (exact wording). Note 1's wording was never
 # received by this build, so only Note 2 is listed until Steven gives Note 1.
@@ -185,7 +185,7 @@ def run_lines(R):
 TONY_KEYS = ("calendar", "rpm", "phrec", "rpmrec", "mismatch")
 def _intro(R):
     idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
-    return (f"Here is how each upcoming meeting compares between the Palm Hill calendar, RPM (read live {R['rpm_fetched'].split(', live')[0].replace('about ', 'at about ')}) and the committee agendas; the colors show what needs attention. "
+    return (f"Here is how each upcoming meeting compares between the Palm Hill calendar and RPM (read live {R['rpm_fetched'].split(', live')[0].replace('about ', 'at about ')}); the colors show what needs attention. "
             f"The {idate} newsletter prints the Palm Hill calendar date and time for each.")
 def render_tony(R):
     """Plain-text version of the Tony email (Steven's voice)."""

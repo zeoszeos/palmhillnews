@@ -271,7 +271,7 @@ elif _mcr.exists():
     L.ok("R86", _ok86 is True, f"meeting conflict report runs for {C.ISSUE} {'' if _ok86 is True else _ok86}")
     if _ok86 is True:   # R105 / R105b (Steven Nov 1 2026 10:13 / 10:18 PM): colour code with text labels + key; run/pull/read times on top
         _tr105 = _m86.tony_rows(_R86); _lv105 = _re86.findall(r"data-level='(\w+)'", _html86)
-        L.ok("R105", _tr105 and len(_lv105) == len(_tr105) and all(x["mismatch"].split(":")[0] == _m86.LEVEL_LABEL[x["level"]] for x in _tr105)
+        L.ok("R105", _tr105 and len(_lv105) == len(_tr105) and all(_re86.split(r"[:;]", x["mismatch"])[0] == _m86.LEVEL_LABEL[x["level"]] for x in _tr105)
              and all(_m86.LEVEL_ROW[l] in _html86 for l in set(_lv105)) and _m86.COLOR_KEY in _html86 and _m86.COLOR_KEY in _ttx86
              and all((x["level"] == "red") == (x["agenda"] != "\u2014") for x in _tr105 if x["calendar"] != "Not on the calendar"),
              f"Tony report colour-coded with text labels and a colour key ({ {l: _lv105.count(l) for l in ('red', 'amber', 'green')} })")
@@ -308,7 +308,8 @@ elif _mcr.exists():
         L.ok("R105", _m86.NOTES_FOR_TONY == [_n1, _n2b] and all(n in _ttx86 and _html.escape(n) in _html86 for n in (_n1, _n2b)) and _ttx86.find(_n1) < _ttx86.find(_n2b),
              "Notes for Tony: Note 1 then Note 2, verbatim, text and HTML")
         L.ok("R105", "Agenda says" not in _ttx86 and "Agenda says" not in _html86.replace("<br>", " ") and len(_re86.findall(r"<th ", _html86)) == 6
-             and any(x["level"] == "red" and x["mismatch"].startswith("Conflict: Agenda date") for x in _tr105), "Agenda says column removed (text and HTML); agenda still drives Conflict")
+             and any(x["level"] == "red" and x["meeting"].startswith("Finance") and x["mismatch"].startswith("Conflict") for x in _tr105)
+             and "agenda" not in _ttx86.lower() and "agenda" not in _html86.lower(), "No agenda column or wording in the Tony report (Steven Nov 2 2026 12:07 AM); red Finance row still Conflict")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
