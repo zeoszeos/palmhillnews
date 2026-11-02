@@ -168,6 +168,8 @@ COLOR_KEY = ("Color key (only the date and start time are compared): green = Mat
 NOT_ON_CAL_BG, NOT_ON_CAL_FG = "#F8BBD9", "#880E4F"   # Steven Nov 1 2026 10:31 PM (final): pink "Not on the calendar" cells, distinct from red Conflict
 # Steven Nov 1 2026 10:33/10:34 PM: "Notes for Tony" block under the colour key (exact wording). Note 1's wording was never
 # received by this build, so only Note 2 is listed until Steven gives Note 1.
+# Steven Nov 1 2026 10:35 PM: each Meeting cell links to the club calendar page (the same URL the newsletter's Calendar links use)
+CLUB_CALENDAR_URL = "https://www.palmhillcountryclub.net/calendar-1/"
 NOTES_FOR_TONY_LABEL = "Notes for Tony"
 NOTES_FOR_TONY = ["Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."]
 def run_lines(R):
@@ -208,7 +210,7 @@ def render_tony_html(R):
         cells = "".join(f"<td style='{td}background:{NOT_ON_CAL_BG};color:{NOT_ON_CAL_FG};font-weight:bold;' data-notoncal='1'>{e(x[k])}</td>" if k == "calendar" and x[k] == "Not on the calendar"
                         else f"<td style='{td}'>{e(x[k])}</td>" for k in TONY_KEYS[:-1])
         cells += f"<td style='{td}border-left:5px solid {bd};color:{bd};font-weight:bold;' data-level='{x['level']}'>{e(x['mismatch'])}</td>"
-        h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'>{e(x['meeting'])}</td>" + cells + "</tr>")
+        h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:#1a4d0f;text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
     if not rows: h.append(f"<tr><td colspan='7' style='{td}'>No differences this time. Everything matches the calendar.</td></tr>")
     h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:#555;'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;'>{e(n)}</p>" for n in NOTES_FOR_TONY], "<p style='margin:16px 0 4px;font-size:14px;'>Please let me know if any of the Palm Hill calendar entries need to change.</p>",
           "<p style='margin:12px 0 0;font-size:14px;'>Thanks,<br>Steven</p>", "</body></html>"]

@@ -296,6 +296,10 @@ elif _mcr.exists():
         _n2 = "Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."
         L.ok("R105", _n2 in _m86.NOTES_FOR_TONY and "Notes for Tony\n" in _ttx86 and _n2 in _ttx86 and ">Notes for Tony</p>" in _html86 and _html.escape(_n2) in _html86
              and "Dave" not in _ttx86 and _html86.find(">Notes for Tony<") > _html86.find("</table>"), "Notes for Tony block (Note 2 verbatim) under the table, text and HTML")
+        _send105 = Path(C.OUT_SEND).read_text(encoding="utf-8") if hasattr(C, "OUT_SEND") and Path(C.OUT_SEND).exists() else page
+        _ml105 = _re86.findall(r"<tr style='background:[^']*;'><td [^>]*><a href='([^']+)'", _html86)
+        L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
+             f"every Meeting cell links to the newsletter's club calendar URL ({len(_ml105)}/{len(_tr105)})")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
