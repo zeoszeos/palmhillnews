@@ -294,8 +294,8 @@ elif _mcr.exists():
                     _bad105.append(_r105["name"] + " " + _r105["cal_date"])
         L.ok("R105", not _bad105, f"end-time-only and recurring-flag differences never make a mismatch {_bad105}")
         _n2 = "Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."
-        L.ok("R105", _n2 in _m86.NOTES_FOR_TONY and "Notes for Tony\n" in _ttx86 and _n2 in _ttx86 and ">Notes for Tony</p>" in _html86 and _html.escape(_n2) in _html86
-             and "Dave" not in _ttx86 and _html86.find(">Notes for Tony<") > _html86.find("</table>"), "Notes for Tony block (Note 2 verbatim) under the table, text and HTML")
+        L.ok("R105", any(n.startswith(_n2) for n in _m86.NOTES_FOR_TONY) and "Notes for Tony\n" in _ttx86 and _n2 in _ttx86 and ">Notes for Tony</p>" in _html86 and _html.escape(_n2) in _html86
+             and "Dave" not in _ttx86 and _html86.find(">Notes for Tony<") > _html86.find("</table>"), "Notes for Tony block (Note 2 wording kept) under the table, text and HTML")
         _send105 = Path(C.OUT_SEND).read_text(encoding="utf-8") if hasattr(C, "OUT_SEND") and Path(C.OUT_SEND).exists() else page
         _ml105 = _re86.findall(r"<tr style='background:[^']*;'><td [^>]*><a href='([^']+)'", _html86)
         L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
@@ -303,6 +303,12 @@ elif _mcr.exists():
         L.ok("R105", ">RPM<br>calendar</th>" in _html86 and ">RPM</th>" not in _html86 and all(f">{_m86.th_text(c)}</th>" in _html86 for c in _m86.TONY_COLS) and ">Palm Hill<br>recurring</th>" in _html86 and "Not listed" not in _html86 + _ttx86
              and all(x["rpm"] != "Not on calendar" or x["mismatch"].endswith("Not on RPM") for x in _tr105) and _html86.count("data-notoncal='1'") == sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar"),
              "RPM column headed 'RPM calendar'; missing RPM entries read 'Not on calendar' (not pink)")
+        _n1 = 'Note 1: Different end times between sources used to cause mismatches. A row now counts as a Match when the Palm Hill calendar and RPM have the same date and the same start time; end times are ignored.'
+        _n2b = 'Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself. n/a replaces the dashes used before, to show whether the event is on each calendar.'
+        L.ok("R105", _m86.NOTES_FOR_TONY == [_n1, _n2b] and all(n in _ttx86 and _html.escape(n) in _html86 for n in (_n1, _n2b)) and _ttx86.find(_n1) < _ttx86.find(_n2b),
+             "Notes for Tony: Note 1 then Note 2, verbatim, text and HTML")
+        L.ok("R105", "Agenda says" not in _ttx86 and "Agenda says" not in _html86.replace("<br>", " ") and len(_re86.findall(r"<th ", _html86)) == 6
+             and any(x["level"] == "red" and x["mismatch"].startswith("Conflict: Agenda date") for x in _tr105), "Agenda says column removed (text and HTML); agenda still drives Conflict")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say

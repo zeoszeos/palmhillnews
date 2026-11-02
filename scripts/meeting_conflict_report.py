@@ -125,7 +125,7 @@ def render(R, stamp):
         tx += ["   " + t for _, t in r["diffs"]] + ["   (reference only) " + t for _, t in r["refs"]] + [""]
     tx += ["Calendar moves:"] + ["- " + m for m in moved] + ["", "Notes:"] + ["- " + n for n in notes(R)]
     return "\n".join(md) + "\n", "\n".join(h) + "\n", "\n".join(tx) + "\n"
-TONY_COLS = ["Meeting", "Palm Hill calendar", "RPM calendar", "Agenda says", "Palm Hill recurring", "RPM recurring", "Mismatch"]
+TONY_COLS = ["Meeting", "Palm Hill calendar", "RPM calendar", "Palm Hill recurring", "RPM recurring", "Mismatch"]
 def _ct(t):   # compact time: 10 AM, 12:30 PM
     h, m = map(int, t.split(":")); return f"{(h % 12) or 12}{'' if m == 0 else ':%02d' % m} {'AM' if h < 12 else 'PM'}"
 def _ctr(s, e): return _ct(s)   # Steven Nov 1 2026 10:30 PM: Tony table shows the start time only (end times still compared in the data)
@@ -171,7 +171,8 @@ NOT_ON_CAL_BG, NOT_ON_CAL_FG = "#F8BBD9", "#880E4F"   # Steven Nov 1 2026 10:31 
 # Steven Nov 1 2026 10:35 PM: each Meeting cell links to the club calendar page (the same URL the newsletter's Calendar links use)
 CLUB_CALENDAR_URL = "https://www.palmhillcountryclub.net/calendar-1/"
 NOTES_FOR_TONY_LABEL = "Notes for Tony"
-NOTES_FOR_TONY = ["Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."]
+NOTES_FOR_TONY = ["Note 1: Different end times between sources used to cause mismatches. A row now counts as a Match when the Palm Hill calendar and RPM have the same date and the same start time; end times are ignored.",
+                  "Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself. n/a replaces the dashes used before, to show whether the event is on each calendar."]   # Steven Nov 1 2026 10:40 PM: Note 1 first; Note 2 + n/a clause
 def th_text(c):
     """Steven Nov 1 2026 10:38 PM: two-line headers ("Palm Hill<br>calendar", "RPM<br>recurring") so the table is narrower."""
     return "<br>".join(html.escape(x) for x in c.rsplit(" ", 1)) if " " in c else html.escape(c)
@@ -181,7 +182,7 @@ def run_lines(R):
     pull = datetime.strptime("".join(m.groups()), "%Y%m%d%H%M").strftime("%a %b %-d, %Y, %-I:%M %p") + " ET" if m else os.path.basename(R["calf"])
     rpm = R["rpm_fetched"].split(", live")[0]; rpm = re.sub(r", \d{4},", ",", rpm)
     return [f"Report run: {R['run']} ET", f"Palm Hill calendar pulled {pull}", f"RPM read {rpm}"]
-TONY_KEYS = ("calendar", "rpm", "agenda", "phrec", "rpmrec", "mismatch")
+TONY_KEYS = ("calendar", "rpm", "phrec", "rpmrec", "mismatch")
 def _intro(R):
     idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
     return (f"Here is how each upcoming meeting compares between the Palm Hill calendar, RPM (read live {R['rpm_fetched'].split(', live')[0].replace('about ', 'at about ')}) and the committee agendas; the colors show what needs attention. "
@@ -207,14 +208,14 @@ def render_tony_html(R):
          "<p style='margin:0 0 12px;font-size:14px;'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;'>{e(_intro(R))}</p>",
          "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
          "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:680px;max-width:900px;'>",
-         "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{th_text(c)}</th>" for c, wd in zip(TONY_COLS, (15, 17, 17, 16, 8, 8, 19))) + "</tr>"]
+         "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{th_text(c)}</th>" for c, wd in zip(TONY_COLS, (18, 20, 20, 10, 10, 22))) + "</tr>"]
     for i, x in enumerate(rows):
         bg = LEVEL_ROW[x["level"]]; bd = LEVEL_BADGE[x["level"]]
         cells = "".join(f"<td style='{td}background:{NOT_ON_CAL_BG};color:{NOT_ON_CAL_FG};font-weight:bold;' data-notoncal='1'>{e(x[k])}</td>" if k == "calendar" and x[k] == "Not on the calendar"
                         else f"<td style='{td}'>{e(x[k])}</td>" for k in TONY_KEYS[:-1])
         cells += f"<td style='{td}border-left:5px solid {bd};color:{bd};font-weight:bold;' data-level='{x['level']}'>{e(x['mismatch'])}</td>"
         h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:#1a4d0f;text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
-    if not rows: h.append(f"<tr><td colspan='7' style='{td}'>No differences this time. Everything matches the calendar.</td></tr>")
+    if not rows: h.append(f"<tr><td colspan='6' style='{td}'>No differences this time. Everything matches the calendar.</td></tr>")
     h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:#555;'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;'>{e(n)}</p>" for n in NOTES_FOR_TONY], "<p style='margin:16px 0 4px;font-size:14px;'>Please let me know if any of the Palm Hill calendar entries need to change.</p>",
           "<p style='margin:12px 0 0;font-size:14px;'>Thanks,<br>Steven</p>", "</body></html>"]
     return "\n".join(h) + "\n"
