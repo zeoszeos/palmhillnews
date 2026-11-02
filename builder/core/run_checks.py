@@ -300,6 +300,9 @@ elif _mcr.exists():
         _ml105 = _re86.findall(r"<tr style='background:[^']*;'><td [^>]*><a href='([^']+)'", _html86)
         L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
              f"every Meeting cell links to the newsletter's club calendar URL ({len(_ml105)}/{len(_tr105)})")
+        L.ok("R105", ">RPM calendar</th>" in _html86 and ">RPM</th>" not in _html86 and "Not listed" not in _html86 + _ttx86
+             and all(x["rpm"] != "Not on calendar" or x["mismatch"].endswith("Not on RPM") for x in _tr105) and _html86.count("data-notoncal='1'") == sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar"),
+             "RPM column headed 'RPM calendar'; missing RPM entries read 'Not on calendar' (not pink)")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say

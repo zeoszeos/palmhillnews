@@ -125,7 +125,7 @@ def render(R, stamp):
         tx += ["   " + t for _, t in r["diffs"]] + ["   (reference only) " + t for _, t in r["refs"]] + [""]
     tx += ["Calendar moves:"] + ["- " + m for m in moved] + ["", "Notes:"] + ["- " + n for n in notes(R)]
     return "\n".join(md) + "\n", "\n".join(h) + "\n", "\n".join(tx) + "\n"
-TONY_COLS = ["Meeting", "Palm Hill calendar", "RPM", "Agenda says", "Palm Hill recurring", "RPM recurring", "Mismatch"]
+TONY_COLS = ["Meeting", "Palm Hill calendar", "RPM calendar", "Agenda says", "Palm Hill recurring", "RPM recurring", "Mismatch"]
 def _ct(t):   # compact time: 10 AM, 12:30 PM
     h, m = map(int, t.split(":")); return f"{(h % 12) or 12}{'' if m == 0 else ':%02d' % m} {'AM' if h < 12 else 'PM'}"
 def _ctr(s, e): return _ct(s)   # Steven Nov 1 2026 10:30 PM: Tony table shows the start time only (end times still compared in the data)
@@ -145,7 +145,7 @@ def tony_rows(R):
         mv = [e for e in R["moved"] if committee_of(e["name"], R["comm"]) == r["committee"] and (e.get("movedTo") or "").startswith(r["cal_date"] or "x")]
         if mv: cal += f" (moved from {sd(mv[0]['date'])})"
         agt = "; ".join(f"{sd(a['date'])}{', ' + _ct(a['time']) if a['time'] else ''} (notice email {a['email_date'].split(', 2026')[0]})" for a in ag) or "\u2014"
-        rpt = "; ".join(f"{sd(p['date'])}, {_ctr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not listed" if no_rpm else "Same as calendar")
+        rpt = "; ".join(f"{sd(p['date'])}, {_ctr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not on calendar" if no_rpm else "Same as calendar")   # Steven Nov 1 2026 10:36 PM
         why = []
         for a in ag: why.append("Agenda " + ("date" if a["date"] != r["cal_date"] else "time"))
         if not r["cal_date"]: why.append("Not on the Palm Hill calendar")
