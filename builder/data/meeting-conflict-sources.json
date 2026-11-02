@@ -1,6 +1,6 @@
 {
  "_about": "R86 inputs for scripts/meeting_conflict_report.py. Agenda/report 'next meeting' claims: each quote must appear verbatim in its page (checked at run time). RPM values: a live read of the RPM portal calendar (home.resourcepropertymgmt.com/community/calendar, Agenda view Oct 25, 2026 to Feb 20, 2027, from the signed-in box browser session; month PNGs and rpm-entries.json in /workspace/rpm-read-20261101 (Nov 1 2026 read; earlier: rpm-read-20261027)). Each RPM entry has the RPM title, date, start and end time as RPM shows them, and recurring = the circular-arrow recurring icon in RPM month view. RPM is reference only (R86); it never overrides the calendar. Ear Cleaning and RPM Offices Closed entries are not meetings and are left out.",
- "rpm_fetched": "Sun Nov 1, 2026, about 10:16 PM ET, live read of home.resourcepropertymgmt.com/community/calendar",
+ "rpm_fetched": "Mon Nov 2, 2026, about 8:24 AM ET, live read of home.resourcepropertymgmt.com/community/calendar",
  "committees": {
   "Board": "^Board of Directors",
   "Compliance": "^Compliance Committee",
@@ -162,14 +162,6 @@
    "time": "13:00",
    "end": "15:00",
    "recurring": false
-  },
-  {
-   "committee": "Annual Meeting",
-   "rpm_name": "Annual Membership Meeting",
-   "date": "2027-01-20",
-   "time": "13:00",
-   "end": "15:00",
-   "recurring": true
   }
  ],
  "override_committee": {
