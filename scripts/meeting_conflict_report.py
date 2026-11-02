@@ -128,7 +128,7 @@ def render(R, stamp):
 TONY_COLS = ["Meeting", "Palm Hill calendar", "RPM", "Agenda says", "Palm Hill recurring", "RPM recurring", "Mismatch"]
 def _ct(t):   # compact time: 10 AM, 12:30 PM
     h, m = map(int, t.split(":")); return f"{(h % 12) or 12}{'' if m == 0 else ':%02d' % m} {'AM' if h < 12 else 'PM'}"
-def _ctr(s, e): return _ct(s) + ("\u2013" + _ct(e) if e else "")
+def _ctr(s, e): return _ct(s) + ("-" + _ct(e) if e else "")   # Steven: times like '10 AM-12 PM'
 def _onoff(v): return "\u2014" if v is None else ("On" if v else "Off")
 def tony_rows(R):
     """Rows for Tony (Steven, Oct 27 2026 3:16/3:17 PM; simplified 11:40 PM): one row per meeting with a difference. Columns: the Palm Hill
@@ -140,7 +140,8 @@ def tony_rows(R):
         ag = [a for a in r["agenda"] if r["cal_date"] != a["date"] or ((a.get("typo") or {}).get("time", a["time"]) and r["cal_time"] and (a.get("typo") or {}).get("time", a["time"]) != r["cal_time"])]
         rp = [p for p in r["rpm"] if r["cal_date"] and (r["cal_date"] != p["date"] or (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")))]
         no_rpm = bool(r["cal_date"]) and not r["rpm"]
-        if not (ag or rp or no_rpm or not r["cal_date"]): continue
+        # R105 (Steven Nov 1 2026 10:13 PM): every meeting is listed and colour-coded (green match / amber reference-only / red conflict)
+        rec_diff = r["recurring"] is not None and any(p.get("recurring") is not None and bool(p.get("recurring")) != bool(r["recurring"]) for p in r["rpm"])
         cal = "Not on the calendar" if not r["cal_date"] else f"{sd(r['cal_date'])}, {_ctr(r['cal_time'], r.get('cal_end'))}"
         mv = [e for e in R["moved"] if committee_of(e["name"], R["comm"]) == r["committee"] and (e.get("movedTo") or "").startswith(r["cal_date"] or "x")]
         if mv: cal += f" (moved from {sd(mv[0]['date'])})"
@@ -152,23 +153,38 @@ def tony_rows(R):
         for p in rp: why.append("RPM " + ("day and time" if p["date"] != r["cal_date"] and (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")) else "day" if p["date"] != r["cal_date"] else "time"))
         if no_rpm: why.append("Not on RPM")
         if mv and rp: why[-1] = "RPM still has the old date"
+        if rec_diff: why.append("Recurring flag differs")
+        level = "red" if (ag or (not r["cal_date"] and r["agenda"])) else "amber" if why else "green"
         cat = 0 if ag else 1 if not r["cal_date"] else 3 if (no_rpm or r["committee"] == "Annual Meeting") else 2
         out.append(dict(cat=cat, sortdate=r["cal_date"] or r["rpm"][0]["date"], meeting=(r["rpm"][0].get("rpm_name") or r["committee"]) if not r["cal_date"] and r["rpm"] else r["name"].replace(" (agenda only)", ""),
                         calendar=cal, rpm=rpt, agenda=agt, phrec=_onoff(r["recurring"]), rpmrec=" / ".join(_onoff(p.get("recurring")) for p in r["rpm"]) or "\u2014",
-                        mismatch="; ".join(why)))
-    return sorted(out, key=lambda x: (x["cat"], x["sortdate"]))   # Steven Oct 27 3:27 PM: agenda conflict, not on calendar, RPM differences, FYI
+                        level=level, mismatch=LEVEL_LABEL[level] + (": " + "; ".join(why) if why else "")))
+    return sorted(out, key=lambda x: (("red", "amber", "green").index(x["level"]), x["sortdate"]))   # Steven Oct 27 3:27 PM: agenda conflict, not on calendar, RPM differences, FYI
+# R105 (Steven Nov 1 2026 10:13 PM): colour code; the text label keeps the meaning without colour.
+LEVEL_LABEL = {"red": "Conflict", "amber": "Check", "green": "Match"}
+LEVEL_ROW = {"red": "#fde2e1", "amber": "#fff3cd", "green": "#e6f4ea"}
+LEVEL_BADGE = {"red": "#b3261e", "amber": "#8a5a00", "green": "#1e6b34"}
+COLOR_KEY = ("Color key: green = Match (all sources agree); amber = Check (reference-only difference, e.g. not on RPM or recurring flag differs); "
+             "red = Conflict (an agenda or committee note gives a different date or time than the Palm Hill calendar).")
+def run_lines(R):
+    """R105b (Steven Nov 1 2026 10:18 PM): report run time, calendar pull time and RPM read time at the top."""
+    m = re.search(r"cal-(\d{8})-(\d{4})", os.path.basename(R["calf"]))
+    pull = datetime.strptime("".join(m.groups()), "%Y%m%d%H%M").strftime("%a %b %-d, %Y, %-I:%M %p") + " ET" if m else os.path.basename(R["calf"])
+    rpm = R["rpm_fetched"].split(", live")[0]; rpm = re.sub(r", \d{4},", ",", rpm)
+    return [f"Report run: {R['run']} ET", f"Palm Hill calendar pulled {pull}", f"RPM read {rpm}"]
 TONY_KEYS = ("calendar", "rpm", "agenda", "phrec", "rpmrec", "mismatch")
 def _intro(R):
     idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
-    return (f"These meetings do not match between the Palm Hill calendar, RPM (read live {R['rpm_fetched'].split(', live')[0].replace('about ', 'at about ')}) and the committee agendas. "
+    return (f"Here is how each upcoming meeting compares between the Palm Hill calendar, RPM (read live {R['rpm_fetched'].split(', live')[0].replace('about ', 'at about ')}) and the committee agendas; the colors show what needs attention. "
             f"The {idate} newsletter prints the Palm Hill calendar date and time for each.")
 def render_tony(R):
     """Plain-text version of the Tony email (Steven's voice)."""
     rows = tony_rows(R)
-    tx = [f"Subject: {TONY_SUBJECT}", "", "Hi Tony,", "", _intro(R), ""]
+    tx = [f"Subject: {TONY_SUBJECT}", ""] + run_lines(R) + ["", "Hi Tony,", "", _intro(R), ""]
     for x in rows:
         tx += [x["meeting"]] + [f"  {c}: {x[k]}" for c, k in zip(TONY_COLS[1:], TONY_KEYS)] + [""]
     if not rows: tx += ["No differences this time. Everything matches the calendar.", ""]
+    tx += [COLOR_KEY, ""]
     tx += ["Please let me know if any of the Palm Hill calendar entries need to change.", "", "Thanks,", "Steven"]
     return "\n".join(tx) + "\n"
 def render_tony_html(R):
@@ -178,16 +194,18 @@ def render_tony_html(R):
     td = "padding:7px 8px;border:1px solid #d0d7cc;vertical-align:top;font-size:14px;line-height:1.4;"
     h = [f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(TONY_SUBJECT)}</title></head>",
          "<body style='margin:0;padding:16px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;'>",
+         "<p style='margin:0 0 14px;font-size:12px;color:#555;line-height:1.5;'>" + "<br>".join(e(x) for x in run_lines(R)) + "</p>",
          "<p style='margin:0 0 12px;font-size:14px;'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;'>{e(_intro(R))}</p>",
          "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
          "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:680px;max-width:900px;'>",
          "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{e(c)}</th>" for c, wd in zip(TONY_COLS, (15, 17, 17, 16, 8, 8, 19))) + "</tr>"]
     for i, x in enumerate(rows):
-        bg = "#ffffff" if i % 2 == 0 else "#f4f7f1"
-        h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'>{e(x['meeting'])}</td>" +
-                 "".join(f"<td style='{td}'>{e(x[k])}</td>" for k in TONY_KEYS) + "</tr>")
+        bg = LEVEL_ROW[x["level"]]; bd = LEVEL_BADGE[x["level"]]
+        cells = "".join(f"<td style='{td}'>{e(x[k])}</td>" for k in TONY_KEYS[:-1])
+        cells += f"<td style='{td}border-left:5px solid {bd};color:{bd};font-weight:bold;' data-level='{x['level']}'>{e(x['mismatch'])}</td>"
+        h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'>{e(x['meeting'])}</td>" + cells + "</tr>")
     if not rows: h.append(f"<tr><td colspan='7' style='{td}'>No differences this time. Everything matches the calendar.</td></tr>")
-    h += ["</table></div>", "<p style='margin:16px 0 4px;font-size:14px;'>Please let me know if any of the Palm Hill calendar entries need to change.</p>",
+    h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:#555;'>{e(COLOR_KEY)}</p>", "<p style='margin:16px 0 4px;font-size:14px;'>Please let me know if any of the Palm Hill calendar entries need to change.</p>",
           "<p style='margin:12px 0 0;font-size:14px;'>Thanks,<br>Steven</p>", "</body></html>"]
     return "\n".join(h) + "\n"
 def main(argv=None):
@@ -195,7 +213,7 @@ def main(argv=None):
     a = ap.parse_args(argv); os.environ["PHNEWS_ISSUE"] = a.issue
     import issue_ctx; C = issue_ctx.load(a.issue)
     work = Path(a.work or os.environ.get("PHNEWS_WORK") or C.DEFAULT_WORK); out = Path(a.out or work / "reports"); out.mkdir(parents=True, exist_ok=True)
-    R = build(a.issue, work); stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    R = build(a.issue, work); R["run"] = datetime.now().strftime("%a %b %-d, %Y, %-I:%M %p"); stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     md, h, tx = render(R, stamp); base = out / f"meeting-conflicts-{a.issue}-{datetime.now().strftime('%Y%m%d-%H%M')}"
     for ext, s in ((".md", md), (".html", h), ("-email.txt", tx), ("-tony.txt", render_tony(R)), ("-tony.html", render_tony_html(R))): Path(str(base) + ext).write_text(s, encoding="utf-8")
     print(f"R86 report: {base}.md / .html / -email.txt / -tony.txt / -tony.html ({sum(1 for r in R['rows'] if r['diffs'])} of {len(R['rows'])} need attention)")

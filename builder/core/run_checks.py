@@ -269,6 +269,17 @@ elif _mcr.exists():
         L.ok("R86", bool(_R86.get("rpm_fetched")) and "Oct 16" not in _R86["rpm_fetched"] and _ttx86 and "Oct 16" not in _ttx86,
              f"RPM values carry a live-read stamp ({_R86.get('rpm_fetched')}); no Oct 16 notes in the Tony email")
     L.ok("R86", _ok86 is True, f"meeting conflict report runs for {C.ISSUE} {'' if _ok86 is True else _ok86}")
+    if _ok86 is True:   # R105 / R105b (Steven Nov 1 2026 10:13 / 10:18 PM): colour code with text labels + key; run/pull/read times on top
+        _tr105 = _m86.tony_rows(_R86); _lv105 = _re86.findall(r"data-level='(\w+)'", _html86)
+        L.ok("R105", _tr105 and len(_lv105) == len(_tr105) and all(x["mismatch"].split(":")[0] == _m86.LEVEL_LABEL[x["level"]] for x in _tr105)
+             and all(_m86.LEVEL_ROW[l] in _html86 for l in set(_lv105)) and _m86.COLOR_KEY in _html86 and _m86.COLOR_KEY in _ttx86
+             and all((x["level"] == "red") == (x["agenda"] != "\u2014") for x in _tr105 if x["calendar"] != "Not on the calendar"),
+             f"Tony report colour-coded with text labels and a colour key ({ {l: _lv105.count(l) for l in ('red', 'amber', 'green')} })")
+        _top105 = _ttx86.split("\n")[2:5]
+        L.ok("R105b", len(_top105) == 3 and _top105[0].startswith("Report run: ") and _top105[0].endswith(" ET") and _top105[1].startswith("Palm Hill calendar pulled ")
+             and _top105[2].startswith("RPM read ") and all(_html86.find(_html.escape(t)) != -1 and _html86.find(_html.escape(t)) < _html86.find("<table") for t in _top105) and _html86.count("Report run: ") == 1,
+             f"report run, calendar pull and RPM read times on top of text and HTML {_top105}")
+        L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.
