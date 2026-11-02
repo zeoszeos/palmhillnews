@@ -310,6 +310,7 @@ elif _mcr.exists():
         L.ok("R105", "Agenda says" not in _ttx86 and "Agenda says" not in _html86.replace("<br>", " ") and len(_re86.findall(r"<th ", _html86)) == 6
              and any(x["level"] == "red" and x["meeting"].startswith("Finance") and x["mismatch"].startswith("Conflict") for x in _tr105)
              and "agenda" not in _ttx86.lower() and "agenda" not in _html86.lower(), "No agenda column or wording in the Tony report (Steven Nov 2 2026 12:07 AM); red Finance row still Conflict")
+        L.ok("R105", "let me know" not in _ttx86.lower() and "let me know" not in _html86.lower(), "No 'let me know if ... need to change' line in the Tony report (Steven Nov 2 2026 12:11 AM)")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say

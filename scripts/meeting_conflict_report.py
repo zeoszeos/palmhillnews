@@ -195,7 +195,7 @@ def render_tony(R):
         tx += [x["meeting"]] + [f"  {c}: {x[k]}" for c, k in zip(TONY_COLS[1:], TONY_KEYS)] + [""]
     if not rows: tx += ["No differences this time. Everything matches the calendar.", ""]
     tx += [COLOR_KEY, "", NOTES_FOR_TONY_LABEL] + NOTES_FOR_TONY + [""]
-    tx += ["Please let me know if any of the Palm Hill calendar entries need to change.", "", "Thanks,", "Steven"]
+    tx += ["Thanks,", "Steven"]
     return "\n".join(tx) + "\n"
 def render_tony_html(R):
     """HTML version: one clean table, inline CSS only (email-safe), header row shaded, 14px, mobile friendly."""
@@ -216,7 +216,7 @@ def render_tony_html(R):
         cells += f"<td style='{td}border-left:5px solid {bd};color:{bd};font-weight:bold;' data-level='{x['level']}'>{e(x['mismatch'])}</td>"
         h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:#1a4d0f;text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
     if not rows: h.append(f"<tr><td colspan='6' style='{td}'>No differences this time. Everything matches the calendar.</td></tr>")
-    h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:#555;'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;'>{e(n)}</p>" for n in NOTES_FOR_TONY], "<p style='margin:16px 0 4px;font-size:14px;'>Please let me know if any of the Palm Hill calendar entries need to change.</p>",
+    h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:#555;'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;'>{e(n)}</p>" for n in NOTES_FOR_TONY],
           "<p style='margin:12px 0 0;font-size:14px;'>Thanks,<br>Steven</p>", "</body></html>"]
     return "\n".join(h) + "\n"
 def main(argv=None):
