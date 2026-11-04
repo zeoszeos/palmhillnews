@@ -301,7 +301,7 @@ elif _mcr.exists():
         L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
              f"every Meeting cell links to the newsletter's club calendar URL ({len(_ml105)}/{len(_tr105)})")
         L.ok("R105", ">RPM<br>calendar</th>" in _html86 and ">RPM</th>" not in _html86 and all(f">{_m86.th_text(c)}</th>" in _html86 for c in _m86.TONY_COLS) and ">Palm Hill<br>recurring</th>" in _html86 and "Not listed" not in _html86 + _ttx86
-             and all(x["rpm"] != "Not on calendar" or x["mismatch"].endswith("Not on RPM") for x in _tr105) and _html86.count("data-notoncal='1'") == sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar"),
+             and all(x["rpm"] != "Not on calendar" or "RPM is missing this meeting (Palm Hill has " in x["mismatch"] for x in _tr105) and _html86.count("data-notoncal='1'") == sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar"),
              "RPM column headed 'RPM calendar'; missing RPM entries read 'Not on calendar' (not pink)")
         _n1 = 'Note 1: Different end times between sources used to cause mismatches. A row now counts as a Match when the Palm Hill calendar and RPM have the same date and the same start time; end times are ignored.'
         _n2b = 'Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself. n/a replaces the dashes used before, to show whether the event is on each calendar.'
@@ -317,6 +317,12 @@ elif _mcr.exists():
         L.ok("R105", _nm105 and all(_m86.committee_of(n, _cm105) for n in _nm105) and _m86.WINDOW_DAYS == 60,
              "R105e: meeting-name pattern covers Board Meeting and every committee; 60-day window (Steven Nov 2 2026 8:19 AM)")
         L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
+        # R105f (Steven Nov 4 2026 4:26 PM): Palm Hill is the reference; every non-Match cell names the deviating calendar and the Palm Hill value
+        _bad105f = [x["mismatch"] for x in _tr105 if x["level"] != "green" and not (
+            all(_re86.match(r"(RPM is off - |RPM is missing this meeting \(Palm Hill has |Palm Hill is missing this meeting)", w.strip()) for w in x["mismatch"].split(": ", 1)[-1].split("Conflict; ")[-1].split("; Palm Hill has ")[0].split(" | "))
+            and "Palm Hill" in x["mismatch"] and (x["calendar"] == "Not on the calendar" or x["calendar"].split(",")[0] in x["mismatch"].replace("moved it to ", ""))
+            and not _re86.search(r"Not on RPM|RPM day|Not on the Palm Hill calendar|differ|mismatch between", x["mismatch"]))]
+        L.ok("R105", not _bad105f, f"R105f: Mismatch cells name the deviating calendar and the Palm Hill value; none reads as a tie {_bad105f}")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.

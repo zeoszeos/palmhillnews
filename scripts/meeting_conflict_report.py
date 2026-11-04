@@ -151,10 +151,12 @@ def tony_rows(R):
         rpt = "; ".join(f"{sd(p['date'])}, {_ctr(p.get('time'), p.get('end'))}" for p in (r["rpm"] if (rp or not r["cal_date"]) else [])) or ("Not on calendar" if no_rpm else "Same as calendar")   # Steven Nov 1 2026 10:36 PM
         why = []
         # Steven Nov 2 2026 12:07 AM: "Don't mention agenda date" -- agenda differences still make the row red, but are not named
-        if not r["cal_date"]: why.append("Not on the Palm Hill calendar")
-        for p in rp: why.append("RPM " + ("day and time" if p["date"] != r["cal_date"] and r["cal_time"] != p.get("time") else "day" if p["date"] != r["cal_date"] else "time"))
-        if no_rpm: why.append("Not on RPM")
-        if mv and rp: why[-1] = "RPM still has the old date"
+        # R105f (Steven Nov 4 2026 4:26 PM): Palm Hill is the source of truth; each phrase names the calendar that is off and the Palm Hill value
+        phv = f"{sd(r['cal_date'])}, {_ct(r['cal_time'])}" if r["cal_date"] else ""
+        if not r["cal_date"]: why.append("Palm Hill is missing this meeting - RPM has " + "; ".join(f"{sd(p['date'])}, {_ct(p.get('time'))}" for p in r["rpm"]) if r["rpm"] else "Palm Hill is missing this meeting")
+        for p in rp:
+            why.append(f"RPM is off - RPM still has the old date, {sd(p['date'])} (Palm Hill moved it to {sd(r['cal_date'])})" if mv else f"RPM is off - RPM has {sd(p['date'])}, {_ct(p.get('time'))}; Palm Hill has {phv}")
+        if no_rpm: why.append(f"RPM is missing this meeting (Palm Hill has {phv})")
         # Steven Nov 1 2026 10:32 PM: recurring flags are display-only; they never make a mismatch (inferred from his Golf = Match expectation)
         level = "red" if (ag or (not r["cal_date"] and r["agenda"])) else "amber" if why else "green"
         cat = 0 if ag else 1 if not r["cal_date"] else 3 if (no_rpm or r["committee"] == "Annual Meeting") else 2
@@ -223,12 +225,13 @@ def render_tony_html(R):
           "<p style='margin:12px 0 0;font-size:14px;'>Thanks,<br>Steven</p>", "</body></html>"]
     return "\n".join(h) + "\n"
 def main(argv=None):
-    ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--work"); ap.add_argument("--out")
+    ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--work"); ap.add_argument("--out"); ap.add_argument("--run-stamp", help="YYYYMMDD-HHMM: reuse an earlier run time when re-rendering the same data")
     a = ap.parse_args(argv); os.environ["PHNEWS_ISSUE"] = a.issue
     import issue_ctx; C = issue_ctx.load(a.issue)
     work = Path(a.work or os.environ.get("PHNEWS_WORK") or C.DEFAULT_WORK); out = Path(a.out or work / "reports"); out.mkdir(parents=True, exist_ok=True)
-    R = build(a.issue, work); R["run"] = datetime.now().strftime("%a %b %-d, %Y, %-I:%M %p"); stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    md, h, tx = render(R, stamp); base = out / f"meeting-conflicts-{a.issue}-{datetime.now().strftime('%Y%m%d-%H%M')}"
+    now = datetime.strptime(a.run_stamp, "%Y%m%d-%H%M") if a.run_stamp else datetime.now()
+    R = build(a.issue, work); R["run"] = now.strftime("%a %b %-d, %Y, %-I:%M %p"); stamp = now.strftime("%Y-%m-%d %H:%M")
+    md, h, tx = render(R, stamp); base = out / f"meeting-conflicts-{a.issue}-{now.strftime('%Y%m%d-%H%M')}"
     for ext, s in ((".md", md), (".html", h), ("-email.txt", tx), ("-tony.txt", render_tony(R)), ("-tony.html", render_tony_html(R))): Path(str(base) + ext).write_text(s, encoding="utf-8")
     print(f"R86 report: {base}.md / .html / -email.txt / -tony.txt / -tony.html ({sum(1 for r in R['rows'] if r['diffs'])} of {len(R['rows'])} need attention)")
     return R, base
