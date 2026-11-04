@@ -173,7 +173,7 @@ def tony_rows(R):
 # R105 (Steven Nov 1 2026 10:13 PM): colour code; the text label keeps the meaning without colour.
 LEVEL_LABEL = {"red": "Conflict", "amber": "Check", "green": "Match"}
 LEVEL_ROW = {"red": "#fde2e1", "amber": "#fff3cd", "green": "#e6f4ea"}
-TEXT_DARK, MUTED_DARK = "#1f1f1f", "#4a4a4a"   # R108: explicit dark text (>= 4.5:1 on every row colour)
+TEXT_DARK = MUTED_DARK = "#1f1f1f"   # R112 (Steven Nov 4 2026 5:20 PM): no washed-out grey body text; one solid dark colour   # R108: explicit dark text (>= 4.5:1 on every row colour)
 LEVEL_BADGE = {"red": "#b3261e", "amber": "#8a5a00", "green": "#1e6b34"}
 COLOR_KEY = ("Color key (only the date and start time are compared): green = Match (all sources agree); amber = Check (reference-only difference in date or start time, or not on RPM); "
              "red = Conflict (a committee source gives a different date or time than the Palm Hill calendar); pink = not on the Palm Hill calendar.")
@@ -250,7 +250,7 @@ def render_tony_html(R):
          f"<p style='margin:0 0 4px;font-size:13px;font-weight:bold;color:{TEXT_DARK};'>{e(refresh_block(R)[0])}</p>",
          f"<ul style='margin:0 0 14px;padding-left:20px;font-size:12px;line-height:1.5;color:{MUTED_DARK};'>" + "".join(f"<li style='color:{MUTED_DARK};'>{e(x)}</li>" for x in refresh_block(R)[1]) + "</ul>",
          f"<p style='margin:0 0 12px;font-size:14px;color:{TEXT_DARK};'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;color:{TEXT_DARK};'>{e(_intro(R))}</p>",
-         "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
+         f"<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;color:{TEXT_DARK};'>",
          "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:680px;max-width:900px;'>",
          "<tr>" + "".join(f"<th bgcolor='#2D5016' style='{th}width:{wd}%;'>{th_text(c)}</th>" for c, wd in zip(TONY_COLS, (18, 20, 20, 10, 10, 22))) + "</tr>"]
     for i, x in enumerate(rows):
