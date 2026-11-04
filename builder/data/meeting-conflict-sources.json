@@ -1,6 +1,6 @@
 {
  "_about": "R86 inputs for scripts/meeting_conflict_report.py. Agenda/report 'next meeting' claims: each quote must appear verbatim in its page (checked at run time). RPM values: a live read of the RPM portal calendar (home.resourcepropertymgmt.com/community/calendar, Agenda view Oct 25, 2026 to Feb 20, 2027, from the signed-in box browser session; month PNGs and rpm-entries.json in /workspace/rpm-read-20261101 (Nov 1 2026 read; earlier: rpm-read-20261027)). Each RPM entry has the RPM title, date, start and end time as RPM shows them, and recurring = the circular-arrow recurring icon in RPM month view. RPM is reference only (R86); it never overrides the calendar. Ear Cleaning and RPM Offices Closed entries are not meetings and are left out.",
- "rpm_fetched": "Mon Nov 2, 2026, about 8:24 AM ET, live read of home.resourcepropertymgmt.com/community/calendar",
+ "rpm_fetched": "Wed Nov 4, 2026, about 4:11 PM ET, live read of home.resourcepropertymgmt.com/community/calendar",
  "committees": {
   "Board": "^Board of Directors",
   "Compliance": "^Compliance Committee",
@@ -80,6 +80,33 @@
    "kind": "weekly manager update (Megan Leftwich)",
    "email_date": "Fri Oct 30, 2026, 4:03 PM ET (Weekly Update 2026.10.30, palmhillblast)",
    "quote": "I've asked if this can also be included in the 11/5 meeting to keep this moving forward."
+  },
+  {
+   "committee": "Board Meeting",
+   "date": "2026-11-05",
+   "time": "13:00",
+   "page": "pages/2026-11-03-special-board-notice.html",
+   "kind": "webmaster notice (Special Board of Directors Meeting)",
+   "email_date": "Tue Nov 3, 2026, 2:06 PM ET (Notice is given of a Special Board of Directors Meeting of the HOPH, leonowicz)",
+   "quote": "BOARD MEETING November 5, 2026 @ 1:00 PM Board Room & Zoom"
+  },
+  {
+   "committee": "Board Meeting",
+   "date": "2026-11-05",
+   "time": "13:00",
+   "page": "pages/2026-11-03-rpm-board-agenda-email.html",
+   "kind": "RPM agenda email (Zoom link)",
+   "email_date": "Tue Nov 3, 2026, 1:02 PM ET ([#XN9469500] Board Meeting 11/5/2026 at 1:00PM, leonowicz)",
+   "quote": "the attached agenda for the upcoming Board Meeting on 11.5.2026 at 1:00PM"
+  },
+  {
+   "committee": "Communications",
+   "date": "2026-11-09",
+   "time": "10:00",
+   "page": "pages/2026-11-02-zoom-communications-reminder.html",
+   "kind": "Zoom webinar reminder",
+   "email_date": "Mon Nov 2, 2026, 10:16 AM ET (Reminder: Communications starts in 1 week, palmhillblast)",
+   "quote": "Communications Date & Time Nov 9, 2026 10:00 AM Eastern Time"
   }
  ],
  "rpm": [
@@ -162,6 +189,14 @@
    "time": "13:00",
    "end": "15:00",
    "recurring": false
+  },
+  {
+   "committee": "Annual Meeting",
+   "rpm_name": "Annual Membership Meeting",
+   "date": "2027-01-20",
+   "time": "13:00",
+   "end": "15:00",
+   "recurring": true
   }
  ],
  "override_committee": {
