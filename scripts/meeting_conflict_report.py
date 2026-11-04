@@ -88,7 +88,7 @@ def build(issue, work, repo=REPO):
         if r["override"]: diffs.insert(0, ("CONFLICT-OVERRIDDEN-BY-RULE", f"Nov 1 rows still use the locked R62/R62b override (" + ", ".join(f"{k} {fd(v) if k == 'date' else ft(v)}" for k, v in r['override'].items()) + ") until Steven releases R62/R62b/R62c."))
         r["diffs"], r["refs"] = diffs, refs
     if not src.get("rpm_fetched"): raise SystemExit("R86: RPM values need a live-read stamp (rpm_fetched); old notes are not acceptable (Steven Oct 27 3:16 PM)")
-    return dict(issue=issue, calf=calf, cal=cal, comm=comm, rpm_fetched=src["rpm_fetched"], rows=rows, moved=moved, overrides=ovr)
+    return dict(issue=issue, calf=calf, cal=cal, comm=comm, rpm_fetched=src["rpm_fetched"], emails_searched=src.get("emails_searched"), rows=rows, moved=moved, overrides=ovr)
 def cells(r):
     ag = "; ".join(f"{fd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''} ({a['kind']}, {a['page'].split('/')[-1]})" for a in r["agenda"]) or "—"
     rp = "; ".join(f"{fd(p['date'])} ({ftr(p.get('time'), p.get('end'))})" for p in r["rpm"]) or "—"
@@ -188,6 +188,25 @@ def run_lines(R):
     pull = datetime.strptime("".join(m.groups()), "%Y%m%d%H%M").strftime("%a %b %-d, %Y, %-I:%M %p") + " ET" if m else os.path.basename(R["calf"])
     rpm = R["rpm_fetched"].split(", live")[0]; rpm = re.sub(r", \d{4},", ",", rpm)
     return [f"Report run: {R['run']} ET", f"Palm Hill calendar pulled {pull}", f"RPM read {rpm}"]
+# R109 (Steven Nov 4 2026 5:02 PM): "Refresh date" line + what the refresh covers. Built only from the real stamps; a source whose
+# stamp is older than FRESH_MINUTES before the run (or has no stamp) is never called refreshed -- its real time is shown instead.
+FRESH_MINUTES = 30
+def _stamp_dt(txt):
+    m = re.search(r"([A-Z][a-z]{2} [A-Z][a-z]{2} \d{1,2}, \d{4}),? (?:about |at about )?(\d{1,2}:\d{2} [AP]M)", txt or "")
+    return datetime.strptime(m.group(1) + " " + m.group(2), "%a %b %d, %Y %I:%M %p") if m else None
+def refresh_block(R):
+    run = datetime.strptime(R["run"], "%a %b %d, %Y, %I:%M %p")
+    m = re.search(r"cal-(\d{8})-(\d{4})", os.path.basename(R["calf"]))
+    srcs = [("Palm Hill calendar", "reviewed", datetime.strptime("".join(m.groups()), "%Y%m%d%H%M") if m else None, ""),
+            ("RPM calendar", "reviewed", _stamp_dt(R["rpm_fetched"]), "about " if "about" in R["rpm_fetched"] else ""),
+            ("Committee and board emails that may mention a meeting date", "checked", _stamp_dt(R.get("emails_searched")), "about " if "about" in (R.get("emails_searched") or "") else "")]
+    subs, fresh = [], []
+    for name, verb, t, ab in srcs:
+        ok = t is not None and timedelta(0) <= run - t <= timedelta(minutes=FRESH_MINUTES); fresh.append(ok)
+        if ok: subs.append(f"{name}: {verb} for this run at {ab}{t.strftime('%-I:%M %p')} ET.")
+        elif t is None: subs.append(f"{name}: not refreshed at this run (no time was recorded for the last time they were {verb}).")
+        else: subs.append(f"{name}: not refreshed at this run; last {verb} {t.strftime('%a %b %-d, %Y, %-I:%M %p')} ET.")
+    return f"Refresh date: {run.strftime('%a %b %-d, %Y')}, for the report run at {run.strftime('%-I:%M %p')} ET", subs, fresh
 TONY_KEYS = ("calendar", "rpm", "phrec", "rpmrec", "mismatch")
 def _intro(R):
     idate = datetime.strptime(R["issue"], "%Y-%m-%d").strftime("%B %-d")
@@ -196,7 +215,8 @@ def _intro(R):
 def render_tony(R):
     """Plain-text version of the Tony email (Steven's voice)."""
     rows = tony_rows(R)
-    tx = [f"Subject: {TONY_SUBJECT}", ""] + run_lines(R) + ["", "Hi Tony,", "", _intro(R), ""]
+    rl, rs, _ = refresh_block(R)
+    tx = [f"Subject: {TONY_SUBJECT}", ""] + run_lines(R) + ["", rl] + [f"  - {x}" for x in rs] + ["", "Hi Tony,", "", _intro(R), ""]
     for x in rows:
         tx += [x["meeting"]] + [f"  {c}: {x[k]}" for c, k in zip(TONY_COLS[1:], TONY_KEYS)] + [""]
     if not rows: tx += ["No differences this time. Everything matches the calendar.", ""]
@@ -215,6 +235,8 @@ def render_tony_html(R):
     h = [f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(TONY_SUBJECT)}</title>{_edm.HEAD_ADD}</head>",
          f"<body bgcolor='{bgp}' style='margin:0;padding:16px;background:{bgp};font-family:Arial,Helvetica,sans-serif;font-size:14px;color:{TEXT_DARK};'>",
          f"<p style='margin:0 0 14px;font-size:12px;color:{MUTED_DARK};line-height:1.5;'>" + "<br>".join(e(x) for x in run_lines(R)) + "</p>",
+         f"<p style='margin:0 0 4px;font-size:13px;font-weight:bold;color:{TEXT_DARK};'>{e(refresh_block(R)[0])}</p>",
+         f"<ul style='margin:0 0 14px;padding-left:20px;font-size:12px;line-height:1.5;color:{MUTED_DARK};'>" + "".join(f"<li style='color:{MUTED_DARK};'>{e(x)}</li>" for x in refresh_block(R)[1]) + "</ul>",
          f"<p style='margin:0 0 12px;font-size:14px;color:{TEXT_DARK};'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;color:{TEXT_DARK};'>{e(_intro(R))}</p>",
          "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
          "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:680px;max-width:900px;'>",

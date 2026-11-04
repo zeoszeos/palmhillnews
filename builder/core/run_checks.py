@@ -342,6 +342,22 @@ elif _mcr.exists():
             _fg108 = _re86.findall(r"[;' ]color:\s*(#[0-9a-fA-F]{3,6})", _t108); _bg108 = _re86.findall(r"background:\s*(#[0-9a-fA-F]{3,6})", _t108)
             if not (_fg108 and _bg108) or _cr108(_fg108[-1], _bg108[-1]) < 4.5: _bad108.append(_t108[:70])
         L.ok("R108", not _bad108 and 'content="light only"' in _html86[:_html86.find("<body")], f"R108: every Tony td/th has explicit text colour >= 4.5:1 on its background; light-only colour scheme {_bad108[:3]}")
+        # R109 (Steven Nov 4 2026 5:02 PM): Refresh date line from the real stamps; three sub-notes; never "refreshed" for a stale or unstamped source
+        from datetime import datetime as _dt109, timedelta as _td109
+        _tl109 = _ttx86.split("\n"); _ri109 = next((k for k, x in enumerate(_tl109) if x.startswith("Refresh date: ")), -1)
+        _run109 = _dt109.strptime(_tl109[2][len("Report run: "):-3], "%a %b %d, %Y, %I:%M %p") if _tl109[2].startswith("Report run: ") else None
+        _sub109 = _tl109[_ri109 + 1:_ri109 + 4] if _ri109 >= 0 else []
+        _err109 = []
+        if _ri109 < 0 or not _run109 or not _tl109[_ri109].startswith(f"Refresh date: {_run109:%a %b %-d, %Y}, for the report run at {_run109:%-I:%M %p} ET"): _err109.append("refresh line/date")
+        if [x.split(":")[0].strip(" -") for x in _sub109] != ["Palm Hill calendar", "RPM calendar", "Committee and board emails that may mention a meeting date"]: _err109.append("sub-notes")
+        for _x109 in _sub109:
+            _m109 = _re86.search(r"(reviewed|checked) for this run at (?:about )?(\d{1,2}:\d{2} [AP]M) ET", _x109)
+            if _m109 and _run109:
+                _t109 = _dt109.strptime(f"{_run109:%Y-%m-%d} {_m109.group(2)}", "%Y-%m-%d %I:%M %p")
+                if not (_td109(0) <= _run109 - _t109 <= _td109(minutes=_m86.FRESH_MINUTES)): _err109.append("stale claimed fresh: " + _x109[:40])
+            elif "not refreshed at this run" not in _x109: _err109.append("unflagged: " + _x109[:40])
+        if _ri109 >= 0 and _html.escape(_tl109[_ri109]) not in _html86: _err109.append("html refresh line")
+        L.ok("R109", not _err109 and _m86.FRESH_MINUTES == 30, f"R109: Refresh date line = run date, three sub-notes, no stale source called refreshed (30 min) {_err109}")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.
