@@ -420,6 +420,16 @@ for _n104, _x104 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-
     if C.ISSUE >= "2026-11-08":
         _empty = [t for _, t in lc._headings(_x104) if "<tr" not in lc._section(_x104, t) and "<a " not in lc._section(_x104, t)]
         L.ok("R104", not _empty, f"{_n104}: no section header without items {_empty}")
+# R107 (Steven Nov 4 2026 4:35 PM): no white/near-white text on light backgrounds and nothing below WCAG AA 4.5:1 on light
+# yellow backgrounds in the calendar sections (preview + SEND + this issue's Recurring / All Events pages). scripts/contrast_guard.py
+if C.ISSUE >= "2026-11-08":
+    import contrast_guard as _cg106
+    _rp106 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"
+    _src106 = [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
+    _src106 += [(f.name, f.read_text(encoding="utf-8")) for f in sorted(_rp106.glob(f"{C.ISSUE}-recurring-activities-by-*.html")) + sorted(_rp106.glob(f"{C.ISSUE}-all-events-by-*.html"))]
+    for _n106, _x106 in _src106:
+        _v106 = _cg106.violations(_x106)
+        L.ok("R107", not _v106, f"{_n106}: text contrast on light/yellow backgrounds >= {_cg106.AA}:1, no white on light {_v106[:3]}")
 _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|<[^>]+>", " ", page)
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
