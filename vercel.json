@@ -62,5 +62,11 @@
       "destination": "https://github.com/zeoszeos/palmhillnews/releases/download/link-pdfs/:file",
       "permanent": false
     }
-  ]
+  ],
+  "functions": {
+    "api/calendar-mismatches.py": {
+      "includeFiles": "{scripts/meeting_conflict_report.py,scripts/pull_calendar.py,builder/core/**,builder/data/**,builder/issues/**}",
+      "maxDuration": 60
+    }
+  }
 }
