@@ -261,7 +261,7 @@ elif _mcr.exists():
              f"Tony file subject line is exactly 'Subject: Calendar Mismatches Report' ({_subj86!r})")
     if _ok86 is True:   # Steven Oct 27 2026 3:16/3:17 PM: Tony email is one HTML table; RPM values are a timely live read
         import re as _re86
-        L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86,
+        L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86.replace("<style>:root{color-scheme:light only}</style>", "", 1),   # R108: only the R97 light-only block
              "Tony HTML email exists, has exactly one table with a header row, inline CSS only, title = exact subject")
         # Steven Oct 27 2026 11:40 PM: simplified Tony table wording; a plain "Mismatch" reason column; Palm Hill and RPM recurring flags shown On/Off
         L.ok("R86", all(f"<th" in _html86 and c in _html86.replace("<br>", " ") for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
@@ -297,7 +297,7 @@ elif _mcr.exists():
         L.ok("R105", any(n.startswith(_n2) for n in _m86.NOTES_FOR_TONY) and "Notes for Tony\n" in _ttx86 and _n2 in _ttx86 and ">Notes for Tony</p>" in _html86 and _html.escape(_n2) in _html86
              and "Dave" not in _ttx86 and _html86.find(">Notes for Tony<") > _html86.find("</table>"), "Notes for Tony block (Note 2 wording kept) under the table, text and HTML")
         _send105 = Path(C.OUT_SEND).read_text(encoding="utf-8") if hasattr(C, "OUT_SEND") and Path(C.OUT_SEND).exists() else page
-        _ml105 = _re86.findall(r"<tr style='background:[^']*;'><td [^>]*><a href='([^']+)'", _html86)
+        _ml105 = _re86.findall(r"<tr [^>]*><td [^>]*><a href='([^']+)'", _html86)
         L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
              f"every Meeting cell links to the newsletter's club calendar URL ({len(_ml105)}/{len(_tr105)})")
         L.ok("R105", ">RPM<br>calendar</th>" in _html86 and ">RPM</th>" not in _html86 and all(f">{_m86.th_text(c)}</th>" in _html86 for c in _m86.TONY_COLS) and ">Palm Hill<br>recurring</th>" in _html86 and "Not listed" not in _html86 + _ttx86
@@ -331,6 +331,17 @@ elif _mcr.exists():
              and not _re86.search(r"(?i)(password|passwd|api[_-]?key|secret|token|bearer)\s*[=:]\s*['\"][^'\"]{6,}", _bs106) and "send_message" not in _bs106 and "smtplib" not in _bs106
              and "scripts/meeting_conflict_report.py" in _vj106.get("includeFiles", ""),
              "R106: anytime button (api/calendar-mismatches.py) reuses the R105 renderer, Eastern time, REPORT_BUTTON_ENABLED kill switch, limits banner, no secrets, no mail")
+        # R108 (Steven Nov 4 2026 4:53 PM): iPhone Gmail dark mode -- every td/th has an explicit text colour with >= 4.5:1 on its own background; head is "light only"
+        def _lum108(h):
+            h = h.lstrip("#"); h = "".join(c * 2 for c in h) if len(h) == 3 else h
+            c = [int(h[k:k + 2], 16) / 255 for k in (0, 2, 4)]; c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+            return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]
+        def _cr108(a, b): x, y = sorted((_lum108(a), _lum108(b)), reverse=True); return (x + .05) / (y + .05)
+        _bad108 = []
+        for _t108 in _re86.findall(r"<t[dh]\b[^>]*>", _html86):
+            _fg108 = _re86.findall(r"[;' ]color:\s*(#[0-9a-fA-F]{3,6})", _t108); _bg108 = _re86.findall(r"background:\s*(#[0-9a-fA-F]{3,6})", _t108)
+            if not (_fg108 and _bg108) or _cr108(_fg108[-1], _bg108[-1]) < 4.5: _bad108.append(_t108[:70])
+        L.ok("R108", not _bad108 and 'content="light only"' in _html86[:_html86.find("<body")], f"R108: every Tony td/th has explicit text colour >= 4.5:1 on its background; light-only colour scheme {_bad108[:3]}")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.

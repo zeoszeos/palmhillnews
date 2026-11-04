@@ -24,7 +24,7 @@ def make_report(issue=None):
     pc.pull(str(work / "data"), date.today().isoformat(), (date.today() + timedelta(days=m.WINDOW_DAYS)).isoformat())
     R = m.build(issue, work); R["run"] = __import__("datetime").datetime.now().strftime("%a %b %-d, %Y, %-I:%M %p")
     h = m.render_tony_html(R)
-    banner = f"<p data-r106='limits' style='margin:0 0 12px;padding:8px 10px;background:#eef3fb;border:1px solid #b6c8e6;font-size:13px;line-height:1.4;'>{LIMITS_BANNER}</p>"
+    banner = f"<p data-r106='limits' style='margin:0 0 12px;padding:8px 10px;background:#eef3fb;color:#1f1f1f;border:1px solid #b6c8e6;font-size:13px;line-height:1.4;'>{LIMITS_BANNER}</p>"
     i = h.index(">", h.index("<body")) + 1   # banner goes first inside <body>; the report itself is untouched
     return h[:i] + banner + h[i:], R
 class handler(BaseHTTPRequestHandler):

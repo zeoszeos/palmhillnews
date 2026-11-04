@@ -167,6 +167,7 @@ def tony_rows(R):
 # R105 (Steven Nov 1 2026 10:13 PM): colour code; the text label keeps the meaning without colour.
 LEVEL_LABEL = {"red": "Conflict", "amber": "Check", "green": "Match"}
 LEVEL_ROW = {"red": "#fde2e1", "amber": "#fff3cd", "green": "#e6f4ea"}
+TEXT_DARK, MUTED_DARK = "#1f1f1f", "#4a4a4a"   # R108: explicit dark text (>= 4.5:1 on every row colour)
 LEVEL_BADGE = {"red": "#b3261e", "amber": "#8a5a00", "green": "#1e6b34"}
 COLOR_KEY = ("Color key (only the date and start time are compared): green = Match (all sources agree); amber = Check (reference-only difference in date or start time, or not on RPM); "
              "red = Conflict (a committee source gives a different date or time than the Palm Hill calendar); pink = not on the Palm Hill calendar.")
@@ -205,24 +206,28 @@ def render_tony(R):
 def render_tony_html(R):
     """HTML version: one clean table, inline CSS only (email-safe), header row shaded, 14px, mobile friendly."""
     rows = tony_rows(R); e = html.escape
+    # R108 (Steven Nov 4 2026 4:53 PM, iPhone Gmail dark mode screenshot): every cell, link and paragraph carries an explicit dark text
+    # colour and its row background (style + bgcolor), and the head says "light only" (R97/R98 email_dark_mode approach).
+    import email_dark_mode as _edm
+    bgp = _edm.EMAIL_TINT
     th = "background:#2D5016;color:#ffffff;font-weight:bold;text-align:left;padding:7px 8px;border:1px solid #2D5016;font-size:14px;"
-    td = "padding:7px 8px;border:1px solid #d0d7cc;vertical-align:top;font-size:14px;line-height:1.4;"
-    h = [f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(TONY_SUBJECT)}</title></head>",
-         "<body style='margin:0;padding:16px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;'>",
-         "<p style='margin:0 0 14px;font-size:12px;color:#555;line-height:1.5;'>" + "<br>".join(e(x) for x in run_lines(R)) + "</p>",
-         "<p style='margin:0 0 12px;font-size:14px;'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;'>{e(_intro(R))}</p>",
+    td = f"color:{TEXT_DARK};padding:7px 8px;border:1px solid #d0d7cc;vertical-align:top;font-size:14px;line-height:1.4;"
+    h = [f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(TONY_SUBJECT)}</title>{_edm.HEAD_ADD}</head>",
+         f"<body bgcolor='{bgp}' style='margin:0;padding:16px;background:{bgp};font-family:Arial,Helvetica,sans-serif;font-size:14px;color:{TEXT_DARK};'>",
+         f"<p style='margin:0 0 14px;font-size:12px;color:{MUTED_DARK};line-height:1.5;'>" + "<br>".join(e(x) for x in run_lines(R)) + "</p>",
+         f"<p style='margin:0 0 12px;font-size:14px;color:{TEXT_DARK};'>Hi Tony,</p>", f"<p style='margin:0 0 16px;font-size:14px;line-height:1.5;color:{TEXT_DARK};'>{e(_intro(R))}</p>",
          "<div style='overflow-x:auto;-webkit-overflow-scrolling:touch;'>",
          "<table role='table' cellpadding='0' cellspacing='0' style='border-collapse:collapse;width:100%;min-width:680px;max-width:900px;'>",
-         "<tr>" + "".join(f"<th style='{th}width:{wd}%;'>{th_text(c)}</th>" for c, wd in zip(TONY_COLS, (18, 20, 20, 10, 10, 22))) + "</tr>"]
+         "<tr>" + "".join(f"<th bgcolor='#2D5016' style='{th}width:{wd}%;'>{th_text(c)}</th>" for c, wd in zip(TONY_COLS, (18, 20, 20, 10, 10, 22))) + "</tr>"]
     for i, x in enumerate(rows):
         bg = LEVEL_ROW[x["level"]]; bd = LEVEL_BADGE[x["level"]]
-        cells = "".join(f"<td style='{td}background:{NOT_ON_CAL_BG};color:{NOT_ON_CAL_FG};font-weight:bold;' data-notoncal='1'>{e(x[k])}</td>" if k == "calendar" and x[k] == "Not on the calendar"
-                        else f"<td style='{td}'>{e(x[k])}</td>" for k in TONY_KEYS[:-1])
-        cells += f"<td style='{td}border-left:5px solid {bd};color:{bd};font-weight:bold;' data-level='{x['level']}'>{e(x['mismatch'])}</td>"
-        h.append(f"<tr style='background:{bg};'>" + f"<td style='{td}font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:#1a4d0f;text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
-    if not rows: h.append(f"<tr><td colspan='6' style='{td}'>No differences this time. Everything matches the calendar.</td></tr>")
-    h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:#555;'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;'>{e(n)}</p>" for n in NOTES_FOR_TONY],
-          "<p style='margin:12px 0 0;font-size:14px;'>Thanks,<br>Steven</p>", "</body></html>"]
+        cells = "".join(f"<td bgcolor='{NOT_ON_CAL_BG}' style='{td}background:{NOT_ON_CAL_BG};color:{NOT_ON_CAL_FG};font-weight:bold;' data-notoncal='1'>{e(x[k])}</td>" if k == "calendar" and x[k] == "Not on the calendar"
+                        else f"<td bgcolor='{bg}' style='{td}background:{bg};'>{e(x[k])}</td>" for k in TONY_KEYS[:-1])
+        cells += f"<td bgcolor='{bg}' style='{td}background:{bg};border-left:5px solid {bd};color:{bd};font-weight:bold;' data-level='{x['level']}'>{e(x['mismatch'])}</td>"
+        h.append(f"<tr bgcolor='{bg}' style='background:{bg};'>" + f"<td bgcolor='{bg}' style='{td}background:{bg};font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:#1a4d0f;text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
+    if not rows: h.append(f"<tr><td colspan='6' bgcolor='{bgp}' style='{td}background:{bgp};'>No differences this time. Everything matches the calendar.</td></tr>")
+    h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:{MUTED_DARK};'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;color:{TEXT_DARK};'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;color:{TEXT_DARK};'>{e(n)}</p>" for n in NOTES_FOR_TONY],
+          f"<p style='margin:12px 0 0;font-size:14px;color:{TEXT_DARK};'>Thanks,<br>Steven</p>", "</body></html>"]
     return "\n".join(h) + "\n"
 def main(argv=None):
     ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--work"); ap.add_argument("--out"); ap.add_argument("--run-stamp", help="YYYYMMDD-HHMM: reuse an earlier run time when re-rendering the same data")
