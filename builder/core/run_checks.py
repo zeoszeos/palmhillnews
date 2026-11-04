@@ -350,6 +350,17 @@ elif _mcr.exists():
             elif "not refreshed at this run" not in _x109: _err109.append("unflagged: " + _x109[:40])
         if _ri109 >= 0 and _html.escape(_tl109[_ri109]) not in _html86: _err109.append("html refresh line")
         L.ok("R109", not _err109 and _m86.FRESH_MINUTES == 30, f"R109: Refresh date line = run date, three sub-notes, no stale source called refreshed (30 min) {_err109}")
+        # R110 (Steven Nov 4 2026 5:02 PM): live refresh uses env secrets only; no committed file assigns a literal to a secret name
+        import subprocess as _sp110
+        _rp110 = Path(__file__).resolve().parents[2]
+        _fl110 = [f for f in _sp110.run(["git", "-C", str(_rp110), "ls-files"], capture_output=True, text=True).stdout.split("\n") if f.endswith((".py", ".js", ".json", ".md", ".txt", ".html", ".yml", ".yaml", ".env"))]
+        _bad110 = [f for f in _fl110 if (_rp110 / f).exists() and _re86.search(r"(?i)\b(RPM_USERNAME|RPM_PASSWORD|GMAIL_APP_PASSWORD)\b\s*[:=]\s*['\"][^'\"\s]{3,}|app[_ ]?password\s*[:=]\s*['\"][a-z]{4} ?[a-z]{4}", (_rp110 / f).read_text(encoding="utf-8", errors="ignore"))]
+        _rl110 = (_rp110 / "scripts/refresh_live_sources.py").read_text(encoding="utf-8") if (_rp110 / "scripts/refresh_live_sources.py").exists() else ""
+        L.ok("R110", not _bad110 and bool(_rl110) and "os.environ.get(name)" in _rl110 and "readonly=True" in _rl110 and not _re86.search(r"print\([^)]*\b(pw|user)\b", _rl110),
+             f"R110: live refresh reads secrets from env only (none committed, none printed); IMAP read-only {_bad110}")
+        # R111 (Steven Nov 4 2026 5:14 PM): link security notes in the Tony report, no 'agenda', no live claim
+        L.ok("R111", all(n in _ttx86 and _html.escape(n) in _html86 for n in _m86.LINK_NOTES) and _m86.LINK_NOTES_LABEL in _ttx86 and len(_m86.LINK_NOTES) == 4
+             and not any(_re86.search(r"(?i)agenda|\blive\b|real[- ]time", n) for n in _m86.LINK_NOTES), "R111: 'About the report link' notes (run anytime, don't forward, link can be shut off/replaced, Refresh date per source)")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.

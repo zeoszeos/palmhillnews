@@ -43,6 +43,11 @@ def build(issue, work, repo=REPO):
     src = json.load(open(repo / "builder/data/meeting-conflict-sources.json", encoding="utf-8"))
     import issue_ctx; C = issue_ctx.load(issue)
     calf, cal = load_cal(work); comm = src["committees"]
+    lv = Path(work) / "data/live-sources.json"   # R110: fresh RPM / email data from scripts/refresh_live_sources.py (never committed)
+    if lv.exists():
+        L = json.load(open(lv, encoding="utf-8"))
+        if L.get("rpm") and L.get("rpm_fetched"): src = dict(src, rpm=L["rpm"], rpm_fetched=L["rpm_fetched"])
+        if L.get("emails_searched"): src = dict(src, emails_searched=L["emails_searched"], agenda=src["agenda"] + L.get("agenda", []))
     since = min(issue, date.today().isoformat())   # still-upcoming meetings before the issue date are compared too
     until = (date.today() + timedelta(days=WINDOW_DAYS)).isoformat()   # Steven Nov 2 2026 8:19 AM: ANY committee/board meeting in the next 60 days
     cal = dict(cal, events=[e for e in cal["events"] if e["date"] <= until]); src = dict(src, rpm=[r for r in src["rpm"] if r["date"] <= until], agenda=[a for a in src["agenda"] if a["date"] <= until])
@@ -69,7 +74,8 @@ def build(issue, work, repo=REPO):
     for r in rows:   # verbatim check + differences
         diffs, refs = [], []   # refs = reference-only notes (known typos, RPM day notes): shown, never counted (R86, Oct 27 2:43 PM)
         for a in r["agenda"]:
-            t = (repo / a["page"]).read_text(encoding="utf-8") if (repo / a["page"]).exists() else ""
+            pf = Path(work) / a["page"][5:] if a["page"].startswith("work:") else repo / a["page"]
+            t = pf.read_text(encoding="utf-8") if pf.exists() else ""
             if html.unescape(a["quote"]) not in re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t))): raise SystemExit(f"R86: quote not found in {a['page']}: {a['quote']!r}")
             at = (a.get("typo") or {}).get("time", a["time"])
             if a.get("typo"): refs.append(("Agenda: known typo", f'The {a["kind"]} says "{a["quote"]}": {a["typo"]["note"]}.'))
@@ -179,6 +185,12 @@ CLUB_CALENDAR_URL = "https://www.palmhillcountryclub.net/calendar-1/"
 NOTES_FOR_TONY_LABEL = "Notes for Tony"
 NOTES_FOR_TONY = ["Note 1: Different end times between sources used to cause mismatches. A row now counts as a Match when the Palm Hill calendar and RPM have the same date and the same start time; end times are ignored.",
                   "Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself. n/a replaces the dashes used before, to show whether the event is on each calendar."]   # Steven Nov 1 2026 10:40 PM: Note 1 first; Note 2 + n/a clause
+# R111 (Steven Nov 4 2026 5:14 PM): the same link security notes as the try-it email, in plain words; truthful (no claim of live data)
+LINK_NOTES_LABEL = "About the report link"
+LINK_NOTES = ["You can run this report whenever you want using the link I send you.",
+              "The link is just for you, so please don't forward it.",
+              "If I'm ever worried about security, I can shut that link off and give you a new one, or turn the button off from my end. Either way, the old link stops working.",
+              "Every report shows a Refresh date near the top, with a note for each source (the Palm Hill calendar, the RPM calendar, and committee and board emails that may mention a meeting date) showing when each one was last checked."]
 def th_text(c):
     """Steven Nov 1 2026 10:38 PM: two-line headers ("Palm Hill<br>calendar", "RPM<br>recurring") so the table is narrower."""
     return "<br>".join(html.escape(x) for x in c.rsplit(" ", 1)) if " " in c else html.escape(c)
@@ -220,7 +232,7 @@ def render_tony(R):
     for x in rows:
         tx += [x["meeting"]] + [f"  {c}: {x[k]}" for c, k in zip(TONY_COLS[1:], TONY_KEYS)] + [""]
     if not rows: tx += ["No differences this time. Everything matches the calendar.", ""]
-    tx += [COLOR_KEY, "", NOTES_FOR_TONY_LABEL] + NOTES_FOR_TONY + [""]
+    tx += [COLOR_KEY, "", NOTES_FOR_TONY_LABEL] + NOTES_FOR_TONY + [""] + [LINK_NOTES_LABEL] + [f"  - {n}" for n in LINK_NOTES] + [""]
     tx += ["Thanks,", "Steven"]
     return "\n".join(tx) + "\n"
 def render_tony_html(R):
@@ -249,6 +261,8 @@ def render_tony_html(R):
         h.append(f"<tr bgcolor='{bg}' style='background:{bg};'>" + f"<td bgcolor='{bg}' style='{td}background:{bg};font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:#1a4d0f;text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
     if not rows: h.append(f"<tr><td colspan='6' bgcolor='{bgp}' style='{td}background:{bgp};'>No differences this time. Everything matches the calendar.</td></tr>")
     h += ["</table></div>", f"<p style='margin:8px 0 0;font-size:12px;color:{MUTED_DARK};'>{e(COLOR_KEY)}</p>", f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;color:{TEXT_DARK};'>{e(NOTES_FOR_TONY_LABEL)}</p>", *[f"<p style='margin:0 0 6px;font-size:13px;line-height:1.4;color:{TEXT_DARK};'>{e(n)}</p>" for n in NOTES_FOR_TONY],
+          f"<p style='margin:12px 0 4px;font-size:13px;font-weight:bold;color:{TEXT_DARK};'>{e(LINK_NOTES_LABEL)}</p>",
+          f"<ul style='margin:0 0 6px;padding-left:20px;font-size:13px;line-height:1.4;color:{TEXT_DARK};'>" + "".join(f"<li style='color:{TEXT_DARK};'>{e(n)}</li>" for n in LINK_NOTES) + "</ul>",
           f"<p style='margin:12px 0 0;font-size:14px;color:{TEXT_DARK};'>Thanks,<br>Steven</p>", "</body></html>"]
     return "\n".join(h) + "\n"
 def main(argv=None):
