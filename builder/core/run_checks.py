@@ -342,6 +342,17 @@ elif _mcr.exists():
             _fg108 = _re86.findall(r"[;' ]color:\s*(#[0-9a-fA-F]{3,6})", _t108); _bg108 = _re86.findall(r"background:\s*(#[0-9a-fA-F]{3,6})", _t108)
             if not (_fg108 and _bg108) or _cr108(_fg108[-1], _bg108[-1]) < 4.5: _bad108.append(_t108[:70])
         L.ok("R108", not _bad108 and 'content="light only"' in _html86[:_html86.find("<body")], f"R108: every Tony td/th has explicit text colour >= 4.5:1 on its background; light-only colour scheme {_bad108[:3]}")
+        # R112 (Steven Nov 4 2026 5:19 PM): EVERY text element (not only td/th) has an explicit inline colour >= 4.5:1 on every background the email uses
+        _bgs112 = set(_re86.findall(r"background:\s*(#[0-9a-fA-F]{3,6})", _html86)) - {"#2D5016"}
+        _bad112 = []
+        for _t112 in _re86.findall(r"<(?:p|li|ul|ol|a|span|div|b|strong|em|h[1-6]|body)\b[^>]*>", _html86):
+            _fg112 = _re86.findall(r"(?:^|[;'\" ])color:\s*(#[0-9a-fA-F]{3,6})", _t112.split("style=", 1)[-1])
+            if not _fg112 or min(_cr108(_fg112[-1], b) for b in _bgs112) < 4.5: _bad112.append(_t112[:60])
+        _out112 = _re86.sub(r"(?s)<table\b.*?</table>", "", _html86)   # body text outside the table: solid dark on white, >= 12:1, no fades
+        for _t112 in _re86.findall(r"<(?:p|li|ul|ol|span|div|b|strong|em|h[1-6]|body)\b[^>]*>", _out112):
+            _fg112 = _re86.findall(r"(?:^|[;'\" ])color:\s*(#[0-9a-fA-F]{3,6})", _t112.split("style=", 1)[-1])
+            if not _fg112 or _cr108(_fg112[-1], "#ffffff") < 12 or _re86.search(r"(?i)opacity|rgba\(|hsla\(|font-weight:\s*[1-3]00", _t112): _bad112.append("body text: " + _t112[:50])
+        L.ok("R112", not _bad112 and _html86.count('content="light only"') == 2 and ":root{color-scheme:light only}" in _html86, f"R112: every text element in the Tony HTML has explicit colour >= 4.5:1 on all its backgrounds; light-only head tags {_bad112[:3]}")
         # R109 (Steven Nov 4 2026 5:02 PM): Refresh date line from the real stamps; three sub-notes; never "refreshed" for a stale or unstamped source
         from datetime import datetime as _dt109, timedelta as _td109
         _tl109 = _ttx86.split("\n"); _ri109 = next((k for k, x in enumerate(_tl109) if x.startswith("Refresh date: ")), -1)
