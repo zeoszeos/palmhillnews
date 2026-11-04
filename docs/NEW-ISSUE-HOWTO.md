@@ -23,3 +23,12 @@ A new week = **one new content file**. Never copy a builder (the R71 guard stops
 8. Recurring pages: `PHNEWS_ISSUE=<date> python3 builder/core/recurring.py && python3 builder/core/recurring_grouped.py . <date>`.
 
 Still draft only: nothing is sent, published or pushed without Steven's go. Oct 18 (`builder/oct18/`) is locked as sent and exempt.
+
+## Calendar Mismatches Report with a live refresh (R110)
+Secrets come only from environment variables RPM_USERNAME, RPM_PASSWORD and GMAIL_APP_PASSWORD (vault / box env; never in files).
+```
+export TZ=America/New_York W=/workspace/live-run-$(date +%Y%m%d-%H%M)
+python3 scripts/refresh_live_sources.py --work $W        # Palm Hill pull + RPM login + palmhillblast IMAP (read-only)
+python3 scripts/meeting_conflict_report.py --issue <issue> --work $W --out $W
+```
+A failed step prints `FAILED <source>: <reason>` once (no retries); the report's Refresh date notes then say that source was not refreshed.
