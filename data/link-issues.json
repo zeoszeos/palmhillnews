@@ -3,6 +3,7 @@
  "current_download": "https://monthly-media.com/newsletter_download.php?t=06fb49ca231b5bd3004032fbc710a472&type=newsletter",
  "_current_download": "R81 (Steven Oct 24/26 2026): the current monthly issue link at the top of palm-hill-link.html; was Helpful Webpages 'Palm Hill Link Monthly'. Refresh with locked_checks.resolve_latest_link_download() when a new Link comes out.",
  "issues": [
+  {"month": "2026-11", "pdf": "Link-2026-11.pdf", "bytes": 9950334, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@4b8fc3402daa3654834369589f75704a74fce40c/Link-2026-11.pdf"},
   {"month": "2026-10", "pdf": "Link-2026-10.pdf", "pages": 60, "story": {"title": "97½ and Still Chasing Birdies Instead of Birthdays", "page": "2026-10-04-mary-leslie-chasing-birdies.html"}, "bytes": 11318158, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-10.pdf"},
   {"month": "2026-09", "pdf": "Link-2026-09.pdf", "story": {"title": "For the Love of the Game: Marge Taylor", "page": "2026-09-marge-taylor-love-of-the-game.html"}, "bytes": 10292774, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-09.pdf"},
   {"month": "2026-08", "pdf": "Link-2026-08.pdf", "bytes": 10744418, "url": "https://cdn.jsdelivr.net/gh/zeoszeos/palmhillnews@ac307a6a6c192be9f2860cba322a459e6497a596/Link-2026-08.pdf"},
