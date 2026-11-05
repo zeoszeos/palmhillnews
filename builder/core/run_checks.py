@@ -323,6 +323,14 @@ elif _mcr.exists():
             and "Palm Hill" in x["mismatch"] and (x["calendar"] == "Not on the calendar" or x["calendar"].split(",")[0] in x["mismatch"].replace("moved it to ", ""))
             and not _re86.search(r"Not on RPM|RPM day|Not on the Palm Hill calendar|differ|mismatch between", x["mismatch"]))]
         L.ok("R105", not _bad105f, f"R105f: Mismatch cells name the deviating calendar and the Palm Hill value; none reads as a tie {_bad105f}")
+        # R106 (Steven Nov 4 2026 4:30 PM): anytime button reuses the report renderer, forces Eastern time, has a kill switch, labels its limits, holds no secrets
+        _rp106 = Path(__file__).resolve().parents[2]; _bf106 = _rp106 / "api/calendar-mismatches.py"; _bs106 = _bf106.read_text(encoding="utf-8") if _bf106.exists() else ""
+        _vj106 = json.loads((_rp106 / "vercel.json").read_text(encoding="utf-8")).get("functions", {}).get("api/calendar-mismatches.py", {})
+        L.ok("R106", bool(_bs106) and "m.render_tony_html(R)" in _bs106 and "m.build(issue, work)" in _bs106 and 'os.environ["TZ"] = "America/New_York"' in _bs106
+             and 'ENABLE_FLAG = "REPORT_BUTTON_ENABLED"' in _bs106 and "return self._send(503" in _bs106 and "cannot read RPM live yet" in _bs106
+             and not _re86.search(r"(?i)(password|passwd|api[_-]?key|secret|token|bearer)\s*[=:]\s*['\"][^'\"]{6,}", _bs106) and "send_message" not in _bs106 and "smtplib" not in _bs106
+             and "scripts/meeting_conflict_report.py" in _vj106.get("includeFiles", ""),
+             "R106: anytime button (api/calendar-mismatches.py) reuses the R105 renderer, Eastern time, REPORT_BUTTON_ENABLED kill switch, limits banner, no secrets, no mail")
         # R108 (Steven Nov 4 2026 4:53 PM): iPhone Gmail dark mode -- every td/th has an explicit text colour with >= 4.5:1 on its own background; head is "light only"
         def _lum108(h):
             h = h.lstrip("#"); h = "".join(c * 2 for c in h) if len(h) == 3 else h
