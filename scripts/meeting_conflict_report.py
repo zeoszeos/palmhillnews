@@ -258,7 +258,7 @@ def render_tony_html(R):
     rl, rs, _ = refresh_block(R)
     h = [f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(TONY_SUBJECT)}</title>{_edm.HEAD_ADD}</head>",
          f"<body bgcolor='{W}' style='margin:0;padding:0;{bgs(W)}font-family:Arial,Helvetica,sans-serif;font-size:{TONY_BODY_PX}px;line-height:1.5;color:{TONY_TEXT};'>",
-         f"<table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0' bgcolor='{W}' style='width:100%;border-collapse:collapse;{bgs(W)}color:{TONY_TEXT};font-size:{TONY_BODY_PX}px;'><tr bgcolor='{W}' style='{bgs(W)}'>"
+         f"<table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0' bgcolor='{W}' style='width:100%;table-layout:fixed;border-collapse:collapse;{bgs(W)}color:{TONY_TEXT};font-size:{TONY_BODY_PX}px;'><tr bgcolor='{W}' style='{bgs(W)}'>"
          f"<td bgcolor='{W}' style='padding:16px;{bgs(W)}color:{TONY_TEXT};font-family:Arial,Helvetica,sans-serif;font-size:{TONY_BODY_PX}px;line-height:1.5;'>",
          P() + "<br>".join(e(x) for x in run_lines(R)) + "</p>",
          P("margin-bottom:4px;font-weight:bold;") + e(rl) + "</p>",
