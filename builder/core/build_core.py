@@ -893,5 +893,7 @@ print("DRY-RUN TODOs:", len(DRYRUN_TODO)) if DRYRUN else None
 import check_preview_send_stamp as _r70
 (REPO / f"pages/previews/{ISSUE}").mkdir(parents=True, exist_ok=True)
 print("R70 synced:", _r70.sync(LOCAL / f"PHNEWS-{ISSUE}-preview.html", REPO, ISSUE))
+_r70s = _r70.stale_copy(ISSUE, ROOT, (LOCAL / f"PHNEWS-{ISSUE}-preview.html").read_text(encoding="utf-8"))  # R70b: copy, never delete
+if _r70s: print("R70b: older SEND copied to", _r70s, "- re-run publish_issue before reporting this build", file=sys.stderr)
 _r70f, _ = _r70.check(ISSUE, ROOT, REPO)
 if _r70f: raise SystemExit("; ".join(_r70f))

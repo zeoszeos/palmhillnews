@@ -17,6 +17,21 @@ def sync(local_preview, repo, issue):
     dst = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"
     shutil.copyfile(local_preview, dst); return dst
 
+STALE_HINT = "SEND is from an earlier build, re-run publish_issue (python3 scripts/publish_issue.py --issue {i} --root {r} [--dry-run])"
+
+def stale_copy(issue, root, preview_html):
+    """R70b (Steven Nov 4 2026 9:06 PM): a rebuild that changes the calendar stamp makes an existing SEND stale. COPY it (never
+    delete/move) to PHNEWS-<issue>-SEND.stale-<old stamp>.html so the mismatch is visible; the strict check still fails until
+    publish_issue regenerates SEND. Returns the copy path or None."""
+    sd = Path(root) / f"PHNEWS-{issue}-SEND.html"
+    if not sd.exists(): return None
+    s = stamps(sd.read_text(encoding="utf-8")); p = stamps(preview_html)
+    if s == p: return None
+    tag = re.sub(r"[^A-Za-z0-9]+", "-", s[0].replace("Calendar check", "")).strip("-").lower() or "unknown"
+    dst = Path(root) / f"PHNEWS-{issue}-SEND.stale-{tag}.html"
+    if not dst.exists(): shutil.copy2(sd, dst)
+    return dst
+
 def check(issue, root, repo):
     pv = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"; sd = Path(root) / f"PHNEWS-{issue}-SEND.html"
     pt = pv.read_text(encoding="utf-8"); p = stamps(pt); fails = []
@@ -31,6 +46,7 @@ def check(issue, root, repo):
     if "<script" in st.lower(): fails.append("R94/R76c: SEND copy contains <script>")
     if p[0] != s[0]: fails.append(f"R70: preview footer '{p[0]}' != SEND footer '{s[0]}'")
     if p[1] != s[1]: fails.append(f"R70: preview masthead time '{p[1]}' != SEND masthead time '{s[1]}'")
+    if fails and any(f.startswith("R70:") for f in fails): fails.append("R70b: " + STALE_HINT.format(i=issue, r=root))
     return fails, p
 
 if __name__ == "__main__":
