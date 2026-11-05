@@ -186,7 +186,10 @@ def ev_rows(evs):
             import event_page as _ep; fn, paras = EVENT_PAGE[e["name"]]
             if e["name"] not in PHONE_OK_PAGES and any(re.search(r"\d{3}-\d{3}-\d{4}", x) for x in paras): raise SystemExit(f"phone rule: {e['name']} page has a phone number without Steven's OK (PHONE_OK_PAGES)")
             dl = f"{pdate(e['date'])} • {ptime(e['start'])}" + (f" to {ptime(e['end'])}" if e.get("end") else "") + f" • {VENUE.get(e['venue'], e['venue'])}"
-            (PAGES / fn).write_text(_ep.render(e["name"], dl, paras), encoding="utf-8")
+            _html_ep = _ep.render(e["name"], dl, paras)
+            if e["name"] in {t[0] for t in getattr(C, "EVENT_PAGE_TEL", [])}:  # R114: OK'd phone numbers tap-to-call on the More → page
+                import tel_links as _tl; _html_ep = _tl.linkify(_html_ep)
+            (PAGES / fn).write_text(_html_ep, encoding="utf-8")
     for i, e in enumerate(evs):
         det = EVENT_DETAIL.get(e["name"]); lk = EVENT_LINK.get(e["name"])
         loc = "Mount Dora" if e["name"] == "Mount Dora Trip" else VENUE.get(e["venue"], e["venue"])
