@@ -429,6 +429,18 @@ _vis = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->|
 L.ok("R83", not re.search(r"\b(test|review|dry[ -]?run)\b", _vis, re.I), "no test / review / dry run text in the preview")
 L2 = lc.Locks(); lc.check_title_months(L2, {"newsletter": page})
 # L27b/c webmaster-source counts: superseded by R47 (style_rules.assert_webmaster_more), enforced inside the builder
+# R70/R70b (Steven Nov 4 2026 9:06 PM): preview vs SEND stamps are counted here, and SEND must not be older than the preview.
+import check_preview_send_stamp as _r70
+_sd70 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"; _pv70 = ROOT / f"PHNEWS-{C.ISSUE}-preview.html"
+_rp70 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+_f70, _p70 = _r70.check(C.ISSUE, ROOT, _rp70)
+L.ok("R70", not _f70, f"preview and SEND show the same Calendar check + masthead time ({_p70[0]})" + (f": {'; '.join(_f70)}" if _f70 else ""))
+def _ts70(f):  # 'Calendar check - November 4, 8:53 PM' -> sortable (month, day, minutes); content stamp, not file mtime (re-renders keep it)
+    from datetime import datetime as _dt
+    m = re.search(r"([A-Z][a-z]+ \d{1,2}), (\d{1,2}:\d{2} [AP]M)", _r70.stamps(f.read_text(encoding="utf-8"))[0])
+    return _dt.strptime(f"{C.ISSUE[:4]} {m.group(1)} {m.group(2)}", "%Y %B %d %I:%M %p") if m else None
+_a70, _b70 = (_ts70(_sd70), _ts70(_pv70)) if _sd70.exists() and _pv70.exists() else (None, None)
+L.ok("R70b", not (_a70 and _b70 and _a70 < _b70), "SEND is not from an earlier build than the preview (else re-run publish_issue)")
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:
