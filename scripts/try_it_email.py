@@ -5,7 +5,8 @@ import argparse, html, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from email_dark_mode import HEAD_ADD
-TEXT, LINK, BG = "#1f1f1f", "#1a4d0f", "#ffffff"
+TEXT, LINK, BG, PX = "#000000", "#0f3a08", "#ffffff", 16   # R113: pure black on white, >= 15px, gradient-backed white wrapper table
+GR = f"background:{BG};background-image:linear-gradient({BG},{BG});"
 LINK_PLACEHOLDER = ("[SHARE LINK NOT CREATED YET - Steven must approve Vercel team access first; "
                     "replace this line with the no-login share link before sending]")
 REFRESH_STATUS_NOTE = ("[STEVEN - REMOVE BEFORE SENDING: the RPM login and the email search are not working from the "
@@ -28,21 +29,23 @@ TAIL = ["Every report also shows a Refresh date near the top, with a short note 
         "Steven"]
 
 def build(link=None):
-    P = f'<p style="margin:0 0 14px 0;color:{TEXT};font-size:16px;line-height:1.5;font-weight:400">'
+    P = f'<p style="margin:0 0 14px 0;color:{TEXT};font-size:{PX}px;line-height:1.5;font-weight:400;{GR}">'
     def linkp():
         if link: return P + f'<a href="{html.escape(link)}" style="color:{LINK};font-weight:700;text-decoration:underline">Run the Calendar Mismatches Report</a></p>'
         return P + html.escape(LINK_PLACEHOLDER) + "</p>"
     h = [f'<!DOCTYPE html><html><head><meta charset="utf-8">{HEAD_ADD}</head>',
-         f'<body bgcolor="{BG}" style="margin:0;padding:16px;background:{BG};color:{TEXT};font-family:Arial,Helvetica,sans-serif">',
-         f'<div style="max-width:640px;color:{TEXT};background:{BG}">']
+         f'<body bgcolor="{BG}" style="margin:0;padding:0;{GR}color:{TEXT};font-family:Arial,Helvetica,sans-serif;font-size:{PX}px;line-height:1.5">',
+         f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{BG}" style="width:100%;border-collapse:collapse;{GR}color:{TEXT};font-size:{PX}px"><tr bgcolor="{BG}" style="{GR}">'
+         f'<td bgcolor="{BG}" style="padding:16px;{GR}color:{TEXT};font-family:Arial,Helvetica,sans-serif;font-size:{PX}px;line-height:1.5">',
+         f'<div style="max-width:640px;color:{TEXT};{GR}">']
     t = []
     for p in PARAS:
         h.append(linkp() if p is None else P + html.escape(p) + "</p>"); t.append((link or LINK_PLACEHOLDER) if p is None else p)
-    h.append(f'<ul style="margin:0 0 14px 0;padding-left:22px;color:{TEXT}">' + "".join(
-        f'<li style="margin:0 0 8px 0;color:{TEXT};font-size:16px;line-height:1.5">{html.escape(n)}</li>' for n in NOTES) + "</ul>")
+    h.append(f'<ul style="margin:0 0 14px 0;padding-left:22px;color:{TEXT};font-size:{PX}px;{GR}">' + "".join(
+        f'<li style="margin:0 0 8px 0;color:{TEXT};font-size:{PX}px;line-height:1.5;{GR}">{html.escape(n)}</li>' for n in NOTES) + "</ul>")
     t.append("\n".join("- " + n for n in NOTES))
     for p in TAIL: h.append(P + html.escape(p) + "</p>"); t.append(p)
-    h.append("</div></body></html>")
+    h.append("</div></td></tr></table></body></html>")
     return "".join(h), "\n\n".join(t) + "\n"
 
 if __name__ == "__main__":
