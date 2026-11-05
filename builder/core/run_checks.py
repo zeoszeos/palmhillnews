@@ -261,7 +261,7 @@ elif _mcr.exists():
              f"Tony file subject line is exactly 'Subject: Calendar Mismatches Report' ({_subj86!r})")
     if _ok86 is True:   # Steven Oct 27 2026 3:16/3:17 PM: Tony email is one HTML table; RPM values are a timely live read
         import re as _re86
-        L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86.replace("<style>:root{color-scheme:light only}</style>", "", 1),   # R108: only the R97 light-only block
+        L.ok("R86", len(_re86.findall(r"<table\b(?![^>]*role=.presentation)", _html86)) == 1 and len(_re86.findall(r"<table\b", _html86)) <= 2 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86.replace("<style>:root{color-scheme:light only}</style>", "", 1),   # R108: only the R97 light-only block
              "Tony HTML email exists, has exactly one table with a header row, inline CSS only, title = exact subject")
         # Steven Oct 27 2026 11:40 PM: simplified Tony table wording; a plain "Mismatch" reason column; Palm Hill and RPM recurring flags shown On/Off
         L.ok("R86", all(f"<th" in _html86 and c in _html86.replace("<br>", " ") for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
@@ -277,7 +277,7 @@ elif _mcr.exists():
              f"Tony report colour-coded with text labels and a colour key ({ {l: _lv105.count(l) for l in ('red', 'amber', 'green')} })")
         _top105 = _ttx86.split("\n")[2:5]
         L.ok("R105b", len(_top105) == 3 and _top105[0].startswith("Report run: ") and _top105[0].endswith(" ET") and _top105[1].startswith("Palm Hill calendar pulled ")
-             and _top105[2].startswith("RPM read ") and all(_html86.find(_html.escape(t)) != -1 and _html86.find(_html.escape(t)) < _html86.find("<table") for t in _top105) and _html86.count("Report run: ") == 1,
+             and _top105[2].startswith("RPM read ") and all(_html86.find(_html.escape(t)) != -1 and _html86.find(_html.escape(t)) < _html86.find("<table role='table'") for t in _top105) and _html86.count("Report run: ") == 1,
              f"report run, calendar pull and RPM read times on top of text and HTML {_top105}")
         L.ok("R105", all(x[k] in ("On", "Off", "n/a") or set(x[k].split(" / ")) <= {"On", "Off"} for x in _tr105 for k in ("phrec", "rpmrec")),
              "recurring columns read On / Off / n/a (no dash)")
@@ -358,6 +358,29 @@ elif _mcr.exists():
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts")); import try_it_email as _tie   # R112 also guards the 'try it' email template
         _bad112 += ["try-it: " + x for x in _r112(_tie.build()[0]) + _r112(_tie.build("https://example.invalid/x")[0])]
         L.ok("R112", not _bad112, f"R112: every text element in the Tony HTML and the try-it email has explicit colour >= 4.5:1 on all its backgrounds; light-only head tags {_bad112[:3]}")
+        # R113 (Steven Nov 4 2026 8:07 PM): readable on a phone - pure black on white, min 15px body / 14px cells, line-height 1.5,
+        # all content inside one white wrapper table; every block/cell carries bgcolor/background + background-image gradient.
+        def _r113(_h):
+            _bad = []
+            _b = _h[_h.find("<body"):]
+            if not _re86.match(r"<body[^>]*bgcolor=['\"]#ffffff['\"][^>]*>\s*<table role=['\"]presentation['\"][^>]*bgcolor=['\"]#ffffff", _b): _bad.append("no white wrapper table right after <body>")
+            if not _re86.search(r"</table>\s*</body>", _b): _bad.append("content after the wrapper table")
+            for _t in _re86.findall(r"<(?:p|li|ul|ol|div|td|th|table|tr|body)\b[^>]*>", _b):
+                _st = _t.split("style=", 1)[-1] if "style=" in _t else ""
+                _nm = _re86.match(r"<(\w+)", _t).group(1)
+                if "background-image:linear-gradient(" not in _st: _bad.append("no gradient bg: " + _t[:50])
+                if _nm in ("td", "th", "table", "tr", "body") and "bgcolor=" not in _t: _bad.append("no bgcolor: " + _t[:50])
+                if _nm == "tr" or _nm == "table" and "presentation" not in _t: continue
+                _fs = _re86.findall(r"font-size:\s*(\d+)px", _st)
+                if _nm != "div" and (not _fs or int(_fs[-1]) < (14 if _nm in ("td", "th") else 15)): _bad.append("small text: " + _t[:50])
+                if _nm in ("p", "li", "ul", "body") or (_nm == "td" and "presentation" in _b[:_b.find(_t)][-400:]):
+                    _fg = _re86.findall(r"(?:^|[;'\" ])color:\s*(#[0-9a-fA-F]{3,6})", _st)
+                    if not _fg or _fg[-1].lower() not in ("#000", "#000000", "#111", "#111111"): _bad.append("body text not black: " + _t[:50])
+            for _t in _re86.findall(r"<(?:a|span|b|strong|em)\b[^>]*font-size:\s*(\d+)px", _b):
+                if int(_t) < 14: _bad.append("small inline text")
+            return _bad
+        _bad113 = _r113(_html86) + ["try-it: " + x for x in _r113(_tie.build()[0]) + _r113(_tie.build("https://example.invalid/x")[0])]
+        L.ok("R113", not _bad113, f"R113: Tony email + try-it email: black on white, >=15px body / >=14px cells, white gradient wrapper table, bgcolor on every cell {_bad113[:3]}")
         # R109 (Steven Nov 4 2026 5:02 PM): Refresh date line from the real stamps; three sub-notes; never "refreshed" for a stale or unstamped source
         from datetime import datetime as _dt109, timedelta as _td109
         _tl109 = _ttx86.split("\n"); _ri109 = next((k for k, x in enumerate(_tl109) if x.startswith("Refresh date: ")), -1)
