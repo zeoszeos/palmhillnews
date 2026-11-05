@@ -237,7 +237,8 @@ def render_tony(R):
     for x in rows:
         tx += [x["meeting"]] + [f"  {c}: {x[k]}" for c, k in zip(TONY_COLS[1:], TONY_KEYS)] + [""]
     if not rows: tx += ["No differences this time. Everything matches the calendar.", ""]
-    tx += [COLOR_KEY, "", NOTES_FOR_TONY_LABEL] + NOTES_FOR_TONY + [""] + [LINK_NOTES_LABEL] + [f"  - {n}" for n in LINK_NOTES] + [""]
+    tx += [COLOR_KEY, "", NOTES_FOR_TONY_LABEL] + NOTES_FOR_TONY + [""]
+    if R.get("include_link_notes"): tx += [LINK_NOTES_LABEL] + [f"  - {n}" for n in LINK_NOTES] + [""]   # R111 (Steven Nov 4 2026 8:14 PM): only when the button is live
     tx += ["Thanks,", "Steven"]
     return "\n".join(tx) + "\n"
 def render_tony_html(R):
@@ -275,17 +276,19 @@ def render_tony_html(R):
         h.append(f"<tr bgcolor='{bg}' style='{bgs(bg)}'>" + f"<td bgcolor='{bg}' style='{td}{bgs(bg)}font-weight:bold;'><a href='{CLUB_CALENDAR_URL}' style='color:{TONY_LINK};text-decoration:underline;'>{e(x['meeting'])}</a></td>" + cells + "</tr>")
     if not rows: h.append(f"<tr bgcolor='{W}' style='{bgs(W)}'><td colspan='6' bgcolor='{W}' style='{td}{bgs(W)}'>No differences this time. Everything matches the calendar.</td></tr>")
     h += ["</table></div>", P("margin-top:10px;") + e(COLOR_KEY) + "</p>", P("margin:12px 0 4px;font-weight:bold;") + e(NOTES_FOR_TONY_LABEL) + "</p>", *[P("margin-bottom:8px;") + e(n) + "</p>" for n in NOTES_FOR_TONY],
-          P("margin:12px 0 4px;font-weight:bold;") + e(LINK_NOTES_LABEL) + "</p>",
-          f"<ul style='margin:0 0 8px;padding-left:22px;font-size:{TONY_BODY_PX}px;line-height:1.5;color:{TONY_TEXT};{bgs(W)}'>" + "".join(f"<li style='color:{TONY_TEXT};font-size:{TONY_BODY_PX}px;line-height:1.5;{bgs(W)}'>{e(n)}</li>" for n in LINK_NOTES) + "</ul>",
-          P("margin-top:12px;margin-bottom:0;") + "Thanks,<br>Steven</p>", "</td></tr></table>", "</body></html>"]
+         ]
+    if R.get("include_link_notes"):   # R111 (Steven Nov 4 2026 8:14 PM): link notes only when the button is live
+        h += [P("margin:12px 0 4px;font-weight:bold;") + e(LINK_NOTES_LABEL) + "</p>",
+          f"<ul style='margin:0 0 8px;padding-left:22px;font-size:{TONY_BODY_PX}px;line-height:1.5;color:{TONY_TEXT};{bgs(W)}'>" + "".join(f"<li style='color:{TONY_TEXT};font-size:{TONY_BODY_PX}px;line-height:1.5;{bgs(W)}'>{e(n)}</li>" for n in LINK_NOTES) + "</ul>"]
+    h += [P("margin-top:12px;margin-bottom:0;") + "Thanks,<br>Steven</p>", "</td></tr></table>", "</body></html>"]
     return "\n".join(h) + "\n"
 def main(argv=None):
-    ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--work"); ap.add_argument("--out"); ap.add_argument("--run-stamp", help="YYYYMMDD-HHMM: reuse an earlier run time when re-rendering the same data")
+    ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--work"); ap.add_argument("--out"); ap.add_argument("--include-link-notes", action="store_true", help="R111: add the 'About the report link' notes (only once the report button is live)"); ap.add_argument("--run-stamp", help="YYYYMMDD-HHMM: reuse an earlier run time when re-rendering the same data")
     a = ap.parse_args(argv); os.environ["PHNEWS_ISSUE"] = a.issue
     import issue_ctx; C = issue_ctx.load(a.issue)
     work = Path(a.work or os.environ.get("PHNEWS_WORK") or C.DEFAULT_WORK); out = Path(a.out or work / "reports"); out.mkdir(parents=True, exist_ok=True)
     now = datetime.strptime(a.run_stamp, "%Y%m%d-%H%M") if a.run_stamp else datetime.now()
-    R = build(a.issue, work); R["run"] = now.strftime("%a %b %-d, %Y, %-I:%M %p"); stamp = now.strftime("%Y-%m-%d %H:%M")
+    R = build(a.issue, work); R["run"] = now.strftime("%a %b %-d, %Y, %-I:%M %p"); R["include_link_notes"] = a.include_link_notes; stamp = now.strftime("%Y-%m-%d %H:%M")
     md, h, tx = render(R, stamp); base = out / f"meeting-conflicts-{a.issue}-{now.strftime('%Y%m%d-%H%M')}"
     for ext, s in ((".md", md), (".html", h), ("-email.txt", tx), ("-tony.txt", render_tony(R)), ("-tony.html", render_tony_html(R))): Path(str(base) + ext).write_text(s, encoding="utf-8")
     print(f"R86 report: {base}.md / .html / -email.txt / -tony.txt / -tony.html ({sum(1 for r in R['rows'] if r['diffs'])} of {len(R['rows'])} need attention)")

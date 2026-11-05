@@ -406,8 +406,12 @@ elif _mcr.exists():
         L.ok("R110", not _bad110 and bool(_rl110) and "os.environ.get(name)" in _rl110 and "readonly=True" in _rl110 and not _re86.search(r"print\([^)]*\b(pw|user)\b", _rl110),
              f"R110: live refresh reads secrets from env only (none committed, none printed); IMAP read-only {_bad110}")
         # R111 (Steven Nov 4 2026 5:14 PM): link security notes in the Tony report, no 'agenda', no live claim
-        L.ok("R111", all(n in _ttx86 and _html.escape(n) in _html86 for n in _m86.LINK_NOTES) and _m86.LINK_NOTES_LABEL in _ttx86 and len(_m86.LINK_NOTES) == 4
-             and not any(_re86.search(r"(?i)agenda|\blive\b|real[- ]time", n) for n in _m86.LINK_NOTES), "R111: 'About the report link' notes (run anytime, don't forward, link can be shut off/replaced, Refresh date per source)")
+        _R111 = dict(_R86, include_link_notes=True); _t111, _h111 = _m86.render_tony(_R111), _m86.render_tony_html(_R111)
+        _rx111 = r"(?i)About the report link|using the link I send you|report link|run this report whenever|turn the button off|old link stops working"
+        L.ok("R111", not _R86.get("include_link_notes") and not _re86.search(_rx111, _ttx86) and not _re86.search(_rx111, _html86)
+             and all(n in _t111 and _html.escape(n) in _h111 for n in _m86.LINK_NOTES) and _m86.LINK_NOTES_LABEL in _t111 and len(_m86.LINK_NOTES) == 4
+             and not any(_re86.search(r"(?i)agenda|\blive\b|real[- ]time", n) for n in _m86.LINK_NOTES),
+             "R111: default Tony report has NO link/button notes (Steven Nov 4 8:14 PM); with --include-link-notes the 4 'About the report link' notes appear")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.
