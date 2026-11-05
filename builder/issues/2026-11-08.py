@@ -77,12 +77,15 @@ EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween
               "Mount Dora Trip": ("More →", BASE + "2026-10-24-mount-dora-trip.html"),
               "MESCO Spaghetti Dinner Fundraiser": ("More →", BASE + "2026-11-14-mesco-spaghetti-dinner-fundraiser.html"),
               "Thanksgiving Dinner": ("More →", BASE + "2026-11-26-thanksgiving-dinner.html"),
+              "Thanksgiving/Friendsgiving Dance": ("More →", BASE + "2026-11-21-thanksgiving-friendsgiving-dance.html"),  # R114 (Steven Nov 4 2026 8:50 PM)
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html"),
               "Taste of Golf": ("More →", BASE + "2026-10-14-taste-of-golf-notice.html"),
               "Senior Empowerment Luncheon": ("More →", BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html")}   # Sat Oct 31 6 PM sweep (staged, R56)      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
 # R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
 # has explicitly OK'd (PHONE_OK_PAGES; Bocce Party approved Oct 16 11:37 PM). Issue summaries never carry them.
-PHONE_OK_PAGES = {"Bocce Party"}
+PHONE_OK_PAGES = {"Bocce Party", "Thanksgiving/Friendsgiving Dance"}  # Dance: Steven Nov 4 2026 8:50 PM (R114)
+# R114: More → event pages whose OK'd phone numbers must be tap-to-call (tel:) links on the page.
+EVENT_PAGE_TEL = [("Thanksgiving/Friendsgiving Dance", "269-317-6890", "2026-11-21-thanksgiving-friendsgiving-dance.html")]
 EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
     ["Sign up at either clubhouse or by calling Pat Foor (727-631-3372) or Joe Cothran (727-512-1185). Join us for the fellowship and fun!",  # PHONE_OK_PAGES
      "Rescheduled from 4:00 PM to 6:00 PM (6:00 to 7:00 PM)."]),
@@ -91,7 +94,10 @@ EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
     ["Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door."]),
     # R21/R82 (Steven Oct 26 2026 11:49 AM): calendar listing text (booking 112626-1200-SMH), names exactly as the calendar gives them
     "Thanksgiving Dinner": ("2026-11-26-thanksgiving-dinner.html",
-    ["Dinner served at 2:00 PM. Mickey Bontrager, Elroy Bontrager, Kate and Jeff Wesolowski."])}
+    ["Dinner served at 2:00 PM. Mickey Bontrager, Elroy Bontrager, Kate and Jeff Wesolowski."]),
+    # R21/R114 (Steven Nov 4 2026 8:50 PM): calendar listing text exactly (booking 112126-1800-NCH); phone OK'd, tap-to-call
+    "Thanksgiving/Friendsgiving Dance": ("2026-11-21-thanksgiving-friendsgiving-dance.html",
+    ["Music by Zone II (60s, 70s & 80s). Tickets $8 per person at coffee hours or call Mollie Cardno 269-317-6890; assigned seating when purchased."])}
 
 # ---------- Events (2): INFO_COVERED, TITLE + Oct 20/22 calendar re-pull additions (folded into data) ----------
 INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",

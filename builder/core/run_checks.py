@@ -34,7 +34,12 @@ ORDER = ["Committee &amp; Board Meeting Schedules", "Committee Chair Reports", "
          "Community Notices", "Monthly Shareholders Report", "Weekly Manager Update", "Events - Upcoming", "Community Stories",
          "From the Board President", "Did You Know?", "Residents Reference Guide"]
 _SK104 = {"president": "From the Board President", "story": "Community Stories", "chair": "Committee Chair Reports", "manager": "Weekly Manager Update", "shareholders": "Monthly Shareholders Report", "dyk": "Did You Know?"}
-_HID = {_SK104[k]: v for k, v in (getattr(C, "HIDE_SECTIONS", None) or {}).items()}   # R104 (Steven Nov 1 2026 11:55 AM): no current items -> no section header
+_HID = {_SK104[k]: v for k, v in (getattr(C, "HIDE_SECTIONS", None) or {}).items()}   # R114 (Steven Nov 4 2026 8:50 PM): each EVENT_PAGE_TEL number is a tap-to-call link on its More → event page.
+for _lb114, _num114, _pg114 in getattr(C, "EVENT_PAGE_TEL", []):
+    _pp114 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _pg114
+    _x114 = _pp114.read_text(encoding="utf-8") if _pp114.exists() else ""
+    L.ok("R114", ('href="tel:+1' + re.sub(r"\D", "", _num114) + '"') in _x114 and _num114 in _x114, f"page {_pg114}: {_lb114} phone {_num114} is a tel: link")
+# R104 (Steven Nov 1 2026 11:55 AM): no current items -> no section header
 ORDER = [h for h in ORDER if h.replace("&amp;", "&") not in _HID and h not in _HID]
 got = [t for _, t in lc._headings(page)]
 _NWS = getattr(C, "NEXT_WEEK_SECTION", False)   # R92 (Steven Oct 30 2026 11:40 AM)
