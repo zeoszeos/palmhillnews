@@ -842,6 +842,14 @@
       "page_link_label": "Weekly Manager Report Archives →",
       "items": [
         {
+          "date": "2026-11-06",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-06-weekly-manager-update.html",
+          "issues": [
+            "2026-11-08"
+          ]
+        },
+        {
           "date": "2026-10-30",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-30-weekly-manager-update.html",

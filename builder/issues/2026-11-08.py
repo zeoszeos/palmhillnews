@@ -637,52 +637,57 @@ RULES_ARCHIVE_SOURCE = "Source: Rules and Regulations Committee Report (Bob Newp
 STORY_DATE_LABEL = "Feb 2026"   # archive "date_label" for this issue's story row (used only when STORY is set)
 
 # ---------- Weekly Manager Update (page items, PDF attachment, main-page card) ----------
-# Weekly Manager Update Oct 30 (Megan Leftwich, "Fw: Weekly Update 2026.10.30", palmhillblast Fri Oct 30 4:03 PM ET; her
-# original went to the Board at 3:59 PM) replaces Oct 23 (retention rule; Friday evening check Oct 30 ~6:10 PM). Built from the
-# Oct 23 page's card template with Megan's wording item by item (never hand-edited). Her opening line "I hope everyone has a
-# happy Halloween tomorrow!" is left out (past by the issue date). Oct 23 page/archive row stay as published.
-WMU_1023_PAGE = "2026-10-30-weekly-manager-update.html"
+# Weekly Manager Update Nov 6 (Megan Leftwich, weekly update email dated Friday, November 6, 2026) replaces Oct 30
+# on this issue (retention rule). Built from the Oct 30 page's card template with her wording item by item (never
+# hand-edited). No document was attached, so nothing is hosted (R65b). Oct 30 page and archive row stay as published.
+# The Inliner day list and the Manager's Corner paragraphs sit under their bullets the way an earlier update nests
+# follow-on paragraphs. The page sign-off stays the weekly-update shell.
+WMU_1023_PAGE = "2026-11-06-weekly-manager-update.html"
 WMU_1023 = [
-    "We had reports that the temperature in the North pool was not holding correctly. Maintenance initially checked the heating units and found no issues. After additional reports, the vendor was contacted, came out, and assessed the units. They determined that the compressors on 2 of the 3 units were not working. Henry has authorized the repairs, and they are on the agenda for ratification at the regular November Board meeting.",
-    "We have had reports that there is regularly a grocery bag with trash being dumped in the area by the golf lean-to between the north and south. The person reporting it has tried to identify the person but has been unable to do so. In the meantime, maintenance will pick it up any time they see the bag there.",
-    "I have notified your insurance broker that the Board voted to obtain the lower coverage option for the insurance. The premium quoted was for an annual policy. They will ask that it expire at the same time as the other policies so the premium will be less than originally quoted. I will provide that information once it is received.",
-    "Chuck has been repairing the lights at the Palm Forest mailboxes, the camera at the sanitation field gate, and the golf solar this week. We have ordered a new battery for him and are reimbursing him for a few other electrical components, totaling $171.25.",
-    "The replacement refrigerator for the south clubhouse arrived on Thursday. Since this was an extremely large fridge, it took some maneuvering to get it into place.",
-    "The manhole inspections were completed on Monday. I have reached out to confirm that the report is being provided to the City of Largo to ensure compliance.",
-    "Green clay has now been ordered for the Bocce courts. It is expected to arrive in two weeks, but we will not have a firm date until closer to delivery.",
-    "The lights in the north pool are not working. The vendor has provided a quote for the replacement, which Henry has signed. Triangle will be replacing them as soon as they are in stock. Attached is the quote provided.",
-    "We had a couple of reports that the tow truck drivers were speeding in the community. I have spoken to their supervisor and reminded them that the speed limit in the community is 15mph. He stated that the vehicles have GPS and speed monitoring, and he would check in with them. We have not had any new reports since the discussion, but we will monitor if anyone has any additional concerns.",
-    "We have received the attached site plan for 82 Pindo West. They are looking to replace the home at this address and have submitted this for approval to move forward. I've asked if this can also be included in the 11/5 meeting to keep this moving forward. If not, it will be included in the meeting for 11/20.",
-    "We had a fire inspection for the south clubhouse on Thursday. There were a few issues raised. Anthony will replace the battery in two emergency lights that are not functioning. I have provided documentation on repairs made after the inspection, as well as the Ansul system repair in the north. I have also contacted Pye Barker regarding an expired tag on the Ansul system in the south. They will be onsite on 11/3. They checked the keys that they have in the Knox box and we replaced one key and the fob that were inside.",
-    "The fire alarm was set off on Thursday by a fog machine for the haunted library. It was placed outside, but went in through a propped open door and set off the alarm. The fire department responded, but went to the south clubhouse. I have contacted Cross security and updated the address that they have for each to ensure they respond to the correct location if there is an actual fire.",
-    "The contract for Valet Trash has been reviewed by the attorney and a redline version and clean version were sent back to the vendor. If they have no objection to the requested changes I have asked that they sign and return the contract. If they have any requested changes they will let us know.",
+    "The signed laundry lease has been sent over to Laundry Leasing Co. for them to countersign and then get the laundry room set up.",
+    "The signed waiver for the transformer installation was sent to Duke yesterday. We can now expect approximately 6 weeks for the installation to be completed.",
+    ("Inliner has been sent both signed change orders and has confirmed scheduling starting next Monday. The schedule is as follows:", [
+        "Monday - shore up floor of basin",
+        "Tuesday - install 48\" CIPP",
+        "Wednesday - Wrap up any lining issues and roadway begins",
+        "Thursday - Roadway work",
+        "Friday - Roadway completion"]),
+    "I already forwarded the information from Spectrum that they will begin removal of all coaxial infrastructure on 12/8. We will send out a notice to the residents regarding this. There is a lot going on, and with the Inliner work and meeting notices going out today, I don't want this to get lost in the shuffle. I have it calendared to send out next Thursday the 12th.",
+    "With the Valet Trash being approved, we will be sending out weekly reminders that the trash and recycling pickup days will be changing. We will also be letting everyone know to have their bags out to the curb by 8am.",
+    "The documents to bind the Assault & Battery coverage have been signed and returned to the insurance broker. We are now waiting on an invoice.",
+    "The North pool lights were repaired this week. They brought the wrong lights with them on Monday and had to return on Wednesday.",
+    "I am getting a quote to re-strap 18 lounge chairs and 3 regular chairs for the pool area.",
+    "I met with Tony C from Communications this week. He has been working to update the website and the calendar, as you are all aware. We will be utilizing the calendar on the website for booking the Board Room and Small Conference Room in order to keep everything in one place. He is keeping the momentum from Victoria going!",
+    ("We have started to get the meeting notice setup in GetQuorum for the First Notice and will be starting to make copies next week. I have submitted a Manager's Corner to the Link about the voting certificates and voting overall:", [
+        "The Palm Hill election will be here soon, and we want everyone to be ready! The Annual Meeting is held at 1:00 p.m. in the North Clubhouse on the third Wednesday in January, which this coming year falls on January 20, 2027. Here are a few things to know before it is time to vote.",
+        "Know Your Voting Certificate: Every home has a voting certificate on file. For most owners, it was completed when you purchased your home. It names the designated voter for your unit. If your household plans have changed, you can update the certificate at any time by completing a new form signed by ALL owners of the home. Not sure who your designated voter is? Just call or stop by the office. We're happy to help!",
+        "Sign Your Ballot: Please ensure the designated voter signs your ballot. If the designated voter on the voting certificate hasn't signed it, the election inspectors will have to mark the ballot invalid on the morning of the meeting. We'd hate for your vote not to count!",
+        "Watch for Emails from GetQuorum. Palm Hill uses GetQuorum to send electronic notices for the association. If you've consented to receive notices electronically, look for emails from GetQuorum. They contain your meeting notice and the link to vote when the time comes. Don't see them? Check your spam or junk folder and add GetQuorum to your safe senders list.",
+        "A Note About Online Voting: Online voting is handled entirely by GetQuorum, so the office isn't involved in the process. When voting closes, we simply receive a report with the vote counts. If you have a technical question about your online ballot, the instructions in your GetQuorum email are the best place to start.",
+        "Why Your Vote Matters: Every ballot helps Palm Hill reach quorum and keeps your community running smoothly. Please take a moment to vote, whether online or by paper ballot."]),
 ]
-WMU_TEMPLATE = "2026-10-23-weekly-manager-update.html"   # previous update page = card template
-WMU_GREETING = "Good Afternoon Everyone,"
-WMU_TEMPLATE_DATE = "2026-10-23"                         # must not survive in the new page (above the Listen block)
-WMU_REPLACE = [("October 23, 2026", "October 30, 2026"), ("Oct 23, 2026", "Oct 30, 2026"),
-               ("2026-10-23-weekly-manager-update", "2026-10-30-weekly-manager-update"), ("2026.10.23", "2026.10.30")]
-# R65c (Steven Oct 30 2026 8:29 PM "post both", overrides R65b for Oct 30): Megan's attachments are hosted (copied, never moved)
-# under pages/assets/manager/2026-10-30/ with their original file names, listed in the Attachments card AND linked at the item
-# whose words say so (WMU_PDF_INLINE: exact phrase in her item -> link). Only SIteplanFinal.pdf was attached to the forwarded
-# email (palmhillblast 1a18e68a364397fc; the other parts are signature logos) -- the north pool lights quote was NOT in it (flagged).
-WMU_1023_PDF_SRC = "source/megan-1030/SIteplanFinal.pdf"   # R72: relative to PHNEWS_WORK
-WMU_1023_PDF = "assets/manager/2026-10-30/SIteplanFinal.pdf"
-WMU_1023_PDF_TITLE = "Site plan for 82 Pindo West"
-WMU_1023_PDF_DESC = "SIteplanFinal.pdf · PDF, 1 page"
-WMU_PDF_INLINE = {"attached site plan for 82 Pindo West": WMU_1023_PDF}
-WMU_PDF_MISSING = ["the quote provided (north pool lights)"]   # named in her text, not attached to the email; no link, wording unchanged
+WMU_TEMPLATE = "2026-10-30-weekly-manager-update.html"   # previous update page = card template
+WMU_GREETING = "Hello Everyone, Happy Friday!"
+WMU_TEMPLATE_DATE = "2026-10-30"                         # must not survive in the new page (above the Listen block)
+WMU_REPLACE = [("October 30, 2026", "November 6, 2026"), ("Oct 30, 2026", "Nov 6, 2026"),
+               ("2026-10-30-weekly-manager-update", "2026-11-06-weekly-manager-update"), ("2026.10.30", "2026.11.6")]
+# No document attachment on this update (signature images only, not newsletter copy). R65b: no PDF, no Attachments card.
+WMU_1023_PDF_SRC = None
+WMU_PDF_INLINE = {}
+WMU_PDF_MISSING = []
 ARCHIVE_ROWS_LATE = [   # archive rows added after the weekly update page is built (R59)
     ("weekly-manager-updates", {"date": "2026-10-23", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
                                          "page": "2026-10-23-weekly-manager-update.html", "issues": ["2026-10-25"]}),
     ("weekly-manager-updates", {"date": "2026-10-30", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
-                                         "page": WMU_1023_PAGE, "issues": ["2026-11-01"]}),
+                                         "page": "2026-10-30-weekly-manager-update.html", "issues": ["2026-11-01"]}),
+    ("weekly-manager-updates", {"date": "2026-11-06", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
+                                         "page": WMU_1023_PAGE, "issues": ["2026-11-08"]}),
 ]
 # Main-page Weekly Manager Update card: the seed card to replace (title + a phrase proving it is the old one) and the new date line/teaser
 WMU_CARD_OLD = '<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'
 WMU_CARD_OLD_MARK = "Duke Energy Waiver"
-WMU_CARD_DATE = "Friday, Oct 30, 2026"
-WMU_CARD_TEASER = "Green clay has now been ordered for the Bocce courts. It is expected to arrive in two weeks, but we will not have a firm date until closer to delivery."
+WMU_CARD_DATE = "Friday, Nov 6, 2026"
+WMU_CARD_TEASER = "The signed laundry lease has been sent over to Laundry Leasing Co. for them to countersign and then get the laundry room set up."
 
 # ---------- Manager reports with a Listen on the title line ----------
 MANAGER_LISTEN = [("Shareholders Report — September 30 Board Meeting", BASE + "2026-09-30-shareholders-report.html"),
