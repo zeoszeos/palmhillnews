@@ -262,18 +262,153 @@ elif _mcr.exists():
             _th86 = Path(str(_b86) + "-tony.html"); _html86 = _th86.read_text(encoding="utf-8") if _th86.exists() else ""; _ttx86 = _tn86.read_text(encoding="utf-8") if _tn86.exists() else ""
     except SystemExit as _e86: _R86, _ok86 = None, str(_e86)
     if _ok86 is True:   # Steven Oct 27 2026 2:27 PM: every conflict email to Tony has exactly this subject
-        L.ok("R86", _m86.TONY_SUBJECT == "Calendar Conflicts Report" and _subj86 == "Subject: " + _m86.TONY_SUBJECT,
-             f"Tony file subject line is exactly 'Subject: Calendar Conflicts Report' ({_subj86!r})")
+        L.ok("R86", _m86.TONY_SUBJECT == "Calendar Mismatches Report" and _subj86 == "Subject: " + _m86.TONY_SUBJECT,
+             f"Tony file subject line is exactly 'Subject: Calendar Mismatches Report' ({_subj86!r})")
     if _ok86 is True:   # Steven Oct 27 2026 3:16/3:17 PM: Tony email is one HTML table; RPM values are a timely live read
         import re as _re86
-        L.ok("R86", len(_re86.findall(r"<table\b", _html86)) == 1 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86,
+        L.ok("R86", len(_re86.findall(r"<table\b(?![^>]*role=.presentation)", _html86)) == 1 and len(_re86.findall(r"<table\b", _html86)) <= 2 and "<th" in _html86 and f"<title>{_m86.TONY_SUBJECT}</title>" in _html86 and "<style" not in _html86.replace("<style>:root{color-scheme:light only}</style>", "", 1),   # R108: only the R97 light-only block
              "Tony HTML email exists, has exactly one table with a header row, inline CSS only, title = exact subject")
         # Steven Oct 27 2026 11:40 PM: simplified Tony table wording; a plain "Mismatch" reason column; Palm Hill and RPM recurring flags shown On/Off
-        L.ok("R86", all(f"<th" in _html86 and c in _html86 for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
+        L.ok("R86", all(f"<th" in _html86 and c in _html86.replace("<br>", " ") for c in ("Mismatch", "Palm Hill recurring", "RPM recurring")) and "Mismatch: Mismatch" not in _ttx86 and ("On" in _ttx86 and "Off" in _ttx86),
              "Tony table has a Mismatch column plus Palm Hill recurring and RPM recurring columns showing On/Off")
         L.ok("R86", bool(_R86.get("rpm_fetched")) and "Oct 16" not in _R86["rpm_fetched"] and _ttx86 and "Oct 16" not in _ttx86,
              f"RPM values carry a live-read stamp ({_R86.get('rpm_fetched')}); no Oct 16 notes in the Tony email")
     L.ok("R86", _ok86 is True, f"meeting conflict report runs for {C.ISSUE} {'' if _ok86 is True else _ok86}")
+    if _ok86 is True:   # R105 / R105b (Steven Nov 1 2026 10:13 / 10:18 PM): colour code with text labels + key; run/pull/read times on top
+        _tr105 = _m86.tony_rows(_R86); _lv105 = _re86.findall(r"data-level='(\w+)'", _html86)
+        L.ok("R105", _tr105 and len(_lv105) == len(_tr105) and all(_re86.split(r"[:;]", x["mismatch"])[0] == _m86.LEVEL_LABEL[x["level"]] for x in _tr105)
+             and all(_m86.LEVEL_ROW[l] in _html86 for l in set(_lv105)) and _m86.COLOR_KEY in _html86 and _m86.COLOR_KEY in _ttx86
+             and all((x["level"] == "red") == (x["agenda"] != "\u2014") for x in _tr105 if x["calendar"] != "Not on the calendar"),
+             f"Tony report colour-coded with text labels and a colour key ({ {l: _lv105.count(l) for l in ('red', 'amber', 'green')} })")
+        _top105 = _ttx86.split("\n")[2:5]
+        L.ok("R105b", len(_top105) == 3 and _top105[0].startswith("Report run: ") and _top105[0].endswith(" ET") and _top105[1].startswith("Palm Hill calendar pulled ")
+             and _top105[2].startswith("RPM read ") and all(_html86.find(_html.escape(t)) != -1 and _html86.find(_html.escape(t)) < _html86.find("<table role='table'") for t in _top105) and _html86.count("Report run: ") == 1,
+             f"report run, calendar pull and RPM read times on top of text and HTML {_top105}")
+        L.ok("R105", all(x[k] in ("On", "Off", "n/a") or set(x[k].split(" / ")) <= {"On", "Off"} for x in _tr105 for k in ("phrec", "rpmrec")),
+             "recurring columns read On / Off / n/a (no dash)")
+        L.ok("R105", not any(_re86.search(r"\d (AM|PM)\s*[-\u2013]\s*\d", x[k]) for x in _tr105 for k in ("calendar", "rpm", "agenda")),
+             "Tony table cells show start times only (no time ranges)")
+        _nc105 = sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar")
+        L.ok("R105", _html86.count("data-notoncal='1'") == _nc105 and (not _nc105 or _m86.NOT_ON_CAL_BG in _html86) and "pink = not on the Palm Hill calendar" in _m86.COLOR_KEY
+             and _m86.NOT_ON_CAL_BG.lower() not in (_m86.LEVEL_ROW["red"].lower(), _m86.LEVEL_BADGE["red"].lower()), f"{_nc105} 'Not on the calendar' cell(s) pink, in the colour key")
+        # Steven Nov 1 2026 10:32 PM: only date + start time count; an end-time-only difference or a recurring flag never makes a mismatch
+        _bad105 = [x["meeting"] for x in _tr105 if "Recurring" in x["mismatch"]]
+        for _r105 in _R86["rows"]:
+            for _p105 in _r105["rpm"]:
+                if _r105["cal_date"] == _p105["date"] and _r105["cal_time"] == _p105.get("time") and not _r105["agenda"] and any(x["meeting"] == _r105["name"] and x["calendar"].startswith(_m86.datetime.strptime(_r105["cal_date"], "%Y-%m-%d").strftime("%a %b %-d")) and x["level"] != "green" for x in _tr105):
+                    _bad105.append(_r105["name"] + " " + _r105["cal_date"])
+        L.ok("R105", not _bad105, f"end-time-only and recurring-flag differences never make a mismatch {_bad105}")
+        _n2 = "Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself."
+        L.ok("R105", any(n.startswith(_n2) for n in _m86.NOTES_FOR_TONY) and "Notes for Tony\n" in _ttx86 and _n2 in _ttx86 and ">Notes for Tony</p>" in _html86 and _html.escape(_n2) in _html86
+             and "Dave" not in _ttx86 and _html86.find(">Notes for Tony<") > _html86.find("</table>"), "Notes for Tony block (Note 2 wording kept) under the table, text and HTML")
+        _send105 = Path(C.OUT_SEND).read_text(encoding="utf-8") if hasattr(C, "OUT_SEND") and Path(C.OUT_SEND).exists() else page
+        _ml105 = _re86.findall(r"<tr [^>]*><td [^>]*><a href='([^']+)'", _html86)
+        L.ok("R105", len(_ml105) == len(_tr105) and set(_ml105) == {_m86.CLUB_CALENDAR_URL} and f'href="{_m86.CLUB_CALENDAR_URL}"' in _send105 and "<a " not in _ttx86,
+             f"every Meeting cell links to the newsletter's club calendar URL ({len(_ml105)}/{len(_tr105)})")
+        L.ok("R105", ">RPM<br>calendar</th>" in _html86 and ">RPM</th>" not in _html86 and all(f">{_m86.th_text(c)}</th>" in _html86 for c in _m86.TONY_COLS) and ">Palm Hill<br>recurring</th>" in _html86 and "Not listed" not in _html86 + _ttx86
+             and all(x["rpm"] != "Not on calendar" or "RPM is missing this meeting (Palm Hill has " in x["mismatch"] for x in _tr105) and _html86.count("data-notoncal='1'") == sum(1 for x in _tr105 if x["calendar"] == "Not on the calendar"),
+             "RPM column headed 'RPM calendar'; missing RPM entries read 'Not on calendar' (not pink)")
+        _n1 = 'Note 1: Different end times between sources used to cause mismatches. A row now counts as a Match when the Palm Hill calendar and RPM have the same date and the same start time; end times are ignored.'
+        _n2b = 'Note 2: n/a in the RPM recurring column means there is no calendar date in RPM for this event. n/a in the Palm Hill recurring column means there is no Palm Hill calendar event, though that is also stated in the Palm Hill column itself. n/a replaces the dashes used before, to show whether the event is on each calendar.'
+        L.ok("R105", _m86.NOTES_FOR_TONY == [_n1, _n2b] and all(n in _ttx86 and _html.escape(n) in _html86 for n in (_n1, _n2b)) and _ttx86.find(_n1) < _ttx86.find(_n2b),
+             "Notes for Tony: Note 1 then Note 2, verbatim, text and HTML")
+        L.ok("R105", "Agenda says" not in _ttx86 and "Agenda says" not in _html86.replace("<br>", " ") and len(_re86.findall(r"<th ", _html86)) == 6
+             and any(x["level"] == "red" and x["meeting"].startswith("Finance") and x["mismatch"].startswith("Conflict") for x in _tr105)
+             and "agenda" not in _ttx86.lower() and "agenda" not in _html86.lower(), "No agenda column or wording in the Tony report (Steven Nov 2 2026 12:07 AM); red Finance row still Conflict")
+        L.ok("R105", "let me know" not in _ttx86.lower() and "let me know" not in _html86.lower(), "No 'let me know if ... need to change' line in the Tony report (Steven Nov 2 2026 12:11 AM)")
+        _cm105 = json.load(open(Path(__file__).resolve().parents[2] / "builder/data/meeting-conflict-sources.json", encoding="utf-8"))["committees"]
+        _nm105 = {r["rpm_name"] for r in json.load(open(Path(__file__).resolve().parents[2] / "builder/data/meeting-conflict-sources.json", encoding="utf-8"))["rpm"]}
+        _nm105 |= {e["name"] for e in json.load(open(_R86["calf"], encoding="utf-8"))["events"] if _re86.search(r"\b(committee|board)\b", e["name"], _re86.I)}
+        L.ok("R105", _nm105 and all(_m86.committee_of(n, _cm105) for n in _nm105) and _m86.WINDOW_DAYS == 60,
+             "R105e: meeting-name pattern covers Board Meeting and every committee; 60-day window (Steven Nov 2 2026 8:19 AM)")
+        L.ok("R105", not any(ord(ch) > 0xFFFF for ch in _html86 + _ttx86), "Tony report has no non-BMP characters (R101f)")
+        # R105f (Steven Nov 4 2026 4:26 PM): Palm Hill is the reference; every non-Match cell names the deviating calendar and the Palm Hill value
+        _bad105f = [x["mismatch"] for x in _tr105 if x["level"] != "green" and not (
+            all(_re86.match(r"(RPM is off - |RPM is missing this meeting \(Palm Hill has |Palm Hill is missing this meeting)", w.strip()) for w in x["mismatch"].split(": ", 1)[-1].split("Conflict; ")[-1].split("; Palm Hill has ")[0].split(" | "))
+            and "Palm Hill" in x["mismatch"] and (x["calendar"] == "Not on the calendar" or x["calendar"].split(",")[0] in x["mismatch"].replace("moved it to ", ""))
+            and not _re86.search(r"Not on RPM|RPM day|Not on the Palm Hill calendar|differ|mismatch between", x["mismatch"]))]
+        L.ok("R105", not _bad105f, f"R105f: Mismatch cells name the deviating calendar and the Palm Hill value; none reads as a tie {_bad105f}")
+        # R108 (Steven Nov 4 2026 4:53 PM): iPhone Gmail dark mode -- every td/th has an explicit text colour with >= 4.5:1 on its own background; head is "light only"
+        def _lum108(h):
+            h = h.lstrip("#"); h = "".join(c * 2 for c in h) if len(h) == 3 else h
+            c = [int(h[k:k + 2], 16) / 255 for k in (0, 2, 4)]; c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+            return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]
+        def _cr108(a, b): x, y = sorted((_lum108(a), _lum108(b)), reverse=True); return (x + .05) / (y + .05)
+        _bad108 = []
+        for _t108 in _re86.findall(r"<t[dh]\b[^>]*>", _html86):
+            _fg108 = _re86.findall(r"[;' ]color:\s*(#[0-9a-fA-F]{3,6})", _t108); _bg108 = _re86.findall(r"background:\s*(#[0-9a-fA-F]{3,6})", _t108)
+            if not (_fg108 and _bg108) or _cr108(_fg108[-1], _bg108[-1]) < 4.5: _bad108.append(_t108[:70])
+        L.ok("R108", not _bad108 and 'content="light only"' in _html86[:_html86.find("<body")], f"R108: every Tony td/th has explicit text colour >= 4.5:1 on its background; light-only colour scheme {_bad108[:3]}")
+        # R112 (Steven Nov 4 2026 5:19 PM): EVERY text element (not only td/th) has an explicit inline colour >= 4.5:1 on every background the email uses
+        def _r112(_h):
+            _bgs = (set(_re86.findall(r"background:\s*(#[0-9a-fA-F]{3,6})", _h)) - {"#2D5016"}) or {"#ffffff"}
+            _bad = []
+            for _t in _re86.findall(r"<(?:p|li|ul|ol|a|span|div|b|strong|em|h[1-6]|body)\b[^>]*>", _h):
+                _fg = _re86.findall(r"(?:^|[;'\" ])color:\s*(#[0-9a-fA-F]{3,6})", _t.split("style=", 1)[-1])
+                if not _fg or min(_cr108(_fg[-1], b) for b in _bgs) < 4.5: _bad.append(_t[:60])
+            for _t in _re86.findall(r"<(?:p|li|ul|ol|span|div|b|strong|em|h[1-6]|body)\b[^>]*>", _re86.sub(r"(?s)<table\b.*?</table>", "", _h)):   # body text outside the table: solid dark on white, >= 12:1, no fades
+                _fg = _re86.findall(r"(?:^|[;'\" ])color:\s*(#[0-9a-fA-F]{3,6})", _t.split("style=", 1)[-1])
+                if not _fg or _cr108(_fg[-1], "#ffffff") < 12 or _re86.search(r"(?i)opacity|rgba\(|hsla\(|font-weight:\s*[1-3]00", _t): _bad.append("body text: " + _t[:50])
+            if _h.count('content="light only"') != 2 or ":root{color-scheme:light only}" not in _h: _bad.append("light-only head tags missing")
+            return _bad
+        _bad112 = _r112(_html86)
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts")); import try_it_email as _tie   # R112 also guards the 'try it' email template
+        _bad112 += ["try-it: " + x for x in _r112(_tie.build()[0]) + _r112(_tie.build("https://example.invalid/x")[0])]
+        L.ok("R112", not _bad112, f"R112: every text element in the Tony HTML and the try-it email has explicit colour >= 4.5:1 on all its backgrounds; light-only head tags {_bad112[:3]}")
+        # R113 (Steven Nov 4 2026 8:07 PM): readable on a phone - pure black on white, min 15px body / 14px cells, line-height 1.5,
+        # all content inside one white wrapper table; every block/cell carries bgcolor/background + background-image gradient.
+        def _r113(_h):
+            _bad = []
+            _b = _h[_h.find("<body"):]
+            if not _re86.match(r"<body[^>]*bgcolor=['\"]#ffffff['\"][^>]*>\s*<table role=['\"]presentation['\"][^>]*bgcolor=['\"]#ffffff", _b): _bad.append("no white wrapper table right after <body>")
+            if not _re86.search(r"</table>\s*</body>", _b): _bad.append("content after the wrapper table")
+            for _t in _re86.findall(r"<(?:p|li|ul|ol|div|td|th|table|tr|body)\b[^>]*>", _b):
+                _st = _t.split("style=", 1)[-1] if "style=" in _t else ""
+                _nm = _re86.match(r"<(\w+)", _t).group(1)
+                if "background-image:linear-gradient(" not in _st: _bad.append("no gradient bg: " + _t[:50])
+                if _nm in ("td", "th", "table", "tr", "body") and "bgcolor=" not in _t: _bad.append("no bgcolor: " + _t[:50])
+                if _nm == "tr" or _nm == "table" and "presentation" not in _t: continue
+                _fs = _re86.findall(r"font-size:\s*(\d+)px", _st)
+                if _nm != "div" and (not _fs or int(_fs[-1]) < (14 if _nm in ("td", "th") else 15)): _bad.append("small text: " + _t[:50])
+                if _nm in ("p", "li", "ul", "body") or (_nm == "td" and "presentation" in _b[:_b.find(_t)][-400:]):
+                    _fg = _re86.findall(r"(?:^|[;'\" ])color:\s*(#[0-9a-fA-F]{3,6})", _st)
+                    if not _fg or _fg[-1].lower() not in ("#000", "#000000", "#111", "#111111"): _bad.append("body text not black: " + _t[:50])
+            for _t in _re86.findall(r"<(?:a|span|b|strong|em)\b[^>]*font-size:\s*(\d+)px", _b):
+                if int(_t) < 14: _bad.append("small inline text")
+            return _bad
+        _bad113 = _r113(_html86) + ["try-it: " + x for x in _r113(_tie.build()[0]) + _r113(_tie.build("https://example.invalid/x")[0])]
+        L.ok("R113", not _bad113, f"R113: Tony email + try-it email: black on white, >=15px body / >=14px cells, white gradient wrapper table, bgcolor on every cell {_bad113[:3]}")
+        # R109 (Steven Nov 4 2026 5:02 PM): Refresh date line from the real stamps; three sub-notes; never "refreshed" for a stale or unstamped source
+        from datetime import datetime as _dt109, timedelta as _td109
+        _tl109 = _ttx86.split("\n"); _ri109 = next((k for k, x in enumerate(_tl109) if x.startswith("Refresh date: ")), -1)
+        _run109 = _dt109.strptime(_tl109[2][len("Report run: "):-3], "%a %b %d, %Y, %I:%M %p") if _tl109[2].startswith("Report run: ") else None
+        _sub109 = _tl109[_ri109 + 1:_ri109 + 4] if _ri109 >= 0 else []
+        _err109 = []
+        if _ri109 < 0 or not _run109 or not _tl109[_ri109].startswith(f"Refresh date: {_run109:%a %b %-d, %Y}, for the report run at {_run109:%-I:%M %p} ET"): _err109.append("refresh line/date")
+        if [x.split(":")[0].strip(" -") for x in _sub109] != ["Palm Hill calendar", "RPM calendar", "Committee and board emails that may mention a meeting date"]: _err109.append("sub-notes")
+        for _x109 in _sub109:
+            _m109 = _re86.search(r"(reviewed|checked) for this run at (?:about )?(\d{1,2}:\d{2} [AP]M) ET", _x109)
+            if _m109 and _run109:
+                _t109 = _dt109.strptime(f"{_run109:%Y-%m-%d} {_m109.group(2)}", "%Y-%m-%d %I:%M %p")
+                if not (_td109(0) <= _run109 - _t109 <= _td109(minutes=_m86.FRESH_MINUTES)): _err109.append("stale claimed fresh: " + _x109[:40])
+            elif "not refreshed at this run" not in _x109: _err109.append("unflagged: " + _x109[:40])
+        if _ri109 >= 0 and _html.escape(_tl109[_ri109]) not in _html86: _err109.append("html refresh line")
+        L.ok("R109", not _err109 and _m86.FRESH_MINUTES == 30, f"R109: Refresh date line = run date, three sub-notes, no stale source called refreshed (30 min) {_err109}")
+        # R110 (Steven Nov 4 2026 5:02 PM): live refresh uses env secrets only; no committed file assigns a literal to a secret name
+        import subprocess as _sp110
+        _rp110 = Path(__file__).resolve().parents[2]
+        _fl110 = [f for f in _sp110.run(["git", "-C", str(_rp110), "ls-files"], capture_output=True, text=True).stdout.split("\n") if f.endswith((".py", ".js", ".json", ".md", ".txt", ".html", ".yml", ".yaml", ".env"))]
+        _bad110 = [f for f in _fl110 if (_rp110 / f).exists() and _re86.search(r"(?i)\b(RPM_USERNAME|RPM_PASSWORD|GMAIL_APP_PASSWORD)\b\s*[:=]\s*['\"][^'\"\s]{3,}|app[_ ]?password\s*[:=]\s*['\"][a-z]{4} ?[a-z]{4}", (_rp110 / f).read_text(encoding="utf-8", errors="ignore"))]
+        _rl110 = (_rp110 / "scripts/refresh_live_sources.py").read_text(encoding="utf-8") if (_rp110 / "scripts/refresh_live_sources.py").exists() else ""
+        L.ok("R110", not _bad110 and bool(_rl110) and "os.environ.get(name)" in _rl110 and "readonly=True" in _rl110 and not _re86.search(r"print\([^)]*\b(pw|user)\b", _rl110),
+             f"R110: live refresh reads secrets from env only (none committed, none printed); IMAP read-only {_bad110}")
+        # R111 (Steven Nov 4 2026 5:14 PM): link security notes in the Tony report, no 'agenda', no live claim
+        _R111 = dict(_R86, include_link_notes=True); _t111, _h111 = _m86.render_tony(_R111), _m86.render_tony_html(_R111)
+        _rx111 = r"(?i)About the report link|using the link I send you|report link|run this report whenever|turn the button off|old link stops working"
+        L.ok("R111", not _R86.get("include_link_notes") and not _re86.search(_rx111, _ttx86) and not _re86.search(_rx111, _html86)
+             and all(n in _t111 and _html.escape(n) in _h111 for n in _m86.LINK_NOTES) and _m86.LINK_NOTES_LABEL in _t111 and len(_m86.LINK_NOTES) == 4
+             and not any(_re86.search(r"(?i)agenda|\blive\b|real[- ]time", n) for n in _m86.LINK_NOTES),
+             "R111: default Tony report has NO link/button notes (Steven Nov 4 8:14 PM); with --include-link-notes the 4 'About the report link' notes appear")
     if _R86:
         # Oct 27 2026 2:24 PM: Steven released R62/R62b/R62c for Nov 1 (calendar only; Tony agreed Oct 26). No row may say
         # CONFLICT-OVERRIDDEN-BY-RULE; Finance and P&E stay listed, as agenda-differs only.
