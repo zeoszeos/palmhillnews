@@ -1,7 +1,7 @@
 {
- "fetched_at": "2026-10-30T10:28:34-04:00",
+ "fetched_at": "2026-11-06T14:23:50+00:00",
  "url": "https://www.palmhillcountryclub.net/committees/",
- "count": 120,
+ "count": 121,
  "items": [
   {
    "group": "board",
@@ -186,6 +186,14 @@
    "label": "10/28/2026",
    "note": "",
    "url": "https://drive.google.com/file/d/1Rmquna2I_oO7Uba3fhuHiepHG4aJPaRV/view?usp=sharing"
+  },
+  {
+   "group": "board",
+   "meeting": "",
+   "date": "2026-11-05",
+   "label": "11/05/26 Special Meeting",
+   "note": "Special Meeting",
+   "url": "https://drive.google.com/file/d/1uuqfgkBq-OxAaLeHbxhicmnh9LdIvQVu/view?usp=sharing"
   },
   {
    "group": "buildings-and-grounds",

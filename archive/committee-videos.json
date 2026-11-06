@@ -324,6 +324,20 @@
   "link_status": "ok"
  },
  {
+  "date": "2026-11-05",
+  "group": "board",
+  "meeting": "",
+  "note": "Special Meeting",
+  "host": "drive.google.com",
+  "url": "https://drive.google.com/file/d/1uuqfgkBq-OxAaLeHbxhicmnh9LdIvQVu/view?usp=sharing",
+  "source": "Club Committees page (Friday scan 2026-11-06; 11/05/26 Special Meeting)",
+  "flags": [],
+  "http": 200,
+  "status": "OK (opens)",
+  "last_checked": "2026-11-06",
+  "link_status": "ok"
+ },
+ {
   "date": "2025-05-14",
   "group": "buildings-and-grounds",
   "meeting": "",
