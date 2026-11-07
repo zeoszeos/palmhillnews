@@ -13,7 +13,7 @@ Needs: /workspace/.venv-vr (python -m venv; pip install playwright pillow numpy;
 """
 import sys, os, re, json, argparse, pathlib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from style_rules import title_month_violations, sunshine_main_card_problem, SUNSHINE_DYK_TITLE
+from style_rules import title_month_violations, sunshine_main_card_problem, SUNSHINE_DYK_TITLE, listen_iphone_tree_problems
 from playwright.sync_api import sync_playwright
 from PIL import Image, ImageChops
 import numpy as np
@@ -108,6 +108,9 @@ def rule_checks(html, page):
     # R118 (Steven Nov 7 2026): Nov 8 Sunshine Directors email stays on the main card as plain text
     _p118 = sunshine_main_card_problem(html)
     if _p118: fails.append("R118 " + _p118)
+    # R119 (Steven Nov 7 2026): iPhone listen page shows Tap to listen and does not swallow the first tap
+    for _p119 in listen_iphone_tree_problems(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))):
+        fails.append("R119 " + _p119)
     # R23: event/notice items link with "More →" only (report/message labels Read Full Report/Message/Update are allowed)
     for v in re.findall(r'>\s*((?:Read (?:Full )?(?:Details|More|more|Notice|Event)|Details|Full Details|Learn More)\s*→?)\s*</a>', html):
         fails.append(f"R23 event/notice link label '{v}' (use 'More →')")

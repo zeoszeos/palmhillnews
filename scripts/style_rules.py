@@ -579,3 +579,54 @@ def assert_r10_locked_pages(repo):
         f = _os.path.join(str(repo), rel)
         got = hashlib.sha256(open(f, "rb").read()).hexdigest() if _os.path.exists(f) else None
         if got != want: raise SystemExit(f"R10: locked page {rel} changed (sha256 {got}, pinned {want}); it must stay exactly as sent")
+
+# R119 (Steven, Nov 7 2026): iPhone/iPad Listen on the page opened from the email.
+# A blocked load-time start used to set playing while started stayed false, and
+# `if (playing) stop()` swallowed the first Listen tap. The phone must show Tap to listen
+# immediately, without waiting for speech to start.
+_R119_SWALLOW = re.compile(r"if\s*\(\s*playing\s*\)\s*stop\(\)\s*;\s*else\s*start\(\s*false\s*\)")
+_R119_START = re.compile(r"if\s*\(\s*playing\s*&&\s*started\s*\)\s*stop\(\)\s*;\s*else\s*start\(\s*false\s*\)")
+_R119_BAR = re.compile(r"if\s*\(\s*iphoneOrIpad\(\)\s*\)\s*showBar\(\)\s*;")
+
+def listen_page_iphone_problem(src):
+    """R119. '' when this v2 page-listen script is safe. Else why the first iPhone tap would fail."""
+    if _R119_SWALLOW.search(src):
+        return "Listen click treats a blocked auto-start (playing, speech not started) as Stop"
+    if not _R119_START.search(src):
+        return "Listen click does not require speech to have started before Stop"
+    if not _R119_BAR.search(src):
+        return "iPhone/iPad path does not show Tap to listen before speech has started"
+    if "Tap to listen" not in src:
+        return "Tap to listen label is missing"
+    if "start(true)" not in src:
+        return "desktop auto-start on load is missing"
+    return ""
+
+def _page_listen_block(text):
+    a = text.find("<!-- ph-page-listen:start -->")
+    b = text.find("<!-- ph-page-listen:end -->", a if a >= 0 else 0)
+    if a < 0 or b < 0: return ""
+    return text[a:b]
+
+def listen_iphone_tree_problems(repo):
+    """R119 problems in the shared script and every inlined v2 / autoplay listen page. R10 pages are skipped."""
+    import os as _os
+    repo = str(repo)
+    probs = []
+    shared = _os.path.join(repo, "scripts", "page_listen_v2.html")
+    why = listen_page_iphone_problem(open(shared, encoding="utf-8").read())
+    if why: probs.append("scripts/page_listen_v2.html: " + why)
+    pages = _os.path.join(repo, "pages")
+    for dp, _, fs in _os.walk(pages):
+        for name in fs:
+            if not name.endswith(".html"): continue
+            path = _os.path.join(dp, name)
+            rel = _os.path.relpath(path, repo).replace("\\", "/")
+            if rel in R10_LOCKED_SHA256: continue
+            text = open(path, encoding="utf-8", errors="ignore").read()
+            block = _page_listen_block(text)
+            auto = 'data-ph-autoplay="1"' in text
+            if not auto and 'data-ph-listen-v="2"' not in block: continue
+            why = listen_page_iphone_problem(block or text)
+            if why: probs.append(rel + ": " + why)
+    return probs

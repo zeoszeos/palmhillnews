@@ -22,9 +22,12 @@
 <!-- ph-page-listen:start -->
 <script data-ph-listen-v="2">
 (() => {
-  // STYLE-RULES R49 / R49b / R76 (Steven, Oct 25 2026 9:29 AM): v2 page-listen. Opened with ?listen=1 (or a
-  // data-ph-autoplay listen page) it tries to read once; if the browser blocks speech (no 'start' within 1.5 s) a big
-  // "Tap to listen" bar appears at the top -- one tap reads from the beginning. Never a silent wait.
+  // STYLE-RULES R49 / R49b / R76 / R119: v2 page-listen.
+  // Desktop, opened with ?listen=1, ?autoplay=1, or data-ph-autoplay: try to read once on load. If that start is
+  // blocked (no 'start' within 1.5 s) a big "Tap to listen" bar appears. Never a silent wait.
+  // iPhone/iPad (R119): iOS will not speak without a tap on THIS page. Do not start on load (that set playing while
+  // started stayed false, and the first Listen tap was treated as Stop). Show "Tap to listen" immediately. Listen
+  // stops only after speech has actually begun (playing && started).
   // STYLE-RULES R49/R76: the ONE reader (what Listen speaks), shared by the v2 page-listen script and the in-place
   // Listen on archive / issue pages. phParts(doc) -> phrases in page order. Same rules as the v1 page script.
   const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
@@ -83,6 +86,11 @@
   if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
   const synth = window.speechSynthesis;
   let run = 0, playing = false, started = false, bar = null;
+  function iphoneOrIpad() {
+    const ua = navigator.userAgent || '';
+    if (/iP(hone|ad|od)/.test(ua)) return true;
+    return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+  }
   const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
   function hideBar() { if (bar) { bar.remove(); bar = null; document.body.style.paddingTop = ''; } }
   function showBar() {
@@ -125,14 +133,21 @@
     if (playing && started) return;
     start(false);
   }
-  link.addEventListener('click', (e) => { e.preventDefault(); firstOff(); if (playing) stop(); else start(false); });
+  // R119: Stop only after speech has actually begun. A blocked auto-start leaves playing true and started false;
+  // that first Listen tap must Start, not Stop. Once speech is talking, Listen still stops it.
+  link.addEventListener('click', (e) => { e.preventDefault(); firstOff(); if (playing && started) stop(); else start(false); });
   window.addEventListener('pagehide', stop);
   const q = new URLSearchParams(location.search);
   const auto = q.get('autoplay') !== '0' && (q.get('listen') === '1' || q.get('autoplay') === '1' || document.body.dataset.phAutoplay === '1');
   if (auto) {
     FIRST.forEach((t) => document.addEventListener(t, onFirst, {capture: true, passive: true}));
-    const go = () => start(true);
-    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+    // R119: iPhone/iPad show Tap to listen immediately and wait for a tap on this page.
+    // Desktop still auto-starts on load when the browser allows it.
+    if (iphoneOrIpad()) showBar();
+    else {
+      const go = () => start(true);
+      if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+    }
   }
 })();
 </script>
