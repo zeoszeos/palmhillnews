@@ -2,11 +2,41 @@
 "Calendar check" footer line and the same masthead time. Root cause it guards: the repo preview
 (pages/previews/<issue>/PHNEWS-<issue>-preview.html) was a hand-synced copy, left at an earlier build's stamp after the
 SEND was rebuilt. The builder now syncs it (sync()), and check() fails on any mismatch.
+R115 (Steven Nov 7 2026): that sync used to copy the R96 local review file unchanged. The review file's page links are
+sibling filenames so they open from disk. The live preview sits at pages/previews/<issue>/, so those hrefs 404.
+From 2026-11-01, sync() writes absolute https://palmhillnews.vercel.app/pages/... links (same as SEND) and check()
+fails if any same-folder or archive/ relative .html href remains. Oct 25 and earlier stay a byte copy.
 Usage: python scripts/check_preview_send_stamp.py --issue 2026-10-25 [--root DIR] [--repo DIR]"""
 import argparse, re, shutil, sys
 from pathlib import Path
 CAL = re.compile(r'<p class="ph-cal-check"[^>]*>([^<]*)</p>')
 MAST = re.compile(r'white-space:nowrap;">(\d{1,2}:\d{2} [AP]M)</span>')
+# R115: issues that publish the nested pages/previews/<issue>/ copy. Oct 25 and earlier stay a byte copy (acceptance_oct25).
+ABSOLUTE_FROM = "2026-11-01"
+PAGE = "https://palmhillnews.vercel.app/pages/"
+_REL_PAGE = re.compile(r'href="(?!https?:|//|mailto:|tel:|#)([^"]*?\.html[^"]*)"')
+_SCRIPT = re.compile(r"(<script\b[^>]*>.*?</script>)", re.I | re.S)
+
+def _outside_script(html):
+    return [p for p in _SCRIPT.split(html) if p[:7].lower() != "<script"]
+
+def relative_page_hrefs(html):
+    """R115: .html hrefs with no scheme (sibling names, archive/..., other relative paths). They 404 from
+    pages/previews/<issue>/. tel:, mailto:, #, and absolute http(s) are not included. Script text is ignored."""
+    return [h for part in _outside_script(html) for h in _REL_PAGE.findall(part)]
+
+def absolutize_live_preview(html):
+    """R115: restore R96 sibling and archive/ page hrefs to PAGE + path. Idempotent. Does not add or remove script.
+    Leaves tel:, mailto:, fragments, external https, and already-absolute links unchanged. Local review files are
+    not passed here; sync() applies this only to the repo preview, and only when issue >= ABSOLUTE_FROM."""
+    def repl_region(region):
+        def repl(m):
+            url = m.group(1)
+            if url.startswith("/pages/"): url = url[len("/pages/"):]
+            elif url.startswith("/"): return m.group(0)
+            return 'href="' + PAGE + url + '"'
+        return _REL_PAGE.sub(repl, region)
+    return "".join(p if p[:7].lower() == "<script" else repl_region(p) for p in _SCRIPT.split(html))
 
 def stamps(html):
     c, m = CAL.findall(html), MAST.findall(html)
@@ -15,7 +45,11 @@ def stamps(html):
 
 def sync(local_preview, repo, issue):
     dst = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"
-    shutil.copyfile(local_preview, dst); return dst
+    if str(issue) < ABSOLUTE_FROM:  # Oct 25 rebuild path: byte copy, including R96 relative hrefs
+        shutil.copyfile(local_preview, dst); return dst
+    # R115: the local review copy stays relative (R96). The nested live preview gets SEND's absolute page URLs.
+    dst.write_text(absolutize_live_preview(Path(local_preview).read_text(encoding="utf-8")), encoding="utf-8")
+    return dst
 
 STALE_HINT = "SEND is from an earlier build, re-run publish_issue (python3 scripts/publish_issue.py --issue {i} --root {r} [--dry-run])"
 
@@ -35,6 +69,10 @@ def stale_copy(issue, root, preview_html):
 def check(issue, root, repo):
     pv = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"; sd = Path(root) / f"PHNEWS-{issue}-SEND.html"
     pt = pv.read_text(encoding="utf-8"); p = stamps(pt); fails = []
+    # R115 (Steven Nov 7 2026): from Nov 1 the nested live preview must not carry R96 sibling / archive relative page hrefs.
+    if str(issue) >= ABSOLUTE_FROM:
+        bad = relative_page_hrefs(pt)
+        if bad: fails.append(f"R115: live preview has {len(bad)} relative page href(s) that 404 under /pages/previews/{issue}/ (e.g. {bad[0]})")
     # R94 (Steven Oct 30 2026 4:02 PM): from v2_from the live preview carries exactly one in-place Listen block and no other
     # script; the SEND/email copy carries none. Comparisons with SEND ignore only that block (page_listen.strip_inplace).
     sys.path.insert(0, str(Path(__file__).resolve().parent)); import page_listen as pl
@@ -53,4 +91,6 @@ if __name__ == "__main__":
     a = argparse.ArgumentParser(); a.add_argument("--issue", required=True)
     a.add_argument("--root", default="/workspace/phnews-consolidation/oct18"); a.add_argument("--repo", default=str(Path(__file__).resolve().parents[1]))
     a = a.parse_args(); f, p = check(a.issue, a.root, a.repo)
-    print("\n".join(f) if f else f"R70 PASS: preview = SEND ({p[0]}; masthead {p[1]})"); sys.exit(1 if f else 0)
+    ok = f"R70 PASS: preview = SEND ({p[0]}; masthead {p[1]})"
+    if str(a.issue) >= ABSOLUTE_FROM: ok += "; R115 PASS: live preview page links are absolute"
+    print("\n".join(f) if f else ok); sys.exit(1 if f else 0)

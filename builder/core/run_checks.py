@@ -434,7 +434,11 @@ import check_preview_send_stamp as _r70
 _sd70 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"; _pv70 = ROOT / f"PHNEWS-{C.ISSUE}-preview.html"
 _rp70 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
 _f70, _p70 = _r70.check(C.ISSUE, ROOT, _rp70)
+_href70 = [f for f in _f70 if f.startswith("R115")]  # R115 is its own line; a link 404 is not a stamp mismatch
+_f70 = [f for f in _f70 if not f.startswith("R115")]
 L.ok("R70", not _f70, f"preview and SEND show the same Calendar check + masthead time ({_p70[0]})" + (f": {'; '.join(_f70)}" if _f70 else ""))
+if C.ISSUE >= _r70.ABSOLUTE_FROM:  # R115 (Steven Nov 7 2026): nested live preview, same absolute page URLs as SEND
+    L.ok("R115", not _href70, "live preview internal page links are absolute https://palmhillnews.vercel.app/pages/..." + (f": {'; '.join(_href70)}" if _href70 else ""))
 def _ts70(f):  # 'Calendar check - November 4, 8:53 PM' -> sortable (month, day, minutes); content stamp, not file mtime (re-renders keep it)
     from datetime import datetime as _dt
     m = re.search(r"([A-Z][a-z]+ \d{1,2}), (\d{1,2}:\d{2} [AP]M)", _r70.stamps(f.read_text(encoding="utf-8"))[0])
