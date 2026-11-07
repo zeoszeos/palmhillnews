@@ -835,4 +835,7 @@ FIRST_NOTICE = None   # Nov 8: December Link Deadline (Nov 5) dropped as stale
 
 # R104 (Steven Nov 1 2026 11:55 AM: "if there are no current items in a section, we won't even show the section header"):
 # sections (by key: president, story, chair, manager, dyk, ...) with no current item are left out entirely (header and all). Archive pages and URLs stay live.
-HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 1; no new message (Steven Nov 1 11:55 AM)"}
+HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 1; no new message (Steven Nov 1 11:55 AM)",
+                 # R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 card leaves this main page.
+                 # The report page and the Shareholders Report archive stay.
+                 "shareholders": "September 30 monthly report; no newer monthly report (Steven Nov 7 2026)"}

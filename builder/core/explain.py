@@ -62,6 +62,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R117": "the ph-ae-top cell in both Events sections needs background and bgcolor #EAF4E4 (build_core.py _ae_link)",
     "R118": "the Nov 8 EMAIL for SUNSHINE DIRECTORS main card must keep the printed sentence through the semicolon and then 'Email address: Sunshineinpalmhill@gmail.com' as plain text (no mailto:). Set that teaser in builder/nov8/data/dyk-sunshine-directors.json and rebuild; do not cut it back to the semicolon",
     "R119": "a calendar row whose visible title is only the word Reserved (any case; surrounding space or punctuation ignored) is a placeholder, not an event. style_rules.reserved_only_name drops it in build_core.ok and recurring.py before render. Do not drop a longer title that merely contains the word. The guard is style_rules.reserved_only_hits",
+    "R120": "November 8 has no newer monthly shareholders report, so the September 30 card must not be on that main page. Hide the shareholders section in the issue HIDE_SECTIONS. Do not delete pages/2026-09-30-shareholders-report.html or its archive row. The guard is style_rules.sep30_shareholders_main_problem",
     "R72": "copy the PDF into the work tree and give its relative path in the content file",
     "R73": "get the missing source (copy, never move) or drop the item -- never invent it",
     "R74": "save a baseline only after Steven approves: scripts/save_visual_baseline.py",

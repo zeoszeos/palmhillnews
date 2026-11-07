@@ -172,6 +172,16 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
     _got = {tuple(x) for x in audit.get("all_events", [])}
     L.ok("R79", not (_got & _rec), f"All Events has no Recurring-page event {sorted(_got & _rec)}")
     L.ok("R79", _got == _exp and f'data-activity-count="{len(_exp)}"' in _aeh, f"All Events = every window event not on Recurring ({len(_exp)}); missing {sorted(_exp - _got)} extra {sorted(_got - _exp)}")
+# R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 shareholders card stays off the November 8 main page.
+if C.ISSUE == "2026-11-08":
+    _repo120 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    L.ok("R120", _sr83.sep30_report_page_ok(_repo120), "September 30 shareholders report page stays published")
+    _r120 = [("preview", page)]
+    _sd120 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sd120.exists(): _r120.append(("SEND", _sd120.read_text(encoding="utf-8")))
+    for _n120, _x120 in _r120:
+        _why120 = _sr83.sep30_shareholders_main_problem(_x120)
+        L.ok("R120", _why120 == "", f"{_n120}: September 30 shareholders report is off the main page" + (f" ({_why120})" if _why120 else ""))
 # R119 (Steven Nov 7 2026): a title that is only "Reserved" is a placeholder and must not be rendered.
 def _r119(label, html):
     _hits = _sr83.reserved_only_hits(html)
