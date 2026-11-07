@@ -324,11 +324,23 @@ if getattr(C, "DYK_NEW_JSON", None):
     for _n, _it in enumerate(_dn["items"]):
         _pg = _dn["page_prefix"] + _it["preview_page"]; _pf = _R / "pages" / _pg
         _ok = (len(_bl) > _n and _html.unescape(_bl[_n][0]) == _it["title_display"] and _html.unescape(_bl[_n][1]) == _it["teaser"]
-               and _bl[_n][2].endswith("/pages/" + _pg) and _sr83.dyk_summary_ok(_it["teaser"], _it["paragraphs"]))
+               and _bl[_n][2].endswith("/pages/" + _pg) and _sr83.dyk_new_item_teaser_ok(_it))
         _pt = _pf.read_text(encoding="utf-8") if _pf.exists() else ""
         _ok = _ok and _pt.count('class="ph-listen"') == 1 and not re.search(r"\d{3}-\d{3}-\d{4}", text(_pt.split("<main>")[1].split("</main>")[0]) if "<main>" in _pt else "x")
         _ai = (_R / "archive/archive-items.json").read_text(encoding="utf-8")
         L.ok("R88", _ok and f'"page": "{_pg}"' in _ai, f"new Did You Know {_it['id']} is block {_n + 1} (title, verbatim teaser, More -> {_pg}), page has Listen, archive row")
+# R118 (Steven Nov 7 2026): the Nov 8 Sunshine Directors email stays on the main card as plain text.
+# A rebuild that cuts the teaser back to the semicolon fails here. The item page keeps the prayers clause and the email.
+if C.ISSUE == "2026-11-08":
+    _why118 = _sr83.sunshine_main_card_problem(page)
+    L.ok("R118", _why118 == "", "main Did You Know card includes the Sunshine Directors email as plain text" + (f" ({_why118})" if _why118 else ""))
+    _sd118 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sd118.exists():
+        _why118s = _sr83.sunshine_main_card_problem(_sd118.read_text(encoding="utf-8"))
+        L.ok("R118", _why118s == "", "SEND main card includes the Sunshine Directors email as plain text" + (f" ({_why118s})" if _why118s else ""))
+    _ip118 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _sr83.SUNSHINE_DYK_PAGE
+    _why118p = _sr83.sunshine_item_page_problem(_ip118.read_text(encoding="utf-8")) if _ip118.exists() else "item page missing"
+    L.ok("R118", _why118p == "", "Sunshine Directors item page keeps the full printed body and plain-text email" + (f" ({_why118p})" if _why118p else ""))
 # R89 (Steven Oct 29 2026 11:33 AM): with DYK_CARRY_PREVIOUS=False the main page Did You Know is exactly this issue's new items,
 # then one Did You Know Archives line; the previous issue's items are not on the page but keep their pages and archive rows.
 if not getattr(C, "DYK_CARRY_PREVIOUS", True):

@@ -582,7 +582,7 @@ _DYKN = json.load(open(REPO / C.DYK_NEW_JSON, encoding="utf-8")) if globals().ge
 _DYKN_ROWS = []
 if _DYKN:
     for _it in reversed(_DYKN["items"]):
-        assert _sr_dyk.dyk_summary_ok(_it["teaser"], _it["paragraphs"]), ("R88/R39 teaser not verbatim", _it["id"])
+        assert _sr_dyk.dyk_new_item_teaser_ok(_it), ("R88/R118 teaser not the printed main-card text", _it["id"])
         _pg = _DYKN["page_prefix"] + _it["preview_page"]
         assert (REPO / "pages" / _pg).exists(), f"R88: DYK page pages/{_pg} missing -- run builder/nov1/stage_nov1_content.py"
         DYK_ITEMS.insert(0, (_it["id"], _dyk_row(_it["title_display"], _it["teaser"], BASE + _pg)))

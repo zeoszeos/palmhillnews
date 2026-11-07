@@ -60,6 +60,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R115": "pages/previews/<issue>/ must use absolute https://palmhillnews.vercel.app/pages/... links (R70 sync calls absolutize_live_preview). The local review copy stays relative",
     "R116": "scripts/listen_inplace.html: Stop (ph-playing / the saved label) is the same control as Listen, so a second tap does not follow a dedicated listen-*.html href",
     "R117": "the ph-ae-top cell in both Events sections needs background and bgcolor #EAF4E4 (build_core.py _ae_link)",
+    "R118": "the Nov 8 EMAIL for SUNSHINE DIRECTORS main card must keep the printed sentence through the semicolon and then 'Email address: Sunshineinpalmhill@gmail.com' as plain text (no mailto:). Set that teaser in builder/nov8/data/dyk-sunshine-directors.json and rebuild; do not cut it back to the semicolon",
     "R72": "copy the PDF into the work tree and give its relative path in the content file",
     "R73": "get the missing source (copy, never move) or drop the item -- never invent it",
     "R74": "save a baseline only after Steven approves: scripts/save_visual_baseline.py",

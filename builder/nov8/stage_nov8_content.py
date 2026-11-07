@@ -52,8 +52,7 @@ _dnj = re.search(r'^DYK_NEW_JSON = (.+?)(?:\s+#.*)?$', (ROOT / "builder/issues/2
 DN = json.load(open(ROOT / eval(_dnj), encoding="utf-8")) if eval(_dnj) else {"items": []}
 _TPL = (ROOT / "pages/2026-10-25-did-you-know-spectrum-music-channels.html").read_text(encoding="utf-8")
 for it in DN["items"]:
-    assert _sr.dyk_summary_ok(it["teaser"], it["paragraphs"]), ("R88/R39: teaser must be verbatim body sentence(s)", it["id"])
-    assert it["teaser"].endswith(";") and it["paragraphs"][0].startswith(it["teaser"]), "R18c: Sunshine teaser is a prefix cut at the printed semicolon"
+    assert _sr.dyk_new_item_teaser_ok(it), ("R118/R39: main teaser must be the printed semicolon sentence plus the email line, or verbatim body sentences", it["id"])
     assert "North Clubhouse Library" not in " ".join(it["paragraphs"])
     assert not re.search(r"\d{3}-\d{3}-\d{4}", " ".join(it["paragraphs"])), "R88: no retyped phone number in a DYK body"
     ps = "".join(f"<p>{html.escape(p)}</p>" for p in it["paragraphs"])
