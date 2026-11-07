@@ -25,6 +25,7 @@ R60C_ICE_NOTICE = False               # the ice machine notice is dropped for No
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Nov 8 DRAFT (not yet approved by Steven): Nov 1 approved list minus notices dated before Nov 8
+        'Golf Clinic - Taste of Golf',   # Sat Nov 7 4:06 PM ET Webmaster signup-deadline email (newest)
         'Chair Yoga class canceled',
         'South Potable Water Shut off (rescheduled)',
         'Cornhole Tournament',
@@ -167,6 +168,12 @@ WM_COPY_CHANNEL = "2026-10-30-palm-hill-community-channel-xumo-notice.html"     
 WM_COPY_CORNHOLE = "2026-10-31-cornhole-tournament-notice.html"                        # leonowicz 1a1928943f130516 (image-only flyer)
 WM_COPY_SENIOR_LL = "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"        # leonowicz 1a1923d6204ee46a (Bonnie Swanson)
 WM_COPY_WORSHIP = "2026-10-31-worship-service-notice.html"                             # leonowicz 1a191d8809626222 (Claudia Hartz)
+# Sat Nov 7 2026 evening sweep (draft). Julie Hughes via Webmaster, 4:06:48 PM ET. Trailing quote is in the source.
+# Signup deadline only. The Oct 14 Taste of Golf notice and the Nov 18 event row stay as they are.
+WM_COPY_GOLF_SIGNUP = "2026-11-07-golf-clinic-taste-of-golf-notice.html"
+GOLF_SIGNUP_TITLE = "Golf Clinic - Taste of Golf"   # R93: no date in the title (subject is also "Taste of Golf", already used by the Oct 14 notice)
+GOLF_SIGNUP_BODY = 'Golf Clinic - Taste of Golf sign up sheet closes Monday morning"'
+GOLF_SIGNUP_DATE = "Sign up sheet closes: Monday morning"   # signup deadline, not the Nov 18 event date
 # Sat Nov 7 2026 morning sweep (draft, before Susan's proof). Verbatim bodies; unsubscribe already absent.
 WM_COPY_CHAIR_YOGA = "2026-11-07-chair-yoga-class-canceled-notice.html"                 # gotwicz 1a1b5cc77232729c Sat Nov 7 6:37 AM ET
 WM_COPY_WATER_1111 = "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"  # gotwicz 1a1b174eb713f7a4 Fri Nov 6 10:23 AM ET (supersedes the 10:00am wording)
@@ -179,6 +186,12 @@ WATER_1111_DATE = "Shut off: Wednesday, November 11th · Rescheduled: 2:30pm for
 CORNHOLE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/827E9BE2-A63E-4981-99FA-CFDD9C846292.png"
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Sat Nov 7 evening sweep: newest (Webmaster 4:06:48 PM ET). Subject stays "Taste of Golf"; page title has no date.
+    (WM_COPY_GOLF_SIGNUP, "Taste of Golf", "Saturday, Nov 7, 2026, 4:06:48 PM ET", [
+        ("p", GOLF_SIGNUP_BODY),
+        ("p", "Thank you,"),
+        ("p", "Julie Hughes")],
+        dict(title=GOLF_SIGNUP_TITLE, sender="Webmaster (Replies Not Accepted)")),
     # Sat Nov 7 morning sweep: newest first (Chair Yoga Sat 6:37 AM ET, then the Fri 10:23 AM ET water reschedule)
     (WM_COPY_CHAIR_YOGA, "Chair Yoga class canceled Monday", "Saturday, Nov 7, 2026, 6:37 AM ET", [
         ("p", CHAIR_YOGA_BODY),
@@ -410,6 +423,8 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Sat Nov 7 evening sweep: newest. Teaser is the source sentence (trailing quote kept); More → the copied email.
+    (GOLF_SIGNUP_TITLE, GOLF_SIGNUP_BODY, "Webmaster", BASE + WM_COPY_GOLF_SIGNUP),
     # Sat Nov 7 morning sweep: newest first. Teasers are source sentences; summary_trim SHORT cuts them to 3 lines and adds More →.
     (CHAIR_YOGA_TITLE, CHAIR_YOGA_BODY, "Webmaster", BASE + WM_COPY_CHAIR_YOGA),
     (WATER_1111_TITLE, WATER_1111_BODY, "RPM", BASE + WM_COPY_WATER_1111),
@@ -490,6 +505,7 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    GOLF_SIGNUP_TITLE: GOLF_SIGNUP_DATE,
     CHAIR_YOGA_TITLE: CHAIR_YOGA_DATE,
     WATER_1111_TITLE: WATER_1111_DATE,
     "Cornhole Tournament": "Tournament: Saturday, November 28, 2026 · Registration ends: 10:15AM",               # Webmaster Oct 31 flyer (staged)
@@ -772,7 +788,10 @@ R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 
 # ---------- Community Notices (6): archive rows added by this issue (R59) ----------
-NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-08", id="2026-11-08-chair-yoga-class-canceled", title=CHAIR_YOGA_TITLE,
+NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-08", id="2026-11-08-golf-clinic-taste-of-golf", title=GOLF_SIGNUP_TITLE,
+                     text=GOLF_SIGNUP_BODY,
+                     page=WM_COPY_GOLF_SIGNUP, source="Palm Hill Webmaster notice, Nov 7", issues=["2026-11-08"]),
+                dict(date="2026-11-08", id="2026-11-08-chair-yoga-class-canceled", title=CHAIR_YOGA_TITLE,
                      text="The chair yoga class for Monday, November 9, is cancelled.",
                      page=WM_COPY_CHAIR_YOGA, source="Palm Hill Webmaster notice, Nov 7", issues=["2026-11-08"]),
                 dict(date="2026-11-08", id="2026-11-08-south-potable-water-shut-off-rescheduled", title=WATER_1111_TITLE,

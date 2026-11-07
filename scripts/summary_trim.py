@@ -9,6 +9,8 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Sat Nov 7 2026 evening sweep: signup-deadline email; the trailing quote is in the source. More → = the copied email (R47)
+ ("Golf Clinic - Taste of Golf sign up sheet closes Monday morning&quot;", "Golf Clinic - Taste of Golf sign up sheet closes Monday morning&quot;", B + "2026-11-07-golf-clinic-taste-of-golf-notice.html"),
  # Sat Nov 7 2026 morning sweep: cut, never reworded; More → = the copied email (R47)
  ("The chair yoga class for Monday, November 9, is cancelled.", "The chair yoga class for Monday, November 9, is cancelled.", B + "2026-11-07-chair-yoga-class-canceled-notice.html"),
  ("South Potable Water Shut off scheduled for Wednesday, November 11th", "South Potable Water Shut off scheduled for Wednesday, November 11th @ 10:00am has been rescheduled", B + "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"),
