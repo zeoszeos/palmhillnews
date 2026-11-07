@@ -387,6 +387,8 @@ if _pl94.v2_for(C.ISSUE):
     _src116 = (Path(__file__).resolve().parents[2] / "scripts" / "listen_inplace.html").read_text(encoding="utf-8")
     L.ok("R116", "classList.contains('ph-playing')" in _src116 and "(Listen|Stop)" in _src116 and "a === cur" in _src116 and "phLabel" in _src116,
          "in-place Listen treats Stop as the same control (dedicated listen-*.html chair links stay on the page)")
+    _why119 = _sr83.listen_iphone_tree_problems(Path(__file__).resolve().parents[2])
+    L.ok("R119", not _why119, "iPhone listen page shows Tap to listen and the first Listen tap starts unless speech has begun" + (f" ({_why119[0]})" if _why119 else ""))
 # R97 (Steven Oct 30 2026 10:11 PM): SEND/email copy has no pure-white table/tr/td backgrounds (Gmail iOS dark mode -> black
 # bands with dark text); they carry EMAIL_TINT on the row AND each cell (style + bgcolor), and the head says color-scheme light only.
 import email_dark_mode as _dm97
