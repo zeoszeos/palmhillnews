@@ -63,7 +63,8 @@ COMMITTEE_RE = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
 # R87b (Steven Oct 30 2026 11:21 AM): content flag MEETINGS_NAME_RE_EXTRA widens the meeting-name match (default None = Oct 25 byte for byte)
 if globals().get("MEETINGS_NAME_RE_EXTRA"): COMMITTEE_RE = re.compile(COMMITTEE_RE.pattern + "|" + MEETINGS_NAME_RE_EXTRA, re.I)
 def is_cmte(e): return e.get("category") == "Meetings" and bool(COMMITTEE_RE.search(e["name"]))
-def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower()
+sys.path.insert(0, SCRIPTS); import style_rules as _sr121  # R121 reserved-only filter
+def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and not _sr121.reserved_only_name(e.get("name"))
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
 VENUE = {"Board Room South": "South Clubhouse Boardroom", "North Main Hall": "North Clubhouse", "South Main Hall": "South Clubhouse",
          "Off-Site": "Off-Site", "Small Meeting Room South": "Small Meeting Room South", "South Lawn and Patio": "South Lawn and Patio",
@@ -151,7 +152,14 @@ import urllib.parse as _up
 def _nopwd(u):
     pr = _up.urlsplit(u); q = [(k, v) for k, v in _up.parse_qsl(pr.query) if k.lower() != "pwd"]
     return _up.urlunsplit((pr.scheme, pr.netloc, pr.path, _up.urlencode(q), ""))
-MEETING_DETAIL = {(n["date"], n["name"]): n for n in json.load(open(ROOT / "data/webmaster-meeting-notices.json"))["notices"]}
+def _meeting_notice_rows():
+    """Webmaster agenda/Zoom notices. The work tree file is the Oct 18 seed list; an issue may add
+    builder/<short>/data/webmaster-meeting-notices.json (later rows win on the same date and name)."""
+    rows = []
+    for p in (ROOT / "data/webmaster-meeting-notices.json", REPO / f"builder/{C.SHORT}/data/webmaster-meeting-notices.json"):
+        if p.exists(): rows.extend(json.load(open(p, encoding="utf-8"))["notices"])
+    return rows
+MEETING_DETAIL = {(n["date"], n["name"]): n for n in _meeting_notice_rows()}
 def mtg_rows():
     out = []
     for i, e in enumerate(meetings):
@@ -165,11 +173,23 @@ def mtg_rows():
             # STYLE-RULES.md R13 (Steven Oct 16 6:51 PM, Oct 11 precedent): Zoom → goes to the Vercel Zoom page, never zoom.us
             assert d.get("zoom_page"), f"{d['name']}: webmaster notice needs zoom_page (Vercel) - never link zoom.us directly"
             sys.path.insert(0, SCRIPTS); import meeting_zoom_page as _mzp
-            (PAGES / d["zoom_page"]).write_text(_mzp.render(d), encoding="utf-8")
-            e = dict(e, also=d["also"], agenda=nu, zoom=BASE + d["zoom_page"])
+            import page_listen as _plm
+            def _v2_listen(html):
+                # R119: a v2 issue's agenda and Zoom pages use the shared player (page_listen.apply/upgrade),
+                # so a later Listen-script change is not left on the old first-tap handler.
+                if not _plm.v2_for(ISSUE): return html
+                return _plm.upgrade(_plm.add(html))
+            if d.get("agenda_lines"): (PAGES / d["notice_page"]).write_text(_v2_listen(_mzp.render_agenda(d)), encoding="utf-8")
+            if d.get("agenda_pdf") and d.get("agenda_pdf_src"):
+                _pdf_src = REPO / d["agenda_pdf_src"]
+                if not _pdf_src.is_file(): raise SystemExit(f"R4: agenda PDF missing {_pdf_src}")
+                import shutil as _shpdf; _shpdf.copyfile(_pdf_src, PAGES / d["agenda_pdf"])
+            (PAGES / d["zoom_page"]).write_text(_v2_listen(_mzp.render(d)), encoding="utf-8")
+            # A hosted agenda PDF is the Agenda → target (Communications Nov 9). Otherwise Agenda → is the HTML agenda page.
+            e = dict(e, also=d["also"], agenda=BASE + (d["agenda_pdf"] if d.get("agenda_pdf") else d["notice_page"]), zoom=BASE + d["zoom_page"])
             L='style="font-size:14px;color:#666666;text-align:right;line-height:1.35;padding-top:1px;'
             out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:4px 8px;border-bottom:1px solid #ddd;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">'
-                f'<tr><td valign="top" align="left" style="font-size:15px;line-height:1.3;font-weight:bold;color:#333333;text-align:left;padding-right:10px;">{escape(e["name"])}</td><td valign="top" align="right" style="font-size:14px;line-height:1.3;color:#666666;text-align:right;padding-top:1px;">{escape(e["venue"])}</td></tr>'
+                f'<tr><td valign="top" align="left" style="font-size:15px;line-height:1.3;font-weight:bold;color:#333333;text-align:left;padding-right:10px;">{escape(e["name"])}</td><td valign="top" align="right" style="font-size:14px;line-height:1.3;color:#666666;text-align:right;padding-top:1px;">{escape(VENUE.get(e["venue"], e["venue"]))}</td></tr>'
                 f'<tr><td valign="top" align="left" style="font-size:14px;color:#666666;text-align:left;line-height:1.35;padding-top:1px;padding-right:10px;">{pdate(e["date"])}<span style="white-space:nowrap;"> • {ptime(e["start"])}</span></td><td valign="top" align="right" {L}"><div style="font-size:13px;line-height:1.35;color:#666666;white-space:nowrap;">{escape(e["also"])}</div></td></tr>'
                 f'<tr><td valign="top" align="left" style="font-size:14px;line-height:1.35;text-align:left;white-space:nowrap;padding-top:1px;padding-right:10px;"><a href="{e["agenda"]}" style="color:{G};white-space:nowrap;">Agenda →</a>&nbsp;&nbsp;&nbsp;<a href="{e["zoom"]}" style="color:{G};white-space:nowrap;">Zoom →</a></td><td valign="top" align="right" {L}white-space:nowrap;"><span style="white-space:nowrap;">{srcx}</span></td></tr></table></td></tr>')
             continue
@@ -877,6 +897,10 @@ for _pg in _r96:
     _t = re.sub(r'((?:href|src)=")/(?!/)', r'\1https://palmhillnews.vercel.app/', _t)
     (LOCAL / _pg).write_text(_t, encoding="utf-8")
     _loc = _loc.replace(BASE + _pg, _pg)
+for _pdf in sorted(set(re.findall(re.escape(BASE) + r'([A-Za-z0-9._-]+\.pdf)', _loc))):
+    if (PAGES / _pdf).is_file():
+        _sh.copy2(PAGES / _pdf, LOCAL / _pdf)
+        _loc = _loc.replace(BASE + _pdf, _pdf)
 for _a in sorted(_r96_assets):
     (LOCAL / _a).parent.mkdir(parents=True, exist_ok=True); _sh.copy2(PAGES / _a, LOCAL / _a)
 (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")

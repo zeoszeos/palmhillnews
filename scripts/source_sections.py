@@ -17,6 +17,13 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Sat Nov 7 2026 morning sweep: Chair Yoga (Webmaster) and the Nov 11 water reschedule (RPM). One email = one notice.
+    "2026-11-07-chair-yoga-class-canceled-notice.html": dict(
+        subject="Chair Yoga class canceled Monday", notice_title="Chair Yoga class canceled", use_existing_page=True,
+        sections=[dict(heading="Chair yoga class canceled", keys=["cancelled"])], approved_omit=[]),
+    "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html": dict(
+        subject="South Potable Water Shut off (rescheduled)", notice_title="South Potable Water Shut off (rescheduled)", use_existing_page=True,
+        sections=[dict(heading="South potable water shut off rescheduled", keys=["rescheduled"])], approved_omit=[]),
     # Sat Oct 31 2026 6 PM deadline sweep (staged pending Steven): three Sat Oct 31 Webmaster emails (leonowicz) -> Nov 1 notices
     "2026-10-31-cornhole-tournament-notice.html": dict(
         subject="Cornhole Tournament", notice_title="Cornhole Tournament", use_existing_page=True,

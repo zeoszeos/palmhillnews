@@ -559,6 +559,57 @@ R10_LOCKED_SHA256 = {
 # R117 (Steven, Nov 6 2026): the R92b "See the All Events List" row uses the newsletter light green, the same tint as
 # the alternating Committee Chair Reports highlight (build_core.bg / R98). Not a new green.
 AE_ROW_GREEN = "#EAF4E4"
+# STYLE-RULES R121 (Steven Nov 7 2026, voice): a calendar row whose visible title is only the word
+# "reserved" is a room-booking placeholder, not an event. Surrounding whitespace and punctuation do not
+# count. A longer title that merely contains the word stays.
+# STYLE-RULES R120 (Steven Nov 7 2026): with no newer monthly report, the September 30 shareholders
+# report card stays off the November 8 main page. The report page and the archive stay published.
+_SEP30_REPORT = "2026-09-30-shareholders-report"
+def sep30_shareholders_card_present(html):
+    """True when the September 30 shareholders report card (or its report link) is in this HTML."""
+    if not html: return False
+    return (_SEP30_REPORT in html) or (">Monthly Shareholders Report</span>" in html)
+
+def sep30_shareholders_main_problem(html):
+    """'' or a reason. Only a November 8 main page is in scope. The report page itself is not."""
+    if "November 8, 2026" not in (html or ""): return ""
+    if sep30_shareholders_card_present(html):
+        return "September 30 shareholders report is on the November 8 main page"
+    return ""
+
+def sep30_report_page_ok(repo):
+    """The September 30 report page stays on disk. R10 also pins its bytes."""
+    import os as _os
+    p = _os.path.join(str(repo), "pages", _SEP30_REPORT + ".html")
+    return _os.path.isfile(p) and _os.path.getsize(p) > 0
+
+def reserved_only_name(name):
+    """True when the visible title, after stripping surrounding whitespace and punctuation, is only 'reserved'."""
+    if name is None: return False
+    core = re.sub(r"^[\s\W_]+|[\s\W_]+$", "", str(name), flags=re.UNICODE)
+    return core.casefold() == "reserved"
+
+def _activity_event_name(title):
+    """Event name from a calendar-list row. '11:00 AM · Reserved' is the name Reserved.
+    A date/time line such as 'Nov 10 • 11:00 AM' is not a name."""
+    title = _h.unescape(title).strip()
+    if " · " in title: return title.split(" · ", 1)[1].strip()
+    return title
+
+def reserved_only_hits(html):
+    """Reserved-only event titles in rendered newsletter or calendar-list HTML.
+    Body copy that merely contains the word is not a hit. Returns the offending visible strings."""
+    hits = []
+    for t in re.findall(r'font-weight:bold;color:#333333;text-align:left;[^>]*>([^<]*)<', html or ""):
+        name = _h.unescape(t).strip()
+        if reserved_only_name(name): hits.append(name)
+    for t in re.findall(r'class="ph-row-title">([^<]*)</div>', html or ""):
+        if reserved_only_name(_activity_event_name(t)): hits.append(_h.unescape(t).strip())
+    for t in re.findall(r'<h2 class="gx-h">([^<]*)<', html or ""):
+        name = _h.unescape(t).strip()
+        if reserved_only_name(name): hits.append(name)
+    return hits
+
 def ae_top_highlight_missing(section_html, link_text="See the All Events List"):
     """Return '' when this Events section's ph-ae-top cell carries #EAF4E4 and the exact All Events link; else a reason."""
     m = re.search(r'<td\b[^>]*\bclass="ph-ae-top"[^>]*>', section_html, re.I)

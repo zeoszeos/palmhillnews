@@ -14,14 +14,14 @@ MAST = re.compile(r'white-space:nowrap;">(\d{1,2}:\d{2} [AP]M)</span>')
 # R115: issues that publish the nested pages/previews/<issue>/ copy. Oct 25 and earlier stay a byte copy (acceptance_oct25).
 ABSOLUTE_FROM = "2026-11-01"
 PAGE = "https://palmhillnews.vercel.app/pages/"
-_REL_PAGE = re.compile(r'href="(?!https?:|//|mailto:|tel:|#)([^"]*?\.html[^"]*)"')
+_REL_PAGE = re.compile(r'href="(?!https?:|//|mailto:|tel:|#)([^"]*?\.(?:html|pdf)[^"]*)"')
 _SCRIPT = re.compile(r"(<script\b[^>]*>.*?</script>)", re.I | re.S)
 
 def _outside_script(html):
     return [p for p in _SCRIPT.split(html) if p[:7].lower() != "<script"]
 
 def relative_page_hrefs(html):
-    """R115: .html hrefs with no scheme (sibling names, archive/..., other relative paths). They 404 from
+    """R115: .html and .pdf hrefs with no scheme (sibling names, archive/..., other relative paths). They 404 from
     pages/previews/<issue>/. tel:, mailto:, #, and absolute http(s) are not included. Script text is ignored."""
     return [h for part in _outside_script(html) for h in _REL_PAGE.findall(part)]
 

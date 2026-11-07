@@ -165,13 +165,36 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
     _cal = json.load(open(ROOT / "data" / audit["calendar_file"]))["events"] if (ROOT / "data" / audit["calendar_file"]).exists() else json.load(open(audit["calendar_file"]))["events"]
     _w = C.WINDOWS["RECURRING"]; _asr = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
     _cre = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
-    _base = [e for e in _cal if e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and _w[0] <= e["date"] <= _w[1]]
+    _base = [e for e in _cal if e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and not _sr83.reserved_only_name(e.get("name")) and "test" not in e["name"].lower() and _w[0] <= e["date"] <= _w[1]]
     _rec = {(e["date"], e["name"]) for e in _base if e.get("recurring") or e["name"] in _asr}
     _exp = {(e["date"], e["name"]) for e in _base if (e["date"], e["name"]) not in _rec and not _cre.search(e["name"]) and e.get("category") not in ("CLOSURE",)
             and not e.get("allDay") and (e.get("category") != "Meetings" or e["name"] == "Palm Hill MasterPlan Team")}
     _got = {tuple(x) for x in audit.get("all_events", [])}
     L.ok("R79", not (_got & _rec), f"All Events has no Recurring-page event {sorted(_got & _rec)}")
     L.ok("R79", _got == _exp and f'data-activity-count="{len(_exp)}"' in _aeh, f"All Events = every window event not on Recurring ({len(_exp)}); missing {sorted(_exp - _got)} extra {sorted(_got - _exp)}")
+# R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 shareholders card stays off the November 8 main page.
+if C.ISSUE == "2026-11-08":
+    _repo120 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    L.ok("R120", _sr83.sep30_report_page_ok(_repo120), "September 30 shareholders report page stays published")
+    _r120 = [("preview", page)]
+    _sd120 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sd120.exists(): _r120.append(("SEND", _sd120.read_text(encoding="utf-8")))
+    for _n120, _x120 in _r120:
+        _why120 = _sr83.sep30_shareholders_main_problem(_x120)
+        L.ok("R120", _why120 == "", f"{_n120}: September 30 shareholders report is off the main page" + (f" ({_why120})" if _why120 else ""))
+# R121 (Steven Nov 7 2026): a title that is only "Reserved" is a placeholder and must not be rendered.
+# Numbered R121 because merged main already uses R119 for the iPhone Listen first tap.
+def _r121(label, html):
+    _hits = _sr83.reserved_only_hits(html)
+    L.ok("R121", not _hits, f"{label}: no reserved-only placeholder listed as an event" + (f" {_hits}" if _hits else ""))
+_r121("preview", page)
+_sd121 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+if _sd121.exists(): _r121("SEND", _sd121.read_text(encoding="utf-8"))
+_repo121 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"
+for _kind121 in ("all-events", "recurring-activities"):
+    for _sort121 in ("date", "name", "location"):
+        _f121 = _repo121 / f"{C.ISSUE}-{_kind121}-by-{_sort121}.html"
+        if _f121.exists(): _r121(_f121.name, _f121.read_text(encoding="utf-8"))
 # R80 (Steven Oct 26 2026 11:41 AM): every All Events row (all three sorts) has its own Source line with the linked Calendar,
 # plus the linked Webmaster notice for every event the content maps to one (EVENT_EXTRA_SRC, the R48/R56 map); none invented.
 if getattr(C, "ALL_EVENTS_PAGE", False):
@@ -309,7 +332,7 @@ if C.ISSUE >= "2026-11-01" and getattr(C, "MEETINGS_ALL_IN_WINDOW", False):
         _re87 = re.compile(r"\bcommittee\b|\bboard of directors\b" + ("|" + C.MEETINGS_NAME_RE_EXTRA if getattr(C, "MEETINGS_NAME_RE_EXTRA", None) else ""), re.I)  # R87b
         _exp87 = sorted({(e["date"], e["start"], e["name"].lower().replace("&", "and").replace("building ", "buildings ").replace(" meeting", "").strip())
                          for e in _cal87["events"] if e.get("category") == "Meetings" and _re87.search(e["name"]) and e.get("status") == "CONFIRMED"
-                         and e["name"] != "Private Event" and "test" not in e["name"].lower() and _w87[0] <= e["date"] <= _w87[1]})
+                         and e["name"] != "Private Event" and not _sr83.reserved_only_name(e.get("name")) and "test" not in e["name"].lower() and _w87[0] <= e["date"] <= _w87[1]})
         _got87 = [(d, n.lower().replace(" meeting", "").strip()) for d, n in audit["meetings"]]
         _miss87 = [x for x in _exp87 if (x[0], x[2]) not in _got87]
         L.ok("R87", not _miss87 and len(_got87) == len(set(_got87)) and len(_got87) == len(_exp87),
