@@ -7,7 +7,7 @@ import json, re, sys
 from datetime import date, datetime
 from html import escape
 from pathlib import Path
-sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO), "scripts")); from style_rules import mon3_text
+sys.path.insert(0, __import__("os").path.join(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO), "scripts")); from style_rules import mon3_text, reserved_only_name
 ROOT = Path(__import__("os").environ.get("PHNEWS_WORK") or str(C.DEFAULT_WORK))  # R67 work tree (batch 3)
 ISSUE = C.ISSUE; RECURRING = C.WINDOWS["RECURRING"]; VOLNO = C.VOLNO
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
@@ -29,6 +29,7 @@ CALSNAP = sorted((ROOT / "data").glob("cal-2*.json"))[-1]; print("recurring_oct1
 events = json.load(open(CALSNAP))["events"]
 k = lambda e: (e["date"], e.get("start") or "99:99", e["name"])
 rec = sorted([e for e in events if e.get("status") == "CONFIRMED" and e.get("name") != "Private Event"
+              and not reserved_only_name(e.get("name"))
               and RECURRING[0] <= e["date"] <= RECURRING[1] and (e.get("recurring") or e["name"] in AS_RECURRING)
               and not CM.search(e.get("name", ""))], key=k)
 assert rec[0]["date"] >= ISSUE, "R20: recurring window must start on the issue date"
@@ -86,7 +87,7 @@ write_set(rec, "recurring-activities", "Recurring Meetings &amp; Events")
 # R79 (Steven Oct 26 2026 11:25/11:28 AM): All Events = every event in the Recurring window not on the Recurring pages, picked
 # with the This Week/Upcoming rule (no committee/board meetings, no Meetings-category items except MasterPlan, no closures/all-day).
 if getattr(C, "ALL_EVENTS_PAGE", False):
-    allev = sorted([e for e in events if e.get("status") == "CONFIRMED" and e.get("name") != "Private Event" and "test" not in e["name"].lower()
+    allev = sorted([e for e in events if e.get("status") == "CONFIRMED" and e.get("name") != "Private Event" and not reserved_only_name(e.get("name")) and "test" not in e["name"].lower()
                     and RECURRING[0] <= e["date"] <= RECURRING[1] and not e.get("recurring") and e["name"] not in AS_RECURRING
                     and not re.search(r"\bcommittee\b|\bboard of directors\b", e["name"], re.I) and e.get("category") != "CLOSURE" and not e.get("allDay")
                     and (e.get("category") != "Meetings" or e["name"] == "Palm Hill MasterPlan Team")], key=k)

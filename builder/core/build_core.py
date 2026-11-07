@@ -63,7 +63,8 @@ COMMITTEE_RE = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
 # R87b (Steven Oct 30 2026 11:21 AM): content flag MEETINGS_NAME_RE_EXTRA widens the meeting-name match (default None = Oct 25 byte for byte)
 if globals().get("MEETINGS_NAME_RE_EXTRA"): COMMITTEE_RE = re.compile(COMMITTEE_RE.pattern + "|" + MEETINGS_NAME_RE_EXTRA, re.I)
 def is_cmte(e): return e.get("category") == "Meetings" and bool(COMMITTEE_RE.search(e["name"]))
-def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower()
+sys.path.insert(0, SCRIPTS); import style_rules as _sr119  # R119
+def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and not _sr119.reserved_only_name(e.get("name"))
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
 VENUE = {"Board Room South": "South Clubhouse Boardroom", "North Main Hall": "North Clubhouse", "South Main Hall": "South Clubhouse",
          "Off-Site": "Off-Site", "Small Meeting Room South": "Small Meeting Room South", "South Lawn and Patio": "South Lawn and Patio",
