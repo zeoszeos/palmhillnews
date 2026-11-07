@@ -5,10 +5,12 @@ VOL_NO = 17
 SHORT = "nov8"
 DEFAULT_REPO = "/workspace/nov8-build"
 DEFAULT_WORK = "/workspace/phnews-consolidation/nov8"
-# Community Story (R45/R83, Steven Oct 26 2026 12:19 PM): Katra Peck, Palm Hill Link February 2026 pp 4-5, full length, credit line
-# "First published in the Palm Hill Link, February 2026". Pages written by builder/nov1/stage_nov1_content.py.
-STORY = dict(json="builder/nov1/data/community-story-katra-peck.json", listen="2026-02-listen-katra-peck-story.html", teaser_sentences=1)
-STORY_OMIT_DRYRUN_NOTE = None         # Nov 1 has a story (Katra Peck); never omitted
+# Community Story (R45/R83, Steven Nov 6, 2026: Tom Palladino's story is great to use; "Make it so").
+# Palm Hill Link November 2026 pp 10-11, full length, credit line "First published in the Palm Hill Link, November 2026".
+# Display date is Nov 1, 2026 (1st of the Link month, R83), not an interview day. Katra Peck's page stays published;
+# she leaves this issue's feature the way Joe Clay left Nov 1. Pages written by builder/nov8/stage_nov8_content.py.
+STORY = dict(json="builder/nov8/data/community-story-tom-palladino.json", listen="2026-11-listen-tom-palladino-story.html", teaser_sentences=1)
+STORY_OMIT_DRYRUN_NOTE = None         # Nov 8 has a story (Tom Palladino); never omitted
 # Carry policy (set up Oct 24 2026 8:3x PM; Steven confirms Friday): keep notices still valid on/after Nov 1, drop Oct 25 one-offs.
 NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info from Linda", "North Clubhouse Ice Machine Moved",
                    "Help with maintaining Sanitation Field", "Please observe important stop sign rules",
@@ -634,7 +636,7 @@ RULES_ARCHIVE_TITLE = "Rules and Regulations Committee Report"
 RULES_ARCHIVE_SOURCE = "Source: Rules and Regulations Committee Report (Bob Newport)"
 
 # ---------- Community Story archive row label (story itself: STORY above) ----------
-STORY_DATE_LABEL = "Feb 2026"   # archive "date_label" for this issue's story row (used only when STORY is set)
+STORY_DATE_LABEL = "Nov 2026"   # archive "date_label" for this issue's story row (Link month, same form as Feb 2026 / Oct 2026)
 
 # ---------- Weekly Manager Update (page items, PDF attachment, main-page card) ----------
 # Weekly Manager Update Nov 6 (Megan Leftwich, weekly update email dated Friday, November 6, 2026) replaces Oct 30
@@ -727,12 +729,12 @@ DYK_ROW_DATE = "2026-10-25"; DYK_ROW_ISSUES = ["2026-10-25"]   # archive rows fo
 # palmhillblast thread (no official Spectrum source). Data kept: builder/nov1/data/dyk-spectrum-unplugging.json; full item
 # (page, preview, guards) at branch nov1-dyk-spectrum-parked (a2b4659). RESTORE: set DYK_NEW_JSON back to that path, set
 # DYK_REPRISE = None, rerun builder/nov1/stage_nov1_content.py + the build (page + archive row are regenerated).
-DYK_NEW_JSON = None   # was "builder/nov1/data/dyk-spectrum-unplugging.json"
+# R88 (Steven Nov 6, 2026): Sunshine Directors box from the November 2026 Link, page 10. The Facebook reprise was Nov 1's
+# stand-in (R91). R89 keeps last week's Did You Know off this main page, so Nov 8 shows this issue's new item only.
+# The Facebook page and its Oct 18 archive row stay. Spectrum unplugging stays parked.
+DYK_NEW_JSON = "builder/nov8/data/dyk-sunshine-directors.json"
 DYK_PARKED_PAGES = ["2026-11-01-did-you-know-spectrum-unplugging.html"]   # must not be linked or archived while parked
-# R91 (Steven Oct 29 2026 7:33 PM): Facebook Did You Know (ran Oct 18) in place of the pulled Spectrum item. Source wording only:
-# title = the live page's own heading, teaser = DYK_FB_TEXT (as printed Oct 18), More -> the live Oct 18 page (QR code there).
-DYK_REPRISE = [{"id": "2026-10-18-did-you-know-facebook-group", "title": "Palm Hill Residents Facebook Group",
-                "text_html": "DYK_FB_TEXT", "sentences": 2, "href": FBPAGE_DYK}]   # R18c: first 2 source sentences (full text is 5 lines at 390 px; never reword)
+DYK_REPRISE = None
 # R89 (Steven Oct 29 2026 11:33 AM "Remove last week's dyk items from the main nl page"): Oct 25 items stay in the archive only
 DYK_CARRY_PREVIOUS = False
 # R66c (Steven Oct 24 3:34 PM): Oct 18 Traffic Rules archive row teaser in R66 style (archive row only)

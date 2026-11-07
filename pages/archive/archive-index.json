@@ -168,6 +168,15 @@
       "page_link_label": "Story Archives →",
       "items": [
         {
+          "date": "2026-11-01",
+          "title": "Story of the Month: A Life Well Lived",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-tom-palladino-a-life-well-lived.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-listen-tom-palladino-story.html",
+          "issues": [
+            "2026-11-08"
+          ]
+        },
+        {
           "date": "2026-10-04",
           "title": "97½ and Still Chasing Birdies Instead of Birthdays",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-04-mary-leslie-chasing-birdies.html",
@@ -200,8 +209,7 @@
           "url": "https://palmhillnews.vercel.app/pages/2026-02-katra-peck-painting-horizon-west-bay.html",
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-02-listen-katra-peck-story.html",
           "issues": [
-            "2026-11-01",
-            "2026-11-08"
+            "2026-11-01"
           ]
         },
         {
@@ -1348,6 +1356,14 @@
       "email_link_label": "Did You Know Archives →",
       "page_link_label": "Did You Know Archives →",
       "items": [
+        {
+          "date": "2026-11-08",
+          "title": "EMAIL for SUNSHINE DIRECTORS",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-08-did-you-know-email-for-sunshine-directors.html",
+          "issues": [
+            "2026-11-08"
+          ]
+        },
         {
           "date": "2026-10-25",
           "title": "Assessments Due To The Corporation",
