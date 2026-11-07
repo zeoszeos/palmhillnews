@@ -9,15 +9,37 @@ from html import escape as e
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 def tel(s): return "tel:" + re.sub(r"[^\d+,*#]", "", s.split(" US")[0].split(" Canada")[0]).replace("#", "%23")
-def render(n):  # STYLE-RULES RD1-RD13: every caller (builder too) gets the readability layout
+def _rd(html, name):
     import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import readability as _rd
-    return _rd.apply(_render(n), n.get("zoom_page", ""))[0]
-def _render(n):
+    return _rd.apply(html, name)[0]
+def render(n):  # STYLE-RULES RD1-RD13: every caller (builder too) gets the readability layout
+    return _rd(_render(n), n.get("zoom_page", ""))
+def render_agenda(n):
+    """HTML agenda page (Agenda →). Words are the notice's agenda_lines; a PDF is linked only when agenda_pdf is set."""
+    return _rd(_render_agenda(n), n.get("notice_page", ""))
+def _when(n):
     d = date.fromisoformat(n["date"]); t = datetime.strptime(n["start"], "%H:%M")
     tm = f"{(t.hour % 12) or 12}:{t:%M} {'AM' if t.hour < 12 else 'PM'}"
+    return d, tm
+def _agenda_href(n):
+    """Agenda → opens the hosted agenda PDF when the notice has one, otherwise the HTML agenda page."""
+    return n.get("agenda_pdf") or n["notice_page"]
+def _render(n):
+    d, tm = _when(n)
     title = f'{n["name"]} — Join on Zoom'
-    tap = "<br>".join(f'<a href="{tel(x)}">{e(x)}</a>' for x in n["one_tap"])
-    aud = "<br>".join(f'<a href="{tel(x)}">{e(x)}</a>' for x in n["audio"])
+    tap = "<br>".join(f'<a href="{tel(x)}">{e(x)}</a>' for x in n.get("one_tap") or [])
+    aud = "<br>".join(f'<a href="{tel(x)}">{e(x)}</a>' for x in n.get("audio") or [])
+    phone = ""
+    if tap:
+        phone += f'<div class="ph-row"><div class="ph-row-title">Phone one-tap</div><div class="ph-detail">{tap}</div></div>'
+    if aud or n.get("intl"):
+        intl = f'<br>International numbers: <a href="{e(n["intl"])}">{e(n["intl"])}</a>' if n.get("intl") else ""
+        phone += f'<div class="ph-row ph-alt"><div class="ph-row-title">Join by phone (audio only)</div><div class="ph-detail">{aud}{intl}</div></div>'
+    sent, subj = n.get("sent"), n.get("subject")
+    if sent and subj:
+        src = f'Source: Zoom details from the <a href="{e(n["notice_page"])}">Palm Hill webmaster notice</a> sent {e(sent)} ("{e(subj)}"). Webinar time: {MON3[d.month-1]} {d.day}, {d.year} {tm} Eastern Time (US and Canada).'
+    else:
+        src = f'Source: Zoom link and passcode from the <a href="{e(n["notice_page"])}">meeting agenda</a>. Webinar time: {MON3[d.month-1]} {d.day}, {d.year} {tm} Eastern Time (US and Canada).'
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,13 +69,57 @@ def _render(n):
 <h1 class="ph-section">{e(title)}</h1>
 <p class="ph-meta">{d:%A}, {MON3[d.month-1]} {d.day}, {d.year} • {tm} • {e(n["place"])}</p>
 <p class="ph-lead">Attend in person or join the Zoom webinar.</p>
-<nav class="ph-links" aria-label="Meeting links"><a href="{e(n["notice_page"])}">View Meeting Agenda →</a><span class="ph-dot"> · </span><a href="{e(n["zoom_page"])}">Join on Zoom →</a></nav>
+<nav class="ph-links" aria-label="Meeting links"><a href="{e(_agenda_href(n))}">View Meeting Agenda →</a><span class="ph-dot"> · </span><a href="{e(n["zoom_page"])}">Join on Zoom →</a></nav>
 <p style="text-align:center;margin:18px 0 22px;"><a href="{e(n["zoom"])}" style="display:inline-block;background:#2D5016;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;font-size:22px;font-weight:bold;text-decoration:none;padding:14px 32px;border-radius:8px;white-space:nowrap;">Join Zoom Meeting</a><br><span style="display:inline-block;margin-top:10px;font-size:18px;">Webinar ID: <b>{e(n["webinar_id"])}</b> &nbsp;·&nbsp; Passcode: <b>{e(n["passcode"])}</b></span></p>
 <div class="ph-row"><div class="ph-row-title">Join from PC, Mac, iPad, or Android</div><div class="ph-detail"><a href="{e(n["zoom"])}">Join the Zoom webinar →</a><br><span style="overflow-wrap:anywhere;font-size:15px;"><a href="{e(n["zoom"])}">{e(n["zoom"])}</a></span></div></div>
 <div class="ph-row ph-alt"><div class="ph-row-title">Webinar ID and passcode</div><div class="ph-detail">Webinar ID: {e(n["webinar_id"])}<br>Passcode: {e(n["passcode"])}</div></div>
-<div class="ph-row"><div class="ph-row-title">Phone one-tap</div><div class="ph-detail">{tap}</div></div>
-<div class="ph-row ph-alt"><div class="ph-row-title">Join by phone (audio only)</div><div class="ph-detail">{aud}<br>International numbers: <a href="{e(n["intl"])}">{e(n["intl"])}</a></div></div>
-<p class="ph-source">Source: Zoom details from the <a href="{e(n["notice_page"])}">Palm Hill webmaster notice</a> sent {e(n["sent"])} ("{e(n["subject"])}"). Webinar time: {MON3[d.month-1]} {d.day}, {d.year} {tm} Eastern Time (US and Canada).</p>
+{phone}
+<p class="ph-source">{src}</p>
+</main>
+</div>
+</body>
+</html>
+'''
+def _render_agenda(n):
+    d, tm = _when(n)
+    title = n.get("agenda_title") or n["name"]
+    body = "".join(
+        '<div class="ph-detail" style="white-space:pre-wrap;min-height:0.8em"></div>' if not line.strip()
+        else f'<div class="ph-detail" style="white-space:pre-wrap">{e(line)}</div>'
+        for line in n.get("agenda_lines") or [])
+    pdf = (f'<p class="ph-lead"><a href="{e(n["agenda_pdf"])}">Agenda PDF →</a></p>' if n.get("agenda_pdf") else "")
+    src = n.get("agenda_source") or "Source: meeting agenda, copied as sent."
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(title)} — Palm Hill Country Club</title>
+<link rel="stylesheet" href="/pages/assets/ph-newsletter.css">
+</head>
+<body>
+<!-- Shell: /pages/assets/ph-newsletter-shell.html — one column, no min-width table, no pill links. -->
+<!-- ph-archive-nav:none (meeting agenda page: no bar, no bottom block; Steven Oct 9) -->
+<!-- generated by scripts/meeting_zoom_page.py (STYLE-RULES.md R4/R13) -->
+<div class="ph-page">
+<header class="ph-banner">
+  <div class="ph-masthead">
+    <img class="ph-palm" src="/pages/assets/masthead-palm.png" alt="" width="74" height="77">
+    <div class="ph-masthead-text">
+      <div class="ph-wordmark">Palm Hill Country Club</div>
+      <div class="ph-issuedate">{d:%A}, {FULL[d.month-1]} {d.day}, {d.year}</div>
+    </div>
+    <img class="ph-palm" src="/pages/assets/masthead-palm.png" alt="" width="74" height="77">
+  </div>
+  <p class="ph-tagline">A look at upcoming events, meetings, maintenance notices, useful resources and helpful links</p>
+  <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
+</header>
+<main class="ph-body">
+<h1 class="ph-section">{e(title)}</h1>
+<p class="ph-meta">{d:%A}, {MON3[d.month-1]} {d.day}, {d.year} • {tm} • {e(n["place"])}</p>
+<nav class="ph-links" aria-label="Meeting links"><a href="{e(_agenda_href(n))}">View Meeting Agenda →</a><span class="ph-dot"> · </span><a href="{e(n["zoom_page"])}">Join on Zoom →</a></nav>
+{pdf}<div class="ph-row">{body}</div>
+<p class="ph-source">{e(src)}</p>
 </main>
 </div>
 </body>
