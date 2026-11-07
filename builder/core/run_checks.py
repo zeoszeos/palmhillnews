@@ -182,18 +182,19 @@ if C.ISSUE == "2026-11-08":
     for _n120, _x120 in _r120:
         _why120 = _sr83.sep30_shareholders_main_problem(_x120)
         L.ok("R120", _why120 == "", f"{_n120}: September 30 shareholders report is off the main page" + (f" ({_why120})" if _why120 else ""))
-# R119 (Steven Nov 7 2026): a title that is only "Reserved" is a placeholder and must not be rendered.
-def _r119(label, html):
+# R121 (Steven Nov 7 2026): a title that is only "Reserved" is a placeholder and must not be rendered.
+# Numbered R121 because merged main already uses R119 for the iPhone Listen first tap.
+def _r121(label, html):
     _hits = _sr83.reserved_only_hits(html)
-    L.ok("R119", not _hits, f"{label}: no reserved-only placeholder listed as an event" + (f" {_hits}" if _hits else ""))
-_r119("preview", page)
-_sd119 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
-if _sd119.exists(): _r119("SEND", _sd119.read_text(encoding="utf-8"))
-_repo119 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"
-for _kind119 in ("all-events", "recurring-activities"):
-    for _sort119 in ("date", "name", "location"):
-        _f119 = _repo119 / f"{C.ISSUE}-{_kind119}-by-{_sort119}.html"
-        if _f119.exists(): _r119(_f119.name, _f119.read_text(encoding="utf-8"))
+    L.ok("R121", not _hits, f"{label}: no reserved-only placeholder listed as an event" + (f" {_hits}" if _hits else ""))
+_r121("preview", page)
+_sd121 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+if _sd121.exists(): _r121("SEND", _sd121.read_text(encoding="utf-8"))
+_repo121 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"
+for _kind121 in ("all-events", "recurring-activities"):
+    for _sort121 in ("date", "name", "location"):
+        _f121 = _repo121 / f"{C.ISSUE}-{_kind121}-by-{_sort121}.html"
+        if _f121.exists(): _r121(_f121.name, _f121.read_text(encoding="utf-8"))
 # R80 (Steven Oct 26 2026 11:41 AM): every All Events row (all three sorts) has its own Source line with the linked Calendar,
 # plus the linked Webmaster notice for every event the content maps to one (EVENT_EXTRA_SRC, the R48/R56 map); none invented.
 if getattr(C, "ALL_EVENTS_PAGE", False):
@@ -409,6 +410,8 @@ if _pl94.v2_for(C.ISSUE):
     _src116 = (Path(__file__).resolve().parents[2] / "scripts" / "listen_inplace.html").read_text(encoding="utf-8")
     L.ok("R116", "classList.contains('ph-playing')" in _src116 and "(Listen|Stop)" in _src116 and "a === cur" in _src116 and "phLabel" in _src116,
          "in-place Listen treats Stop as the same control (dedicated listen-*.html chair links stay on the page)")
+    _why119 = _sr83.listen_iphone_tree_problems(Path(__file__).resolve().parents[2])
+    L.ok("R119", not _why119, "iPhone listen page shows Tap to listen and the first Listen tap starts unless speech has begun" + (f" ({_why119[0]})" if _why119 else ""))
 # R97 (Steven Oct 30 2026 10:11 PM): SEND/email copy has no pure-white table/tr/td backgrounds (Gmail iOS dark mode -> black
 # bands with dark text); they carry EMAIL_TINT on the row AND each cell (style + bgcolor), and the head says color-scheme light only.
 import email_dark_mode as _dm97

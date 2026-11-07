@@ -63,8 +63,8 @@ COMMITTEE_RE = re.compile(r"\bcommittee\b|\bboard of directors\b", re.I)
 # R87b (Steven Oct 30 2026 11:21 AM): content flag MEETINGS_NAME_RE_EXTRA widens the meeting-name match (default None = Oct 25 byte for byte)
 if globals().get("MEETINGS_NAME_RE_EXTRA"): COMMITTEE_RE = re.compile(COMMITTEE_RE.pattern + "|" + MEETINGS_NAME_RE_EXTRA, re.I)
 def is_cmte(e): return e.get("category") == "Meetings" and bool(COMMITTEE_RE.search(e["name"]))
-sys.path.insert(0, SCRIPTS); import style_rules as _sr119  # R119
-def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and not _sr119.reserved_only_name(e.get("name"))
+sys.path.insert(0, SCRIPTS); import style_rules as _sr121  # R121 reserved-only filter
+def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and not _sr121.reserved_only_name(e.get("name"))
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
 VENUE = {"Board Room South": "South Clubhouse Boardroom", "North Main Hall": "North Clubhouse", "South Main Hall": "South Clubhouse",
          "Off-Site": "Off-Site", "Small Meeting Room South": "Small Meeting Room South", "South Lawn and Patio": "South Lawn and Patio",
@@ -173,12 +173,18 @@ def mtg_rows():
             # STYLE-RULES.md R13 (Steven Oct 16 6:51 PM, Oct 11 precedent): Zoom → goes to the Vercel Zoom page, never zoom.us
             assert d.get("zoom_page"), f"{d['name']}: webmaster notice needs zoom_page (Vercel) - never link zoom.us directly"
             sys.path.insert(0, SCRIPTS); import meeting_zoom_page as _mzp
-            if d.get("agenda_lines"): (PAGES / d["notice_page"]).write_text(_mzp.render_agenda(d), encoding="utf-8")
+            import page_listen as _plm
+            def _v2_listen(html):
+                # R119: a v2 issue's agenda and Zoom pages use the shared player (page_listen.apply/upgrade),
+                # so a later Listen-script change is not left on the old first-tap handler.
+                if not _plm.v2_for(ISSUE): return html
+                return _plm.upgrade(_plm.add(html))
+            if d.get("agenda_lines"): (PAGES / d["notice_page"]).write_text(_v2_listen(_mzp.render_agenda(d)), encoding="utf-8")
             if d.get("agenda_pdf") and d.get("agenda_pdf_src"):
                 _pdf_src = REPO / d["agenda_pdf_src"]
                 if not _pdf_src.is_file(): raise SystemExit(f"R4: agenda PDF missing {_pdf_src}")
                 import shutil as _shpdf; _shpdf.copyfile(_pdf_src, PAGES / d["agenda_pdf"])
-            (PAGES / d["zoom_page"]).write_text(_mzp.render(d), encoding="utf-8")
+            (PAGES / d["zoom_page"]).write_text(_v2_listen(_mzp.render(d)), encoding="utf-8")
             # A hosted agenda PDF is the Agenda → target (Communications Nov 9). Otherwise Agenda → is the HTML agenda page.
             e = dict(e, also=d["also"], agenda=BASE + (d["agenda_pdf"] if d.get("agenda_pdf") else d["notice_page"]), zoom=BASE + d["zoom_page"])
             L='style="font-size:14px;color:#666666;text-align:right;line-height:1.35;padding-top:1px;'

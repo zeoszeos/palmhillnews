@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""R119 (Steven, Nov 7 2026): a title that is only "Reserved" is a placeholder.
+"""R121 (Steven, Nov 7 2026): a title that is only "Reserved" is a placeholder.
+Numbered R121 because R119 on main is the iPhone Listen first-tap rule.
 
 The guard fails when a reserved-only title is rendered, and it does not flag a longer
 title that merely contains the word.
@@ -48,4 +49,4 @@ def test_nov8_pages_when_present():
 
 if __name__ == "__main__":
     test_name(); test_guard_fails_when_present(); test_nov8_pages_when_present()
-    print("R119 reserved-only tests PASS")
+    print("R121 reserved-only tests PASS")
