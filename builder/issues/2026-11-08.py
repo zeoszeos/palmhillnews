@@ -732,6 +732,7 @@ DYK_ROW_DATE = "2026-10-25"; DYK_ROW_ISSUES = ["2026-10-25"]   # archive rows fo
 # R88 (Steven Nov 6, 2026): Sunshine Directors box from the November 2026 Link, page 10. The Facebook reprise was Nov 1's
 # stand-in (R91). R89 keeps last week's Did You Know off this main page, so Nov 8 shows this issue's new item only.
 # The Facebook page and its Oct 18 archive row stay. Spectrum unplugging stays parked.
+# R118 (Steven Nov 7, 2026): that item's main-card teaser includes the printed email line. Do not cut it back to the semicolon.
 DYK_NEW_JSON = "builder/nov8/data/dyk-sunshine-directors.json"
 DYK_PARKED_PAGES = ["2026-11-01-did-you-know-spectrum-unplugging.html"]   # must not be linked or archived while parked
 DYK_REPRISE = None

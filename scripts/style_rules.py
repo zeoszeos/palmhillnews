@@ -124,6 +124,74 @@ def dyk_summary_ok(summary, source_paras):
     return len(summary) <= 300 and 1 <= len(sents) <= 3 and all(x in src for x in sents)  # Steven 6:28 PM: at most 3 source sentences
 
 
+# STYLE-RULES R118 (Steven Nov 7 2026): the Nov 8 Sunshine Directors main card keeps the printed sentence
+# that ends at the semicolon, then the printed email line, as plain text. The 3-line teaser cut (R18/R18c/R39)
+# had stopped at the semicolon. Steven looked at the live preview and said the email fits on the main card.
+# Measured at 390px the email makes this one card 4 lines; "also, prayers can be offered." would make 5, so
+# that clause stays on the item page with the rest of the printed body.
+SUNSHINE_DYK_ID = "2026-11-08-email-for-sunshine-directors"
+SUNSHINE_DYK_TITLE = "EMAIL for SUNSHINE DIRECTORS"
+SUNSHINE_DYK_PAGE = "2026-11-08-did-you-know-email-for-sunshine-directors.html"
+SUNSHINE_EMAIL_LINE = "Email address: Sunshineinpalmhill@gmail.com"
+SUNSHINE_PRAYERS = "also, prayers can be offered."
+
+def sunshine_main_teaser(paragraphs):
+    """Printed main-card text: the first paragraph through its semicolon, then the email line."""
+    if not paragraphs: return ""
+    body = paragraphs[0]
+    i = body.find(";")
+    if i < 0 or SUNSHINE_EMAIL_LINE not in paragraphs: return ""
+    return body[:i + 1] + " " + SUNSHINE_EMAIL_LINE
+
+def sunshine_item_teaser_problem(item):
+    """'' when this is not the Sunshine card, or its teaser is the R118 printed main-card text. Else a reason."""
+    if item.get("id") != SUNSHINE_DYK_ID and item.get("title_display") != SUNSHINE_DYK_TITLE:
+        return ""
+    teaser = " ".join((item.get("teaser") or "").split())
+    if "mailto:" in (item.get("teaser") or "").lower():
+        return "Sunshine Directors main teaser must be plain text, no mailto:"
+    want = sunshine_main_teaser(item.get("paragraphs") or [])
+    if not want:
+        return "Sunshine Directors source is missing the semicolon sentence or the printed email line"
+    if teaser != want:
+        return "Sunshine Directors main teaser must be the printed sentence through the semicolon, then " + SUNSHINE_EMAIL_LINE
+    return ""
+
+def dyk_new_item_teaser_ok(item):
+    """R88/R39 verbatim sentences, or the R118 Sunshine card (email line kept on the main teaser)."""
+    if item.get("id") == SUNSHINE_DYK_ID or item.get("title_display") == SUNSHINE_DYK_TITLE:
+        return sunshine_item_teaser_problem(item) == ""
+    return dyk_summary_ok(item["teaser"], item["paragraphs"])
+
+def sunshine_main_card_problem(html):
+    """R118 on a newsletter. None when this page is not Nov 8 and has no Sunshine card.
+    '' when the card shows the printed email as plain text after the semicolon sentence. Else a reason."""
+    nov8 = "Sunday, November 8, 2026" in html
+    if SUNSHINE_DYK_TITLE not in html:
+        return None if not nov8 else "main page is missing the EMAIL for SUNSHINE DIRECTORS card"
+    m = re.search(r'EMAIL for SUNSHINE DIRECTORS</div><div[^>]*>([^<]*)</div>', html)
+    if not m:
+        return "Sunshine Directors card has no plain-text teaser"
+    teaser = " ".join(_h.unescape(m.group(1)).split())
+    if not teaser.endswith("through the Sunshine Directors; " + SUNSHINE_EMAIL_LINE):
+        return "main card must keep the printed sentence through the semicolon, then the printed email line"
+    if "pick-me-up" not in teaser:
+        return "printed Sunshine Directors sentence is missing from the main card"
+    if "mailto:" in m.group(0).lower():
+        return "Sunshine Directors email is a mailto link on the main card"
+    return ""
+
+def sunshine_item_page_problem(html):
+    """R118 on the item page: full printed body, including the prayers clause and the plain-text email."""
+    if SUNSHINE_PRAYERS not in html:
+        return "item page is missing the printed line " + SUNSHINE_PRAYERS
+    if SUNSHINE_EMAIL_LINE not in html:
+        return "item page is missing the printed email line"
+    if "mailto:" in html.lower():
+        return "item page must keep the email as plain text (no mailto:)"
+    return ""
+
+
 # STYLE-RULES R39 framing teaser (Steven, Oct 17 6:32 PM): a general description of the item's topic and source -- no contributor
 # name, no quoted rule (no run of 5+ consecutive source words), <= 3 lines at desktop (<= 250 characters at 15px / 640px).
 def dyk_framing_ok(teaser, names, source_paras):

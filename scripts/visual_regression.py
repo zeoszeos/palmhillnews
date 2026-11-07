@@ -13,7 +13,7 @@ Needs: /workspace/.venv-vr (python -m venv; pip install playwright pillow numpy;
 """
 import sys, os, re, json, argparse, pathlib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from style_rules import title_month_violations
+from style_rules import title_month_violations, sunshine_main_card_problem, SUNSHINE_DYK_TITLE
 from playwright.sync_api import sync_playwright
 from PIL import Image, ImageChops
 import numpy as np
@@ -105,6 +105,9 @@ def rule_checks(html, page):
     # R27 (Steven, Oct 17): both footer service-request lines carry the R27 class/size (13px, 12px at <=640px)
     if _m and _iso >= "2026-10-18" and "SERVICE REQUESTS" in html and (len(re.findall(r'class="ph-svc-line" style="[^"]*font-size:13px', html)) != 2 or 'id="ph-svc-r27"' not in html):
         fails.append("R27 service-request lines missing the one-line sizing (ph-svc-line 13px + ph-svc-r27 media rule)")
+    # R118 (Steven Nov 7 2026): Nov 8 Sunshine Directors email stays on the main card as plain text
+    _p118 = sunshine_main_card_problem(html)
+    if _p118: fails.append("R118 " + _p118)
     # R23: event/notice items link with "More →" only (report/message labels Read Full Report/Message/Update are allowed)
     for v in re.findall(r'>\s*((?:Read (?:Full )?(?:Details|More|more|Notice|Event)|Details|Full Details|Learn More)\s*→?)\s*</a>', html):
         fails.append(f"R23 event/notice link label '{v}' (use 'More →')")
@@ -182,8 +185,9 @@ def main():
             fails += listen_checks(pg.evaluate(LISTEN_JS), view)
             fails += calcheck_checks(pg.evaluate(CALCHECK_JS), view)
             fails += svc_checks(pg.evaluate(SVC_JS), view)
-            if view == "mobile":  # R18: item summaries max 3 lines at 390px (and 660px below)
-                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3]  # R18 (R39 phone exception removed Oct 17 6:32 PM: framing teaser fits)
+            if view == "mobile":  # R18: item summaries max 3 lines at 390px (and 660px below). R118: the Sunshine email card may pass 3.
+                _ex118 = sunshine_main_card_problem(html or "") == ""
+                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3 and not (_ex118 and x["title"].startswith(SUNSHINE_DYK_TITLE))]  # R18 (R39 phone exception removed Oct 17 6:32 PM: framing teaser fits)
             for s in pg.evaluate(SECTIONS_JS):
                 name = f"{s['i']:02d}-{slug(s['title'])}-{view}.png"; manifest[name] = s["title"]
                 dst = (gold if a.capture else out) / name
@@ -196,7 +200,8 @@ def main():
             pg.close()
         p660 = br.new_page(viewport={"width": 660, "height": 900}); p660.goto(url, wait_until="networkidle", timeout=60000)
         fails += [f.replace('[desktop]', '[660px]') for f in svc_checks(p660.evaluate(SVC_JS), 'desktop')]  # R27: email width
-        fails += [f"R18 [660px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in p660.evaluate(SUMMARY_JS) if x["lines"] > 3]
+        _ex118b = sunshine_main_card_problem(html or "") == ""
+        fails += [f"R18 [660px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in p660.evaluate(SUMMARY_JS) if x["lines"] > 3 and not (_ex118b and x["title"].startswith(SUNSHINE_DYK_TITLE))]
         br.close()
     fails = rule_checks(html, None) + fails
     if a.capture:
