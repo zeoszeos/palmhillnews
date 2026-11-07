@@ -178,7 +178,8 @@ def mtg_rows():
                 if not _pdf_src.is_file(): raise SystemExit(f"R4: agenda PDF missing {_pdf_src}")
                 import shutil as _shpdf; _shpdf.copyfile(_pdf_src, PAGES / d["agenda_pdf"])
             (PAGES / d["zoom_page"]).write_text(_mzp.render(d), encoding="utf-8")
-            e = dict(e, also=d["also"], agenda=nu, zoom=BASE + d["zoom_page"])
+            # A hosted agenda PDF is the Agenda → target (Communications Nov 9). Otherwise Agenda → is the HTML agenda page.
+            e = dict(e, also=d["also"], agenda=BASE + (d["agenda_pdf"] if d.get("agenda_pdf") else d["notice_page"]), zoom=BASE + d["zoom_page"])
             L='style="font-size:14px;color:#666666;text-align:right;line-height:1.35;padding-top:1px;'
             out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:4px 8px;border-bottom:1px solid #ddd;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">'
                 f'<tr><td valign="top" align="left" style="font-size:15px;line-height:1.3;font-weight:bold;color:#333333;text-align:left;padding-right:10px;">{escape(e["name"])}</td><td valign="top" align="right" style="font-size:14px;line-height:1.3;color:#666666;text-align:right;padding-top:1px;">{escape(VENUE.get(e["venue"], e["venue"]))}</td></tr>'
@@ -889,6 +890,10 @@ for _pg in _r96:
     _t = re.sub(r'((?:href|src)=")/(?!/)', r'\1https://palmhillnews.vercel.app/', _t)
     (LOCAL / _pg).write_text(_t, encoding="utf-8")
     _loc = _loc.replace(BASE + _pg, _pg)
+for _pdf in sorted(set(re.findall(re.escape(BASE) + r'([A-Za-z0-9._-]+\.pdf)', _loc))):
+    if (PAGES / _pdf).is_file():
+        _sh.copy2(PAGES / _pdf, LOCAL / _pdf)
+        _loc = _loc.replace(BASE + _pdf, _pdf)
 for _a in sorted(_r96_assets):
     (LOCAL / _a).parent.mkdir(parents=True, exist_ok=True); _sh.copy2(PAGES / _a, LOCAL / _a)
 (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
