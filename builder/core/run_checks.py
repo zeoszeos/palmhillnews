@@ -148,6 +148,14 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
                  f"{_sn}: '{C.ALL_EVENTS_LINK_TEXT}' is the top row (once)")
         else:
             L.ok("R79", _ael in _sx, f"{_sn}: link '{C.ALL_EVENTS_LINK_TEXT}' -> {_aef}")
+    if _NWS:  # R117 (Steven Nov 6 2026): light green on that top row, in the preview and the SEND/email copy
+        _r117 = [("preview", page)]
+        _sd117 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+        if _sd117.exists(): _r117.append(("SEND", _sd117.read_text(encoding="utf-8")))
+        for _n117, _x117 in _r117:
+            for _sn117 in ("Events - This Week", UPH):
+                _miss117 = _sr83.ae_top_highlight_missing(lc._section(_x117, _sn117), C.ALL_EVENTS_LINK_TEXT)
+                L.ok("R117", not _miss117, f"{_n117} {_sn117}: '{C.ALL_EVENTS_LINK_TEXT}' row is light green #EAF4E4" + (f" ({_miss117})" if _miss117 else ""))
     _RPg = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"; _aeh = ""
     for _o in ("date", "name", "location"):   # Steven Oct 26 11:28 AM: same three sorts as Recurring, note on all three
         _p = _RPg / f"{C.ISSUE}-all-events-by-{_o}.html"; _h = _p.read_text(encoding="utf-8") if _p.exists() else ""
@@ -364,6 +372,9 @@ if _pl94.v2_for(C.ISSUE):
     L.ok("R94", "<script" not in page.lower(), "NL output (preview -> SEND/email) has no <script>")
     _sd94 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
     if _sd94.exists(): L.ok("R94", "<script" not in _sd94.read_text(encoding="utf-8").lower(), "SEND copy has no <script>")
+    _src116 = (Path(__file__).resolve().parents[2] / "scripts" / "listen_inplace.html").read_text(encoding="utf-8")
+    L.ok("R116", "classList.contains('ph-playing')" in _src116 and "(Listen|Stop)" in _src116 and "a === cur" in _src116 and "phLabel" in _src116,
+         "in-place Listen treats Stop as the same control (dedicated listen-*.html chair links stay on the page)")
 # R97 (Steven Oct 30 2026 10:11 PM): SEND/email copy has no pure-white table/tr/td backgrounds (Gmail iOS dark mode -> black
 # bands with dark text); they carry EMAIL_TINT on the row AND each cell (style + bgcolor), and the head says color-scheme light only.
 import email_dark_mode as _dm97

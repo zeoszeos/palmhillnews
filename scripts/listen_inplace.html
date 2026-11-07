@@ -4,10 +4,19 @@
   // STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): website Listen buttons read IN PLACE -- tap Listen, the item is read
   // aloud on this page (button turns to Stop); tap Stop to end. The link stays a normal link: no speech support, a
   // different site, or any load problem -> it opens the listen page as before. Never added to the emailed SEND copy.
+  // R116 (Steven, Nov 6 2026): a Committee Chair Report Listen is a dedicated listen-*.html page (no ?listen=1 and no
+  // ph-listen class). The first tap matches the word Listen, then this script rewrites that word to Stop. Stop is the
+  // same control, so the second tap must be caught here and must not follow the href.
 /*READER*/
   if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
   const synth = window.speechSynthesis;
-  const isListen = (a) => a.classList.contains('ph-listen') || /[?&]listen=1\b/.test(a.getAttribute('href') || '') || /^\s*(\uD83D\uDD0A\s*)?Listen\s*\u2192?\s*$/.test(a.textContent);
+  const isListen = (a) => {
+    if (a.classList.contains('ph-listen') || a.classList.contains('ph-playing') || a.getAttribute('aria-pressed') === 'true') return true;
+    if (/[?&]listen=1\b/.test(a.getAttribute('href') || '')) return true;
+    const word = /^\s*(?:\uD83D\uDD0A\s*)?(Listen|Stop)\s*\u2192?\s*$/.exec(a.textContent);
+    if (!word) return false;
+    return word[1] === 'Listen' || a.dataset.phLabel !== undefined;  // R116: Stop still names this control
+  };
   let cur = null, run = 0;
   function textNode(a) { return Array.from(a.childNodes).reverse().find((n) => n.nodeType === 3 && n.textContent.trim()); }
   function setState(a, on) {
@@ -51,9 +60,11 @@
   }
   document.addEventListener('click', (e) => {
     const a = e.target.closest && e.target.closest('a[href]');
-    if (!a || !isListen(a)) return;
-    if (a === cur) { e.preventDefault(); stop(); return; }
-    const url = target(a); if (!url) return;  // not ours: normal link
+    if (!a) return;
+    // R116: Stop is this same control (the label no longer says Listen). Catch it before the browser follows the href.
+    if (a === cur || a.classList.contains('ph-playing')) { e.preventDefault(); stop(); return; }
+    if (!isListen(a)) return;
+    const url = target(a); if (!url) return;  // not ours, or file://: normal link
     e.preventDefault(); play(a, url);
   }, true);
   window.addEventListener('pagehide', stop);
