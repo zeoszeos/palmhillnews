@@ -18,13 +18,15 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info fro
                    "December Link Deadline",                     # deadline Thu Nov 5
                    "Senior Empowerment Lunch & Learn",           # Wed Nov 4
                    "Worship Service",                            # Sun Nov 1
-                   "South Potable Water Shut off",               # Wed Nov 4
+                   "South Potable Water Shut off",               # Wed Nov 4 (R53). The Nov 11 reschedule is a separate notice.
                    "Palm Hill Men's Golf Association Meeting",  # Mon Nov 2
                    "Couples Golf League"]                        # "Starts: November 5th" (flagged for Steven: league itself may continue)
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {  # Nov 1 notices approved by Steven Oct 30 2026 12:13 PM (R93); CHAIR_EXPECTED carried from Oct 25
     "NOTICES_EXPECTED": [   # Nov 8 DRAFT (not yet approved by Steven): Nov 1 approved list minus notices dated before Nov 8
+        'Chair Yoga class canceled',
+        'South Potable Water Shut off (rescheduled)',
         'Cornhole Tournament',
         'How to access the Palm Hill Community Channel',
         'Missing Amazon Package',
@@ -165,9 +167,31 @@ WM_COPY_CHANNEL = "2026-10-30-palm-hill-community-channel-xumo-notice.html"     
 WM_COPY_CORNHOLE = "2026-10-31-cornhole-tournament-notice.html"                        # leonowicz 1a1928943f130516 (image-only flyer)
 WM_COPY_SENIOR_LL = "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"        # leonowicz 1a1923d6204ee46a (Bonnie Swanson)
 WM_COPY_WORSHIP = "2026-10-31-worship-service-notice.html"                             # leonowicz 1a191d8809626222 (Claudia Hartz)
+# Sat Nov 7 2026 morning sweep (draft, before Susan's proof). Verbatim bodies; unsubscribe already absent.
+WM_COPY_CHAIR_YOGA = "2026-11-07-chair-yoga-class-canceled-notice.html"                 # gotwicz 1a1b5cc77232729c Sat Nov 7 6:37 AM ET
+WM_COPY_WATER_1111 = "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"  # gotwicz 1a1b174eb713f7a4 Fri Nov 6 10:23 AM ET (supersedes the 10:00am wording)
+CHAIR_YOGA_TITLE = "Chair Yoga class canceled"   # R93: subject "Chair Yoga class canceled Monday" — date word stays off the title
+CHAIR_YOGA_BODY = "The chair yoga class for Monday, November 9, is cancelled. Classes will resume November 16 at 9:15 a.m., South Clubhouse."
+CHAIR_YOGA_DATE = "Cancelled: Monday, November 9 · Resumes: November 16 at 9:15 a.m., South Clubhouse"
+WATER_1111_TITLE = "South Potable Water Shut off (rescheduled)"
+WATER_1111_BODY = "South Potable Water Shut off scheduled for Wednesday, November 11th @ 10:00am has been rescheduled to shut off at 2:30pm for approximately 2 hours."
+WATER_1111_DATE = "Shut off: Wednesday, November 11th · Rescheduled: 2:30pm for approximately 2 hours"  # source words (November 11th, 2:30pm); R93 needs a label on each dated part
 CORNHOLE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/827E9BE2-A63E-4981-99FA-CFDD9C846292.png"
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Sat Nov 7 morning sweep: newest first (Chair Yoga Sat 6:37 AM ET, then the Fri 10:23 AM ET water reschedule)
+    (WM_COPY_CHAIR_YOGA, "Chair Yoga class canceled Monday", "Saturday, Nov 7, 2026, 6:37 AM ET", [
+        ("p", CHAIR_YOGA_BODY),
+        ("p", "Rebecca Baker"),
+        ("p", "(509) 630-3403")],
+        dict(title=CHAIR_YOGA_TITLE)),
+    (WM_COPY_WATER_1111, WATER_1111_TITLE, "Friday, Nov 6, 2026, 10:23 AM ET", [
+        ("p", WATER_1111_BODY),
+        ("p", "Sincerely,"),
+        ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
+        ("p", "(727) 581-2662 | www.resourcepropertymgmt.com")],
+        dict(source="Source: Resource Property Management message to residents, copied as sent.",
+             sender="Resource Property Management", title=WATER_1111_TITLE)),
     # Sat Oct 31 6 PM sweep: Sat Oct 31 Webmaster emails, verbatim (staged pending Steven); flyer shown as sent, its words as text (R60a)
     (WM_COPY_CORNHOLE, "Cornhole Tournament", "Saturday, Oct 31, 2026, 11:11 AM ET", [
         ("img", (CORNHOLE_IMG, "Cornhole Tournament. Palm Hill Country Club. Saturday, November 28, 2026. Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan 518-866-2079.")),
@@ -386,6 +410,9 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Sat Nov 7 morning sweep: newest first. Teasers are source sentences; summary_trim SHORT cuts them to 3 lines and adds More →.
+    (CHAIR_YOGA_TITLE, CHAIR_YOGA_BODY, "Webmaster", BASE + WM_COPY_CHAIR_YOGA),
+    (WATER_1111_TITLE, WATER_1111_BODY, "RPM", BASE + WM_COPY_WATER_1111),
     # R103 (Steven Oct 31 2026, via Susan): Webmaster December Link Deadline notice first in Community Notices
     ("December Link Deadline",
      "The next Link Deadline arrives this Thursday, November 5. Anything you need or want to appear in the December Link needs to be submitted by November 5. Submit your information to: phcclink@gmail.com",
@@ -463,6 +490,8 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    CHAIR_YOGA_TITLE: CHAIR_YOGA_DATE,
+    WATER_1111_TITLE: WATER_1111_DATE,
     "Cornhole Tournament": "Tournament: Saturday, November 28, 2026 · Registration ends: 10:15AM",               # Webmaster Oct 31 flyer (staged)
     "Senior Empowerment Lunch & Learn": "When: Wednesday, November 4, 10 a.m.\u20131 p.m. · South Clubhouse",       # Webmaster Oct 31 (staged)
     "Worship Service": "Service: Sunday, November 1, 4:00 p.m. (Doors open at 3:30) · North Club House",                    # Webmaster Oct 31 (staged)
@@ -743,7 +772,13 @@ R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 
 # ---------- Community Notices (6): archive rows added by this issue (R59) ----------
-NOTICE_ARCHIVE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
+NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-08", id="2026-11-08-chair-yoga-class-canceled", title=CHAIR_YOGA_TITLE,
+                     text="The chair yoga class for Monday, November 9, is cancelled.",
+                     page=WM_COPY_CHAIR_YOGA, source="Palm Hill Webmaster notice, Nov 7", issues=["2026-11-08"]),
+                dict(date="2026-11-08", id="2026-11-08-south-potable-water-shut-off-rescheduled", title=WATER_1111_TITLE,
+                     text="South Potable Water Shut off scheduled for Wednesday, November 11th @ 10:00am has been rescheduled",
+                     page=WM_COPY_WATER_1111, source="Resource Property Management message, Nov 6", issues=["2026-11-08"]),
+                dict(date="2026-10-25", id="2026-10-25-sanitation-field", title="Help with maintaining Sanitation Field", text=SANIT_TEASER,
                      page=WM_COPY_SANIT, source="Palm Hill Webmaster notice, Oct 22", issues=["2026-10-25"]),
                 dict(date="2026-10-25", id="2026-10-25-couples-golf-league", title="Couples Golf League", text=COUPLES_TEASER,
                      page=WM_COPY_COUPLES, source="Palm Hill Webmaster notice, Oct 20", issues=["2026-10-25"]),
@@ -764,6 +799,11 @@ NOTICE_ARCHIVE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field",
 MEETING_ROW_CHECKS = [   # R62/R62b: a meetings row must show (need) and must not show (never) these, text before its Source line
     dict(rule="R87", start=">Finance Committee<", span=1200,   # R86/R87 (Oct 27): calendar date, Mon Nov 16 (agenda said Nov 18)
          need=["Monday, Nov 16, 2026", "10:00 AM", "South Clubhouse Boardroom"], never=["to be confirmed", "Nov 18"]),
+    # Sat Nov 7 sweep: calendar date/time stay; Agenda and Zoom are added (R4). Place stays South Clubhouse Boardroom.
+    dict(rule="R4", start=">Communications Committee Meeting<", span=1500,
+         need=["Monday, Nov 9, 2026", "10:00 AM", "South Clubhouse Boardroom", "Agenda", "Zoom"], never=[]),
+    dict(rule="R4", start=">Buildings and Grounds Committee Meeting<", span=1500,
+         need=["Tuesday, Nov 10, 2026", "10:00 AM", "South Clubhouse Boardroom", "Agenda", "Zoom"], never=[]),
     # Calendar pull cal-20261107-0006: Planning & Environmental Committee Tue Nov 10 12:30 PM is CANCELLED
     # ("meeting cancelled"). R87 lists CONFIRMED meetings only, so that row must not be required.
 ]

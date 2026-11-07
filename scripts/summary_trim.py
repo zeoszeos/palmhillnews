@@ -9,6 +9,9 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Sat Nov 7 2026 morning sweep: cut, never reworded; More → = the copied email (R47)
+ ("The chair yoga class for Monday, November 9, is cancelled.", "The chair yoga class for Monday, November 9, is cancelled.", B + "2026-11-07-chair-yoga-class-canceled-notice.html"),
+ ("South Potable Water Shut off scheduled for Wednesday, November 11th", "South Potable Water Shut off scheduled for Wednesday, November 11th @ 10:00am has been rescheduled", B + "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"),
  # Sat Oct 31 2026 6 PM deadline sweep (staged pending Steven): Sat Oct 31 Webmaster emails; cut, never reworded; More → = the copied email (R47)
  ("Registration ends at 10:15AM. $5 per player", "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. Contact Earl & Sandy Sullivan 518-866-2079.", B + "2026-10-31-cornhole-tournament-notice.html"),
  ("Lunch registration is now closed. Advance sign-up", "Lunch registration is now closed. Advance sign-up was required to receive lunch. You may still attend without signing up.", B + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"),
