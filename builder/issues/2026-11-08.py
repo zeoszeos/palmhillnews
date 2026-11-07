@@ -761,8 +761,8 @@ NOTICE_ARCHIVE_ROWS = [dict(date="2026-10-25", id="2026-10-25-sanitation-field",
 MEETING_ROW_CHECKS = [   # R62/R62b: a meetings row must show (need) and must not show (never) these, text before its Source line
     dict(rule="R87", start=">Finance Committee<", span=1200,   # R86/R87 (Oct 27): calendar date, Mon Nov 16 (agenda said Nov 18)
          need=["Monday, Nov 16, 2026", "10:00 AM", "South Clubhouse Boardroom"], never=["to be confirmed", "Nov 18"]),
-    dict(rule="R87", start="Planning and Environmental Committee Meeting", span=1500,
-         need=["Tuesday, Nov 10, 2026", "12:30 PM"], never=["to be confirmed"]),
+    # Calendar pull cal-20261107-0006: Planning & Environmental Committee Tue Nov 10 12:30 PM is CANCELLED
+    # ("meeting cancelled"). R87 lists CONFIRMED meetings only, so that row must not be required.
 ]
 HOLIDAY_SOURCE_LABEL = "Bill Bender email"            # R60b linked Source wording
 ICE_SOURCE_LABEL = "Oct P&E Committee Report"         # R60c linked Source wording
