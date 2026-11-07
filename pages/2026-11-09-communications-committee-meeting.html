@@ -25,12 +25,115 @@
   <p class="ph-address"><a href="https://www.google.com/maps/search/1800+Seminole+Blvd,+Largo,+FL+33778">1800 Seminole Blvd, Largo, FL 33778</a></p>
 </header>
 <main class="ph-body">
-<h1 class="ph-section">COMMUNICATIONS COMMITTEE</h1>
+<div class="hd" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h1 class="ph-section" style="margin:0">COMMUNICATIONS COMMITTEE</h1><a class="ph-listen" href="#" style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:none;border:0;padding:0;color:#1d4310;font:bold 18px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;white-space:nowrap"><img src="https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png" alt="" width="32" height="32" style="display:inline-block;width:32px;height:32px;border:0;margin:0;vertical-align:middle">Listen</a></div>
 <p class="ph-meta">Monday, Nov 9, 2026 • 10:00 AM • South Clubhouse Boardroom</p>
 <nav class="ph-links" aria-label="Meeting links"><a href="2026-11-09-communications-committee-agenda.pdf">View Meeting Agenda →</a><span class="ph-dot"> · </span><a href="2026-11-09-communications-committee-zoom.html">Join on Zoom →</a></nav>
 <p class="ph-lead"><a href="2026-11-09-communications-committee-agenda.pdf">Agenda PDF →</a></p><div class="ph-row"><div class="ph-detail" style="white-space:pre-wrap">COMMUNICATIONS COMMITTEE</div><div class="ph-detail" style="white-space:pre-wrap;min-height:0.8em"></div><div class="ph-detail" style="white-space:pre-wrap">Meeting Agenda</div><div class="ph-detail" style="white-space:pre-wrap;min-height:0.8em"></div><div class="ph-detail" style="white-space:pre-wrap">Monday, November 9, 2026  ·  10:00 a.m.</div><div class="ph-detail" style="white-space:pre-wrap;min-height:0.8em"></div><div class="ph-detail" style="white-space:pre-wrap">South Clubhouse Boardroom, Zoom, Community Channel</div><div class="ph-detail" style="white-space:pre-wrap;min-height:0.8em"></div><div class="ph-detail" style="white-space:pre-wrap">1. Call meeting to order</div><div class="ph-detail" style="white-space:pre-wrap">2. Roll call</div><div class="ph-detail" style="white-space:pre-wrap">3. Approve agenda</div><div class="ph-detail" style="white-space:pre-wrap">4. Approve October 12, 2026 minutes</div><div class="ph-detail" style="white-space:pre-wrap">5. Committee workstream reports</div><div class="ph-detail" style="white-space:pre-wrap"> a.     Chair report – Tony Ciaramitaro</div><div class="ph-detail" style="white-space:pre-wrap"> b.     Webmaster (blasts) – Gail Stott</div><div class="ph-detail" style="white-space:pre-wrap"> c.     Web Administrator (website) – Jean Stjernstrom</div><div class="ph-detail" style="white-space:pre-wrap"> d.     The LINK – Lisa Bria</div><div class="ph-detail" style="white-space:pre-wrap"> e.     Zoom and meeting recordings – Chuck Silcox</div><div class="ph-detail" style="white-space:pre-wrap"> f.      Community Channel – Jean Stjernstrom, Chuck Silcox; October operator – Teri Bach</div><div class="ph-detail" style="white-space:pre-wrap"> g.     Calendar – Tony Ciaramitaro, Teri Bach</div><div class="ph-detail" style="white-space:pre-wrap"> h.     PH Weekly e-newsletter – Steve Leonowicz</div><div class="ph-detail" style="white-space:pre-wrap"> i.      Social media, messaging and streaming, including the Facebook trial – Tony</div><div class="ph-detail" style="white-space:pre-wrap"> j.      Compliance and records – Tony</div><div class="ph-detail" style="white-space:pre-wrap"> k.     Candidates Night working group – Elaine Winegar</div><div class="ph-detail" style="white-space:pre-wrap">6. Unfinished business</div><div class="ph-detail" style="white-space:pre-wrap"> a.     Committee-run Zoom: report the process as refined with RPM after the last committee meeting - Chuck</div><div class="ph-detail" style="white-space:pre-wrap"> b.     Facebook trial: results so far, and discuss the committee&#x27;s options regarding timing of trial end date, next meeting date, and recommendations to the Board - Tony</div><div class="ph-detail" style="white-space:pre-wrap">7. New business</div><div class="ph-detail" style="white-space:pre-wrap">8. Schedule for the next meeting</div><div class="ph-detail" style="white-space:pre-wrap">9. Motion to adjourn</div><div class="ph-detail" style="white-space:pre-wrap">10. Discussion from the floor</div></div>
 <p class="ph-source">Source: Communications Committee agenda for Monday, November 9, 2026, copied as sent.</p>
 </main>
 </div>
+<!-- ph-page-listen:start -->
+<script>
+(() => {
+  const link = document.querySelector('a.ph-listen');
+  if (!link) return;
+  const label = Array.from(link.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const MON = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  let run = 0, playing = false, started = false;
+  const setLabel = (t) => { if (label) label.textContent = t; link.setAttribute('aria-label', t === 'Stop' ? 'Stop reading' : 'Listen to this page'); };
+  function chunks(text) {
+    const clean = text.replace(/\b(Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b\.?/g, (m, k) => MON[k]).replace(/\s+/g, ' ').trim();
+    if (!clean) return [];
+    const frags = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter('en-US', {granularity: 'sentence'}).segment(clean), (s) => s.segment.trim()).filter(Boolean)
+      : [clean];
+    const out = []; let p = '';
+    for (const s of frags) { if (p && p.length + s.length + 1 > 260) { out.push(p); p = s; } else p += (p ? ' ' : '') + s; }
+    if (p) out.push(p);
+    return out;
+  }
+  function parts() {
+    // R49 (Steven, Oct 18 12:39/12:43 AM): read ALL visible content in page order -- the h1, every content card / email
+    // row (paragraphs, quotes, lists, tables inside), and the source / credit line at the end. Skipped: the email's
+    // Subject/From/Sent header row, attachment lists, navigation and the Listen button itself.
+    const h1 = document.querySelector('h1');
+    const sel = 'main .content-card, main .ph-row, main .ph-meta, main .source, main .ph-source, main .credit, main .byline';
+    const sent = (document.querySelector('main') || document.body).innerText;  // R49b: a .ph-meta line that only repeats the email's Sent time is the date line (skipped)
+    const all = Array.from(document.querySelectorAll(sel))
+      .filter((el) => !el.closest('nav, .ph-strip, .ph-links') && !el.classList.contains('attachments') && !/^\s*Subject:/.test(el.innerText))
+      .filter((el) => !(el.classList.contains('ph-meta') && sent.includes('Sent: ' + el.innerText.trim())));
+    let blocks = all.filter((el) => !all.some((o) => o !== el && o.contains(el)))
+      .map((el) => el.innerText.trim())
+      .filter(Boolean);
+    if (!blocks.length) blocks = walkAll();  // R49b (Steven, Oct 18 2:05 AM): pages without content cards
+    return [h1 ? h1.textContent : '', ...blocks].flatMap((t) => t.split(/\n+/)).flatMap(chunks);  // each visual line its own phrase
+  }
+  function walkAll() {
+    // R49b: early notice copies, simple / card pages and plain reports have no content cards -- read every visible block
+    // in <main> / <article> / <body> in page order (outermost block once; table rows, quotes, bare div text, the Source
+    // line). Skipped: header, kicker/badge, date line, navigation, archive links, the Listen button, Back links.
+    const BLOCK = 'h2,h3,h4,h5,h6,p,li,blockquote,figure,figcaption,pre,table,dl,aside';
+    const SKIP = 'h1,header,footer,script,style,noscript,nav,button,[role="navigation"],.ph-listen,.ph-listen-row,.ph-story-nav,.ph-story-links-long,.ph-archive-bar,.ph-dateline,.page-kicker,.ph-strip,.ph-links,.badge,.meta,.date,.back,.attachments,[aria-hidden="true"]';
+    const vis = (el) => el.getClientRects().length > 0;
+    const out = [];
+    const walk = (el) => {
+      let run = '';
+      const flush = () => { if (run.trim()) out.push(run.trim()); run = ''; };
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3) { run += n.textContent; continue; }
+        if (n.nodeType !== 1 || n.matches(SKIP) || !vis(n)) continue;
+        if (n.matches(BLOCK)) {
+          flush();
+          if (n.matches('table,dl')) n.querySelectorAll('caption,tr,dt,dd').forEach((r) => { const x = r.innerText.trim(); if (x) out.push(x); });
+          else if (n.matches('figure,aside,blockquote') && n.querySelector('p,li,figcaption')) walk(n);
+          else { const x = n.innerText.trim(); if (x) out.push(x); }
+        } else if (getComputedStyle(n).display.startsWith('inline')) run += n.innerText;
+        else { flush(); walk(n); }
+      }
+      flush();
+    };
+    walk(document.querySelector('main') || document.querySelector('article') || document.body);
+    return out;
+  }
+
+  function stop() { run += 1; playing = false; synth.cancel(); setLabel('Listen'); }
+  function start(auto) {
+    const list = parts(); const me = ++run; let i = 0;
+    synth.cancel(); playing = true; started = false; setLabel('Stop');
+    const next = () => {
+      if (me !== run) return;
+      if (i >= list.length) { playing = false; setLabel('Listen'); return; }
+      const u = new SpeechSynthesisUtterance(list[i]);
+      u.lang = 'en-US'; u.rate = 1;
+      u.onstart = () => { if (me === run) started = true; };
+      u.onend = () => { if (me !== run) return; i += 1; next(); };
+      u.onerror = (e) => { if (me !== run || e.error === 'canceled' || e.error === 'interrupted') return; stop(); };
+      synth.speak(u);
+    };
+    next();
+    if (auto) window.setTimeout(() => { if (me === run && playing && !started) { stop(); arm(); } }, 4000);
+  }
+  link.addEventListener('click', (e) => { e.preventDefault(); if (playing) stop(); else start(false); });
+  function arm() {
+    const onTap = (e) => {
+      document.removeEventListener('click', onTap, true);
+      if (playing || (e.target.closest && e.target.closest('a'))) return;
+      start(false);
+    };
+    document.addEventListener('click', onTap, true);
+  }
+  window.addEventListener('pagehide', stop);
+  const q = new URLSearchParams(location.search);
+  if (q.get('listen') === '1' || q.get('autoplay') === '1') {
+    const go = () => start(true);
+    if (document.readyState === 'complete') window.setTimeout(go, 0); else window.addEventListener('load', go, {once: true});
+  }
+})();
+</script>
+<!-- ph-page-listen:end -->
 </body>
 </html>
