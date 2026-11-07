@@ -890,6 +890,9 @@ print("DRY-RUN TODOs:", len(DRYRUN_TODO)) if DRYRUN else None
 # STYLE-RULES R70 (Steven, Oct 24 2026 9:56 PM; PR #139, carried into the shared builder in batch 4): the live preview page is synced
 # from this build's local copy (never hand-copied), and its Calendar check + masthead time must equal the SEND copy's
 # (build with PHNEWS_CAL_OFFLINE=1 + PHNEWS_BUILD_STAMP to match a SEND). No SEND file yet (e.g. a Nov 1 dry run) = nothing to compare.
+# R115 (Steven Nov 7 2026): sync() keeps this local file's R96 relative sibling links, and writes absolute page URLs into
+# pages/previews/<issue>/ for issues from 2026-11-01 on. Oct 25 stays a byte copy. The comment above the local copy
+# (repo/Vercel keeps absolute URLs) is this step; copying the relative file unchanged made those links 404.
 import check_preview_send_stamp as _r70
 (REPO / f"pages/previews/{ISSUE}").mkdir(parents=True, exist_ok=True)
 print("R70 synced:", _r70.sync(LOCAL / f"PHNEWS-{ISSUE}-preview.html", REPO, ISSUE))

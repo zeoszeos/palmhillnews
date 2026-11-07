@@ -57,6 +57,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R64": "read the failed checks listed above; fix the content file, or update LOCKED once Steven approves new content",
     "R71": "content files hold data only; logic goes in builder/core/",
     "R71b": "move the listed text from builder/core/ into builder/issues/<date>.py",
+    "R115": "pages/previews/<issue>/ must use absolute https://palmhillnews.vercel.app/pages/... links (R70 sync calls absolutize_live_preview). The local review copy stays relative",
     "R72": "copy the PDF into the work tree and give its relative path in the content file",
     "R73": "get the missing source (copy, never move) or drop the item -- never invent it",
     "R74": "save a baseline only after Steven approves: scripts/save_visual_baseline.py",
