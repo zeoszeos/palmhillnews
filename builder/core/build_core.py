@@ -370,8 +370,10 @@ AE_FILE = f"{ISSUE}-all-events-by-date.html"  # default sort, like the Recurring
 def _ae_link():
     if not _AE: return ""
     if _NW:  # R92b (Steven Oct 30 2026 11:42 AM): link sits at the TOP of the section (first row, under the header/date range),
-        # centred, bold, underlined like the archive strip (ph-archive-bar) under the title on subsection pages
-        return (f'<tr><td align="center" class="ph-ae-top" style="padding:6px 8px 8px 8px;text-align:center;"><a href="{BASE}{AE_FILE}" '
+        # centred, bold, underlined like the archive strip (ph-archive-bar) under the title on subsection pages.
+        # R117 (Steven Nov 6 2026): that row is the newsletter light green #EAF4E4 (same tint as bg() / the R98 chair-row
+        # highlight), bgcolor as well so the SEND/email copy paints it. Link words stay exactly as Steven wrote them.
+        return (f'<tr><td align="center" bgcolor="#EAF4E4" class="ph-ae-top" style="padding:6px 8px 8px 8px;text-align:center;background:#EAF4E4;"><a href="{BASE}{AE_FILE}" '
                 f'style="color:#1d4310;font:bold 16px/1.5 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;">'
                 f'{escape(ALL_EVENTS_LINK_TEXT)}</a></td></tr>')
     return f'<tr><td style="padding:6px 8px;font-size:14px;"><a href="{BASE}{AE_FILE}" style="color:{G};">{escape(ALL_EVENTS_LINK_TEXT)}</a></td></tr>'

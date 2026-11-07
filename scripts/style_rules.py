@@ -488,6 +488,23 @@ R10_LOCKED_SHA256 = {
     "pages/2026-09-30-shareholders-report.html": "9ab8daa1e31fba1e2d556979ec9e7480413ff21ce4910fb290556f9b01bd3b98",
     "pages/2026-10-09-weekly-manager-update.html": "b2976e40840afa02ce8e84fc08fee4336cb03e18cea38a6ca49f83dbd2c127db",
 }
+# R117 (Steven, Nov 6 2026): the R92b "See the All Events List" row uses the newsletter light green, the same tint as
+# the alternating Committee Chair Reports highlight (build_core.bg / R98). Not a new green.
+AE_ROW_GREEN = "#EAF4E4"
+def ae_top_highlight_missing(section_html, link_text="See the All Events List"):
+    """Return '' when this Events section's ph-ae-top cell carries #EAF4E4 and the exact All Events link; else a reason."""
+    m = re.search(r'<td\b[^>]*\bclass="ph-ae-top"[^>]*>', section_html, re.I)
+    if not m: return "no ph-ae-top cell"
+    tag = m.group(0)
+    if not re.search(r'background(?:-color)?\s*:\s*' + AE_ROW_GREEN + r'\b', tag, re.I):
+        return "ph-ae-top cell has no background:" + AE_ROW_GREEN
+    if not re.search(r'''bgcolor\s*=\s*['"]''' + AE_ROW_GREEN + r'''['"]''', tag, re.I):
+        return "ph-ae-top cell has no bgcolor " + AE_ROW_GREEN
+    end = section_html.find("</td>", m.end())
+    cell = section_html[m.start(): end if end >= 0 else m.end()]
+    if f">{link_text}</a>" not in cell: return f"ph-ae-top cell does not say {link_text}"
+    return ""
+
 def assert_r10_locked_pages(repo):
     import hashlib, os as _os
     for rel, want in R10_LOCKED_SHA256.items():
