@@ -1,4 +1,5 @@
-"""R115: the nested live preview gets absolute page URLs; the R96 local review copy and Oct 25 sync stay byte copies."""
+"""R115 / R115b: the nested live preview gets absolute page URLs; every live preview from Nov 1 on is checked;
+the R96 local review copy and Oct 25 sync stay byte copies."""
 import os, sys, tempfile
 from pathlib import Path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
@@ -54,7 +55,82 @@ def test_oct25_sync_is_byte_copy_and_local_file_stays():
         assert f'href="{PAGE}story.html"' in text
         assert s.relative_page_hrefs(text) == []
 
+
+
+def _stamp(html, cal="Calendar check - November 8, 3:58 PM", mast="3:58 PM"):
+    return f'<p class="ph-cal-check">{cal}</p><span style="white-space:nowrap;">{mast}</span>' + html
+
+
+def test_check_scans_every_nov1_plus_preview_not_just_the_issue():
+    """R115b: a clean November 8 check still fails if the committed November 1 preview has relative hrefs."""
+    with tempfile.TemporaryDirectory() as t:
+        t = Path(t)
+        repo = t / "repo"
+        # October 25 may keep relative sibling hrefs (byte copy); the scan must ignore it.
+        (repo / "pages/previews/2026-10-25").mkdir(parents=True)
+        (repo / "pages/previews/2026-10-25/PHNEWS-2026-10-25-preview.html").write_text(
+            _stamp('<a href="story.html">More</a>', "Calendar check - October 25, 3:35 PM", "3:35 PM"),
+            encoding="utf-8",
+        )
+        (repo / "pages/previews/2026-11-01").mkdir(parents=True)
+        (repo / "pages/2026-11-01-all-events-by-date.html").parent.mkdir(parents=True, exist_ok=True)
+        (repo / "pages/2026-11-01-all-events-by-date.html").write_text("<p>ok</p>", encoding="utf-8")
+        (repo / "pages/previews/2026-11-01/PHNEWS-2026-11-01-preview.html").write_text(
+            _stamp(
+                '<a href="2026-11-01-all-events-by-date.html">See the All Events List</a>',
+                "Calendar check - November 1, 12:00 PM",
+                "12:00 PM",
+            ),
+            encoding="utf-8",
+        )
+        (repo / "pages/previews/2026-11-08").mkdir(parents=True)
+        (repo / "pages/story.html").write_text("<p>ok</p>", encoding="utf-8")
+        (repo / "pages/previews/2026-11-08/PHNEWS-2026-11-08-preview.html").write_text(
+            _stamp(f'<a href="{PAGE}story.html">More</a>'),
+            encoding="utf-8",
+        )
+        work = t / "work"
+        work.mkdir()
+        fails, _ = s.check("2026-11-08", work, repo)
+        r115 = [f for f in fails if f.startswith("R115")]
+        assert r115, fails
+        assert "2026-11-01" in r115[0] and "relative" in r115[0], r115
+        # After the same rewrite used on the committed November 1 preview, the scan passes.
+        nov1 = repo / "pages/previews/2026-11-01/PHNEWS-2026-11-01-preview.html"
+        nov1.write_text(s.absolutize_live_preview(nov1.read_text(encoding="utf-8")), encoding="utf-8")
+        fails, _ = s.check("2026-11-08", work, repo)
+        assert [f for f in fails if f.startswith("R115")] == []
+        assert s.relative_page_hrefs(nov1.read_text(encoding="utf-8")) == []
+
+
+def test_check_fails_when_absolute_page_target_is_missing():
+    with tempfile.TemporaryDirectory() as t:
+        t = Path(t)
+        repo = t / "repo"
+        (repo / "pages/previews/2026-11-08").mkdir(parents=True)
+        (repo / "pages/previews/2026-11-08/PHNEWS-2026-11-08-preview.html").write_text(
+            _stamp(f'<a href="{PAGE}missing-page.html">More</a>'),
+            encoding="utf-8",
+        )
+        fails, _ = s.check("2026-11-08", t / "work", repo)
+        r115 = [f for f in fails if f.startswith("R115")]
+        assert r115 and "no file under pages/" in r115[0] and "missing-page.html" in r115[0], r115
+
+
+def test_committed_nov1_and_nov8_live_previews_are_absolute_and_resolve():
+    """Lock the files on disk: November 1 and November 8 must stay clean after the R115b rewrite."""
+    repo = Path(__file__).resolve().parents[1]
+    fails = s.check_live_preview_hrefs(repo)
+    assert fails == [], fails
+    for issue in ("2026-11-01", "2026-11-08"):
+        text = (repo / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html").read_text(encoding="utf-8")
+        assert s.relative_page_hrefs(text) == []
+        assert s.missing_page_targets(text, repo) == []
+
 if __name__ == "__main__":
     test_absolutize_matches_send_shape()
     test_oct25_sync_is_byte_copy_and_local_file_stays()
+    test_check_scans_every_nov1_plus_preview_not_just_the_issue()
+    test_check_fails_when_absolute_page_target_is_missing()
+    test_committed_nov1_and_nov8_live_previews_are_absolute_and_resolve()
     print("preview live href tests OK")

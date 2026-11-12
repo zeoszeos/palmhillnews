@@ -6,6 +6,9 @@ R115 (Steven Nov 7 2026): that sync used to copy the R96 local review file uncha
 sibling filenames so they open from disk. The live preview sits at pages/previews/<issue>/, so those hrefs 404.
 From 2026-11-01, sync() writes absolute https://palmhillnews.vercel.app/pages/... links (same as SEND) and check()
 fails if any same-folder or archive/ relative .html href remains. Oct 25 and earlier stay a byte copy.
+R115b (Steven Nov 12 2026): the November 1 live preview still had those relative hrefs after R115 landed, because
+check() only looked at the issue passed to it (November 8). check() now scans every dated live preview from
+2026-11-01 on, and fails if a relative page/archive href remains or an absolute /pages/ target is missing on disk.
 Usage: python scripts/check_preview_send_stamp.py --issue 2026-10-25 [--root DIR] [--repo DIR]"""
 import argparse, re, shutil, sys
 from pathlib import Path
@@ -38,6 +41,61 @@ def absolutize_live_preview(html):
         return _REL_PAGE.sub(repl, region)
     return "".join(p if p[:7].lower() == "<script" else repl_region(p) for p in _SCRIPT.split(html))
 
+def live_preview_files(repo):
+    """Dated pages/previews/<YYYY-MM-DD>/PHNEWS-<YYYY-MM-DD>-preview.html files. Skips folders like listen-player."""
+    root = Path(repo) / "pages/previews"
+    if not root.is_dir():
+        return []
+    found = []
+    for d in sorted(p for p in root.iterdir() if p.is_dir()):
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d.name):
+            continue
+        prev = d / f"PHNEWS-{d.name}-preview.html"
+        if prev.is_file():
+            found.append((d.name, prev))
+    return found
+
+def _rel_to_repo(path, repo):
+    try:
+        return Path(path).resolve().relative_to(Path(repo).resolve()).as_posix()
+    except ValueError:
+        return str(path)
+
+def missing_page_targets(html, repo):
+    """Absolute PAGE hrefs whose path (query/fragment stripped) is not a file under repo/pages/."""
+    missing, seen = [], set()
+    for part in _outside_script(html):
+        for url in re.findall(r'href="' + re.escape(PAGE) + r'([^"]+)"', part):
+            path = url.split("?", 1)[0].split("#", 1)[0]
+            if path in seen:
+                continue
+            seen.add(path)
+            if not (Path(repo) / "pages" / path).is_file():
+                missing.append(url)
+    return missing
+
+def check_live_preview_hrefs(repo):
+    """R115/R115b: every live preview from ABSOLUTE_FROM on has only absolute page/archive hrefs,
+    and each of those hrefs exists under pages/. Previews dated earlier are left as byte copies."""
+    fails = []
+    repo = Path(repo)
+    for issue, path in live_preview_files(repo):
+        if issue < ABSOLUTE_FROM:
+            continue
+        html = path.read_text(encoding="utf-8")
+        shown = _rel_to_repo(path, repo)
+        bad = relative_page_hrefs(html)
+        if bad:
+            fails.append(
+                f"R115: live preview {shown} has {len(bad)} relative page href(s) that 404 under /pages/previews/{issue}/ (e.g. {bad[0]})"
+            )
+        missing = missing_page_targets(html, repo)
+        if missing:
+            fails.append(
+                f"R115: live preview {shown} has {len(missing)} page href(s) with no file under pages/ (e.g. {missing[0]})"
+            )
+    return fails
+
 def stamps(html):
     c, m = CAL.findall(html), MAST.findall(html)
     assert len(c) == 1, f"R70: expected 1 Calendar check line, found {len(c)}"
@@ -69,10 +127,9 @@ def stale_copy(issue, root, preview_html):
 def check(issue, root, repo):
     pv = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"; sd = Path(root) / f"PHNEWS-{issue}-SEND.html"
     pt = pv.read_text(encoding="utf-8"); p = stamps(pt); fails = []
-    # R115 (Steven Nov 7 2026): from Nov 1 the nested live preview must not carry R96 sibling / archive relative page hrefs.
-    if str(issue) >= ABSOLUTE_FROM:
-        bad = relative_page_hrefs(pt)
-        if bad: fails.append(f"R115: live preview has {len(bad)} relative page href(s) that 404 under /pages/previews/{issue}/ (e.g. {bad[0]})")
+    # R115 (Steven Nov 7 2026) / R115b (Steven Nov 12 2026): every dated live preview from Nov 1 on
+    # (not only this --issue) must use absolute page URLs, and those URLs must exist under pages/.
+    fails.extend(check_live_preview_hrefs(repo))
     # R94 (Steven Oct 30 2026 4:02 PM): from v2_from the live preview carries exactly one in-place Listen block and no other
     # script; the SEND/email copy carries none. Comparisons with SEND ignore only that block (page_listen.strip_inplace).
     sys.path.insert(0, str(Path(__file__).resolve().parent)); import page_listen as pl
@@ -92,5 +149,5 @@ if __name__ == "__main__":
     a.add_argument("--root", default="/workspace/phnews-consolidation/oct18"); a.add_argument("--repo", default=str(Path(__file__).resolve().parents[1]))
     a = a.parse_args(); f, p = check(a.issue, a.root, a.repo)
     ok = f"R70 PASS: preview = SEND ({p[0]}; masthead {p[1]})"
-    if str(a.issue) >= ABSOLUTE_FROM: ok += "; R115 PASS: live preview page links are absolute"
+    if not any(x.startswith("R115") for x in f): ok += "; R115 PASS: every live preview from 2026-11-01 on has absolute page links that exist under pages/"
     print("\n".join(f) if f else ok); sys.exit(1 if f else 0)
