@@ -6,7 +6,10 @@ import re, sys
 from pathlib import Path
 REPO = Path(sys.argv[1]); ISSUE = sys.argv[2] if len(sys.argv) > 2 else "2026-10-11"  # STYLE-RULES R20: one set per issue
 import os as _os; _os.environ["PHNEWS_ISSUE"] = ISSUE; sys.path.insert(0, str(Path(__file__).resolve().parent)); import issue_ctx as _ix; C = _ix.load(ISSUE)  # R71
-SRC = Path(_os.environ.get("PHNEWS_WORK") or str(C.DEFAULT_WORK)) / f"source/recurring-{C.SHORT}-orig"
+_WK = Path(_os.environ.get("PHNEWS_WORK") or str(C.DEFAULT_WORK))
+# recurring.py writes source/recurring-activities-<short>-orig; older work trees used source/recurring-<short>-orig
+SRC = _WK / f"source/recurring-activities-{C.SHORT}-orig"
+if not (SRC / f"{ISSUE}-recurring-activities-by-date.html").exists(): SRC = _WK / f"source/recurring-{C.SHORT}-orig"
 F = ISSUE + "-recurring-activities-by-%s.html"
 LAB = {"date": "By Date", "name": "By Name", "location": "By Location"}
 CSS = """.sx-sticky{position:sticky;top:0;z-index:5;background:#e8f2e0;border-bottom:1px solid #c9dcbc;margin:12px -14px 0;padding:9px 14px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;font-family:Arial,sans-serif}

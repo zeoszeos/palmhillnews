@@ -1,7 +1,7 @@
 {
- "fetched_at": "2026-11-06T14:23:50+00:00",
+ "fetched_at": "2026-11-12T13:49:51-05:00",
  "url": "https://www.palmhillcountryclub.net/committees/",
- "count": 121,
+ "count": 123,
  "items": [
   {
    "group": "board",
@@ -188,14 +188,6 @@
    "url": "https://drive.google.com/file/d/1Rmquna2I_oO7Uba3fhuHiepHG4aJPaRV/view?usp=sharing"
   },
   {
-   "group": "board",
-   "meeting": "",
-   "date": "2026-11-05",
-   "label": "11/05/26 Special Meeting",
-   "note": "Special Meeting",
-   "url": "https://drive.google.com/file/d/1uuqfgkBq-OxAaLeHbxhicmnh9LdIvQVu/view?usp=sharing"
-  },
-  {
    "group": "buildings-and-grounds",
    "meeting": "",
    "date": "2025-05-14",
@@ -332,6 +324,14 @@
    "url": "https://drive.google.com/file/d/1uwwQUXaqttWHMbvDwc7pwJPnAPGuEyDt/view?usp=sharing"
   },
   {
+   "group": "buildings-and-grounds",
+   "meeting": "",
+   "date": "2026-11-10",
+   "label": "11/10/2026",
+   "note": "",
+   "url": "https://drive.google.com/file/d/1IlXtxIaBDEYKuPe-nwGhFxtDLiHd6kIA/view?usp=sharing"
+  },
+  {
    "group": "communications",
    "meeting": "",
    "date": "2025-02-10",
@@ -418,6 +418,14 @@
    "label": "10/12/2026",
    "note": "",
    "url": "https://drive.google.com/file/d/1EPqasR9YOUbZjQ9D-GbBJ1HEr6zprBSw/view?usp=sharing"
+  },
+  {
+   "group": "communications",
+   "meeting": "",
+   "date": "2026-11-09",
+   "label": "11/09/2026",
+   "note": "",
+   "url": "https://drive.google.com/file/d/1Z4TGR_dHWL4FyXSKsNCQjzywZrON8aIB/view?usp=sharing"
   },
   {
    "group": "finance",
@@ -684,6 +692,14 @@
    "url": "https://drive.google.com/file/d/1K70lWKX21ZJJoIdtdKPDnZ4DdiNAQq7o/view?usp=sharing"
   },
   {
+   "group": "golf",
+   "meeting": "",
+   "date": "2026-11-10",
+   "label": "11/10/2026",
+   "note": "",
+   "url": "https://drive.google.com/file/d/1KKsDeiOUfy9LVAF6sIFqD_MVUSZlgwkr/view?usp=sharing"
+  },
+  {
    "group": "planning-and-environmental",
    "meeting": "",
    "date": "2024-11-13",
@@ -916,16 +932,16 @@
    "url": "https://drive.google.com/file/d/1QPY_R4aZSbpipZLkFQqp11EXP15JGJS-/view?usp=sharing"
   },
   {
-   "group": "special-meetings",
-   "meeting": "PHMRT Town Hall",
+   "group": "real-estate",
+   "meeting": "",
    "date": "2025-06-20",
    "label": "06/20/2025",
    "note": "",
    "url": "https://drive.google.com/file/d/1BbsO2HAjLwhxDB7YvwkHgLCzPpRaBUzi/view?usp=drive_link"
   },
   {
-   "group": "special-meetings",
-   "meeting": "PHMRT Town Hall",
+   "group": "real-estate",
+   "meeting": "",
    "date": "2025-12-03",
    "label": "12/03/2025",
    "note": "",
@@ -949,7 +965,7 @@
   },
   {
    "group": "special-meetings",
-   "meeting": "Land Purchase Initiative Town Hall",
+   "meeting": "Strategic Planning",
    "date": "2026-02-22",
    "label": "02/22/2026",
    "note": "",
@@ -957,7 +973,7 @@
   },
   {
    "group": "special-meetings",
-   "meeting": "Land Purchase Initiative Town Hall",
+   "meeting": "Strategic Planning",
    "date": "2026-03-22",
    "label": "03/22/2026",
    "note": "",
@@ -965,7 +981,7 @@
   },
   {
    "group": "special-meetings",
-   "meeting": "Land Purchase Initiative Town Hall",
+   "meeting": "Strategic Planning",
    "date": "2026-04-12",
    "label": "04/12/2026",
    "note": "",

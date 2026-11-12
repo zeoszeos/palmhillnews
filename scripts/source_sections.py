@@ -17,6 +17,19 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Thu Nov 12 2026 sweep for the Nov 15 draft: three Webmaster emails and one RPM message (gotwicz). One email = one notice.
+    "2026-11-12-north-irrigation-down-notice.html": dict(
+        subject="[#XN9559224] Message from Home Owners of Palm Hill, Inc - North Irrigation Down", notice_title="North Irrigation Down", use_existing_page=True,
+        sections=[dict(heading="North irrigation shut down", keys=["irrigation"])], approved_omit=[]),
+    "2026-11-10-exercise-class-beginning-notice.html": dict(
+        subject="Exercise Class Beginning Tuesday, November 17th", notice_title="Exercise Class", use_existing_page=True,
+        sections=[dict(heading="Exercise Class winter session", keys=["Exercise Class"])], approved_omit=[]),
+    "2026-11-10-taste-of-golf-instructions-notice.html": dict(
+        subject="Taste of Golf Instructions", notice_title="Taste of Golf Instructions", use_existing_page=True,
+        sections=[dict(heading="Taste of Golf instructions", keys=["instructions"])], approved_omit=[]),
+    "2026-11-09-ladies-christmas-luncheon-notice.html": dict(
+        subject="December 2, 2026 Ladies Christmas Luncheon", notice_title="Ladies Christmas Luncheon", use_existing_page=True,
+        sections=[dict(heading="Ladies Christmas Luncheon tickets", keys=["Tickets"])], approved_omit=[]),
     # Sat Nov 7 2026 morning sweep: Chair Yoga (Webmaster) and the Nov 11 water reschedule (RPM). One email = one notice.
     "2026-11-07-chair-yoga-class-canceled-notice.html": dict(
         subject="Chair Yoga class canceled Monday", notice_title="Chair Yoga class canceled", use_existing_page=True,

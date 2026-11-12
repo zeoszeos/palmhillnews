@@ -464,7 +464,10 @@ if STORY:
         _aj.add_rows(REPO, "community-stories", [{"date": STORY["date"], "date_label": STORY_DATE_LABEL, "title": STORY["archive_title"], "summary": STORY["teaser"],
                            "page": STORY["page"], "listen": STORY["listen"], "issues": [ISSUE], **({"listen_v": 2} if _V2_STORY else {})}])
     elif _V2_STORY and _mi[0].get("listen_v") != 2:   # R83/R76: story carried in a v2 issue gets the v2 listen page
-        _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "listen_v", 2)
+        if "listen_v" in _mi[0]:
+            _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "listen_v", 2)
+        else:   # an older row without the field (first run of an archived story): add it after "listen", rows stay one per line (R68)
+            _aj.set_items(REPO, "community-stories", [({k: v for k, v in r.items()} | {"listen_v": 2}) if r is _mi[0] else r for r in _sd])
     if _mi and ISSUE not in _mi[0].get("issues", []):
         _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + [ISSUE])
 # Weekly Manager Update page (WMU_* data from the issue content file): built from the previous page's card template, item by item.
@@ -629,10 +632,14 @@ for _pp in globals().get("DYK_PARKED_PAGES") or []:
     assert not any(_pp in r for _, r in DYK_ITEMS), f"R91: parked page {_pp} still on the main page"
 if not _DYK_CARRY:
     _new_ids = [_it["id"] for _it in _REP] + ([_it["id"] for _it in _DYKN["items"]] if _DYKN else [])
-    assert _new_ids, "R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE)"
+    # R104: a week with no new Did You Know item hides the section (HIDE_SECTIONS "dyk") instead of carrying last week's (R89)
+    assert _new_ids or "dyk" in (globals().get("HIDE_SECTIONS") or {}), "R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE), or HIDE_SECTIONS dyk (R104)"
     DYK_ITEMS = [x for x in DYK_ITEMS if x[0] in _new_ids]
     assert [i for i, _ in DYK_ITEMS] == _new_ids, "R89: main page Did You Know must be exactly the new items"
-_sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
+if "dyk" not in (globals().get("HIDE_SECTIONS") or {}):
+    _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50: a shown section has at least one item
+else:
+    assert not DYK_ITEMS, "R104/R89: hidden Did You Know section must have no new or carried item"
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
 _sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
