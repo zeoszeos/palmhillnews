@@ -17,6 +17,10 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Steven Nov 12 2026 (voice): Carolyn Story Board piece, moved into Community Notices; More → / Listen open the existing verbatim page.
+    "2026-11-carolyn-story-serving-on-the-board.html": dict(
+        subject="Serving on the Palm Hill Board of Directors", notice_title="Serving on the Palm Hill Board of Directors", use_existing_page=True,
+        sections=[dict(heading="Serving on the Palm Hill Board of Directors", keys=["board member"])], approved_omit=[]),
     # Thu Nov 12 2026 sweep for the Nov 15 draft: three Webmaster emails and one RPM message (gotwicz). One email = one notice.
     "2026-11-12-north-irrigation-down-notice.html": dict(
         subject="[#XN9559224] Message from Home Owners of Palm Hill, Inc - North Irrigation Down", notice_title="North Irrigation Down", use_existing_page=True,

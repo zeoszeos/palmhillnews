@@ -112,18 +112,28 @@ else:
   L.ok("L12", page.count(">From the Board President</span>") == 1 and ">Read Full Message →</a>" in bp and ">President's Message Archives →</a>" in bp
        and "Source: Henry Klain, Board President" in bp and ">Listen</a>" in bp, "Board President: Read Full Message, Archives, Listen, Source")
 # L13-L16 Chair reports
-if "Committee Chair Reports" in _HID:   # R104: no chair report inside the retention window -> no header, no rows
+# R104b (Steven, Nov 12 2026): from Nov 15, an empty chair section keeps its heading and "No reports this week."
+if "Committee Chair Reports" in _HID and C.ISSUE < "2026-11-15":   # R104 (pre-R104b): no header, no rows
     L.ok("R104", ">Committee Chair Reports</span>" not in page and ">Read Full Report →</a>" not in page and not lc.CHAIR_EXPECTED,
          "Committee Chair Reports hidden: no header, no rows (no current report)")
 else:
-  ch = lc._section(page, "Committee Chair Reports")
-  L.ok("L13", titles(ch) == list(lc.CHAIR_EXPECTED), f"chair rows {titles(ch)}")
-  for t, intro in lc.CHAIR_EXPECTED.items():
-    L.ok("L13b", intro.replace("&", "&amp;") in ch or intro in ch, f"intro: {t}")
-  L.ok("L14", all(d in ch for d in C.CHAIR_DATES_EXPECTED), C.CHAIR_DATES_LABEL)
-  n = len(lc.CHAIR_EXPECTED)
-  L.ok("L15", len(re.findall(r">\s*Listen\s*</a>", ch)) == n and "Listen to the Chair Report" not in ch, "one Listen per chair report")
-  L.ok("L16", ch.count(">Read Full Report →</a>") == n and ">Committee Report Archives →</a>" in ch, "Read Full Report → each + archives link")
+  ch = lc._section(page, "Committee Chair Reports") if ">Committee Chair Reports</span>" in page else ""
+  _empty_chair = not lc.CHAIR_EXPECTED
+  if C.ISSUE >= "2026-11-15":
+    for _n104b, _x104b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+      L.ok("R104b", _sr83.chair_empty_section_problem(_x104b, not _empty_chair) == "",
+           f"{_n104b}: " + (_sr83.chair_empty_section_problem(_x104b, not _empty_chair) or "Chair Reports heading stays with placeholder when empty, or shows current reports"))
+  if _empty_chair and C.ISSUE >= "2026-11-15":
+    L.ok("L13", titles(ch) == [] and not lc.CHAIR_EXPECTED, f"empty chair section has no report title rows {titles(ch)}")
+    L.ok("L16", ">Read Full Report →</a>" not in ch and ">Committee Report Archives →</a>" in ch, "empty chair section: no report cards, archives link stays")
+  else:
+    L.ok("L13", titles(ch) == list(lc.CHAIR_EXPECTED), f"chair rows {titles(ch)}")
+    for t, intro in lc.CHAIR_EXPECTED.items():
+      L.ok("L13b", intro.replace("&", "&amp;") in ch or intro in ch, f"intro: {t}")
+    L.ok("L14", all(d in ch for d in C.CHAIR_DATES_EXPECTED), C.CHAIR_DATES_LABEL)
+    n = len(lc.CHAIR_EXPECTED)
+    L.ok("L15", len(re.findall(r">\s*Listen\s*</a>", ch)) == n and "Listen to the Chair Report" not in ch, "one Listen per chair report")
+    L.ok("L16", ch.count(">Read Full Report →</a>") == n and ">Committee Report Archives →</a>" in ch, "Read Full Report → each + archives link")
 # L17 Recurring
 rc = lc._section(page, "Recurring Meetings &amp; Events")
 L.ok("L17", f">{_W('RECURRING')}, 2026<" in rc and rc.count(lc.BASE + f"{C.ISSUE}-recurring-activities-by-") == 3
@@ -199,6 +209,20 @@ for _kind121 in ("all-events", "recurring-activities"):
     for _sort121 in ("date", "name", "location"):
         _f121 = _repo121 / f"{C.ISSUE}-{_kind121}-by-{_sort121}.html"
         if _f121.exists(): _r121(_f121.name, _f121.read_text(encoding="utf-8"))
+# R122 (Steven, Nov 12 2026): Tony's club calendar is the source of truth and always supersedes the RPM calendar.
+if C.ISSUE >= "2026-11-01":
+    _cals122 = sorted((ROOT / "data").glob("cal-*.json"), key=lambda p: p.name)
+    _club122, _rpm122 = [], []
+    if _cals122:
+        _club122 = [e for e in json.load(open(_cals122[-1], encoding="utf-8")).get("events") or [] if isinstance(e, dict)]
+    _src122 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "builder/data/meeting-conflict-sources.json"
+    if _src122.exists():
+        for _r in (json.load(open(_src122, encoding="utf-8")).get("rpm") or []):
+            _rpm122.append(dict(_r, name=_r.get("rpm_name") or _r.get("committee") or _r.get("name")))
+    _ovr122, _note122 = getattr(C, "MTG_OVERRIDE", {}) or {}, getattr(C, "MTG_NOTE", {}) or {}
+    for _n122, _x122 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _hits122 = _sr83.club_calendar_supersedes_rpm_problems(_x122, _club122, _rpm122, overrides=_ovr122, notes=_note122)
+        L.ok("R122", not _hits122, f"{_n122}: meeting dates follow the club calendar, not a conflicting RPM date" + (f" {_hits122}" if _hits122 else ""))
 # R80 (Steven Oct 26 2026 11:41 AM): every All Events row (all three sorts) has its own Source line with the linked Calendar,
 # plus the linked Webmaster notice for every event the content maps to one (EVENT_EXTRA_SRC, the R48/R56 map); none invented.
 if getattr(C, "ALL_EVENTS_PAGE", False):

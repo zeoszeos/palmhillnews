@@ -5,16 +5,13 @@ VOL_NO = 18
 SHORT = "nov15"
 DEFAULT_REPO = "/workspace/palmhillnews"
 DEFAULT_WORK = "/workspace/phnews-consolidation/nov15"
-# Community Story (R45/R83, Steven Nov 6, 2026: Tom Palladino's story is great to use; "Make it so").
-# Palm Hill Link November 2026 pp 10-11, full length, credit line "First published in the Palm Hill Link, November 2026".
-# Display date is Nov 1, 2026 (1st of the Link month, R83), not an interview day. Katra Peck's page stays published;
-# she leaves this issue's feature the way Joe Clay left Nov 1. Pages written by builder/nov8/stage_nov8_content.py.
-# Community Story (R45/R83). Steven Nov 12 2026 2:06 PM: a story from the most recent Palm Hill Link (November 2026), not the
-# Tom Palladino story, in the Story of the Month format, source wording only. DRAFT PICK (pending Steven): "Serving on the Palm Hill
-# Board of Directors" by Carolyn Story, Link Nov 2026 p 36, full length, verbatim; credit line "First published in the Palm Hill
-# Link, November 2026". Display date Nov 1, 2026 (R83). Pages written by builder/nov15/stage_nov15_content.py (no photo printed).
-STORY = dict(json="builder/nov15/data/community-story-serving-on-the-board.json", listen="2026-11-listen-carolyn-story-serving-on-the-board.html", teaser_sentences=1)
-STORY_OMIT_DRYRUN_NOTE = None         # Nov 15 has a story (draft pick); never omitted without Steven's OK
+# Community Stories section omitted (R45 / R104). Steven Nov 12 2026 (voice) approved Carolyn Story's
+# "Serving on the Palm Hill Board of Directors" (Palm Hill Link, November 2026, p 36, verbatim) and asked
+# that it be moved from Community Stories into Community Notices. The full page and Listen page stay published.
+# Pages written by builder/nov15/stage_nov15_content.py (no photo printed).
+STORY = None
+STORY_OMIT_APPROVED = "Steven Leonowicz, Nov 12, 2026 (voice): move Carolyn Story's Board piece from Community Stories into Community Notices"
+STORY_OMIT_DRYRUN_NOTE = None         # real omit is STORY_OMIT_APPROVED, not a dry-run
 # Carry policy (set up Oct 24 2026 8:3x PM; Steven confirms Friday): keep notices still valid on/after Nov 1, drop Oct 25 one-offs.
 NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info from Linda", "North Clubhouse Ice Machine Moved",
                    "Help with maintaining Sanitation Field", "Please observe important stop sign rules",
@@ -30,12 +27,14 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info fro
                    "Chair Yoga class canceled",                  # Mon Nov 9 (classes resumed Nov 16)
                    "South Potable Water Shut off (rescheduled)", # Wed Nov 11 (RPM: water restored Nov 11)
                    "Spaghetti Tickets - Still Available",        # dinner Sat Nov 14
-                   "November Coffee and Pancake Volunteers"]     # pancakes Sat Nov 14 (flagged for Steven)
+                   "November Coffee and Pancake Volunteers",     # pancakes Sat Nov 14 (flagged for Steven)
+                   "North Irrigation Down",                      # Steven Nov 12 2026 (voice): pull the undated RPM riser notice
+                   "Taste of Golf"]                              # Steven Nov 12 2026 (voice): drop the Oct 14 sign-up promo; keep Taste of Golf Instructions + the event row
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {
     "NOTICES_EXPECTED": [   # Nov 15 DRAFT (not yet approved by Steven): four new Nov 9-12 emails, then the Nov 8 list minus stale notices
-        'North Irrigation Down',
+        'Serving on the Palm Hill Board of Directors',
         'Exercise Class',
         'Taste of Golf Instructions',
         'Ladies Christmas Luncheon',
@@ -46,9 +45,9 @@ LOCKED = {
         '2027 South Rec Club Seeking Officers',
         'Swimming Pool Food and Beverage Rules',
         'Shuffleboard Season Reminders',
-        'Taste of Golf',
     ],
-    # Nov 15: the Oct 12-14 chair reports are past the 30-day window (cutoff Oct 16) and no newer report came in -> section hidden (R104)
+    # Nov 15: the Oct 12-14 chair reports are past the 30-day window (cutoff Oct 16) and no newer report came in
+    # (R104b: heading stays with "No reports this week." unless a fresh report arrives before publish)
     "CHAIR_EXPECTED": {},
 }
 
@@ -80,7 +79,7 @@ EVENT_DETAIL = {
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html",
-                   "Taste of Golf": BASE + "2026-10-14-taste-of-golf-notice.html",
+                   "Taste of Golf": BASE + "2026-11-10-taste-of-golf-instructions-notice.html",
                    # Sat Oct 31 6 PM sweep (staged pending Steven): R56 -- calendar row + Webmaster reminder notice (calendar facts only, More -> notice)
                    "Senior Empowerment Luncheon": BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"}
 EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween-dance.html"),
@@ -89,7 +88,7 @@ EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween
               "Thanksgiving Dinner": ("More →", BASE + "2026-11-26-thanksgiving-dinner.html"),
               "Thanksgiving/Friendsgiving Dance": ("More →", BASE + "2026-11-21-thanksgiving-friendsgiving-dance.html"),  # R114 (Steven Nov 4 2026 8:50 PM)
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html"),
-              "Taste of Golf": ("More →", BASE + "2026-10-14-taste-of-golf-notice.html"),
+              "Taste of Golf": ("More →", BASE + "2026-11-10-taste-of-golf-instructions-notice.html"),
               "Senior Empowerment Luncheon": ("More →", BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html")}   # Sat Oct 31 6 PM sweep (staged, R56)      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
 # R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
 # has explicitly OK'd (PHONE_OK_PAGES; Bocce Party approved Oct 16 11:37 PM). Issue summaries never carry them.
@@ -198,6 +197,10 @@ LADIES_LUNCH_TITLE = "Ladies Christmas Luncheon"   # R93: subject "December 2, 2
 LADIES_LUNCH_BODY = ("If you would like to purchase tickets for the 12/2/26 Ladies Christmas Luncheon at The Bayou Club, please contact me ASAP before they are sold out. "
     "This year we'll be enjoying a delicious Italian buffet.  Tickets are $32 each and are selling fast.  Contact Sandy Obi at (585)797-4299.")
 LADIES_LUNCH_DATE = "Luncheon: 12/2/26 · The Bayou Club"
+CAROLYN_BOARD_TITLE = "Serving on the Palm Hill Board of Directors"
+CAROLYN_BOARD_BODY = "A board member is the guardian of your community, assets, and lifestyle."
+CAROLYN_BOARD_DATE = "First published: November 2026"
+CAROLYN_BOARD_PAGE = "2026-11-carolyn-story-serving-on-the-board.html"
 # Sat Nov 7 2026 morning sweep (draft, before Susan's proof). Verbatim bodies; unsubscribe already absent.
 WM_COPY_CHAIR_YOGA = "2026-11-07-chair-yoga-class-canceled-notice.html"                 # gotwicz 1a1b5cc77232729c Sat Nov 7 6:37 AM ET
 WM_COPY_WATER_1111 = "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"  # gotwicz 1a1b174eb713f7a4 Fri Nov 6 10:23 AM ET (supersedes the 10:00am wording)
@@ -468,6 +471,9 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Steven Nov 12 2026 (voice): Carolyn Story's Board piece, moved from Community Stories into Community Notices.
+    # Full verbatim page + Listen stay at CAROLYN_BOARD_PAGE (Link Nov 2026 p 36).
+    (CAROLYN_BOARD_TITLE, CAROLYN_BOARD_BODY, "Carolyn Story", BASE + CAROLYN_BOARD_PAGE),
     # Nov 15 sweep (Thu Nov 12 2026): newest first. Teasers are source sentences; summary_trim SHORT cuts them to 3 lines and adds More →.
     (IRRIGATION_TITLE, IRRIGATION_BODY, "RPM", BASE + WM_COPY_IRRIGATION),
     (EXERCISE_TITLE, EXERCISE_BODY, "Webmaster", BASE + WM_COPY_EXERCISE),
@@ -553,6 +559,7 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    CAROLYN_BOARD_TITLE: CAROLYN_BOARD_DATE,
     EXERCISE_TITLE: EXERCISE_DATE,
     TOG_INSTR_TITLE: TOG_INSTR_DATE,
     LADIES_LUNCH_TITLE: LADIES_LUNCH_DATE,
@@ -587,7 +594,10 @@ NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to 
 NOTICES_DROPPED_OCT25 = {"October Mowing Date", "Property Fraud Alert"}  # Steven Oct 21 8:43 PM: Property Fraud Alert dropped (its Vercel page stays live)  # Steven Oct 21 11:20 AM: Info from Linda + Taste of Golf notice restored (R56 event cards link them)
 
 # ---------- Community Notices (5): Listen overrides ----------
-NOTICE_LISTEN_OVERRIDE = {ICE_TITLE: BASE + ICE_PAGE}  # R60c: Listen reads the notice's own page (Source is the P&E report)
+NOTICE_LISTEN_OVERRIDE = {
+    ICE_TITLE: BASE + ICE_PAGE,  # R60c: Listen reads the notice's own page (Source is the P&E report)
+    CAROLYN_BOARD_TITLE: BASE + "2026-11-listen-carolyn-story-serving-on-the-board.html",  # dedicated Listen page (same as when this was the Community Story)
+}
 
 # ---------- Committee Chair Reports: cards, full report pages, archive-only reports, archive rows ----------
 # ---------- Chair reports: stacked cards (to-do #12) ----------
@@ -882,14 +892,17 @@ MEETING_ROW_CHECKS = [   # R62/R62b: a meetings row must show (need) and must no
     # Calendar pull cal-20261112-1346: Board of Directors Wed Nov 18 and Wed Nov 25 are RESCHEDULED; Fri Nov 20 1:00 PM is CONFIRMED
     dict(rule="R87", start=">Board of Directors Meeting<", span=1200,
          need=["Friday, Nov 20, 2026", "1:00 PM"], never=["Nov 18", "Nov 25"]),
+    # R122: club calendar (Fri Dec 4, 9:00 AM) supersedes the RPM Oct 27 copy (Mon Dec 14, 10:00 AM)
+    dict(rule="R122", start=">Communications Committee Meeting<", span=1200,
+         need=["Friday, Dec 4, 2026", "9:00 AM"], never=["Dec 14"]),
 ]
 HOLIDAY_SOURCE_LABEL = "Bill Bender email"            # R60b linked Source wording
 ICE_SOURCE_LABEL = "Oct P&E Committee Report"         # R60c linked Source wording
 # R92 (Steven Oct 30 2026 11:40 AM): Events - Next Week (Nov 8-14) directly under This Week; label derived from ISSUE (L08).
 NEXT_WEEK_SECTION = True
 UPCOMING_LABEL_EXPECTED = None   # unused with NEXT_WEEK_SECTION (was stale Oct 25 carry-over "November 1 through November 22")
-CHAIR_DATES_EXPECTED = []   # Nov 15: chair section hidden (R104)
-CHAIR_DATES_LABEL = "chair section hidden (no report inside 30 days)"
+CHAIR_DATES_EXPECTED = []   # Nov 15: no report inside 30 days (R104b placeholder)
+CHAIR_DATES_LABEL = "chair section shows No reports this week. (no report inside 30 days)"
 RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"
 
 # R100 (Steven Oct 31 2026 6:07 PM "Drop community notice"): Tony's Facebook group notice off the main page; Did You Know item kept.
@@ -915,5 +928,5 @@ HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 
                  # R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 card leaves this main page.
                  # The report page and the Shareholders Report archive stay.
                  "shareholders": "September 30 monthly report; no newer monthly report (Steven Nov 7 2026)",
-                 # Nov 15 DRAFT (flagged for Steven): newest chair reports are Oct 12-14, past the 30-day window (cutoff Oct 16); none newer
-                 "chair": "no chair report dated on/after Oct 16 (30-day retention); Oct 12-14 cards aged out (Nov 15 draft, flagged)"}
+                 # Steven Nov 12 2026 (voice): Carolyn's Board piece moved to Community Notices; the Stories section is omitted (R45).
+                 "story": "Steven Nov 12 2026 (voice): move Carolyn Story's Board piece from Community Stories into Community Notices"}

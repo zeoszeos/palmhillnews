@@ -9,6 +9,8 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Steven Nov 12 2026 (voice): Carolyn Story Board piece, moved into Community Notices; teaser is the first sentence, More → the full page
+ ("A board member is the guardian of your community, assets, and lifestyle.", "A board member is the guardian of your community, assets, and lifestyle.", B + "2026-11-carolyn-story-serving-on-the-board.html"),
  # Thu Nov 12 2026 sweep for the Nov 15 draft: cut, never reworded; More → = the copied email (R47)
  ("The irrigation system in the North section has been temporarily shut down", "The irrigation system in the North section has been temporarily shut down due to a damaged riser.", B + "2026-11-12-north-irrigation-down-notice.html"),
  ("The winter session of the Exercise Class will begin", "The winter session of the Exercise Class will begin on Tuesday, November 17, 2026 at 9am, North Clubhouse.", B + "2026-11-10-exercise-class-beginning-notice.html"),

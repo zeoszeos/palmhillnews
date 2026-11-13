@@ -681,3 +681,193 @@ def listen_iphone_tree_problems(repo):
             why = listen_page_iphone_problem(block or text)
             if why: probs.append(rel + ": " + why)
     return probs
+
+
+# R104b (Steven, Nov 12 2026): an empty Chair Reports section keeps its heading and one placeholder line.
+CHAIR_NO_REPORTS = "No reports this week."
+
+def chair_empty_section_problem(html, has_current_reports):
+    """R104b. '' when the Chair Reports section matches the rule; else why it fails.
+    has_current_reports True: reports are in the 30-day window, so the placeholder must be absent.
+    has_current_reports False: the heading, the placeholder line, and the archives link must be present,
+    and no Read Full Report card."""
+    if not html:
+        return "no html"
+    has_heading = ">Committee Chair Reports</span>" in html
+    has_placeholder = CHAIR_NO_REPORTS in html
+    has_full = ">Read Full Report →</a>" in html
+    has_arch = ">Committee Report Archives →</a>" in html
+    if has_current_reports:
+        if has_placeholder:
+            return "placeholder shown while a current chair report is in the 30-day window"
+        return ""
+    if not has_heading:
+        return "Committee Chair Reports heading is missing (the empty section was hidden)"
+    if not has_placeholder:
+        return "empty Chair Reports section has no 'No reports this week.' line"
+    if has_full:
+        return "empty Chair Reports section still has a Read Full Report card"
+    if not has_arch:
+        return "Committee Report Archives → link is missing from the empty Chair Reports section"
+    return ""
+
+
+# R122 (Steven, Nov 12 2026): club calendar always supersedes the RPM calendar.
+_MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+_FULLM = ("January","February","March","April","May","June","July","August","September","October","November","December")
+
+def _r122_key(name):
+    n = re.sub(r"\s+", " ", _h.unescape(name or "")).strip().casefold()
+    n = re.sub(r"\s+meeting$", "", n)
+    n = n.replace("committee", " ").replace("of directors", " board ").replace("board of directors", "board")
+    n = re.sub(r"\s+", " ", n).strip()
+    if "board" in n and "direct" in (name or "").casefold():
+        return "board"
+    if n.startswith("board"):
+        return "board"
+    if "communication" in n:
+        return "communications"
+    return n
+
+def _r122_date_phrases(iso):
+    """Visible date forms a meetings row might use for YYYY-MM-DD."""
+    if not iso or len(str(iso)) < 10:
+        return []
+    y, m, d = str(iso)[:10].split("-")
+    m, d = int(m), int(d)
+    return [
+        f"{_FULLM[m-1]} {d}, {y}",
+        f"{_FULLM[m-1]} {d}",
+        f"{_MON3[m-1]} {d}, {y}",
+        f"{_MON3[m-1]} {d}",
+        f"{m}/{d}/{y}",
+        f"{m}/{d}",
+    ]
+
+def _r122_time_phrases(start):
+    """Visible time forms for '13:00' / '09:00' / '1:00 PM'."""
+    if not start:
+        return []
+    s = str(start).strip()
+    if re.search(r"(?i)[ap]m", s):
+        return [s]
+    m = re.match(r"^(\d{1,2}):(\d{2})$", s)
+    if not m:
+        return [s]
+    h, mi = int(m.group(1)), m.group(2)
+    ampm = "AM" if h < 12 else "PM"
+    h12 = h % 12 or 12
+    return [f"{h12}:{mi} {ampm}", f"{h12}:{mi}{ampm}", f"{h:02d}:{mi}"]
+
+def _r122_meeting_row(html, name):
+    """Slice of the Meetings section starting at this meeting's bold title, through the next title or end."""
+    key = _r122_key(name)
+    sec = html
+    h = sec.find(">Committee &amp; Board Meeting Schedules</span>")
+    if h < 0:
+        h = sec.find(">Committee & Board Meeting Schedules</span>")
+    if h >= 0:
+        nxt = [x for x in (sec.find('<div class="canonical-section">', h + 10), sec.find('<div class="section04">', h + 10)) if x > 0]
+        sec = sec[h:(min(nxt) if nxt else len(sec))]
+    for m in re.finditer(r'font-weight:bold;color:#333333;text-align:left;[^>]*>([^<]+)<', sec):
+        title = _h.unescape(m.group(1)).strip()
+        if _r122_key(title) == key:
+            rest = sec[m.start():]
+            nxt = re.search(r'font-weight:bold;color:#333333;text-align:left;[^>]*>([^<]+)<', rest[m.end()-m.start():])
+            return rest[: (m.end()-m.start() + nxt.start())] if nxt else rest
+    return ""
+
+def club_calendar_supersedes_rpm_problems(html, club_meetings, rpm_meetings, overrides=None, notes=None):
+    """R122. Return a list of problems when a draft uses an RPM date that conflicts with the club calendar,
+    or when MTG_OVERRIDE / MTG_NOTE would apply such a date. club_meetings / rpm_meetings are dicts with
+    name, date (YYYY-MM-DD), optional time, optional status. Only CONFIRMED (or unstated) club rows rule;
+    RESCHEDULED club rows are not the source of truth."""
+    problems = []
+    club_by = {}
+    for e in club_meetings or []:
+        st = (e.get("status") or "CONFIRMED").upper()
+        if st and st != "CONFIRMED":
+            continue
+        k = _r122_key(e.get("name") or e.get("title") or "")
+        if not k or not e.get("date"):
+            continue
+        club_by.setdefault(k, []).append(e)
+    rpm_by = {}
+    for e in rpm_meetings or []:
+        k = _r122_key(e.get("name") or e.get("title") or e.get("committee") or "")
+        if not k or not e.get("date"):
+            continue
+        rpm_by.setdefault(k, []).append(e)
+
+    def _iso(v):
+        return str(v)[:10] if v else ""
+
+    def _conflicts(club_list, rpm_list):
+        out = []
+        for r in rpm_list:
+            rd = _iso(r.get("date"))
+            if rd and all(_iso(c.get("date")) != rd for c in club_list):
+                out.append(r)
+        return out
+
+    for k, clubs in club_by.items():
+        rpms = rpm_by.get(k) or []
+        bad = _conflicts(clubs, rpms)
+        if not bad:
+            continue
+        # Overrides / notes must not adopt a conflicting RPM date.
+        for label, blob in (("MTG_OVERRIDE", overrides), ("MTG_NOTE", notes)):
+            if not blob:
+                continue
+            text = blob if isinstance(blob, str) else str(blob)
+            text_l = text.casefold()
+            if k not in text_l and not any(_r122_key(str(x)) == k for x in (blob.keys() if isinstance(blob, dict) else [])):
+                # still scan values
+                pass
+            for r in bad:
+                for phr in _r122_date_phrases(r.get("date")):
+                    if phr in text or phr.replace(",", "") in text:
+                        # only flag if the club date is not the one being applied exclusively...
+                        problems.append(f"{label} uses RPM date {phr} for {k}, which conflicts with the club calendar")
+                        break
+        # Rendered meetings row must show a club date, not the conflicting RPM date.
+        if html:
+            # Use the first club meeting's name for row lookup; also try common titles.
+            names = [clubs[0].get("name") or k] + [c.get("name") for c in clubs if c.get("name")]
+            row = ""
+            for n in names:
+                row = _r122_meeting_row(html, n)
+                if row:
+                    break
+            if not row:
+                continue  # not printed in this issue's Meetings window
+            # club date present
+            if not any(any(p in row for p in _r122_date_phrases(c.get("date"))) for c in clubs):
+                problems.append(f"{names[0]} row does not show the club calendar date")
+            for r in bad:
+                phrases = _r122_date_phrases(r.get("date"))
+                if any(p in row for p in phrases):
+                    problems.append(f"{names[0]} row shows RPM date {r.get('date')}, which conflicts with the club calendar")
+    # Overrides that name a committee and an RPM-only date even when the meeting is not on the page
+    if overrides:
+        items = overrides.items() if isinstance(overrides, dict) else []
+        for name, val in items:
+            k = _r122_key(name)
+            clubs = club_by.get(k) or []
+            rpms = rpm_by.get(k) or []
+            if not clubs or not rpms:
+                continue
+            text = str(val)
+            for r in _conflicts(clubs, rpms):
+                if any(p in text for p in _r122_date_phrases(r.get("date"))):
+                    if not any(p in text for p in _r122_date_phrases(clubs[0].get("date"))):
+                        msg = f"MTG_OVERRIDE for {name} uses RPM date {r.get('date')}, which conflicts with the club calendar"
+                        if msg not in problems:
+                            problems.append(msg)
+    # unique
+    out = []
+    for p in problems:
+        if p not in out:
+            out.append(p)
+    return out
+

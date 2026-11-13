@@ -37,7 +37,7 @@ def _page(T):
     assert "Marge" not in out and "<article>" in out
     assert not re.search(r"\b(test|review|dry run)\b", out.split("<main>")[1].split("</main>")[0], re.I), "R83: test/review text in story"
     _sr.assert_no_link_name(out, LIVE, credit_line=story["credit_line"])   # R52 + R83 credit-line exception
-    return out
+    return _pl.upgrade(_pl.add(out))  # R76/R85d: add/keep the v2 Listen block on the story and listen pages
 for f, t in {LIVE: "pages/2026-09-marge-taylor-love-of-the-game.html", LST: "pages/2026-09-listen-marge-taylor-story.html"}.items():
     (ROOT / "pages" / f).write_text(_page((ROOT / t).read_text(encoding="utf-8")), encoding="utf-8"); print("wrote pages/" + f)
 # R88: Dave's Rule VI Did You Know, in the Oct 25 Rules Did You Know shell (Assessments Due To The Corporation page).
@@ -49,10 +49,16 @@ for it in DN["items"]:
     for _l, _t in it["rule_items"]: assert norm(_t) in RULES, ("R39: rule text not verbatim from the Rules PDF", _l)
     assert norm(it["paragraphs"][1][3:]) in RULES, "Dave's G. paragraph is the official rule word for word"
     _rp = html.escape(it["rule_pdf"])
-    ps = (f'<p><strong>{html.escape(it["paragraphs"][0])}</strong></p>' + "".join(f"<p>{html.escape(p)}</p>" for p in it["paragraphs"][1:])
-          + '<blockquote class="dyk-full-rule" style="border-left:4px solid #2d5016;padding:4px 0 4px 12px;margin:16px 0">'
-          + f'<p><strong><a class="dyk-rule-heading" href="{_rp}" style="color:#3A6B1A">{html.escape(it["rule_heading"])}</a></strong></p>'
-          + "".join(f"<p>{html.escape(l)} {html.escape(t)}</p>" for l, t in it["rule_items"]) + "</blockquote>"
+    # Keep Dave's email wording verbatim (R31). Presentation only: his "the full document" points at the official PDF
+    # (R34), and the official rule sits in a clearer blockquote after his note, with the lettered item bolded.
+    _paras = it["paragraphs"]
+    _note = html.escape(_paras[2]).replace("the full document", f'<a href="{_rp}" style="color:#3A6B1A">the full document</a>', 1)
+    ps = (f'<p><strong>{html.escape(_paras[0])}</strong></p>'
+          + f"<p>{html.escape(_paras[1])}</p>"
+          + f"<p>{_note}</p>"
+          + '<blockquote class="dyk-full-rule" style="border-left:4px solid #2d5016;background:#f3f8ee;padding:12px 16px;margin:16px 0">'
+          + f'<p style="margin:0 0 8px 0;"><strong><a class="dyk-rule-heading" href="{_rp}" style="color:#3A6B1A">{html.escape(it["rule_heading"])}</a></strong></p>'
+          + "".join(f'<p style="margin:0;"><strong>{html.escape(l)}</strong> {html.escape(txt)}</p>' for l, txt in it["rule_items"]) + "</blockquote>"
           + f'<p class="dyk-byline">{html.escape(it["byline"])}</p>')
     t = "Did You Know? " + it["title_display"]
     out = re.sub(r"<title>.*?</title>", lambda m: f"<title>{html.escape(t)} — Palm Hill Country Club</title>", _TPL, count=1)
@@ -63,6 +69,7 @@ for it in DN["items"]:
     f = DN["page_prefix"] + it["preview_page"]
     _sr.assert_no_link_name(out, f)  # R52
     assert _sr.dyk_byline_ok(out, it["byline"]), "R33: byline is the last paragraph of the card"
+    assert _sr.dyk_rule_link_ok(out), "R34: official Rules and Regulations PDF is linked after the card and from the rule heading"
     (ROOT / "pages" / f).write_text(out, encoding="utf-8"); print("wrote pages/" + f)
 if "--story-only" not in sys.argv:
     CORE = ROOT / "builder/core"
