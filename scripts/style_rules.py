@@ -871,3 +871,66 @@ def club_calendar_supersedes_rpm_problems(html, club_meetings, rpm_meetings, ove
             out.append(p)
     return out
 
+
+# R124 (Steven, Nov 13 2026: "Let's combine the individual dates for the 9 day cruise to a range"). A multi-day event is a
+# title whose every CONFIRMED calendar occurrence at the same place falls on back-to-back days (one unbroken run of 2+ days,
+# one row per day). Calendar-list pages show it as ONE row with a date range instead of a row per day. Weekly or weekday
+# series (Tennis, Billiards) have gaps, so they are never collapsed.
+def _mday_key(e):
+    return (e.get("name", ""), e.get("venue", ""), e.get("place", ""))
+
+def multiday_runs(events):
+    """{(name, venue, place): {name, start, end, days, first_start}} for every multi-day run in the calendar feed."""
+    from datetime import date as _d, timedelta as _td
+    g = {}
+    for e in events:
+        if e.get("status") != "CONFIRMED" or reserved_only_name(e.get("name")): continue
+        g.setdefault(_mday_key(e), []).append(e)
+    out = {}
+    for k, v in g.items():
+        ds = sorted({e["date"] for e in v})
+        if len(ds) < 2 or len(ds) != len(v): continue
+        dd = [_d.fromisoformat(x) for x in ds]
+        if all(b - a == _td(days=1) for a, b in zip(dd, dd[1:])):
+            first = min(v, key=lambda e: e["date"])
+            out[k] = {"name": k[0], "start": ds[0], "end": ds[-1], "days": len(ds), "first_start": first.get("start")}
+    return out
+
+def range_label(start_iso, end_iso):
+    """'Monday, Dec 7 – Wednesday, Dec 16, 2026' (start year shown only when the range crosses a year)."""
+    from datetime import date as _d
+    a, b = _d.fromisoformat(start_iso), _d.fromisoformat(end_iso)
+    left = f"{a:%A}, {MON3[a.month-1]} {a.day}" + (f", {a.year}" if a.year != b.year else "")
+    return f"{left} \u2013 {b:%A}, {MON3[b.month-1]} {b.day}, {b.year}"
+
+def collapse_multiday(rows, events):
+    """Keep the first (earliest) row of each multi-day run, tagged with range_start/range_end/range_first_start; drop the rest.
+    The range is the full run in the calendar feed, not clipped to the page window."""
+    runs = multiday_runs(events); seen = set(); out = []
+    for e in sorted(rows, key=lambda x: (x["date"], x.get("start") or "99:99")):
+        k = _mday_key(e)
+        if k in runs:
+            if k in seen: continue
+            seen.add(k); r = runs[k]
+            e = dict(e, range_start=r["start"], range_end=r["end"], range_first_start=r["first_start"])
+        out.append(e)
+    return out  # caller re-sorts for each view
+
+def _mon3_norm(s):
+    return re.sub(r"\b(" + "|".join(FULL) + r")\b", lambda m: MON3[FULL.index(m.group(1))], s)
+
+def multiday_range_problems(page_html, events, window):
+    """R124 guard on one calendar-list page: each multi-day run that overlaps the page window and is listed on the page must be
+    one row (title once; By Name group count (1)) and must show its date range."""
+    txt = _mon3_norm(_h.unescape(page_html)); out = []
+    for k, r in multiday_runs(events).items():
+        if r["end"] < window[0] or r["start"] > window[1]: continue
+        t = r["name"]
+        if t not in txt: continue
+        n = txt.count(t)
+        grp = re.search(re.escape(t) + r'<span class="n">\((\d+)\)', txt)
+        if grp and grp.group(1) != "1": out.append(f"{t}: By Name group shows ({grp.group(1)}) rows, expected one range row")
+        elif not grp and n != 1: out.append(f"{t}: listed {n} times, expected one range row")
+        lab = range_label(r["start"], r["end"]); short = re.sub(r", \d{4}$", "", lab)
+        if lab not in txt and short not in txt: out.append(f"{t}: date range '{short}' missing")
+    return out
