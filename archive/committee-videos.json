@@ -338,6 +338,20 @@
   "link_status": "ok"
  },
  {
+  "date": "2026-11-10",
+  "group": "buildings-and-grounds",
+  "meeting": "",
+  "note": "",
+  "host": "drive.google.com",
+  "url": "https://drive.google.com/file/d/1IlXtxIaBDEYKuPe-nwGhFxtDLiHd6kIA/view?usp=sharing",
+  "source": "Club Committees page (live, pulled 2026-11-12; 11/10/2026)",
+  "flags": [],
+  "http": 200,
+  "status": "OK (opens)",
+  "last_checked": "2026-11-12",
+  "link_status": "ok"
+ },
+ {
   "date": "2025-05-14",
   "group": "buildings-and-grounds",
   "meeting": "",
@@ -573,6 +587,20 @@
   "http": 200,
   "status": "OK (opens)",
   "last_checked": "2026-10-16",
+  "link_status": "ok"
+ },
+ {
+  "date": "2026-11-09",
+  "group": "communications",
+  "meeting": "",
+  "note": "",
+  "host": "drive.google.com",
+  "url": "https://drive.google.com/file/d/1Z4TGR_dHWL4FyXSKsNCQjzywZrON8aIB/view?usp=sharing",
+  "source": "Club Committees page (live, pulled 2026-11-12; 11/09/2026)",
+  "flags": [],
+  "http": 200,
+  "status": "OK (opens)",
+  "last_checked": "2026-11-12",
   "link_status": "ok"
  },
  {
@@ -983,6 +1011,20 @@
   "http": 200,
   "status": "OK (opens)",
   "last_checked": "2026-10-23",
+  "link_status": "ok"
+ },
+ {
+  "date": "2026-11-10",
+  "group": "golf",
+  "meeting": "",
+  "note": "",
+  "host": "drive.google.com",
+  "url": "https://drive.google.com/file/d/1KKsDeiOUfy9LVAF6sIFqD_MVUSZlgwkr/view?usp=sharing",
+  "source": "Club Committees page (live, pulled 2026-11-12; 11/10/2026)",
+  "flags": [],
+  "http": 200,
+  "status": "OK (opens)",
+  "last_checked": "2026-11-12",
   "link_status": "ok"
  },
  {

@@ -9,6 +9,13 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Steven Nov 12 2026 (voice): Carolyn Story Board piece, moved into Community Notices; teaser is the first sentence, More → the full page
+ ("A board member is the guardian of your community, assets, and lifestyle.", "A board member is the guardian of your community, assets, and lifestyle.", B + "2026-11-carolyn-story-serving-on-the-board.html"),
+ # Thu Nov 12 2026 sweep for the Nov 15 draft: cut, never reworded; More → = the copied email (R47)
+ ("The irrigation system in the North section has been temporarily shut down", "The irrigation system in the North section has been temporarily shut down due to a damaged riser.", B + "2026-11-12-north-irrigation-down-notice.html"),
+ ("The winter session of the Exercise Class will begin", "The winter session of the Exercise Class will begin on Tuesday, November 17, 2026 at 9am, North Clubhouse.", B + "2026-11-10-exercise-class-beginning-notice.html"),
+ ("These are the initial instructions for all participants of Taste of Golf.", "These are the initial instructions for all participants of Taste of Golf.", B + "2026-11-10-taste-of-golf-instructions-notice.html"),
+ ("If you would like to purchase tickets for the 12/2/26 Ladies Christmas Luncheon", "This year we&#x27;ll be enjoying a delicious Italian buffet. Tickets are $32 each and are selling fast.", B + "2026-11-09-ladies-christmas-luncheon-notice.html"),
  # Sat Nov 7 2026 morning sweep: cut, never reworded; More → = the copied email (R47)
  ("The chair yoga class for Monday, November 9, is cancelled.", "The chair yoga class for Monday, November 9, is cancelled.", B + "2026-11-07-chair-yoga-class-canceled-notice.html"),
  ("South Potable Water Shut off scheduled for Wednesday, November 11th", "South Potable Water Shut off scheduled for Wednesday, November 11th @ 10:00am has been rescheduled", B + "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"),

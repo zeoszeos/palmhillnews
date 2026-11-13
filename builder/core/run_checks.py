@@ -112,14 +112,28 @@ else:
   L.ok("L12", page.count(">From the Board President</span>") == 1 and ">Read Full Message →</a>" in bp and ">President's Message Archives →</a>" in bp
        and "Source: Henry Klain, Board President" in bp and ">Listen</a>" in bp, "Board President: Read Full Message, Archives, Listen, Source")
 # L13-L16 Chair reports
-ch = lc._section(page, "Committee Chair Reports")
-L.ok("L13", titles(ch) == list(lc.CHAIR_EXPECTED), f"chair rows {titles(ch)}")
-for t, intro in lc.CHAIR_EXPECTED.items():
-    L.ok("L13b", intro.replace("&", "&amp;") in ch or intro in ch, f"intro: {t}")
-L.ok("L14", all(d in ch for d in C.CHAIR_DATES_EXPECTED), C.CHAIR_DATES_LABEL)
-n = len(lc.CHAIR_EXPECTED)
-L.ok("L15", len(re.findall(r">\s*Listen\s*</a>", ch)) == n and "Listen to the Chair Report" not in ch, "one Listen per chair report")
-L.ok("L16", ch.count(">Read Full Report →</a>") == n and ">Committee Report Archives →</a>" in ch, "Read Full Report → each + archives link")
+# R104b (Steven, Nov 12 2026): from Nov 15, an empty chair section keeps its heading and "No reports this week."
+if "Committee Chair Reports" in _HID and C.ISSUE < "2026-11-15":   # R104 (pre-R104b): no header, no rows
+    L.ok("R104", ">Committee Chair Reports</span>" not in page and ">Read Full Report →</a>" not in page and not lc.CHAIR_EXPECTED,
+         "Committee Chair Reports hidden: no header, no rows (no current report)")
+else:
+  ch = lc._section(page, "Committee Chair Reports") if ">Committee Chair Reports</span>" in page else ""
+  _empty_chair = not lc.CHAIR_EXPECTED
+  if C.ISSUE >= "2026-11-15":
+    for _n104b, _x104b in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+      L.ok("R104b", _sr83.chair_empty_section_problem(_x104b, not _empty_chair) == "",
+           f"{_n104b}: " + (_sr83.chair_empty_section_problem(_x104b, not _empty_chair) or "Chair Reports heading stays with placeholder when empty, or shows current reports"))
+  if _empty_chair and C.ISSUE >= "2026-11-15":
+    L.ok("L13", titles(ch) == [] and not lc.CHAIR_EXPECTED, f"empty chair section has no report title rows {titles(ch)}")
+    L.ok("L16", ">Read Full Report →</a>" not in ch and ">Committee Report Archives →</a>" in ch, "empty chair section: no report cards, archives link stays")
+  else:
+    L.ok("L13", titles(ch) == list(lc.CHAIR_EXPECTED), f"chair rows {titles(ch)}")
+    for t, intro in lc.CHAIR_EXPECTED.items():
+      L.ok("L13b", intro.replace("&", "&amp;") in ch or intro in ch, f"intro: {t}")
+    L.ok("L14", all(d in ch for d in C.CHAIR_DATES_EXPECTED), C.CHAIR_DATES_LABEL)
+    n = len(lc.CHAIR_EXPECTED)
+    L.ok("L15", len(re.findall(r">\s*Listen\s*</a>", ch)) == n and "Listen to the Chair Report" not in ch, "one Listen per chair report")
+    L.ok("L16", ch.count(">Read Full Report →</a>") == n and ">Committee Report Archives →</a>" in ch, "Read Full Report → each + archives link")
 # L17 Recurring
 rc = lc._section(page, "Recurring Meetings &amp; Events")
 L.ok("L17", f">{_W('RECURRING')}, 2026<" in rc and rc.count(lc.BASE + f"{C.ISSUE}-recurring-activities-by-") == 3
@@ -135,7 +149,7 @@ for _cr in getattr(C, "CHAIR_REPORTS", []):
     _bits = [x for k, v in _cr["blocks"] for x in (v if k == "ul" else [v])]
     L.ok("R77", bool(_pg) and all(_esc(b, quote=False) in _pg for b in _bits), f"chair wording verbatim: {_cr['page']}")
     L.ok("R77", not re.search(r"(?i)meeting of|\b(19|20)\d\d\b|report\W+report", _cr["title"]), f"chair title has no date / duplicate Report: {_cr['title']}")
-L.ok("R77", len(titles(ch)) == len(set(titles(ch))), "one chair card per committee (newer replaces older)")
+if "Committee Chair Reports" not in _HID: L.ok("R77", len(titles(ch)) == len(set(titles(ch))), "one chair card per committee (newer replaces older)")
 # R79 (Steven Oct 26 2026 11:25 AM): from Nov 1 both Events sections link "See the All Events List" to the All Events page; the
 # page carries Steven's note verbatim, has no Recurring-page event, and lists every window event not on the Recurring pages.
 if getattr(C, "ALL_EVENTS_PAGE", False):
@@ -195,6 +209,20 @@ for _kind121 in ("all-events", "recurring-activities"):
     for _sort121 in ("date", "name", "location"):
         _f121 = _repo121 / f"{C.ISSUE}-{_kind121}-by-{_sort121}.html"
         if _f121.exists(): _r121(_f121.name, _f121.read_text(encoding="utf-8"))
+# R122 (Steven, Nov 12 2026): Tony's club calendar is the source of truth and always supersedes the RPM calendar.
+if C.ISSUE >= "2026-11-01":
+    _cals122 = sorted((ROOT / "data").glob("cal-*.json"), key=lambda p: p.name)
+    _club122, _rpm122 = [], []
+    if _cals122:
+        _club122 = [e for e in json.load(open(_cals122[-1], encoding="utf-8")).get("events") or [] if isinstance(e, dict)]
+    _src122 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "builder/data/meeting-conflict-sources.json"
+    if _src122.exists():
+        for _r in (json.load(open(_src122, encoding="utf-8")).get("rpm") or []):
+            _rpm122.append(dict(_r, name=_r.get("rpm_name") or _r.get("committee") or _r.get("name")))
+    _ovr122, _note122 = getattr(C, "MTG_OVERRIDE", {}) or {}, getattr(C, "MTG_NOTE", {}) or {}
+    for _n122, _x122 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _hits122 = _sr83.club_calendar_supersedes_rpm_problems(_x122, _club122, _rpm122, overrides=_ovr122, notes=_note122)
+        L.ok("R122", not _hits122, f"{_n122}: meeting dates follow the club calendar, not a conflicting RPM date" + (f" {_hits122}" if _hits122 else ""))
 # R80 (Steven Oct 26 2026 11:41 AM): every All Events row (all three sorts) has its own Source line with the linked Calendar,
 # plus the linked Webmaster notice for every event the content maps to one (EVENT_EXTRA_SRC, the R48/R56 map); none invented.
 if getattr(C, "ALL_EVENTS_PAGE", False):
@@ -315,8 +343,9 @@ elif _mcr.exists():
         _fin86 = [d[0] for r in _cal86 if "Finance" in r["name"] for d in r["diffs"]]
         _pe86 = [r for r in _cal86 if "Planning" in r["name"]]
         L.ok("R86", _fin86 and all(k.startswith("Agenda:") for k in _fin86), f"Finance listed as agenda-differs only {_fin86}")
-        L.ok("R86", _pe86 and all(not r["diffs"] and any(k == "Agenda: known typo" for k, _ in r["refs"]) for r in _pe86),
-             "P&E a.m. wording is a known typo, not counted")
+        # Nov 15: the Oct P&E agenda ("a.m." typo) is out of the window; a P&E row with an agenda ref must still mark it reference-only
+        L.ok("R86", _pe86 and all(not r["diffs"] and all(k == "Agenda: known typo" for k, _ in r["refs"] if k.startswith("Agenda")) for r in _pe86),
+             "P&E rows: no counted differences (the Oct a.m. agenda wording stays a known typo, not counted)")
         _rpm86 = [r["name"] for r in _cal86 if any(k.startswith("RPM") for k, _ in r["diffs"])]
         L.ok("R86", not _rpm86 and any(not r["cal_date"] for r in _R86["rows"]), f"RPM differences on calendar dates are reference only {_rpm86}; RPM-only meetings stay items")
 else:
@@ -366,7 +395,10 @@ if C.ISSUE == "2026-11-08":
     L.ok("R118", _why118p == "", "Sunshine Directors item page keeps the full printed body and plain-text email" + (f" ({_why118p})" if _why118p else ""))
 # R89 (Steven Oct 29 2026 11:33 AM): with DYK_CARRY_PREVIOUS=False the main page Did You Know is exactly this issue's new items,
 # then one Did You Know Archives line; the previous issue's items are not on the page but keep their pages and archive rows.
-if not getattr(C, "DYK_CARRY_PREVIOUS", True):
+if "Did You Know?" in _HID:   # R104: no new Did You Know item -> no header, no rows, and last week's items stay off (R89)
+    L.ok("R104", ">Did You Know?</span>" not in page and "Did You Know Archives →" not in page and 'class="ph-dyk-item"' not in page,
+         "Did You Know hidden: no header, no rows (no new item)")
+elif not getattr(C, "DYK_CARRY_PREVIOUS", True):
     _R = Path(__file__).resolve().parents[2]
     _dn = json.load(open(_R / C.DYK_NEW_JSON, encoding="utf-8")) if getattr(C, "DYK_NEW_JSON", None) else {"items": []}
     _dn = {"items": [{"title_display": r["title"]} for r in (getattr(C, "DYK_REPRISE", None) or [])] + _dn["items"]}

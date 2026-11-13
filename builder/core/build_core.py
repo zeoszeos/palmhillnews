@@ -308,6 +308,9 @@ def chair_cards():
     shown = [c for c in latest.values() if c[1] >= cutoff]
     print("chair reports dropped (30-day rule):", [(c[0], c[1]) for c in latest.values() if c[1] < cutoff])
     # President's Message + weekly/monthly Manager reports: stay until replaced by a newer one or Steven overrides (no age cutoff)
+    if not shown:   # R104b (Steven, Nov 12 2026): keep the heading; body is the one placeholder line
+        out.append(f'<tr style="background:{bg(0)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-bottom:1px solid #ddd;">'
+                   f'<div style="font-size:17px;line-height:1.45;color:#333333;">No reports this week.</div></td></tr>')
     for i, (t, d, s, full, lis) in enumerate(sorted(shown, key=lambda c: c[1], reverse=True)):
         out.append(f'<tr style="background:{bg(i)};page-break-inside:avoid;break-inside:avoid;"><td style="padding:10px 10px;border-bottom:1px solid #ddd;{LEFTBAR}">'
                    # R63 (Steven Oct 24 2026): Listen on the card's TITLE line, right-justified (like the other sections), not beside Read Full Report
@@ -438,7 +441,10 @@ if C.STORY:   # content file STORY = dict(json=<story data json>, listen=<listen
                  page=_JC["live_page_planned"], listen=C.STORY["listen"],   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
                  source=None, archive_title=_JC["title"])
 # PHNEWS_DRYRUN=1 lets the build finish without a story for workspace testing only -- it is NOT Steven's R45 approval and never publishes.
-COMMUNITY_STORIES_OMIT_APPROVED = (C.STORY_OMIT_DRYRUN_NOTE if os.environ.get("PHNEWS_DRYRUN") == "1" and C.DRYRUN_OK and not STORY else None)   # R45: set to "<Steven's approval, date/time>" only when Steven approves an issue without a story
+# R45: STORY_OMIT_APPROVED is Steven's recorded OK to leave Community Stories off a real issue
+# (e.g. the story was moved to Community Notices). STORY_OMIT_DRYRUN_NOTE is workspace dry-run only.
+COMMUNITY_STORIES_OMIT_APPROVED = ((getattr(C, "STORY_OMIT_APPROVED", None) if not STORY else None)
+    or (C.STORY_OMIT_DRYRUN_NOTE if os.environ.get("PHNEWS_DRYRUN") == "1" and C.DRYRUN_OK and not STORY else None))
 if STORY: _story_page = (PAGES / STORY["page"]).read_text(encoding="utf-8")
 if STORY: assert STORY["teaser"].replace("'", "\u2019") in _story_page or STORY["teaser"] in _story_page, "R45: story teaser must be verbatim from the story page"
 if STORY: assert (PAGES / STORY["listen"]).exists(), "R45: story listen page missing"
@@ -464,7 +470,10 @@ if STORY:
         _aj.add_rows(REPO, "community-stories", [{"date": STORY["date"], "date_label": STORY_DATE_LABEL, "title": STORY["archive_title"], "summary": STORY["teaser"],
                            "page": STORY["page"], "listen": STORY["listen"], "issues": [ISSUE], **({"listen_v": 2} if _V2_STORY else {})}])
     elif _V2_STORY and _mi[0].get("listen_v") != 2:   # R83/R76: story carried in a v2 issue gets the v2 listen page
-        _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "listen_v", 2)
+        if "listen_v" in _mi[0]:
+            _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "listen_v", 2)
+        else:   # an older row without the field (first run of an archived story): add it after "listen", rows stay one per line (R68)
+            _aj.set_items(REPO, "community-stories", [({k: v for k, v in r.items()} | {"listen_v": 2}) if r is _mi[0] else r for r in _sd])
     if _mi and ISSUE not in _mi[0].get("issues", []):
         _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + [ISSUE])
 # Weekly Manager Update page (WMU_* data from the issue content file): built from the previous page's card template, item by item.
@@ -629,10 +638,14 @@ for _pp in globals().get("DYK_PARKED_PAGES") or []:
     assert not any(_pp in r for _, r in DYK_ITEMS), f"R91: parked page {_pp} still on the main page"
 if not _DYK_CARRY:
     _new_ids = [_it["id"] for _it in _REP] + ([_it["id"] for _it in _DYKN["items"]] if _DYKN else [])
-    assert _new_ids, "R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE)"
+    # R104: a week with no new Did You Know item hides the section (HIDE_SECTIONS "dyk") instead of carrying last week's (R89)
+    assert _new_ids or "dyk" in (globals().get("HIDE_SECTIONS") or {}), "R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE), or HIDE_SECTIONS dyk (R104)"
     DYK_ITEMS = [x for x in DYK_ITEMS if x[0] in _new_ids]
     assert [i for i, _ in DYK_ITEMS] == _new_ids, "R89: main page Did You Know must be exactly the new items"
-_sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50
+if "dyk" not in (globals().get("HIDE_SECTIONS") or {}):
+    _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50: a shown section has at least one item
+else:
+    assert not DYK_ITEMS, "R104/R89: hidden Did You Know section must have no new or carried item"
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
 _sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
@@ -694,6 +707,9 @@ import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titl
 SECTION_KEYS = {"president": "From the Board President", "story": "Community Stories", "chair": "Committee Chair Reports", "manager": "Weekly Manager Update", "shareholders": "Monthly Shareholders Report", "dyk": "Did You Know?"}  # R104
 for _k104 in (globals().get("HIDE_SECTIONS") or {}):
     _h104 = SECTION_KEYS[_k104]
+    if f">{_h104}</span>" not in s:   # section never inserted (e.g. Community Stories when STORY is None)
+        print(f"R104 hidden section already absent: {_h104} ({HIDE_SECTIONS[_k104]})")
+        continue
     _a104, _b104 = section_span(s, _h104); s = s[:_a104] + s[_b104:]
     assert f">{_h104}</span>" not in s, f"R104: {_h104} still on the page"
     print(f"R104 hidden section: {_h104} ({HIDE_SECTIONS[_k104]})")

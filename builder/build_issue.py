@@ -38,7 +38,8 @@ R71B_CLUB_VOCAB = {
     "Planning and Environmental Committee", "Planning and Environmental Committee Meeting", "Buildings and Grounds Committee Meeting",
     "Communications Committee", "Finance Committee", "Finance Committee Meeting", "Rules and Regulations Committee Report",
     "South Clubhouse Boardroom", "Board Room South", "Palm Hill Country Club", "Weekly Manager Update",
-    "weekly-manager-updates", "committee-reports", "NOTICES_EXPECTED", "CHAIR_EXPECTED"}
+    "weekly-manager-updates", "committee-reports", "NOTICES_EXPECTED", "CHAIR_EXPECTED",
+    "No reports this week."}
 # Oct 18-era L24/L27 lists kept in locked_checks.py for the locked-as-sent Oct 18 issue (R10); not used by the shared checks.
 R71B_LEGACY_NAMES = {"COMMUNITY_SOURCES", "WEBMASTER_SOURCE_LINKS"}
 def _strs(tree, skip=()):

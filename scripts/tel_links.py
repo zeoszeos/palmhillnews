@@ -37,7 +37,8 @@ def tel_mismatches(html):
     """every <a href="tel:..."> whose visible digits do not match the href digits (+1, ext as ',')."""
     bad = []
     for m in re.finditer(r'<a\b[^>]*href="tel:([^"]+)"[^>]*>([\s\S]*?)</a>', html, re.I):
-        h = re.sub(r"[^\d,]", "", m.group(1)).replace(",", ""); vis = re.sub(r"<[^>]+>", "", m.group(2))
+        from urllib.parse import unquote as _uq   # Zoom one-tap hrefs carry %23 for '#'; its "23" is not a dialled digit
+        h = re.sub(r"[^\d,]", "", _uq(m.group(1))).replace(",", ""); vis = re.sub(r"<[^>]+>", "", m.group(2))
         v = re.sub(r"\D", "", vis)
         if not v: continue  # icon-only / "Call" link: nothing visible to compare
         if len(v) == 10 or (len(v) > 10 and not v.startswith("1")): v = "1" + v

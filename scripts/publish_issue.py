@@ -52,7 +52,11 @@ if _dm.applies(I):
     if _dm.find_white(s) or not _dm.head_ok(s): raise SystemExit(f"R97: pure-white background left in SEND: {_dm.find_white(s)[:3]}")
 s = _sr.assert_archive_labels(_sr.archive_labels(s), NAME)  # R41/R43
 s = _sr.assert_source_credits(s, NAME)
-s = _sr.assert_community_stories(s, NAME, None)  # R45
+# R45: an approved omit (STORY_OMIT_APPROVED in the issue content file) allows no Community Stories section.
+sys.path.insert(0, str(REPO / "builder/core")); import issue_ctx as _ix
+os.environ.setdefault("PHNEWS_ISSUE", I); os.environ.setdefault("PHNEWS_REPO", str(REPO)); os.environ.setdefault("PHNEWS_WORK", str(ROOT))
+_omit45 = getattr(_ix.load(I), "STORY_OMIT_APPROVED", None)
+s = _sr.assert_community_stories(s, NAME, _omit45)  # R45
 _r42 = _ss.check_issue(s)
 if _r42: raise SystemExit("R42: " + "; ".join(_r42))
 _need = [p for p, src in _ss.SOURCES.items() if src.get("use_existing_page") and _ss.BASE + p in s]
