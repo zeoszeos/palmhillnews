@@ -185,7 +185,8 @@ if getattr(C, "ALL_EVENTS_PAGE", False):
             and not e.get("allDay") and (e.get("category") != "Meetings" or e["name"] == "Palm Hill MasterPlan Team")}
     _got = {tuple(x) for x in audit.get("all_events", [])}
     L.ok("R79", not (_got & _rec), f"All Events has no Recurring-page event {sorted(_got & _rec)}")
-    L.ok("R79", _got == _exp and f'data-activity-count="{len(_exp)}"' in _aeh, f"All Events = every window event not on Recurring ({len(_exp)}); missing {sorted(_exp - _got)} extra {sorted(_got - _exp)}")
+    _expn = len(_sr83.collapse_multiday([e for e in _base if (e["date"], e["name"]) in _exp], _cal))  # R124: multi-day runs are one row
+    L.ok("R79", _got == _exp and f'data-activity-count="{_expn}"' in _aeh, f"All Events = every window event not on Recurring ({len(_exp)}, {_expn} rows); missing {sorted(_exp - _got)} extra {sorted(_got - _exp)}")
 # R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 shareholders card stays off the November 8 main page.
 if C.ISSUE == "2026-11-08":
     _repo120 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
@@ -209,6 +210,17 @@ for _kind121 in ("all-events", "recurring-activities"):
     for _sort121 in ("date", "name", "location"):
         _f121 = _repo121 / f"{C.ISSUE}-{_kind121}-by-{_sort121}.html"
         if _f121.exists(): _r121(_f121.name, _f121.read_text(encoding="utf-8"))
+# R124 (Steven, Nov 13 2026): a back-to-back multi-day calendar run (e.g. the 9 Night Cruise) is ONE date-range row on every
+# Recurring and All Events page, never a row per day.
+if C.ISSUE >= "2026-11-15":
+    _cal124 = json.load(open(ROOT / "data" / audit["calendar_file"]))["events"] if (ROOT / "data" / audit["calendar_file"]).exists() else json.load(open(audit["calendar_file"]))["events"]
+    _repo124 = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages"
+    for _kind124 in ("all-events", "recurring-activities"):
+        for _sort124 in ("date", "name", "location"):
+            _f124 = _repo124 / f"{C.ISSUE}-{_kind124}-by-{_sort124}.html"
+            if _f124.exists():
+                _p124 = _sr83.multiday_range_problems(_f124.read_text(encoding="utf-8"), _cal124, C.WINDOWS["RECURRING"])
+                L.ok("R124", not _p124, f"{_f124.name}: multi-day runs are one date-range row" + (f" {_p124}" if _p124 else ""))
 # R122 (Steven, Nov 12 2026): Tony's club calendar is the source of truth and always supersedes the RPM calendar.
 if C.ISSUE >= "2026-11-01":
     _cals122 = sorted((ROOT / "data").glob("cal-*.json"), key=lambda p: p.name)
