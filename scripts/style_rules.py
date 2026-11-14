@@ -1054,3 +1054,201 @@ def rules_dyk_r126_problems(html, item):
         if "dyk-dave-note" not in (html or "") or "dyk-rules-link" not in (html or ""):
             return "closing note and Rules PDF link must both be present after the regulation"
     return ""
+
+
+# ---------------------------------------------------------------------------
+# R127 / R128 (Steven, Nov 14 2026): the archive lists only shipped issues;
+# the current week's issue is added the following week, after it has been sent.
+# Source of truth: archive/sent-issues.json (status=shipped).
+# R129 (Steven, Nov 14 2026): no faint white seam lines in the green masthead
+# on either side of the "Palm Hill Country Club" title.
+# ---------------------------------------------------------------------------
+import json as _json
+from pathlib import Path as _Path
+
+SENT_ISSUES_REL = "archive/sent-issues.json"
+ARCHIVE_ITEMS_REL = "archive/archive-items.json"
+ARCHIVE_INDEX_REL = "pages/archive/archive-index.json"
+ARCHIVE_HOME_REL = "pages/archive/index.html"
+MASTHEAD_GREEN = "#2D5016"
+# Steven Nov 14 2026 10:01 AM ET: keep the original palm centering (each palm
+# centered in a 50% side cell, title cell width 1%). Do not change those
+# widths — a first fix that used 100px palm cells moved the palms, and
+# dropping the 1% title width also shifted them. The visible seam is closed
+# by collapsing cell spacing and painting every masthead layer #2D5016, so a
+# 1px client gap cannot show the pale card background.
+MASTHEAD_TABLE_OPEN = re.compile(
+    r'(<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;)(?:border-spacing:0;)?(background:#2D5016;">)'
+)
+# Previous R129 attempt used fixed 100px / 60px palm cells. Steven rejected
+# that placement; rewrite those back to the original 50% centering and the
+# original 1% title cell, then add only the seam-safe spacing/backgrounds.
+MASTHEAD_OLDFIX_PALM_CSS = re.compile(
+    r"\.header-palm-cell\s*\{\s*width:\s*60px\s*!important\s*;\s*\}"
+)
+MASTHEAD_OLDFIX_PALM_TD = re.compile(
+    r'<td class="header-palm-cell" width="100" align="center" valign="middle" bgcolor="#2D5016" '
+    r'style="width:100px;height:105px;background:#2D5016;padding:0;border:0;font-size:0;line-height:0;">'
+)
+MASTHEAD_PALM_TD = (
+    '<td class="header-palm-cell" width="50%" align="center" valign="middle" bgcolor="#2D5016" '
+    'style="width:50%;height:105px;background:#2D5016;">'
+)
+MASTHEAD_OLDFIX_TITLE_TD = (
+    '<td align="center" valign="middle" bgcolor="#2D5016" '
+    'style="white-space:nowrap;height:105px;background:#2D5016;color:#ffffff;text-align:center;padding:0 8px;">'
+)
+MASTHEAD_TITLE_TD_ORIGINAL = (
+    '<td width="1%" align="center" valign="middle" bgcolor="#2D5016" '
+    'style="width:1%;white-space:nowrap;height:105px;background:#2D5016;color:#ffffff;text-align:center;">'
+)
+# A later attempt dropped the 1% title width (which also shifted the palms).
+MASTHEAD_NOTITLEWIDTH_TD = (
+    '<td align="center" valign="middle" bgcolor="#2D5016" '
+    'style="white-space:nowrap;height:105px;background:#2D5016;color:#ffffff;text-align:center;">'
+)
+
+
+def _repo_root(repo=None):
+    if repo: return _Path(repo)
+    return _Path(__file__).resolve().parents[1]
+
+
+def load_sent_issues(repo=None):
+    """Return the shipped-issue records from archive/sent-issues.json."""
+    p = _repo_root(repo) / SENT_ISSUES_REL
+    data = _json.loads(p.read_text(encoding="utf-8"))
+    return [i for i in data.get("issues", []) if i.get("status", "shipped") == "shipped"]
+
+
+def load_known_sent_unconfirmed(repo=None):
+    p = _repo_root(repo) / SENT_ISSUES_REL
+    data = _json.loads(p.read_text(encoding="utf-8"))
+    return [i for i in data.get("issues", []) if i.get("status") == "sent-copy-unconfirmed"]
+
+
+def archive_listed_dates(repo=None):
+    """Issue dates listed on the published archive index (JSON + home page + curated items)."""
+    root = _repo_root(repo)
+    dates = set()
+    items = root / ARCHIVE_ITEMS_REL
+    if items.exists():
+        data = _json.loads(items.read_text(encoding="utf-8"))
+        for i in data.get("issues", []):
+            if i.get("date"): dates.add(i["date"])
+    idx = root / ARCHIVE_INDEX_REL
+    if idx.exists():
+        data = _json.loads(idx.read_text(encoding="utf-8"))
+        for i in data.get("issues", []):
+            if i.get("date"): dates.add(i["date"])
+    home = root / ARCHIVE_HOME_REL
+    if home.exists():
+        t = home.read_text(encoding="utf-8")
+        dates.update(re.findall(r"archive/issues/(\d{4}-\d{2}-\d{2})\.html", t))
+        dates.update(re.findall(r'href="issues/(\d{4}-\d{2}-\d{2})\.html"', t))
+    return dates
+
+
+def archive_unsent_or_current_week_problems(repo=None, current=None):
+    """R127: fail if the archive index lists an unsent issue, or one dated the current week or later."""
+    root = _repo_root(repo)
+    current = current or current_issue(root)
+    shipped = {i["date"] for i in load_sent_issues(root)}
+    hits = []
+    for d in sorted(archive_listed_dates(root), reverse=True):
+        if d not in shipped:
+            hits.append(f"{d} is in the archive index but is not marked shipped in {SENT_ISSUES_REL}")
+        if d >= current:
+            hits.append(f"{d} is in the archive index but is the current week's issue or later ({current}); add it the following week, after it has been sent")
+    return hits
+
+
+def archive_missing_sent_problems(repo=None, current=None):
+    """R128: fail if a shipped issue older than the current week is missing from the archive index or has no frozen page."""
+    root = _repo_root(repo)
+    current = current or current_issue(root)
+    listed = archive_listed_dates(root)
+    hits = []
+    for i in load_sent_issues(root):
+        d = i["date"]
+        if d >= current:
+            continue  # R127: do not require (or allow) the current week in the archive yet
+        if d not in listed:
+            hits.append(f"{d} (Vol. {i.get('volume')}, No. {i.get('number')}) is shipped but missing from the archive index")
+        page = root / "pages" / "archive" / "issues" / f"{d}.html"
+        if not page.exists():
+            hits.append(f"{d}: frozen archive issue page pages/archive/issues/{d}.html is missing")
+    return hits
+
+
+def fix_masthead_seams(html):
+    """R129: keep original 50%/1%/50% palm placement; add border-spacing:0 so a 1px gap cannot show white."""
+    if not html or "header-palm-cell" not in html:
+        return html
+    # Undo the rejected 100px / 60px palm placement, if present.
+    html = MASTHEAD_OLDFIX_PALM_CSS.sub(
+        ".header-palm-cell { width:50% !important; }",
+        html,
+    )
+    html = MASTHEAD_OLDFIX_PALM_TD.sub(MASTHEAD_PALM_TD, html)
+    # Restore the original 1% title cell (from the 100px fixer or the
+    # short-lived "drop the 1%" attempt) so palm positions stay put.
+    html = html.replace(MASTHEAD_OLDFIX_TITLE_TD, MASTHEAD_TITLE_TD_ORIGINAL, 1)
+    html = html.replace(MASTHEAD_NOTITLEWIDTH_TD, MASTHEAD_TITLE_TD_ORIGINAL, 1)
+    # Collapse cell spacing and keep every layer of the banner green so a
+    # client gap cannot show the pale #FBFDF9 card. Column widths stay
+    # 50% / 1% / 50% — Steven, Nov 14 2026 10:01 AM ET, keep the original
+    # more-balanced palm centering.
+    html = MASTHEAD_TABLE_OPEN.sub(
+        r"\1border-spacing:0;\2",
+        html,
+        count=1,
+    )
+    return html
+
+
+def masthead_seam_problems(html):
+    """R129: fail if original palm placement is lost, or if a masthead gap could show a pale background.
+
+    50% palm cells and the 1% title cell are required (Steven, Nov 14 2026
+    10:01 AM ET: keep the original, more balanced palm centering). The
+    guard forbids the rejected 100px palm cells, a missing green
+    background, and a missing border-spacing:0 on the banner table.
+    """
+    if not html or "header-palm-cell" not in html:
+        return []
+    hits = []
+    if MASTHEAD_OLDFIX_PALM_CSS.search(html) or re.search(
+        r"\.header-palm-cell\s*\{[^}]*width:\s*60px\s*!important", html
+    ):
+        hits.append("mobile CSS sets a fixed 60px palm cell (use 50% so palms stay in their original positions)")
+    palms = re.findall(r'<td class="header-palm-cell"[^>]*>', html)
+    for td in palms:
+        if re.search(r'width="100"|width:\s*100px', td):
+            hits.append("a palm cell uses a fixed 100px width (use 50% so palms stay in their original positions)")
+            break
+    if len(palms) >= 2 and not all(re.search(r'width="50%"|width:\s*50%', td) for td in palms):
+        hits.append("palm cells must keep width 50% so they stay centered as in the original banner")
+    # Title cell must keep width 1% — dropping it shifts the palms.
+    i = html.find('class="header-palm-cell"')
+    chunk = html[max(0, i - 200): i + 1800] if i >= 0 else html
+    if 'width="1%"' not in chunk and "width:1%" not in chunk:
+        hits.append("the title cell is missing width 1% (needed so palms stay in their original positions)")
+    m = re.search(
+        r'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="([^"]*)">\s*<tr>\s*<td class="header-palm-cell"',
+        html,
+    )
+    if m:
+        style = m.group(1)
+        if "border-spacing:0" not in style:
+            hits.append("the masthead table is missing border-spacing:0")
+        if "#2d5016" not in style.lower():
+            hits.append("the masthead table is missing background #2D5016")
+    else:
+        if 'class="header-palm-cell"' in html and "border-spacing:0" not in html:
+            hits.append("the masthead table is missing border-spacing:0")
+    for td in palms:
+        if "background:#2D5016" not in td and 'bgcolor="#2D5016"' not in td:
+            hits.append("a palm cell is missing background #2D5016")
+            break
+    return hits
