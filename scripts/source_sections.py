@@ -21,6 +21,19 @@ SOURCES = {
     "2026-11-carolyn-story-serving-on-the-board.html": dict(
         subject="Serving on the Palm Hill Board of Directors", notice_title="Serving on the Palm Hill Board of Directors", use_existing_page=True,
         sections=[dict(heading="Serving on the Palm Hill Board of Directors", keys=["board member"])], approved_omit=[]),
+    # Fri Nov 13 2026 sweep (Steven approved): four Webmaster emails (gotwicz). One email = one notice (R42).
+    "2026-11-13-singing-ensemble-christmas-cantata-notice.html": dict(
+        subject="Singing Ensemble for Christmas Cantata", notice_title="Singing Ensemble for Christmas Cantata", use_existing_page=True,
+        sections=[dict(heading="Christmas Cantata ensemble", keys=["rehearsing"])], approved_omit=[]),
+    "2026-11-13-palm-hill-annual-golf-cart-parade-notice.html": dict(
+        subject="Palm Hill Annual Golf Cart Parade", notice_title="Palm Hill Annual Golf Cart Parade", use_existing_page=True,
+        sections=[dict(heading="Christmas Golf Cart Parade flyer", keys=["5:30 PM"])], approved_omit=[]),
+    "2026-11-13-christmas-golf-cart-route-notice.html": dict(
+        subject="Christmas Golf Cart Route", notice_title="Christmas Golf Cart Route", use_existing_page=True,
+        sections=[dict(heading="Christmas Golf Cart Route map", keys=["START"])], approved_omit=[]),
+    "2026-11-12-amazon-scam-email-notice.html": dict(
+        subject="Amazon Scam Email", notice_title="Amazon Scam Email", use_existing_page=True,
+        sections=[dict(heading="Amazon gift-card scam warning", keys=["SCAM"])], approved_omit=[]),
     # Thu Nov 12 2026 sweep for the Nov 15 draft: three Webmaster emails and one RPM message (gotwicz). One email = one notice.
     "2026-11-12-north-irrigation-down-notice.html": dict(
         subject="[#XN9559224] Message from Home Owners of Palm Hill, Inc - North Irrigation Down", notice_title="North Irrigation Down", use_existing_page=True,

@@ -35,6 +35,10 @@ DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as 
 LOCKED = {
     "NOTICES_EXPECTED": [   # Nov 15 DRAFT (not yet approved by Steven): four new Nov 9-12 emails, then the Nov 8 list minus stale notices
         'Serving on the Palm Hill Board of Directors',
+        'Singing Ensemble for Christmas Cantata',
+        'Palm Hill Annual Golf Cart Parade',
+        'Christmas Golf Cart Route',
+        'Amazon Scam Email',
         'Exercise Class',
         'Taste of Golf Instructions',
         'Ladies Christmas Luncheon',
@@ -68,6 +72,8 @@ EVENT_DETAIL = {
     "Pot Luck Supper": "Doors open at 5:00 PM; dinner is at 5:30 PM. Bring your own table setup and drink.",
     "MESCO Spaghetti Dinner Fundraiser": "Doors open at 4:30 PM; dinner is served at 5:00 PM. The $12 donation covers bread and butter, salad, spaghetti and meatballs, dessert and coffee; BYOB for other drinks. Tickets are sold at both coffees until Monday morning, Nov 9; none at the door.",
     "Fall Festival": "Music and food trucks on the South Lawn and Patio.",
+    "Cantata rehearsal": "To accommodate those attending the Fall Festival, this weekend's rehearsal will take place at 7:00 p.m. in the North Clubhouse.",
+    "Christmas Golf Cart Parade": "Line up 5:30 PM in front of the North Clubhouse. Ending at South Clubhouse. Batteries should be fully charged. Parade takes 1.5 hours to complete.",
     # Steven Oct 26 2026 11:49 AM: use the calendar's organizer (Mickey Bontrager) for now; detail = calendar listing, light edit (2:00 -> 2:00 PM)
     "Thanksgiving Dinner": "Dinner served at 2:00 PM.",
     "Bookclub:Foster by Claire Keegan": "Book club discussion of Foster by Claire Keegan.",
@@ -80,6 +86,8 @@ EVENT_DETAIL = {
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html",
                    "Taste of Golf": BASE + "2026-11-10-taste-of-golf-instructions-notice.html",
+                   "Cantata rehearsal": BASE + "2026-11-13-singing-ensemble-christmas-cantata-notice.html",
+                   "Christmas Golf Cart Parade": BASE + "2026-11-13-palm-hill-annual-golf-cart-parade-notice.html",
                    # Sat Oct 31 6 PM sweep (staged pending Steven): R56 -- calendar row + Webmaster reminder notice (calendar facts only, More -> notice)
                    "Senior Empowerment Luncheon": BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"}
 EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween-dance.html"),
@@ -89,7 +97,9 @@ EVENT_LINK = {"Halloween Dance Party": ("More →", BASE + "2026-10-31-halloween
               "Thanksgiving/Friendsgiving Dance": ("More →", BASE + "2026-11-21-thanksgiving-friendsgiving-dance.html"),  # R114 (Steven Nov 4 2026 8:50 PM)
               "Bocce Party": ("More →", BASE + "2026-10-28-bocce-party.html"),
               "Taste of Golf": ("More →", BASE + "2026-11-10-taste-of-golf-instructions-notice.html"),
-              "Senior Empowerment Luncheon": ("More →", BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html")}   # Sat Oct 31 6 PM sweep (staged, R56)      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
+              "Senior Empowerment Luncheon": ("More →", BASE + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"),
+              "Cantata rehearsal": ("More →", BASE + "2026-11-13-singing-ensemble-christmas-cantata-notice.html"),
+              "Christmas Golf Cart Parade": ("More →", BASE + "2026-11-13-palm-hill-annual-golf-cart-parade-notice.html")}   # Sat Oct 31 6 PM sweep (staged, R56)      # existing Webmaster copy page (gotwicz 1a13d9d5ef6e178f)
 # R21: full calendar listing text for the More → page. Personal phone numbers are not printed, EXCEPT on event pages Steven
 # has explicitly OK'd (PHONE_OK_PAGES; Bocce Party approved Oct 16 11:37 PM). Issue summaries never carry them.
 PHONE_OK_PAGES = {"Bocce Party", "Thanksgiving/Friendsgiving Dance"}  # Dance: Steven Nov 4 2026 8:50 PM (R114)
@@ -201,6 +211,26 @@ CAROLYN_BOARD_TITLE = "Serving on the Palm Hill Board of Directors"
 CAROLYN_BOARD_BODY = "A board member is the guardian of your community, assets, and lifestyle."
 CAROLYN_BOARD_DATE = "First published: November 2026"
 CAROLYN_BOARD_PAGE = "2026-11-carolyn-story-serving-on-the-board.html"
+# Fri Nov 13 2026 sweep (Steven approved adding these Webmaster emails). Verbatim bodies; unsubscribe left out. gotwicz Gmail.
+# Parade + route emails are image-only flyers (club-site images); transcribed text is only what is clearly printed.
+WM_COPY_CANTATA = "2026-11-13-singing-ensemble-christmas-cantata-notice.html"   # gotwicz 1a1d72de67a369a3 Fri Nov 13 12:30 PM ET (Mollie Cardno)
+WM_COPY_PARADE = "2026-11-13-palm-hill-annual-golf-cart-parade-notice.html"     # gotwicz 1a1d63b9403c2f14 Fri Nov 13 10:36 AM ET (image-only flyer)
+WM_COPY_ROUTE = "2026-11-13-christmas-golf-cart-route-notice.html"              # gotwicz 1a1d6405a331ef88 Fri Nov 13 10:38 AM ET (image-only map)
+WM_COPY_SCAM = "2026-11-12-amazon-scam-email-notice.html"                       # gotwicz 1a1d214b00d8d6ce Thu Nov 12 1:29 PM ET (Bob Newport)
+CANTATA_TITLE = "Singing Ensemble for Christmas Cantata"
+CANTATA_BODY = "Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday! To accommodate those attending the Fall Festival, this weekend's rehearsal will take place at 7:00 p.m. in the North Clubhouse. The Cantata will be presented on Sunday, December 6th at 4:00 p.m. in the North Clubhouse, celebrating the true meaning of Christmas through song and narration."
+CANTATA_DATE = "Rehearsal: this weekend at 7:00 p.m. in the North Clubhouse · Cantata: Sunday, December 6th at 4:00 p.m. in the North Clubhouse"
+SCAM_TITLE = "Amazon Scam Email"
+SCAM_BODY = "You may have received an email from Bob Newport today requesting you to purchase an Amazon Gift Card for him. It is a SCAM. When ever getting an email like this please get in contact with the person you received the email from first before doing anything."
+PARADE_TITLE = "Palm Hill Annual Golf Cart Parade"
+PARADE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/7112E469-713E-427C-A764-6C9A2CE4F4FA.png"
+PARADE_ALT = "Palm Hill Annual Christmas Golf Cart Parade. December 12th, 2026. Line up 5:30 PM in front of the North Clubhouse. Ending at South Clubhouse. Batteries should be fully charged. Parade takes 1.5 hours to complete."
+PARADE_TEASER = "December 12th, 2026. Line up 5:30 PM in front of the North Clubhouse. Ending at South Clubhouse. Batteries should be fully charged. Parade takes 1.5 hours to complete."
+PARADE_DATE = "Parade: December 12th, 2026 · Line up: 5:30 PM in front of the North Clubhouse · Ending at South Clubhouse"
+ROUTE_TITLE = "Christmas Golf Cart Route"
+ROUTE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/IMG_2330.png"
+ROUTE_ALT = "Hand-drawn route on the Palm Hill Country Club map, with START and END labeled. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770, Office: 554-6799."
+ROUTE_TEASER = "START. END. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770."
 # Sat Nov 7 2026 morning sweep (draft, before Susan's proof). Verbatim bodies; unsubscribe already absent.
 WM_COPY_CHAIR_YOGA = "2026-11-07-chair-yoga-class-canceled-notice.html"                 # gotwicz 1a1b5cc77232729c Sat Nov 7 6:37 AM ET
 WM_COPY_WATER_1111 = "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"  # gotwicz 1a1b174eb713f7a4 Fri Nov 6 10:23 AM ET (supersedes the 10:00am wording)
@@ -213,6 +243,39 @@ WATER_1111_DATE = "Shut off: Wednesday, November 11th · Rescheduled: 2:30pm for
 CORNHOLE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/827E9BE2-A63E-4981-99FA-CFDD9C846292.png"
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Fri Nov 13 2026 sweep (Steven approved): newest first; parade and route are image-only flyers (R60a)
+    (WM_COPY_CANTATA, "Singing Ensemble for Christmas Cantata", "Friday, Nov 13, 2026, 12:30 PM ET", [
+        ("p", "Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!"),
+        ("p", "To accommodate those attending the Fall Festival, this weekend's rehearsal will take place at 7:00 p.m. in the North Clubhouse."),
+        ("p", "The Cantata will be presented on Sunday, December 6th at 4:00 p.m. in the North Clubhouse, celebrating the true meaning of Christmas through song and narration."),
+        ("p", "We hope you will join us!"),
+        ("p", "Many thanks,"),
+        ("p", "Mollie Cardno"),
+        ("p", "Palm Hill Cantata Ensemble")],
+        dict(title=CANTATA_TITLE)),
+    (WM_COPY_ROUTE, "Christmas Golf Cart Route", "Friday, Nov 13, 2026, 10:38 AM ET", [
+        ("img", (ROUTE_IMG, ROUTE_ALT)),
+        ("p", "START"),
+        ("p", "END"),
+        ("p", "Palm Hill Country Club"),
+        ("p", "1800 Seminole Boulevard"),
+        ("p", "Largo, Florida 33770")],
+        dict(title=ROUTE_TITLE)),
+    (WM_COPY_PARADE, "Palm Hill Annual Golf Cart Parade", "Friday, Nov 13, 2026, 10:36 AM ET", [
+        ("img", (PARADE_IMG, PARADE_ALT)),
+        ("p", "Palm Hill Annual Christmas Golf Cart Parade"),
+        ("p", "December 12th, 2026"),
+        ("p", "Line up 5:30 PM in front of the North Clubhouse"),
+        ("p", "Ending at South Clubhouse"),
+        ("p", "Batteries should be fully charged."),
+        ("p", "Parade takes 1.5 hours to complete.")],
+        dict(title=PARADE_TITLE)),
+    (WM_COPY_SCAM, "Amazon Scam Email", "Thursday, Nov 12, 2026, 1:29 PM ET", [
+        ("p", "Attention Residents:"),
+        ("p", SCAM_BODY),
+        ("p", "Thanks!"),
+        ("p", "Bob Newport")],
+        dict(title=SCAM_TITLE)),
     # Nov 15 sweep (Thu Nov 12 2026): newest first
     (WM_COPY_IRRIGATION, "[#XN9559224] Message from Home Owners of Palm Hill, Inc - North Irrigation Down", "Thursday, Nov 12, 2026, 12:13 PM ET", [
         ("p", "Dear Homeowners,"),
@@ -474,6 +537,12 @@ NOTICES = [
     # Steven Nov 12 2026 (voice): Carolyn Story's Board piece, moved from Community Stories into Community Notices.
     # Full verbatim page + Listen stay at CAROLYN_BOARD_PAGE (Link Nov 2026 p 36).
     (CAROLYN_BOARD_TITLE, CAROLYN_BOARD_BODY, "Carolyn Story", BASE + CAROLYN_BOARD_PAGE),
+    # Fri Nov 13 2026 sweep (Steven approved). Carolyn stays first. Then newest Webmaster emails; parade then route
+    # are kept as a pair (route was sent 2 minutes later) so the event sits above its map.
+    (CANTATA_TITLE, CANTATA_BODY, "Webmaster", BASE + WM_COPY_CANTATA),
+    (PARADE_TITLE, PARADE_TEASER, "Webmaster", BASE + WM_COPY_PARADE),
+    (ROUTE_TITLE, ROUTE_TEASER, "Webmaster", BASE + WM_COPY_ROUTE),
+    (SCAM_TITLE, SCAM_BODY, "Webmaster", BASE + WM_COPY_SCAM),
     # Nov 15 sweep (Thu Nov 12 2026): newest first. Teasers are source sentences; summary_trim SHORT cuts them to 3 lines and adds More →.
     (IRRIGATION_TITLE, IRRIGATION_BODY, "RPM", BASE + WM_COPY_IRRIGATION),
     (EXERCISE_TITLE, EXERCISE_BODY, "Webmaster", BASE + WM_COPY_EXERCISE),
@@ -560,6 +629,8 @@ NOTICES = [
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
     CAROLYN_BOARD_TITLE: CAROLYN_BOARD_DATE,
+    CANTATA_TITLE: CANTATA_DATE,
+    PARADE_TITLE: PARADE_DATE,
     EXERCISE_TITLE: EXERCISE_DATE,
     TOG_INSTR_TITLE: TOG_INSTR_DATE,
     LADIES_LUNCH_TITLE: LADIES_LUNCH_DATE,
@@ -582,6 +653,8 @@ NOTICE_DATE_LINE = {
     "Taste of Golf": "Event: November 18, 2026; 10 AM · Meet at Pro Shop",                                       # Webmaster Oct 14
 }
 NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to all": leave undated
+    SCAM_TITLE: "Nov 15 draft: the Webmaster email (Thu Nov 12) warns about a scam received that day; no event date (flagged for Steven)",
+    ROUTE_TITLE: "Nov 15 draft: the route email is an image-only map with START and END labels and no printed date (flagged for Steven)",
     IRRIGATION_TITLE: "Nov 15 draft: the RPM email (Thu Nov 12) gives no date or end date (flagged for Steven)",
     "How to access the Palm Hill Community Channel": "Sat Oct 31 morning sweep (staged); its email gives no date (flagged for Steven)",
     "Missing Amazon Package": "Steven Oct 30 2026 8:29 PM added it; its email gives no date (flagged for Steven)",
@@ -852,7 +925,17 @@ R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 
 # ---------- Community Notices (6): archive rows added by this issue (R59) ----------
-NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-15", id="2026-11-15-north-irrigation-down", title=IRRIGATION_TITLE,
+NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-15", id="2026-11-15-singing-ensemble-christmas-cantata", title=CANTATA_TITLE,
+                     text="Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!",
+                     page=WM_COPY_CANTATA, source="Palm Hill Webmaster notice, Nov 13", issues=["2026-11-15"]),
+                dict(date="2026-11-15", id="2026-11-15-palm-hill-annual-golf-cart-parade", title=PARADE_TITLE,
+                     text=PARADE_TEASER, page=WM_COPY_PARADE, source="Palm Hill Webmaster notice, Nov 13", issues=["2026-11-15"]),
+                dict(date="2026-11-15", id="2026-11-15-christmas-golf-cart-route", title=ROUTE_TITLE,
+                     text=ROUTE_TEASER, page=WM_COPY_ROUTE, source="Palm Hill Webmaster notice, Nov 13", issues=["2026-11-15"]),
+                dict(date="2026-11-15", id="2026-11-15-amazon-scam-email", title=SCAM_TITLE,
+                     text="You may have received an email from Bob Newport today requesting you to purchase an Amazon Gift Card for him. It is a SCAM.",
+                     page=WM_COPY_SCAM, source="Palm Hill Webmaster notice, Nov 12", issues=["2026-11-15"]),
+                dict(date="2026-11-15", id="2026-11-15-north-irrigation-down", title=IRRIGATION_TITLE,
                      text=IRRIGATION_BODY, page=WM_COPY_IRRIGATION, source="Resource Property Management message, Nov 12", issues=["2026-11-15"]),
                 dict(date="2026-11-15", id="2026-11-15-exercise-class", title=EXERCISE_TITLE,
                      text=EXERCISE_BODY, page=WM_COPY_EXERCISE, source="Palm Hill Webmaster notice, Nov 10", issues=["2026-11-15"]),
