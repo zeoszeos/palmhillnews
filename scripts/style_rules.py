@@ -1062,6 +1062,9 @@ def rules_dyk_r126_problems(html, item):
 # Source of truth: archive/sent-issues.json (status=shipped).
 # R129 (Steven, Nov 14 2026): no faint white seam lines in the green masthead
 # on either side of the "Palm Hill Country Club" title.
+# R130 (Steven, Nov 14 2026 5:58 PM ET): a Community Notice that ran in the
+# previous sent issue is dropped from the current issue unless Steven keeps
+# it by name. Applies from Nov 15; frozen earlier archive issues are not checked.
 # ---------------------------------------------------------------------------
 import json as _json
 from pathlib import Path as _Path
@@ -1251,4 +1254,95 @@ def masthead_seam_problems(html):
         if "background:#2D5016" not in td and 'bgcolor="#2D5016"' not in td:
             hits.append("a palm cell is missing background #2D5016")
             break
+    return hits
+
+# ---------------------------------------------------------------------------
+# R130 (Steven, Nov 14 2026 5:58 PM ET): do not rerun a Community Notice
+# that appeared in the previous sent issue, unless it is on that issue's
+# keep-list (NOTICES_KEEP_FROM_PREVIOUS). Guard the current issue preview
+# and SEND only — never the frozen as-sent archive issue pages.
+# ---------------------------------------------------------------------------
+R130_FROM = "2026-11-15"
+_SECTION_HEADING_RE = re.compile(r'-webkit-text-fill-color:#FFFFFF;">([^<]+)</span>')
+_NOTICE_TITLE_TD_RE = re.compile(
+    r'font-weight:bold;color:#333333;text-align:left;padding-right:8px;">([^<]+)</'
+)
+_NOTICE_TITLE_DIV_RE = re.compile(
+    r'<div style="font-size:15px;font-weight:bold;color:#333333;">([^<]+)</div>'
+)
+
+
+def issue_section(html, title):
+    """Return the HTML of a newsletter section headed `title`, or ''."""
+    hs = [(m.start(), m.group(1)) for m in _SECTION_HEADING_RE.finditer(html or "")]
+    for i, (pos, t) in enumerate(hs):
+        if t == title:
+            end = hs[i + 1][0] if i + 1 < len(hs) else len(html)
+            return html[pos:end]
+    return ""
+
+
+def community_notice_titles(html):
+    """Titles of Community Notice rows in a newsletter (preview, SEND, or frozen issue)."""
+    sec = issue_section(html, "Community Notices")
+    if not sec:
+        return []
+    titles = _NOTICE_TITLE_TD_RE.findall(sec)
+    if not titles:
+        titles = _NOTICE_TITLE_DIV_RE.findall(sec)
+    return titles
+
+
+def previous_shipped_date(repo=None, current=None):
+    """Most recent shipped issue dated before `current`."""
+    root = _repo_root(repo)
+    current = current or current_issue(root)
+    earlier = sorted(i["date"] for i in load_sent_issues(root) if i.get("date") and i["date"] < current)
+    return earlier[-1] if earlier else None
+
+
+def previous_sent_notice_titles(repo=None, current=None):
+    """Community Notice titles from the previous shipped issue's frozen archive page."""
+    root = _repo_root(repo)
+    prev = previous_shipped_date(root, current)
+    if not prev:
+        return []
+    page = root / "pages" / "archive" / "issues" / f"{prev}.html"
+    if not page.exists():
+        return []
+    return community_notice_titles(page.read_text(encoding="utf-8"))
+
+
+def notice_repeat_from_previous_problems(repo=None, issue=None, html=None, keep=None):
+    """R130: fail if a previous-sent-issue notice appears on this issue without a keep-list entry.
+
+    Applies only from R130_FROM (Nov 15, 2026). Frozen earlier archive issue
+    pages (Oct 25, Nov 1, Nov 8, …) are not flagged when `issue` is their date.
+    """
+    root = _repo_root(repo)
+    issue = issue or current_issue(root)
+    if issue < R130_FROM:
+        return []
+    hits = []
+    prev = previous_shipped_date(root, issue)
+    if not prev:
+        hits.append(f"{issue}: no previous shipped issue found in {SENT_ISSUES_REL}")
+        return hits
+    page = root / "pages" / "archive" / "issues" / f"{prev}.html"
+    if not page.exists():
+        hits.append(
+            f"{issue}: previous sent issue {prev} has no frozen archive page pages/archive/issues/{prev}.html"
+        )
+        return hits
+    previous = community_notice_titles(page.read_text(encoding="utf-8"))
+    if html is None:
+        hits.append(f"{issue}: no current-issue HTML was provided to check")
+        return hits
+    keep_set = set(keep or [])
+    for title in community_notice_titles(html):
+        if title in previous and title not in keep_set:
+            hits.append(
+                f"{issue}: {title!r} also ran in the previous sent issue ({prev}) "
+                "and is not on NOTICES_KEEP_FROM_PREVIOUS"
+            )
     return hits

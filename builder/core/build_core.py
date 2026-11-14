@@ -260,6 +260,18 @@ if _unknown: raise SystemExit(f"R71: {ISSUE} NOTICES_DROPPED names unknown notic
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_ISSUE]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
+# R130 (Steven Nov 14 2026 5:58 PM ET): drop a Community Notice that ran in the previous
+# sent issue, unless it is on NOTICES_KEEP_FROM_PREVIOUS. Applies from Nov 15. Pages,
+# archive rows, and URLs stay (NOTICE_ARCHIVE_ROWS / existing pages are not deleted).
+if ISSUE >= "2026-11-15":
+    sys.path.insert(0, SCRIPTS); import style_rules as _sr130
+    _keep130 = set(getattr(C, "NOTICES_KEEP_FROM_PREVIOUS", []) or [])
+    _prev130 = set(_sr130.previous_sent_notice_titles(REPO, ISSUE))
+    _repeat130 = _prev130 - _keep130
+    NOTICES = [n for n in NOTICES if n[0] not in _repeat130]
+    print("R130 notices dropped as previous-issue repeats:", sorted(_repeat130 & {n[0] for n in C.NOTICES}))
+    _kept130 = [n[0] for n in NOTICES if n[0] in _keep130]
+    print("R130 kept from previous issue:", _kept130)
 def notice_rows():
     # R100: content flag TONY_FB_NOTICE (default True = Oct 25 and earlier). False drops the Facebook notice row from the main page
     # only; its page/Listen URL stays published (existing URLs stay valid).
@@ -758,11 +770,16 @@ for _mc in C.MEETING_ROW_CHECKS:
     _mt = _mt[:_mt.find("Source")] if "Source" in _mt else _mt
     if not (all(x in _mt for x in _mc["need"]) and not any(x in _mt for x in _mc["never"])):
         raise SystemExit(f"{_mc['rule']}: meetings row must show {_mc['need']} and not {_mc['never']}: " + " ".join(_mt.split())[:200])
-# STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page
-_hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
-if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
-_he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
-if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or f">{C.HOLIDAY_SOURCE_LABEL}</a>" not in _hr: raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} needs Source: {C.HOLIDAY_SOURCE_LABEL} linked to " + HOLIDAY_PAGE)
+# STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page.
+# When the notice is off this issue's main page (R130 / NOTICES_DROPPED), skip; the page and archive row stay live.
+_hs = _cn.section(s)
+if any(n[0] == HOLIDAY_TITLE for n in NOTICES):
+    _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
+    if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
+    _he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
+    if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or f">{C.HOLIDAY_SOURCE_LABEL}</a>" not in _hr: raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} needs Source: {C.HOLIDAY_SOURCE_LABEL} linked to " + HOLIDAY_PAGE)
+elif HOLIDAY_TITLE in _hs:
+    raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} was dropped from this issue's main-page list but is still in the Community Notices section")
 # STYLE-RULES R60c (Steven Oct 24 1:27 PM): ice machine notice -- exact title, 3rd notice (right after Bill Bender), Source
 # "Oct P&E Committee Report" linked to the Oct 14 P&E page, More -> its own notice page
 # R60c (ice machine notice 3rd, right after Bill Bender; Source: Oct P&E Committee Report) -- content file R60C_ICE_NOTICE (Oct 25 only).
