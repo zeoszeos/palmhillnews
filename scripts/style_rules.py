@@ -1054,3 +1054,147 @@ def rules_dyk_r126_problems(html, item):
         if "dyk-dave-note" not in (html or "") or "dyk-rules-link" not in (html or ""):
             return "closing note and Rules PDF link must both be present after the regulation"
     return ""
+
+
+# ---------------------------------------------------------------------------
+# R127 / R128 (Steven, Nov 14 2026): the archive lists only shipped issues;
+# the current week's issue is added the following week, after it has been sent.
+# Source of truth: archive/sent-issues.json (status=shipped).
+# R129 (Steven, Nov 14 2026): no faint white seam lines in the green masthead
+# on either side of the "Palm Hill Country Club" title.
+# ---------------------------------------------------------------------------
+import json as _json
+from pathlib import Path as _Path
+
+SENT_ISSUES_REL = "archive/sent-issues.json"
+ARCHIVE_ITEMS_REL = "archive/archive-items.json"
+ARCHIVE_INDEX_REL = "pages/archive/archive-index.json"
+ARCHIVE_HOME_REL = "pages/archive/index.html"
+MASTHEAD_GREEN = "#2D5016"
+MASTHEAD_PALM_PX = 100
+MASTHEAD_PALM_MOBILE_PX = 60
+# The 50%+50%+1% column widths cannot add up, and many email clients then
+# show a 1px gap (the pale card background) on each side of the title.
+MASTHEAD_BAD_PALM_CSS = re.compile(r"\.header-palm-cell\s*\{\s*width:\s*50%\s*!important\s*;\s*\}")
+MASTHEAD_BAD_PALM_TD = re.compile(
+    r'<td class="header-palm-cell" width="50%" align="center" valign="middle" bgcolor="#2D5016" style="width:50%;height:105px;background:#2D5016;">'
+)
+MASTHEAD_BAD_TITLE_TD = re.compile(
+    r'<td width="1%" align="center" valign="middle" bgcolor="#2D5016" style="width:1%;white-space:nowrap;height:105px;background:#2D5016;color:#ffffff;text-align:center;">'
+)
+
+
+def _repo_root(repo=None):
+    if repo: return _Path(repo)
+    return _Path(__file__).resolve().parents[1]
+
+
+def load_sent_issues(repo=None):
+    """Return the shipped-issue records from archive/sent-issues.json."""
+    p = _repo_root(repo) / SENT_ISSUES_REL
+    data = _json.loads(p.read_text(encoding="utf-8"))
+    return [i for i in data.get("issues", []) if i.get("status", "shipped") == "shipped"]
+
+
+def load_known_sent_unconfirmed(repo=None):
+    p = _repo_root(repo) / SENT_ISSUES_REL
+    data = _json.loads(p.read_text(encoding="utf-8"))
+    return [i for i in data.get("issues", []) if i.get("status") == "sent-copy-unconfirmed"]
+
+
+def archive_listed_dates(repo=None):
+    """Issue dates listed on the published archive index (JSON + home page + curated items)."""
+    root = _repo_root(repo)
+    dates = set()
+    items = root / ARCHIVE_ITEMS_REL
+    if items.exists():
+        data = _json.loads(items.read_text(encoding="utf-8"))
+        for i in data.get("issues", []):
+            if i.get("date"): dates.add(i["date"])
+    idx = root / ARCHIVE_INDEX_REL
+    if idx.exists():
+        data = _json.loads(idx.read_text(encoding="utf-8"))
+        for i in data.get("issues", []):
+            if i.get("date"): dates.add(i["date"])
+    home = root / ARCHIVE_HOME_REL
+    if home.exists():
+        t = home.read_text(encoding="utf-8")
+        dates.update(re.findall(r"archive/issues/(\d{4}-\d{2}-\d{2})\.html", t))
+        dates.update(re.findall(r'href="issues/(\d{4}-\d{2}-\d{2})\.html"', t))
+    return dates
+
+
+def archive_unsent_or_current_week_problems(repo=None, current=None):
+    """R127: fail if the archive index lists an unsent issue, or one dated the current week or later."""
+    root = _repo_root(repo)
+    current = current or current_issue(root)
+    shipped = {i["date"] for i in load_sent_issues(root)}
+    hits = []
+    for d in sorted(archive_listed_dates(root), reverse=True):
+        if d not in shipped:
+            hits.append(f"{d} is in the archive index but is not marked shipped in {SENT_ISSUES_REL}")
+        if d >= current:
+            hits.append(f"{d} is in the archive index but is the current week's issue or later ({current}); add it the following week, after it has been sent")
+    return hits
+
+
+def archive_missing_sent_problems(repo=None, current=None):
+    """R128: fail if a shipped issue older than the current week is missing from the archive index or has no frozen page."""
+    root = _repo_root(repo)
+    current = current or current_issue(root)
+    listed = archive_listed_dates(root)
+    hits = []
+    for i in load_sent_issues(root):
+        d = i["date"]
+        if d >= current:
+            continue  # R127: do not require (or allow) the current week in the archive yet
+        if d not in listed:
+            hits.append(f"{d} (Vol. {i.get('volume')}, No. {i.get('number')}) is shipped but missing from the archive index")
+        page = root / "pages" / "archive" / "issues" / f"{d}.html"
+        if not page.exists():
+            hits.append(f"{d}: frozen archive issue page pages/archive/issues/{d}.html is missing")
+    return hits
+
+
+def fix_masthead_seams(html):
+    """R129: rewrite the 3-cell green masthead so palm columns use a fixed pixel width (not 50%+50%+1%)."""
+    if not html or "header-palm-cell" not in html:
+        return html
+    html = MASTHEAD_BAD_PALM_CSS.sub(
+        f".header-palm-cell {{ width:{MASTHEAD_PALM_MOBILE_PX}px !important; }}",
+        html,
+        count=1,
+    )
+    html = re.sub(
+        r'(<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;)(background:#2D5016;">)',
+        r"\1border-spacing:0;\2",
+        html,
+        count=1,
+    )
+    palm_open = (
+        f'<td class="header-palm-cell" width="{MASTHEAD_PALM_PX}" align="center" valign="middle" bgcolor="#2D5016" '
+        f'style="width:{MASTHEAD_PALM_PX}px;height:105px;background:#2D5016;padding:0;border:0;font-size:0;line-height:0;">'
+    )
+    html = MASTHEAD_BAD_PALM_TD.sub(palm_open, html)
+    html = MASTHEAD_BAD_TITLE_TD.sub(
+        '<td align="center" valign="middle" bgcolor="#2D5016" style="white-space:nowrap;height:105px;background:#2D5016;color:#ffffff;text-align:center;padding:0 8px;">',
+        html,
+        count=1,
+    )
+    return html
+
+
+def masthead_seam_problems(html):
+    """R129: the preview/SEND masthead must not use the 50%+50%+1% column widths that leave white seams."""
+    if not html or "header-palm-cell" not in html:
+        return []
+    hits = []
+    if MASTHEAD_BAD_PALM_CSS.search(html) or re.search(r"\.header-palm-cell\s*\{[^}]*width:\s*50%\s*!important", html):
+        hits.append("mobile CSS sets .header-palm-cell { width:50% !important }")
+    for td in re.findall(r"<td class=\"header-palm-cell\"[^>]*>", html):
+        if re.search(r'width="50%"|width:\s*50%', td) or re.search(r'width="\d+%"|width:\s*\d+%', td):
+            hits.append("a palm cell uses a percentage width (must be a fixed pixel width)")
+            break
+    if MASTHEAD_BAD_TITLE_TD.search(html) or re.search(r'<td width="1%"[^>]*>[^<]*<span class="header-title"', html):
+        hits.append("the title cell uses width 1% next to two 50% palm cells")
+    return hits

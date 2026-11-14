@@ -561,6 +561,20 @@ def _ts70(f):  # 'Calendar check - November 4, 8:53 PM' -> sortable (month, day,
     return _dt.strptime(f"{C.ISSUE[:4]} {m.group(1)} {m.group(2)}", "%Y %B %d %I:%M %p") if m else None
 _a70, _b70 = (_ts70(_sd70), _ts70(_pv70)) if _sd70.exists() and _pv70.exists() else (None, None)
 L.ok("R70b", not (_a70 and _b70 and _a70 < _b70), "SEND is not from an earlier build than the preview (else re-run publish_issue)")
+
+# R127 / R128 (Steven Nov 14 2026): archive lists only shipped issues; current week stays out
+# until the following week after the send; every earlier shipped issue must be listed.
+# R129: no 50%+50%+1% masthead seams on the current preview / SEND (Nov 15+).
+_repo_arch = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+_h127 = _sr83.archive_unsent_or_current_week_problems(_repo_arch, C.ISSUE)
+L.ok("R127", not _h127, "archive index lists only shipped issues from before the current week" + (f": {'; '.join(_h127)}" if _h127 else ""))
+_h128 = _sr83.archive_missing_sent_problems(_repo_arch, C.ISSUE)
+L.ok("R128", not _h128, "every shipped issue older than the current week is in the archive index" + (f": {'; '.join(_h128)}" if _h128 else ""))
+if C.ISSUE >= "2026-11-15":
+    for _n129, _x129 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p129 = _sr83.masthead_seam_problems(_x129)
+        L.ok("R129", not _p129, f"{_n129}: green masthead has no 50%+50%+1% seam widths" + (f" {_p129}" if _p129 else ""))
+
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:

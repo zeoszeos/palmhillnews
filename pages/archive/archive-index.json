@@ -6,6 +6,39 @@
   "archive_main": "https://palmhillnews.vercel.app/pages/archive/main.html",
   "issues": [
     {
+      "date": "2026-11-08",
+      "volume": 1,
+      "number": 17,
+      "issue_number": "Vol. 1, No. 17",
+      "label": "Week of Nov 8, 2026",
+      "sent": "2026-11-07T22:17:00-05:00",
+      "file_dated": "2026-11-07T10:54:00-05:00",
+      "format": "Email newsletter",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-11-08.html"
+    },
+    {
+      "date": "2026-11-01",
+      "volume": 1,
+      "number": 16,
+      "issue_number": "Vol. 1, No. 16",
+      "label": "Week of Nov 1, 2026",
+      "sent": "2026-11-01T00:33:00-04:00",
+      "file_dated": "2026-11-01T00:33:00-04:00",
+      "format": "Email newsletter",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-11-01.html"
+    },
+    {
+      "date": "2026-10-25",
+      "volume": 1,
+      "number": 15,
+      "issue_number": "Vol. 1, No. 15",
+      "label": "Week of Oct 25, 2026",
+      "sent": "2026-10-24T15:35:00-04:00",
+      "file_dated": "2026-10-24T15:35:00-04:00",
+      "format": "Email newsletter",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-10-25.html"
+    },
+    {
       "date": "2026-10-18",
       "volume": 1,
       "number": 14,

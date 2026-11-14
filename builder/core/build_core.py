@@ -786,6 +786,9 @@ sys.path.insert(0, SCRIPTS); import tel_links as _tel
 if _tel.applies(ISSUE):
     s = _tel.linkify(s)
     if _tel.find_bare(s)[0] or _tel.tel_mismatches(s): raise SystemExit(f"R85: bare/mismatched phone in NL: {_tel.find_bare(s)} {_tel.tel_mismatches(s)}")
+# R129: fix 50%+50%+1% masthead seams (Nov 15+); archived as-sent copies are not rebuilt here.
+if ISSUE >= "2026-11-15":
+    s = _sr.fix_masthead_seams(s)
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 # STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): from listen_settings v2_from on, every page this NL links with ?listen=1
