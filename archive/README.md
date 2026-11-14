@@ -13,3 +13,5 @@
   2. Save the exact sent HTML to the NAS (`02-Issues/2026-10/<send date>/sent-final/`).
   3. Run the builder with `--issues-from`.
 - **Runbook** (for Hermes or anyone): `archive/RUNBOOK-archive.md`. Run `node scripts/build_archive.js --help` to see the inputs and outputs.
+
+- **Sent issues (R127/R128):** `archive/sent-issues.json` is the source of truth for which issues have shipped. The archive index may only list `status: shipped` rows dated before the current week's issue. Add the issue to the archive the following week, after it has been sent, from the as-sent HTML — never a hand-patched copy.
