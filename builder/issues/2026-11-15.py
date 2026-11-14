@@ -230,7 +230,7 @@ PARADE_DATE = "Parade: December 12th, 2026 · Line up: 5:30 PM in front of the N
 ROUTE_TITLE = "Christmas Golf Cart Route"
 ROUTE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/IMG_2330.png"
 ROUTE_ALT = "Hand-drawn route on the Palm Hill Country Club map, with START and END labeled. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770, Office: 554-6799."
-ROUTE_TEASER = "START. END. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770."
+ROUTE_TEASER = "START. END. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770. Office: (727) 554-6799."
 # Sat Nov 7 2026 morning sweep (draft, before Susan's proof). Verbatim bodies; unsubscribe already absent.
 WM_COPY_CHAIR_YOGA = "2026-11-07-chair-yoga-class-canceled-notice.html"                 # gotwicz 1a1b5cc77232729c Sat Nov 7 6:37 AM ET
 WM_COPY_WATER_1111 = "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"  # gotwicz 1a1b174eb713f7a4 Fri Nov 6 10:23 AM ET (supersedes the 10:00am wording)
@@ -259,7 +259,8 @@ WM_COPIES = [
         ("p", "END"),
         ("p", "Palm Hill Country Club"),
         ("p", "1800 Seminole Boulevard"),
-        ("p", "Largo, Florida 33770")],
+        ("p", "Largo, Florida 33770"),
+        ("p", "Office: (727) 554-6799")],  # Steven Nov 13 8:54 PM ET: "yes, 727 for office number"
         dict(title=ROUTE_TITLE)),
     (WM_COPY_PARADE, "Palm Hill Annual Golf Cart Parade", "Friday, Nov 13, 2026, 10:36 AM ET", [
         ("img", (PARADE_IMG, PARADE_ALT)),
@@ -993,7 +994,8 @@ TONY_FB_NOTICE = False
 # R99 (Steven Oct 31 2026, "Put it in its own banner, and add some tasteful clock icons"): DST banner, wording verbatim.
 # R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
 # in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
-REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE)]
+REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE),
+                 ("Christmas Golf Cart Route", "(727) 554-6799", WM_COPY_ROUTE)]  # Steven Nov 13 8:54 PM ET
 _NOV1_TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back one hour?",
                   body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Enjoy the extra hour!")
 # R101 (Steven Oct 31 2026 7:34 PM, voice: "don't forget to vote on Tuesday" / "you can vote here in the park"): second small
