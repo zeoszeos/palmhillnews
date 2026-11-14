@@ -934,3 +934,123 @@ def multiday_range_problems(page_html, events, window):
         lab = range_label(r["start"], r["end"]); short = re.sub(r", \d{4}$", "", lab)
         if lab not in txt and short not in txt: out.append(f"{t}: date range '{short}' missing")
     return out
+
+
+# STYLE-RULES R126 (Steven, Nov 13 2026 9:16 PM ET, voice): a Rules Did You Know has a plain-language
+# summary intro with key highlights, then the official regulation text exactly once. A contributor
+# closing note stays verbatim once after the regulation, next to the Rules PDF link, and is not
+# merged into the summary. The same substantial paragraph must not be printed twice in a DYK or
+# notice body (the Nov 15 Rule VI.G page had Dave's email quote of G. and the official blockquote).
+_R126_MIN = 80  # characters, after normalize; short repeated labels are not a repeat
+
+def _r126_plain(t):
+    t = _h.unescape(re.sub(r"<[^>]+>", " ", t or ""))
+    t = re.sub(r"\s+", " ", t).strip().lower()
+    return re.sub(r"^[a-z]\.\s+", "", t)
+
+def _r126_blocks(html):
+    """Visible block texts from a DYK/notice body (content card or main), skipping bylines, sources, nav, scripts."""
+    s = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", "", html or "", flags=re.I)
+    m = re.search(r'<div class="content-card">([\s\S]*?)</div>', s)
+    if not m:
+        m = re.search(r"<main\b[^>]*>([\s\S]*?)</main>", s, re.I)
+    body = m.group(1) if m else s
+    body = re.sub(r'<p class="(?:dyk-byline|source|ph-source|credit|byline)"[^>]*>[\s\S]*?</p>', " ", body, flags=re.I)
+    body = re.sub(r"<nav\b[\s\S]*?</nav>", " ", body, flags=re.I)
+    chunks = re.findall(r"<(?:p|li|h[1-6]|div class=\"ph-detail\")\b[^>]*>([\s\S]*?)</(?:p|li|h[1-6]|div)>", body, re.I)
+    out = []
+    for c in chunks:
+        n = _r126_plain(c)
+        if n:
+            out.append(n)
+    return out
+
+def repeated_regulation_problems(html):
+    """Non-empty list if a DYK/notice body prints the same substantial paragraph (or lettered rule) twice."""
+    blocks = _r126_blocks(html)
+    seen = {}
+    problems = []
+    for b in blocks:
+        if len(b) < _R126_MIN:
+            continue
+        if b in seen:
+            problems.append(f"repeated paragraph ({len(b)} chars): {b[:80]}…")
+        else:
+            seen[b] = 1
+    return problems
+
+def rules_dyk_intro_facts_ok(intro, highlights, rule_text):
+    """Numbers, money, and Paragraph references in the intro/highlights must appear in the official rule (no invented facts)."""
+    src = rule_text or ""
+    blob = " ".join([intro or ""] + [
+        (h[0] + " " + h[1]) if isinstance(h, (list, tuple)) and len(h) >= 2 else str(h)
+        for h in (highlights or [])
+    ])
+    facts = re.findall(r"\$\d+(?:\.\d+)?|\bParagraph\s+\d+\b|\b\d+\s+hour\b|\b\d+\s+hours\b", blob, re.I)
+    missing = [f for f in facts if f.lower() not in src.lower() and re.sub(r"\s+", " ", f.lower()) not in re.sub(r"\s+", " ", src.lower())]
+    # "$50" should match "$50 per hour" in the rule
+    missing = [f for f in missing if f.lstrip("$") not in re.sub(r"[^\d.]", " ", src)]
+    return not missing, missing
+
+def rules_dyk_r126_parts(item):
+    """Card inner HTML (intro, highlight list, official rule once, byline) and the after-card closing note (if any)."""
+    import html as _html
+    intro = (item.get("intro") or "").strip()
+    highlights = item.get("highlights") or []
+    if not intro or not highlights or not item.get("rule_items"):
+        raise ValueError("R126: item needs intro, highlights, and rule_items")
+    rule_src = " ".join(t for _, t in item["rule_items"])
+    ok, missing = rules_dyk_intro_facts_ok(intro, highlights, rule_src)
+    if not ok:
+        raise ValueError(f"R126: intro/highlights have facts not in the official rule: {missing}")
+    rp = _html.escape(item["rule_pdf"])
+    lis = []
+    for h in highlights:
+        lead, rest = (h[0], h[1]) if isinstance(h, (list, tuple)) and len(h) >= 2 else ("", str(h))
+        lis.append(f'<li style="margin:0 0 8px 0"><strong>{_html.escape(lead)}:</strong> {_html.escape(rest)}</li>')
+    card = (
+        f'<p class="dyk-rule-intro">{_html.escape(intro)}</p>'
+        + '<ul class="dyk-rule-highlights" style="margin:12px 0 16px 1.2em;padding:0">' + "".join(lis) + "</ul>"
+        + '<blockquote class="dyk-full-rule" style="border-left:4px solid #2d5016;background:#f3f8ee;padding:12px 16px;margin:16px 0">'
+        + f'<p style="margin:0 0 8px 0;"><strong><a class="dyk-rule-heading" href="{rp}" style="color:#3A6B1A">{_html.escape(item["rule_heading"])}</a></strong></p>'
+        + "".join(f'<p style="margin:0;"><strong>{_html.escape(l)}</strong> {_html.escape(txt)}</p>' for l, txt in item["rule_items"])
+        + "</blockquote>"
+        + f'<p class="dyk-byline">{_html.escape(item["byline"])}</p>'
+    )
+    note = (item.get("closing_note") or "").strip()
+    after = ""
+    if note:
+        # Keep the note verbatim; only turn "the full document" into the official PDF link (same as the prior page).
+        linked = _html.escape(note).replace("the full document", f'<a href="{rp}" style="color:#3A6B1A">the full document</a>', 1)
+        after = f'<p class="source dyk-dave-note">{linked}</p>\n'
+    return card, after
+
+def rules_dyk_r126_problems(html, item):
+    """'' when the page matches R126 (intro, highlights, official rule once, optional note once). Else a reason."""
+    if not item.get("intro") or not item.get("rule_items"):
+        return ""
+    reps = repeated_regulation_problems(html)
+    if reps:
+        return "; ".join(reps)
+    rule = _r126_plain(" ".join(t for _, t in item["rule_items"]))
+    body = _r126_plain(html)
+    if rule and body.count(rule) != 1:
+        return f"official rule text appears {body.count(rule)} time(s), want 1"
+    if _r126_plain(item["intro"]) not in body:
+        return "summary intro is missing"
+    for h in item.get("highlights") or []:
+        rest = h[1] if isinstance(h, (list, tuple)) and len(h) >= 2 else str(h)
+        if _r126_plain(rest) not in body:
+            return f"highlight missing: {rest[:60]}"
+    note = (item.get("closing_note") or "").strip()
+    if note:
+        n = _r126_plain(note)
+        if body.count(n) != 1:
+            return f"closing note appears {body.count(n)} time(s), want 1"
+        # The note must sit after the official rule and next to the PDF link, not in the intro.
+        intro_html = re.search(r'class="dyk-rule-intro"[^>]*>([\s\S]*?)</p>', html or "")
+        if intro_html and _r126_plain(note) in _r126_plain(intro_html.group(1)):
+            return "closing note must not be merged into the summary intro"
+        if "dyk-dave-note" not in (html or "") or "dyk-rules-link" not in (html or ""):
+            return "closing note and Rules PDF link must both be present after the regulation"
+    return ""

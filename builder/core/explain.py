@@ -68,6 +68,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
     "R122": "Tony's Palm Hill club calendar (data/cal-*.json) is the source of truth and always supersedes the RPM calendar. Do not print an RPM date, or set MTG_OVERRIDE / MTG_NOTE from RPM, that conflicts with the club calendar feed. The guard is style_rules.club_calendar_supersedes_rpm_problems",
     "R72": "copy the PDF into the work tree and give its relative path in the content file",
     "R73": "get the missing source (copy, never move) or drop the item -- never invent it",
+    "R126": "a DYK or notice body printed the same substantial paragraph twice; use style_rules.rules_dyk_r126_parts so the official rule appears once, after a faithful summary intro, and keep any contributor closing note verbatim next to the Rules PDF link",
     "R74": "save a baseline only after Steven approves: scripts/save_visual_baseline.py",
 }
 _titles = None

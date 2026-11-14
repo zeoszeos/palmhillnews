@@ -4,8 +4,8 @@
    length, verbatim from builder/nov15/data/community-story-serving-on-the-board.json, checked against pdftotext
    (link-2026-11-p36-raw.txt). Story + listen pages from the Marge Taylor shell, the same way Nov 8 wrote Tom Palladino (no photo).
 2) Did You Know (R88, Steven Nov 12 2026 2:06 PM: one of Dave Bates's rules emails not used before, his exact wording, link the
-   rule): Rule VI.G (email 'Rule VI', Nov 9), in the Oct 25 Rules Did You Know shell (Dave's email, the full rule linked to the
-   official Rules and Regulations PDF, byline last). The rule text is checked against the PDF text (data/rules-2026-09-30.txt: Section VI, pdftotext of the club PDF).
+   rule): Rule VI.G (email 'Rule VI', Nov 9), in the Oct 25 Rules Did You Know shell (R126: summary intro and highlights, the official rule once,
+   Dave's closing note verbatim after the regulation next to the official PDF link, byline last in the card). The rule text is checked against the PDF text (data/rules-2026-09-30.txt: Section VI, pdftotext of the club PDF).
 3) Runs builder/core/stage_check.py for 2026-11-15 (FOUND / MISSING / STALE). Never invents content.
 Usage: python3 builder/nov15/stage_nov15_content.py"""
 import json, re, html, pathlib, runpy, sys
@@ -48,22 +48,20 @@ for it in DN["items"]:
     assert _sr.dyk_new_item_teaser_ok(it), ("R39: main teaser must be verbatim body sentences", it["id"])
     for _l, _t in it["rule_items"]: assert norm(_t) in RULES, ("R39: rule text not verbatim from the Rules PDF", _l)
     assert norm(it["paragraphs"][1][3:]) in RULES, "Dave's G. paragraph is the official rule word for word"
-    _rp = html.escape(it["rule_pdf"])
-    # Keep Dave's email wording verbatim (R31). Presentation only: his "the full document" points at the official PDF
-    # (R34), and the official rule sits in a clearer blockquote after his note, with the lettered item bolded.
-    _paras = it["paragraphs"]
-    _note = html.escape(_paras[2]).replace("the full document", f'<a href="{_rp}" style="color:#3A6B1A">the full document</a>', 1)
-    ps = (f'<p><strong>{html.escape(_paras[0])}</strong></p>'
-          + f"<p>{html.escape(_paras[1])}</p>"
-          + f"<p>{_note}</p>"
-          + '<blockquote class="dyk-full-rule" style="border-left:4px solid #2d5016;background:#f3f8ee;padding:12px 16px;margin:16px 0">'
-          + f'<p style="margin:0 0 8px 0;"><strong><a class="dyk-rule-heading" href="{_rp}" style="color:#3A6B1A">{html.escape(it["rule_heading"])}</a></strong></p>'
-          + "".join(f'<p style="margin:0;"><strong>{html.escape(l)}</strong> {html.escape(txt)}</p>' for l, txt in it["rule_items"]) + "</blockquote>"
-          + f'<p class="dyk-byline">{html.escape(it["byline"])}</p>')
+    assert it["closing_note"] == it["paragraphs"][2], "R126: closing note is Dave's email wording, verbatim"
+    # R126: summary intro + highlights, then the official rule once. Dave's closing note stays
+    # verbatim once after the regulation, next to the Rules PDF link (not merged into the summary).
+    ps, _note = _sr.rules_dyk_r126_parts(it)
     t = "Did You Know? " + it["title_display"]
     out = re.sub(r"<title>.*?</title>", lambda m: f"<title>{html.escape(t)} — Palm Hill Country Club</title>", _TPL, count=1)
     out = re.sub(r'(<h1 class="ph-section" style="margin:0">).*?(</h1>)', lambda m: m.group(1) + html.escape(t) + m.group(2), out, count=1)
     out = re.sub(r'<div class="content-card">[\s\S]*?</div>\n', lambda m: f'<div class="content-card">{ps}</div>\n', out, count=1)
+    if _note:
+        if "dyk-dave-note" not in out:
+            out = out.replace('<p class="dyk-rules-link"', _note + '<p class="dyk-rules-link"', 1)
+        assert "dyk-dave-note" in out and out.find("dyk-dave-note") < out.find("dyk-rules-link")
+    _why = _sr.rules_dyk_r126_problems(out, it)
+    assert not _why, "R126: " + _why
     assert "Assessments" not in out and "ASSESSMENTS" not in out and out.count('class="ph-listen"') == 1
     out = _pl.upgrade(out)  # R76: a Nov 15 page uses the v2 listen block
     f = DN["page_prefix"] + it["preview_page"]
