@@ -35,6 +35,7 @@ DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as 
 LOCKED = {
     "NOTICES_EXPECTED": [   # Nov 15 DRAFT (not yet approved by Steven): four new Nov 9-12 emails, then the Nov 8 list minus stale notices
         'Serving on the Palm Hill Board of Directors',
+        'Correction: I got it Game Night',
         'Singing Ensemble for Christmas Cantata',
         'Palm Hill Annual Golf Cart Parade',
         'Christmas Golf Cart Route',
@@ -211,6 +212,18 @@ CAROLYN_BOARD_TITLE = "Serving on the Palm Hill Board of Directors"
 CAROLYN_BOARD_BODY = "A board member is the guardian of your community, assets, and lifestyle."
 CAROLYN_BOARD_DATE = "First published: November 2026"
 CAROLYN_BOARD_PAGE = "2026-11-carolyn-story-serving-on-the-board.html"
+# Sat Nov 14 2026 9:38 AM ET (Steven 4:45 PM ET: add then end changes). Webmaster correction (Gail Stott),
+# gotwicz 1a1daad5c262bccb. Verbatim body, including the typo "Noeth" (R125 "When ever" precedent). Unsubscribe left out.
+# Fresh calendar pull cal-20261114-1648.json already has I Got It on Wed Nov 18, 6:30 PM, North Main Hall
+# (info: "Changed from South") and cancels Mon Nov 16 ("Entered in error"). No extra calendar/event row (R42
+# calendar-row exception; I Got It stays on the Recurring pages, L09). Community Notice carries the correction
+# in the newsletter itself (R42 / R125). Linda Baun's Nov 13 9:11 PM ET "Tonight" reminder is not added (stale).
+WM_COPY_GAME_NIGHT = "2026-11-14-correction-i-got-it-game-night-notice.html"
+GAME_NIGHT_TITLE = "Correction: I got it Game Night"   # R93: subject "Correction:  I got it Game Night is Wednesday at 6:30 in the NCH" -- date/time/place stay off the title
+GAME_NIGHT_SUBJECT = "Correction:  I got it Game Night is Wednesday at 6:30 in the NCH"
+GAME_NIGHT_BODY = "Correction:  I got it Game Night is this Wednesday at 6:30 in the Noeth Clubhouse."
+GAME_NIGHT_DATE = "Game Night: this Wednesday at 6:30 in the Noeth Clubhouse"
+GAME_NIGHT_SENT = "Saturday, Nov 14, 2026, 9:38 AM ET"
 # Fri Nov 13 2026 sweep (Steven approved adding these Webmaster emails). Verbatim bodies; unsubscribe left out. gotwicz Gmail.
 # Parade + route emails are image-only flyers (club-site images); transcribed text is only what is clearly printed.
 WM_COPY_CANTATA = "2026-11-13-singing-ensemble-christmas-cantata-notice.html"   # gotwicz 1a1d72de67a369a3 Fri Nov 13 12:30 PM ET (Mollie Cardno)
@@ -243,6 +256,12 @@ WATER_1111_DATE = "Shut off: Wednesday, November 11th · Rescheduled: 2:30pm for
 CORNHOLE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/827E9BE2-A63E-4981-99FA-CFDD9C846292.png"
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
 WM_COPIES = [
+    # Sat Nov 14 2026 9:38 AM ET correction (Steven: add then end changes): newest first
+    (WM_COPY_GAME_NIGHT, GAME_NIGHT_SUBJECT, GAME_NIGHT_SENT, [
+        ("p", GAME_NIGHT_BODY),
+        ("p", "Gail Stott"),
+        ("p", "Webmaster")],
+        dict(title=GAME_NIGHT_TITLE)),
     # Fri Nov 13 2026 sweep (Steven approved): newest first; parade and route are image-only flyers (R60a)
     (WM_COPY_CANTATA, "Singing Ensemble for Christmas Cantata", "Friday, Nov 13, 2026, 12:30 PM ET", [
         ("p", "Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!"),
@@ -538,7 +557,9 @@ NOTICES = [
     # Steven Nov 12 2026 (voice): Carolyn Story's Board piece, moved from Community Stories into Community Notices.
     # Full verbatim page + Listen stay at CAROLYN_BOARD_PAGE (Link Nov 2026 p 36).
     (CAROLYN_BOARD_TITLE, CAROLYN_BOARD_BODY, "Carolyn Story", BASE + CAROLYN_BOARD_PAGE),
-    # Fri Nov 13 2026 sweep (Steven approved). Carolyn stays first. Then newest Webmaster emails; parade then route
+    # Sat Nov 14 2026 9:38 AM ET Webmaster correction (Steven: add then end changes). Carolyn stays first.
+    (GAME_NIGHT_TITLE, GAME_NIGHT_BODY, "Webmaster", BASE + WM_COPY_GAME_NIGHT),
+    # Fri Nov 13 2026 sweep (Steven approved). Then newest Webmaster emails; parade then route
     # are kept as a pair (route was sent 2 minutes later) so the event sits above its map.
     (CANTATA_TITLE, CANTATA_BODY, "Webmaster", BASE + WM_COPY_CANTATA),
     (PARADE_TITLE, PARADE_TEASER, "Webmaster", BASE + WM_COPY_PARADE),
@@ -630,6 +651,7 @@ NOTICES = [
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
     CAROLYN_BOARD_TITLE: CAROLYN_BOARD_DATE,
+    GAME_NIGHT_TITLE: GAME_NIGHT_DATE,
     CANTATA_TITLE: CANTATA_DATE,
     PARADE_TITLE: PARADE_DATE,
     EXERCISE_TITLE: EXERCISE_DATE,
@@ -928,7 +950,9 @@ R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 
 # ---------- Community Notices (6): archive rows added by this issue (R59) ----------
-NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-15", id="2026-11-15-singing-ensemble-christmas-cantata", title=CANTATA_TITLE,
+NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-15", id="2026-11-15-correction-i-got-it-game-night", title=GAME_NIGHT_TITLE,
+                     text=GAME_NIGHT_BODY, page=WM_COPY_GAME_NIGHT, source="Palm Hill Webmaster notice, Nov 14", issues=["2026-11-15"]),
+                dict(date="2026-11-15", id="2026-11-15-singing-ensemble-christmas-cantata", title=CANTATA_TITLE,
                      text="Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!",
                      page=WM_COPY_CANTATA, source="Palm Hill Webmaster notice, Nov 13", issues=["2026-11-15"]),
                 dict(date="2026-11-15", id="2026-11-15-palm-hill-annual-golf-cart-parade", title=PARADE_TITLE,

@@ -21,6 +21,10 @@ SOURCES = {
     "2026-11-carolyn-story-serving-on-the-board.html": dict(
         subject="Serving on the Palm Hill Board of Directors", notice_title="Serving on the Palm Hill Board of Directors", use_existing_page=True,
         sections=[dict(heading="Serving on the Palm Hill Board of Directors", keys=["board member"])], approved_omit=[]),
+    # Sat Nov 14 2026 9:38 AM ET Webmaster correction (Gail Stott, gotwicz). One email = one notice (R42).
+    "2026-11-14-correction-i-got-it-game-night-notice.html": dict(
+        subject="Correction:  I got it Game Night is Wednesday at 6:30 in the NCH", notice_title="Correction: I got it Game Night", use_existing_page=True,
+        sections=[dict(heading="I got it Game Night correction", keys=["this Wednesday"])], approved_omit=[]),
     # Fri Nov 13 2026 sweep (Steven approved): four Webmaster emails (gotwicz). One email = one notice (R42).
     "2026-11-13-singing-ensemble-christmas-cantata-notice.html": dict(
         subject="Singing Ensemble for Christmas Cantata", notice_title="Singing Ensemble for Christmas Cantata", use_existing_page=True,
