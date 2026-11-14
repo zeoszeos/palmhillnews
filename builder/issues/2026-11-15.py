@@ -915,7 +915,9 @@ DYK_ROW_DATE = "2026-10-25"; DYK_ROW_ISSUES = ["2026-10-25"]   # archive rows fo
 # R118 (Steven Nov 7, 2026): that item's main-card teaser includes the printed email line. Do not cut it back to the semicolon.
 # Nov 15 (Steven Nov 12 2026 2:06 PM): one of Dave Bates's Rules & Regs emails not used before, his exact wording, linked to the
 # rule. DRAFT PICK (pending Steven): 'Rule VI' (Nov 9) = Rules and Regulations VI.G, homesite care and maintenance. Main teaser =
-# the rule's first sentence, verbatim (R39 distilled). R89 keeps Sunshine Directors (Nov 8) off this main page.
+# the rule's first sentence, verbatim (R39 distilled). R126 (Steven Nov 13 2026 9:16 PM ET): the item page has a plain-language
+# summary intro and highlights, then official Rule VI.G once, then Dave's closing note verbatim next to the Rules PDF link.
+# R89 keeps Sunshine Directors (Nov 8) off this main page.
 DYK_NEW_JSON = "builder/nov15/data/dyk-dave-rule-vi-homesites.json"
 DYK_PARKED_PAGES = ["2026-11-01-did-you-know-spectrum-unplugging.html"]   # must not be linked or archived while parked
 DYK_REPRISE = None

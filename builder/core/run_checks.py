@@ -433,6 +433,29 @@ if getattr(C, "DYK_NEW_JSON", None):
         _m = re.search(r'<div class="content-card">([\s\S]*?)</div>\n<p class="source dyk-email-source"[^>]*>([^<]*)</p>\n<p class="source"[^>]*><a [^>]*>Did You Know Archives →', _pt)
         _ok = bool(_m) and _html.unescape(_m.group(2)) == _it["source_line"] and _m.group(1).endswith(f'<p class="dyk-byline">{_html.escape(_it["byline"])}</p>') if _it.get("byline") else bool(_m)
         L.ok("R90", _ok and _pt.count("dyk-email-source") == 1, f"{_it['id']} page cites its source email: {_it['source_line']!r}")
+# R126 (Steven Nov 13 2026 9:16 PM ET): a Did You Know or notice body must not print the same
+# substantial regulation or paragraph twice. A Rules DYK with an intro uses summary-then-rule-once
+# (official text verbatim once; a contributor closing note stays verbatim next to the Rules PDF link).
+_R126 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+_r126_pages = []
+if getattr(C, "DYK_NEW_JSON", None):
+    _dn126 = json.load(open(_R126 / C.DYK_NEW_JSON, encoding="utf-8"))
+    for _it126 in _dn126["items"]:
+        _r126_pages.append((_dn126["page_prefix"] + _it126["preview_page"], _it126))
+for _wm126 in getattr(C, "WM_COPIES", []) or []:
+    if isinstance(_wm126, (list, tuple)) and _wm126:
+        _r126_pages.append((_wm126[0], None))
+_seen126 = set()
+for _n126, _it126 in _r126_pages:
+    if _n126 in _seen126: continue
+    _seen126.add(_n126)
+    _f126 = _R126 / "pages" / _n126
+    _t126 = _f126.read_text(encoding="utf-8") if _f126.exists() else ""
+    _p126 = _sr83.repeated_regulation_problems(_t126)
+    L.ok("R126", bool(_t126) and not _p126, f"{_n126}: regulation or paragraph text is not repeated" + (f" {_p126}" if _p126 else ""))
+    if _it126 and _it126.get("intro"):
+        _why126 = _sr83.rules_dyk_r126_problems(_t126, _it126)
+        L.ok("R126", _why126 == "", f"{_n126}: summary intro, official rule once, closing note not merged into the summary" + (f" ({_why126})" if _why126 else ""))
 # R91 (Steven Oct 29 2026 7:33 PM): DYK_REPRISE items are the top blocks (title, teaser = text printed then, More -> existing live
 # page, no new archive row); parked pages (DYK_PARKED_PAGES) are not in the repo tree, the issue, or any archive row/page.
 if getattr(C, "DYK_REPRISE", None) or getattr(C, "DYK_PARKED_PAGES", None):
