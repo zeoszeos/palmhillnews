@@ -600,6 +600,10 @@ if C.ISSUE >= "2026-11-15":
         _p130 = _sr83.notice_repeat_from_previous_problems(_repo_arch, C.ISSUE, _x130, _keep130)
         L.ok("R130", not _p130, f"{_n130}: no previous-issue Community Notice returns except the keep-list" + (f" {'; '.join(_p130)}" if _p130 else ""))
 
+# R133 (Steven Nov 14 2026 10:40 PM ET): every live notice page with a Sent box: no date line under the title that repeats
+# the Sent date, and the Sent date in the smaller ph-sent-date style (16px; body 18px).
+_p133 = _sr83.notice_sent_date_problems(_repo_arch)
+L.ok("R133", not _p133, "notice pages: no Sent-date line under the title; Sent date in smaller print" + (f": {'; '.join(_p133[:6])}" + (f" (+{len(_p133)-6} more)" if len(_p133) > 6 else "") if _p133 else ""))
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:

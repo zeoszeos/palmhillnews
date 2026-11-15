@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """STYLE-RULES L27/L29 (Steven, Oct 17 2026 11:51 PM): every Webmaster Source credit links a copy of the source email.
 render(subject, sent, blocks, source) -> the community-notice source-copy page in the same shell as
-pages/2026-10-08-info-from-linda-notice.html (title only, Subject/From/Sent row, the email body copied as sent, Source line);
+pages/2026-10-08-info-from-linda-notice.html (title only -- no date line under it, R133 --, Subject/From/Sent row with the sent date in smaller print, the email body copied as sent, Source line);
 write(repo, name, ...) writes pages/<name> and adds the standard Listen block (scripts/notice_listen.py).
 blocks: ("h", text) = a heading line of the email (underlined/centred), ("p", text) = a paragraph, ("ul", [items]) = a bullet list, ("img", (src, alt)) = an image as sent.
 Text is the source wording; only whitespace (blank lines, &nbsp; runs, zero-width spaces) and the per-recipient unsubscribe
@@ -11,6 +11,70 @@ from html import escape
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notice_listen
+import re as _re
+
+# STYLE-RULES R133 (Steven, Nov 14 2026 10:40 PM ET, voice): a notice page's top line under the title must not show a
+# date that could be read as the event date. The email's sent date appears only in the Subject/From/Sent box, in
+# smaller print than the body (16px #555, the RD1/RD10 meta size; body text is 18px).
+SENT_DATE_CLASS = "ph-sent-date"
+SENT_DATE_STYLE = "font-size:16px;line-height:1.5;color:#555555"
+SENT_LABEL = "<strong>Sent:</strong> "
+_SENT_RE = _re.compile(r'<strong>Sent:</strong> (?!<span class="ph-sent-date")([^<]+)')
+
+
+def sent_date_html(sent_escaped):
+    return f'<span class="{SENT_DATE_CLASS}" style="{SENT_DATE_STYLE}">{sent_escaped}</span>'
+
+
+def fix_sent_date(html):
+    """R133: drop a <p class="ph-meta"> line that only repeats the email's Sent date, and put the Sent date in smaller print.
+    A ph-meta line with other text (e.g. a meeting's own date, time and place) is kept."""
+    if SENT_LABEL not in html:
+        return html
+    m = _SENT_RE.search(html)
+    if m:
+        html = html[:m.start()] + SENT_LABEL + sent_date_html(m.group(1)) + html[m.end():]
+    sm = _re.search(r'<strong>Sent:</strong> <span class="ph-sent-date"[^>]*>([^<]+)</span>', html)
+    if sm:
+        sent = sm.group(1).strip()
+        html = _re.sub(r'\n?<p class="ph-meta">\s*' + _re.escape(sent) + r'\s*</p>', "", html)
+    return html
+
+
+def sent_date_problems(html):
+    """R133 guard: [] when the page has no Sent box, or when no date line under the title repeats the Sent date and
+    the Sent date carries the smaller style."""
+    if SENT_LABEL not in html:
+        return []
+    hits = []
+    sm = _re.search(r'<strong>Sent:</strong> (<span class="ph-sent-date" style="([^"]*)">)?([^<]+)', html)
+    if not sm:
+        return ["Sent line not found"]
+    sent = sm.group(3).strip()
+    if not sm.group(1):
+        hits.append("the Sent date is not in the smaller ph-sent-date style")
+    elif sm.group(2) != SENT_DATE_STYLE:
+        hits.append(f"the Sent date style is {sm.group(2)!r}, expected {SENT_DATE_STYLE!r}")
+    if _re.search(r'<p class="ph-meta">\s*' + _re.escape(sent) + r'\s*</p>', html):
+        hits.append(f"a date line under the title repeats the Sent date ({sent}) and can be read as the event date")
+    return hits
+
+
+def notice_pages_with_sent(repo):
+    """Every live page with a Subject/From/Sent box (pages/*.html only: never pages/archive/**, previews or SEND files)."""
+    return sorted(f for f in (Path(repo) / "pages").glob("*.html") if SENT_LABEL in f.read_text(encoding="utf-8"))
+
+
+def fix_all(repo, skip=()):
+    """R133: apply fix_sent_date to every notice page with a Sent box; returns the pages that changed."""
+    changed = []
+    for f in notice_pages_with_sent(repo):
+        if f.relative_to(repo).as_posix() in skip:
+            continue
+        t = f.read_text(encoding="utf-8"); n = fix_sent_date(t)
+        if n != t:
+            f.write_text(n, encoding="utf-8"); changed.append(f.name)
+    return changed
 
 def _blk(kind, v):
     if kind == "h":
@@ -44,8 +108,7 @@ def render(subject, sent, blocks, source="Source: Palm Hill webmaster notice, co
 <div class="ph-page">
 <main class="ph-body">
 <h1 class="ph-section">{escape(title)}</h1>
-<p class="ph-meta">{escape(sent)}</p>
-<div class="ph-row ph-alt"><div class="ph-detail"><strong>Subject:</strong> {escape(subject)}<br><strong>From:</strong> {escape(sender)}<br><strong>Sent:</strong> {escape(sent)}</div></div>
+<div class="ph-row ph-alt"><div class="ph-detail"><strong>Subject:</strong> {escape(subject)}<br><strong>From:</strong> {escape(sender)}<br><strong>Sent:</strong> {sent_date_html(escape(sent))}</div></div>
 <div class="ph-row">{"".join(_blk(k, v) for k, v in blocks)}</div>
 <p class="ph-source">{(f'<a href="{escape(source_href)}">{escape(source)}</a>') if source_href else escape(source)}</p>
 </main>
