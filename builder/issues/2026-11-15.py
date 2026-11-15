@@ -217,7 +217,8 @@ CAROLYN_BOARD_BODY = "A board member is the guardian of your community, assets, 
 CAROLYN_BOARD_DATE = "First published: November 2026"
 CAROLYN_BOARD_PAGE = "2026-11-carolyn-story-serving-on-the-board.html"
 # Sat Nov 14 2026 9:38 AM ET (Steven 4:45 PM ET: add then end changes). Webmaster correction (Gail Stott),
-# gotwicz 1a1daad5c262bccb. Verbatim body, including the typo "Noeth" (R125 "When ever" precedent). Unsubscribe left out.
+# gotwicz 1a1daad5c262bccb. Verbatim body except the source typo "Noeth", corrected to "North" at Steven's direction
+# (R133c, Steven Nov 15 2026 ~11:13 AM ET, told Tony and Susan by email). Unsubscribe left out.
 # Fresh calendar pull cal-20261114-1648.json already has I Got It on Wed Nov 18, 6:30 PM, North Main Hall
 # (info: "Changed from South") and cancels Mon Nov 16 ("Entered in error"). No extra calendar/event row (R42
 # calendar-row exception; I Got It stays on the Recurring pages, L09). Community Notice carries the correction
@@ -225,9 +226,12 @@ CAROLYN_BOARD_PAGE = "2026-11-carolyn-story-serving-on-the-board.html"
 WM_COPY_GAME_NIGHT = "2026-11-14-correction-i-got-it-game-night-notice.html"
 GAME_NIGHT_TITLE = "Correction: I got it Game Night"   # R93: subject "Correction:  I got it Game Night is Wednesday at 6:30 in the NCH" -- date/time/place stay off the title
 GAME_NIGHT_SUBJECT = "Correction:  I got it Game Night is Wednesday at 6:30 in the NCH"
-GAME_NIGHT_BODY = "Correction:  I got it Game Night is this Wednesday at 6:30 in the Noeth Clubhouse."
-GAME_NIGHT_DATE = "Game Night: this Wednesday at 6:30 in the Noeth Clubhouse"
+GAME_NIGHT_BODY = "Correction:  I got it Game Night is this Wednesday at 6:30 in the North Clubhouse."   # R133c: source "Noeth" -> "North" (Steven Nov 15 2026)
+GAME_NIGHT_DATE = "Game Night: this Wednesday at 6:30 in the North Clubhouse"
 GAME_NIGHT_SENT = "Saturday, Nov 14, 2026, 9:38 AM ET"
+# R133c (Steven Nov 15 2026 ~11:13 AM ET, told Tony and Susan by email): source typos corrected at Steven's direction.
+# (wrong word, Steven's word, who/when). run_checks fails if the wrong word is in the preview, SEND, or a notice page.
+SOURCE_TYPO_FIXES = [("Noeth", "North", "Steven Nov 15 2026, Game Night correction notice")]
 # Fri Nov 13 2026 sweep (Steven approved adding these Webmaster emails). Verbatim bodies; unsubscribe left out. gotwicz Gmail.
 # Parade + route emails are image-only flyers (club-site images); transcribed text is only what is clearly printed.
 WM_COPY_CANTATA = "2026-11-13-singing-ensemble-christmas-cantata-notice.html"   # gotwicz 1a1d72de67a369a3 Fri Nov 13 12:30 PM ET (Mollie Cardno)
@@ -246,8 +250,11 @@ PARADE_TEASER = "December 12th, 2026. Line up 5:30 PM in front of the North Club
 PARADE_DATE = "Parade: December 12th, 2026 · Line up: 5:30 PM in front of the North Clubhouse · Ending at South Clubhouse"
 ROUTE_TITLE = "Christmas Golf Cart Route"
 ROUTE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/IMG_2330.png"
-ROUTE_ALT = "Hand-drawn route on the Palm Hill Country Club map, with START and END labeled. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770, Office: 554-6799."
-ROUTE_TEASER = "START. END. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770. Office: (727) 554-6799."
+# R133 / R133b (Steven Nov 15 2026 ~11:13-11:15 AM ET, told Tony and Susan by email): the map text was OCR'd from the hand-drawn
+# image and carried the wrong ZIP (33770) and office phone (554-6799) plus the handwritten START / END labels. Official facts:
+# 1800 Seminole Boulevard, Largo, Florida 33778; office (727) 581-8729 (Residents Reference Guide). Map image unchanged; labels not transcribed.
+ROUTE_ALT = "Hand-drawn route on the Palm Hill Country Club map. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33778, Office: (727) 581-8729."
+ROUTE_TEASER = "Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33778. Office: (727) 581-8729."
 # Sat Nov 7 2026 morning sweep (draft, before Susan's proof). Verbatim bodies; unsubscribe already absent.
 WM_COPY_CHAIR_YOGA = "2026-11-07-chair-yoga-class-canceled-notice.html"                 # gotwicz 1a1b5cc77232729c Sat Nov 7 6:37 AM ET
 WM_COPY_WATER_1111 = "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"  # gotwicz 1a1b174eb713f7a4 Fri Nov 6 10:23 AM ET (supersedes the 10:00am wording)
@@ -259,6 +266,19 @@ WATER_1111_BODY = "South Potable Water Shut off scheduled for Wednesday, Novembe
 WATER_1111_DATE = "Shut off: Wednesday, November 11th · Rescheduled: 2:30pm for approximately 2 hours"  # source words (November 11th, 2:30pm); R93 needs a label on each dated part
 CORNHOLE_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/827E9BE2-A63E-4981-99FA-CFDD9C846292.png"
 SOUTHREC_IMG = "https://www.palmhillcountryclub.net/editor_upload/Image/South_Recreation_Club_Election_Smaller.jpeg"
+# R134 (Steven Nov 15 2026 11:32 AM ET, voice): OCR of a handwritten map or any handwritten content from an email is flagged
+# to Steven ("Steve, I did OCR from this email. Does it look okay to you?") before it is treated as settled. Every notice on this
+# issue whose copy was read off an image is listed here. handwritten=True needs ocr_approved_by_steven=True or run_checks R134
+# FAILS. Set True only after Steven confirms the text (record who/when in ocr_approved_note). Printed flyers: handwritten=False.
+OCR_ITEMS = [
+    dict(title=ROUTE_TITLE, page=WM_COPY_ROUTE, image=ROUTE_IMG, ocr_source=True, handwritten=True,
+         ocr_approved_by_steven=True,
+         ocr_approved_note="Steven approved corrected text Nov 15 11:34 AM ET by voice"),
+    dict(title=PARADE_TITLE, page=WM_COPY_PARADE, image=PARADE_IMG, ocr_source=True, handwritten=False,
+         ocr_approved_by_steven=None, ocr_approved_note="Printed flyer (not handwritten); notice added at Steven's direction Nov 13 2026 (R125)"),
+    dict(title="2027 South Rec Club Seeking Officers", page=WM_COPY_SOUTHREC, image=SOUTHREC_IMG, ocr_source=True, handwritten=False,
+         ocr_approved_by_steven=None, ocr_approved_note="Printed flyer (not handwritten); notice added at Steven's direction Oct 23 2026"),
+]
 WM_COPIES = [
     # Sat Nov 14 2026 9:38 AM ET correction (Steven: add then end changes): newest first
     (WM_COPY_GAME_NIGHT, GAME_NIGHT_SUBJECT, GAME_NIGHT_SENT, [
@@ -278,12 +298,10 @@ WM_COPIES = [
         dict(title=CANTATA_TITLE)),
     (WM_COPY_ROUTE, "Christmas Golf Cart Route", "Friday, Nov 13, 2026, 10:38 AM ET", [
         ("img", (ROUTE_IMG, ROUTE_ALT)),
-        ("p", "START"),
-        ("p", "END"),
         ("p", "Palm Hill Country Club"),
         ("p", "1800 Seminole Boulevard"),
-        ("p", "Largo, Florida 33770"),
-        ("p", "Office: (727) 554-6799")],  # Steven Nov 13 8:54 PM ET: "yes, 727 for office number"
+        ("p", "Largo, Florida 33778"),
+        ("p", "Office: (727) 581-8729")],  # R133 (Steven Nov 15 2026): official ZIP + office phone; handwritten START/END labels not transcribed (R133b)
         dict(title=ROUTE_TITLE)),
     (WM_COPY_PARADE, "Palm Hill Annual Golf Cart Parade", "Friday, Nov 13, 2026, 10:36 AM ET", [
         ("img", (PARADE_IMG, PARADE_ALT)),
@@ -1025,7 +1043,7 @@ TONY_FB_NOTICE = False
 # R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
 # in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
 REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE),
-                 ("Christmas Golf Cart Route", "(727) 554-6799", WM_COPY_ROUTE)]  # Steven Nov 13 8:54 PM ET
+                 ("Christmas Golf Cart Route", "(727) 581-8729", WM_COPY_ROUTE)]  # R133 (Steven Nov 15 2026): official office number
 _NOV1_TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back one hour?",
                   body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Enjoy the extra hour!")
 # R101 (Steven Oct 31 2026 7:34 PM, voice: "don't forget to vote on Tuesday" / "you can vote here in the park"): second small

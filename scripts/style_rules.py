@@ -1444,3 +1444,99 @@ def notice_repeat_from_previous_problems(repo=None, issue=None, html=None, keep=
                 "and is not on NOTICES_KEEP_FROM_PREVIOUS"
             )
     return hits
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# R133 / R133b / R133c (Steven Nov 15 2026 ~11:13-11:15 AM ET, told Tony and Susan by email that these are fixed).
+# The Christmas Golf Cart Route notice text was OCR'd from a hand-drawn map image (IMG_2330.png) and carried the wrong ZIP
+# (33770), the wrong office phone (554-6799) and the handwritten "START. END." labels. Official Palm Hill facts:
+PALM_HILL_ZIP = "33778"                     # 1800 Seminole Boulevard, Largo, Florida 33778 (masthead "Largo, FL 33778")
+PALM_HILL_OFFICE_PHONE = "(727) 581-8729"   # Business Hours line in the Residents Reference Guide (R27)
+PALM_HILL_AFTER_HOURS_PHONE = "(727) 269-8236"  # After Hours line in the Residents Reference Guide (R27)
+# Numbers known to be wrong for Palm Hill (OCR'd from a map); never printed again in issue/notice copy.
+PALM_HILL_KNOWN_BAD_PHONES = ("554-6799",)
+# Handwritten map labels are not transcribed (R133b): a bare "START. END." / "START END" run in copy fails.
+_R133B_LABELS = re.compile(r"\bSTART\b[.:]?\s*(?:<[^>]+>\s*)*\bEND\b")
+_R133_PH = re.compile(r"\(?\b(\d{3})\)?[\s.-]*(\d{3})[\s.-](\d{4})\b|(?<![\d-])(\d{3})-(\d{4})\b")
+_R133_ADDR = re.compile(r"(?:Palm Hill Country Club|1800 Seminole)", re.I)
+_R133_ZIP = re.compile(r"\b(33\d{3})\b")
+
+
+def _r133_text(s):
+    s = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->", " ", s or "")
+    s = re.sub(r'\salt="([^"]*)"', lambda m: " >" + m.group(1) + "< ", s)   # alt text is copy too (screen readers, Listen)
+    return " ".join(_h.unescape(re.sub(r"<[^>]+>", " ", s)).split())
+
+
+def _r133_norm_phone(m):
+    if m.group(4):
+        return None, f"{m.group(4)}-{m.group(5)}"
+    return m.group(1), f"{m.group(2)}-{m.group(3)}"
+
+
+def reference_guide_phones(html):
+    """Seven-digit phone numbers printed in the issue's Residents Reference Guide (allowed non-office numbers, R133)."""
+    i = (html or "").find("Residents Reference Guide")
+    if i < 0:
+        return set()
+    return {_r133_norm_phone(m)[1] for m in _R133_PH.finditer(_r133_text(html[i:]))}
+
+
+def palm_hill_facts_problems(html, allowed_phones=()):
+    """R133: a Palm Hill Country Club / 1800 Seminole address in issue or notice copy must use ZIP 33778, and a phone labeled
+    "Office" must be (727) 581-8729 (after-hours (727) 269-8236 and other Reference Guide numbers allowed). Known-bad OCR
+    numbers fail anywhere. R133b: handwritten map labels ("START. END.") are not transcribed."""
+    t = _r133_text(html)
+    hits = []
+    ok_zip = PALM_HILL_ZIP
+    for m in _R133_ADDR.finditer(t):
+        z = _R133_ZIP.search(t, m.end(), m.end() + 90)
+        if z and z.group(1) != ok_zip:
+            hits.append(f"R133: Palm Hill address with ZIP {z.group(1)} (official {ok_zip}): ...{t[m.start():z.end()]}")
+    office_ok = {PALM_HILL_OFFICE_PHONE[-8:], PALM_HILL_AFTER_HOURS_PHONE[-8:]} | set(allowed_phones or ())
+    for m in re.finditer(r"\boffice\b", t, re.I):
+        p = _R133_PH.search(t, m.end(), m.end() + 30)
+        if p and _r133_norm_phone(p)[1] not in office_ok:
+            hits.append(f"R133: office phone {p.group(0)} (official {PALM_HILL_OFFICE_PHONE}): ...{t[m.start():p.end()]}")
+    for bad in PALM_HILL_KNOWN_BAD_PHONES:
+        if bad in t:
+            hits.append(f"R133: known-wrong Palm Hill phone {bad} (OCR'd from a map) is in the copy")
+    if _R133B_LABELS.search(_r133_text(re.sub(r'\salt="[^"]*"', "", html or ""))):
+        hits.append("R133b: handwritten map labels 'START. END.' were transcribed into the copy")
+    return sorted(set(hits))
+
+
+def source_typo_problems(html, fixes):
+    """R133c: each (wrong, right, who) in the content file's SOURCE_TYPO_FIXES was corrected at Steven's direction;
+    the wrong word must not appear in issue or notice copy."""
+    t = _r133_text(html)
+    return [f"R133c: source typo {w!r} still in the copy (Steven chose {r!r}; {who})" for w, r, who in (fixes or [])
+            if re.search(r"\b" + re.escape(w) + r"\b", t)]
+
+
+# R134 (Steven Nov 15 2026 11:32 AM ET, voice): OCR of a handwritten map or any handwritten content from an email is flagged
+# to Steven ("Steve, I did OCR from this email. Does it look okay to you?") before it is treated as settled.
+R134_FROM = "2026-11-15"
+OCR_FLAG_TEXT = "Steve, I did OCR from this email. Does it look okay to you?"
+
+
+def ocr_items_problems(wm_copies, ocr_items, issue_titles):
+    """R134: (a) every Webmaster copy on this issue that shows an image AND prints text read off it must be declared in
+    OCR_ITEMS (ocr_source=True, handwritten True/False); (b) a handwritten OCR item must have ocr_approved_by_steven=True."""
+    hits = []
+    decl = {o.get("page"): o for o in (ocr_items or [])}
+    titles = set(issue_titles or [])
+    for w in wm_copies or []:
+        title = (w[4] if len(w) > 4 and isinstance(w[4], dict) else {}).get("title") or w[1]
+        blocks = w[3]
+        if title not in titles or not any(b[0] == "img" for b in blocks) or not any(b[0] == "p" for b in blocks):
+            continue
+        o = decl.get(w[0])
+        if not o or o.get("ocr_source") is not True or o.get("handwritten") not in (True, False):
+            hits.append(f"R134: {title!r} prints text read off its image ({w[0]}) but has no OCR_ITEMS marker (ocr_source=True, handwritten=True/False)")
+    for o in ocr_items or []:
+        if o.get("ocr_source") and o.get("handwritten") and o.get("title") in titles and o.get("ocr_approved_by_steven") is not True:
+            hits.append(f"R134: {o.get('title')!r} copy was OCR'd from a handwritten image and is NOT approved by Steven "
+                        f"(ocr_approved_by_steven={o.get('ocr_approved_by_steven')!r}; {o.get('ocr_approved_note', '')}). "
+                        f"Ask: \"{OCR_FLAG_TEXT}\"")
+    return hits
