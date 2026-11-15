@@ -29,11 +29,21 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info fro
                    "Spaghetti Tickets - Still Available",        # dinner Sat Nov 14
                    "November Coffee and Pancake Volunteers",     # pancakes Sat Nov 14 (flagged for Steven)
                    "North Irrigation Down",                      # Steven Nov 12 2026 (voice): pull the undated RPM riser notice
-                   "Taste of Golf"]                              # Steven Nov 12 2026 (voice): drop the Oct 14 sign-up promo; keep Taste of Golf Instructions + the event row
+                   "Taste of Golf",                              # Steven Nov 12 2026 (voice): drop the Oct 14 sign-up promo; keep Taste of Golf Instructions + the event row
+                   # R130 (Steven Nov 14 2026 5:58 PM ET): drop every Community Notice that also ran
+                   # in last week's (Nov 8) issue, except the keep-list below. Pages and archive rows stay.
+                   "Cornhole Tournament",
+                   "How to access the Palm Hill Community Channel",
+                   "Social Shuffle",
+                   "A convenient way to send holiday cards for Palm Hill residents",
+                   "Swimming Pool Food and Beverage Rules",
+                   "Shuffleboard Season Reminders"]
+# R130: a notice that ran in the previous sent issue stays off this issue unless Steven keeps it by name.
+NOTICES_KEEP_FROM_PREVIOUS = ["2027 South Rec Club Seeking Officers"]
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {
-    "NOTICES_EXPECTED": [   # Nov 15 DRAFT (not yet approved by Steven): four new Nov 9-12 emails, then the Nov 8 list minus stale notices
+    "NOTICES_EXPECTED": [   # R130 (Steven Nov 14 2026 5:58 PM ET): Nov 8 repeats dropped, except South Rec Officers
         'Serving on the Palm Hill Board of Directors',
         'Correction: I got it Game Night',
         'Singing Ensemble for Christmas Cantata',
@@ -43,13 +53,7 @@ LOCKED = {
         'Exercise Class',
         'Taste of Golf Instructions',
         'Ladies Christmas Luncheon',
-        'Cornhole Tournament',
-        'How to access the Palm Hill Community Channel',
-        'Social Shuffle',
-        'A convenient way to send holiday cards for Palm Hill residents',
         '2027 South Rec Club Seeking Officers',
-        'Swimming Pool Food and Beverage Rules',
-        'Shuffleboard Season Reminders',
     ],
     # Nov 15: the Oct 12-14 chair reports are past the 30-day window (cutoff Oct 16) and no newer report came in
     # (R104b: heading stays with "No reports this week." unless a fresh report arrives before publish)

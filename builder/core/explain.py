@@ -31,6 +31,9 @@ L_FAMILY = {  # locked checks (run_checks.py / locked_checks.py), by number
 FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES.md)
     "R88": "set DYK_NEW_JSON items (title_display, verbatim teaser, preview_page) and rerun builder/nov1/stage_nov1_content.py + the build",
     "R89": "set DYK_CARRY_PREVIOUS = False and DYK_NEW_JSON in the content file; never delete the previous items' pages or archive rows",
+"R131": "set SPK in build_core.py to style_rules.LISTEN_ICON_URL (48px PNG in public/assets/images/phnews/v4/); rebuild",
+"R132": "run style_rules.fix_masthead_single_paint after fix_masthead_seams in build_core.py and publish_issue.py; never hand-edit the HTML",
+"R130": "drop the repeat from NOTICES / NOTICES_EXPECTED or add it to NOTICES_KEEP_FROM_PREVIOUS; never delete the notice page or archive row",
     "R90": "set source_line ('Source: <kind> email \"<subject>\" from <sender>, <Mon D, YYYY>.') on the DYK_NEW_JSON item and rerun builder/nov1/stage_nov1_content.py",
     "R91": "DYK_REPRISE items: title = live page heading, text_html = the content constant printed then, href = the existing live page; parked pages must be git rm'd and their archive rows removed (copy kept on the parked branch)",
     "R18b": "cut the teaser to its first source sentence(s); never reword",

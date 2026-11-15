@@ -45,7 +45,7 @@ THIS_WEEK, UPCOMING, RECURRING, MEETINGS = (C.WINDOWS[k] for k in ("THIS_WEEK", 
 assert CAL_WINDOW == C.WINDOWS["CAL_WINDOW"], "R21b: calendar window must come from ISSUE"
 BASE = "https://palmhillnews.vercel.app/pages/"; CAL = "https://www.palmhillcountryclub.net/calendar-1/"
 ARCH = BASE + "archive/"
-SPK = "https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png"
+SPK = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"  # R131: small 48px icon for Gmail iOS (was 2026-10-04/...-512-v3.png, still published for archived issues)
 G = "#3A6B1A"
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
@@ -230,7 +230,7 @@ def ev_rows(evs):
 LISTEN_INSET = "margin-right:14px;"
 def listen(href, size=15):
     return (f'<a href="{href}" style="color:{G};white-space:nowrap;font-size:14px;display:inline-block;{LISTEN_INSET}"><img src="{SPK}" width="24" height="24" alt="" '
-            f'style="display:inline-block;width:24px;height:24px;vertical-align:middle;border:0;outline:none;text-decoration:none;margin:-3px 4px -3px 0;">Listen</a>')
+            f'style="display:inline-block;width:24px;height:24px;vertical-align:middle;border:0;outline:none;text-decoration:none;margin:-3px 4px -3px 0;">Listen</a>')  # R131: icon file changed only; margins keep the approved row height
 def title_row(title, right):
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr><td valign="top" align="left" style="font-size:15px;line-height:18px;font-weight:bold;color:#333333;text-align:left;padding-right:8px;">{title}</td>'
             f'<td valign="top" align="right" style="font-size:13px;line-height:18px;text-align:right;white-space:nowrap;width:1%;">{right}</td></tr></table>')
@@ -260,6 +260,18 @@ if _unknown: raise SystemExit(f"R71: {ISSUE} NOTICES_DROPPED names unknown notic
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_ISSUE]
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE
 assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
+# R130 (Steven Nov 14 2026 5:58 PM ET): drop a Community Notice that ran in the previous
+# sent issue, unless it is on NOTICES_KEEP_FROM_PREVIOUS. Applies from Nov 15. Pages,
+# archive rows, and URLs stay (NOTICE_ARCHIVE_ROWS / existing pages are not deleted).
+if ISSUE >= "2026-11-15":
+    sys.path.insert(0, SCRIPTS); import style_rules as _sr130
+    _keep130 = set(getattr(C, "NOTICES_KEEP_FROM_PREVIOUS", []) or [])
+    _prev130 = set(_sr130.previous_sent_notice_titles(REPO, ISSUE))
+    _repeat130 = _prev130 - _keep130
+    NOTICES = [n for n in NOTICES if n[0] not in _repeat130]
+    print("R130 notices dropped as previous-issue repeats:", sorted(_repeat130 & {n[0] for n in C.NOTICES}))
+    _kept130 = [n[0] for n in NOTICES if n[0] in _keep130]
+    print("R130 kept from previous issue:", _kept130)
 def notice_rows():
     # R100: content flag TONY_FB_NOTICE (default True = Oct 25 and earlier). False drops the Facebook notice row from the main page
     # only; its page/Listen URL stays published (existing URLs stay valid).
@@ -758,11 +770,16 @@ for _mc in C.MEETING_ROW_CHECKS:
     _mt = _mt[:_mt.find("Source")] if "Source" in _mt else _mt
     if not (all(x in _mt for x in _mc["need"]) and not any(x in _mt for x in _mc["never"])):
         raise SystemExit(f"{_mc['rule']}: meetings row must show {_mc['need']} and not {_mc['never']}: " + " ".join(_mt.split())[:200])
-# STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page
-_hs = _cn.section(s); _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
-if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
-_he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
-if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or f">{C.HOLIDAY_SOURCE_LABEL}</a>" not in _hr: raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} needs Source: {C.HOLIDAY_SOURCE_LABEL} linked to " + HOLIDAY_PAGE)
+# STYLE-RULES R60b (Steven Oct 24 11:39 AM): Bill Bender notice title exact, Source "Bill Bender email" linked to its flyer page.
+# When the notice is off this issue's main page (R130 / NOTICES_DROPPED), skip; the page and archive row stay live.
+_hs = _cn.section(s)
+if any(n[0] == HOLIDAY_TITLE for n in NOTICES):
+    _hi = _hs.find(">" + HOLIDAY_TITLE + "<")
+    if _hi < 0: raise SystemExit(f"R60b: Community Notice title {HOLIDAY_TITLE!r} not found")
+    _he = _hs.find('<tr style="background:', _hi); _hr = _hs[_hi:_he if _he > 0 else len(_hs)]
+    if f'Source: <a href="{BASE + HOLIDAY_PAGE}"' not in _hr or f">{C.HOLIDAY_SOURCE_LABEL}</a>" not in _hr: raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} needs Source: {C.HOLIDAY_SOURCE_LABEL} linked to " + HOLIDAY_PAGE)
+elif HOLIDAY_TITLE in _hs:
+    raise SystemExit(f"R60b: {HOLIDAY_TITLE!r} was dropped from this issue's main-page list but is still in the Community Notices section")
 # STYLE-RULES R60c (Steven Oct 24 1:27 PM): ice machine notice -- exact title, 3rd notice (right after Bill Bender), Source
 # "Oct P&E Committee Report" linked to the Oct 14 P&E page, More -> its own notice page
 # R60c (ice machine notice 3rd, right after Bill Bender; Source: Oct P&E Committee Report) -- content file R60C_ICE_NOTICE (Oct 25 only).
@@ -789,6 +806,7 @@ if _tel.applies(ISSUE):
 # R129: fix 50%+50%+1% masthead seams (Nov 15+); archived as-sent copies are not rebuilt here.
 if ISSUE >= "2026-11-15":
     s = _sr.fix_masthead_seams(s)
+    s = _sr.fix_masthead_single_paint(s)  # R132: only the wrapping cell paints the green (Gmail iOS seams)
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 # STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): from listen_settings v2_from on, every page this NL links with ?listen=1

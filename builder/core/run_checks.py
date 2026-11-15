@@ -309,7 +309,12 @@ if _tel.applies(C.ISSUE):
     import subprocess as _sp85
     _lost85 = []
     for _u in _sp85.run(["git", "-C", str(_rp85), "grep", "-l", 'href="tel:', "HEAD", "--", "pages/"], capture_output=True, text=True).stdout.split():
-        _u = _u.split(":", 1)[1]; _old = _sp85.run(["git", "-C", str(_rp85), "show", f"HEAD:{_u}"], capture_output=True, text=True).stdout
+        _u = _u.split(":", 1)[1]
+        # The weekly preview/SEND is rewritten each issue; a notice dropped from the main page
+        # (R130) may take its phone with it. The notice's own page must still keep the tel: link.
+        if _u.startswith("pages/previews/"):
+            continue
+        _old = _sp85.run(["git", "-C", str(_rp85), "show", f"HEAD:{_u}"], capture_output=True, text=True).stdout
         _new = (_rp85 / _u).read_text(encoding="utf-8") if (_rp85 / _u).exists() else ""
         if set(re.findall(r'href="tel:[^"]+"', _old)) - set(re.findall(r'href="tel:[^"]+"', _new)): _lost85.append(_u)
     _v2lost = []
@@ -526,10 +531,14 @@ if getattr(C, "FIRST_NOTICE", None):
         _cn103 = lc._section(_x103, "Community Notices") or ""
         _pos = [(_cn103.find(__import__("html").escape(t)), t) for t in lc.NOTICES_EXPECTED if _cn103.find(__import__("html").escape(t)) >= 0]
         L.ok("R103", bool(_pos) and min(_pos)[1] == C.FIRST_NOTICE and lc.NOTICES_EXPECTED[0] == C.FIRST_NOTICE, f"{_n103}: first Community Notice is {C.FIRST_NOTICE}")
-# R102 (Steven Oct 31 2026 7:33 PM): each REQUIRED_TEL number appears as a tap-to-call link in preview, SEND and its copy page.
+# R102 (Steven Oct 31 2026 7:33 PM): each REQUIRED_TEL number appears as a tap-to-call link
+# in preview and SEND when that notice is on this issue's main page, and always on its copy page
+# (the page stays live even if R130 drops the notice from the issue).
 for _lb101, _num101, _pg101 in getattr(C, "REQUIRED_TEL", []):
     _h101 = 'href="tel:+1' + re.sub(r"\D", "", _num101) + '"'
-    _srcs101 = [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
+    _srcs101 = []
+    if _lb101 in (lc.NOTICES_EXPECTED or []):
+        _srcs101 += [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
     _pp101 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _pg101
     _srcs101.append(("page " + _pg101, _pp101.read_text(encoding="utf-8") if _pp101.exists() else ""))
     for _n101, _x101 in _srcs101:
@@ -574,6 +583,22 @@ if C.ISSUE >= "2026-11-15":
     for _n129, _x129 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
         _p129 = _sr83.masthead_seam_problems(_x129)
         L.ok("R129", not _p129, f"{_n129}: green masthead keeps original palm placement and paints gaps green" + (f" {_p129}" if _p129 else ""))
+# R131 / R132 (Steven Nov 14 2026, evening ET, Gmail app on iPhone): Listen icons are the small
+# 48px PNG; only the wrapping masthead cell paints the green.
+if C.ISSUE >= "2026-11-15":
+    for _n131, _x131 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p131 = _sr83.listen_icon_problems(_x131, _repo_arch)
+        L.ok("R131", not _p131, f"{_n131}: Listen icons use the small 48px speaker PNG" + (f" {_p131}" if _p131 else ""))
+        _p132 = _sr83.masthead_single_paint_problems(_x131)
+        L.ok("R132", not _p132, f"{_n131}: only the wrapping masthead cell paints the green (no painted cell edges)" + (f" {_p132}" if _p132 else ""))
+# R130 (Steven Nov 14 2026 5:58 PM ET): a Community Notice that ran in the previous
+# sent issue is off this issue unless it is on NOTICES_KEEP_FROM_PREVIOUS.
+# Check the current issue preview/SEND only — never the frozen archive issue pages.
+if C.ISSUE >= "2026-11-15":
+    _keep130 = getattr(C, "NOTICES_KEEP_FROM_PREVIOUS", []) or []
+    for _n130, _x130 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p130 = _sr83.notice_repeat_from_previous_problems(_repo_arch, C.ISSUE, _x130, _keep130)
+        L.ok("R130", not _p130, f"{_n130}: no previous-issue Community Notice returns except the keep-list" + (f" {'; '.join(_p130)}" if _p130 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
