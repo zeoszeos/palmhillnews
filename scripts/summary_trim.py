@@ -9,12 +9,12 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
- # Sat Nov 14 2026 9:38 AM ET Webmaster correction (Steven: add then end changes); teaser is the source sentence, typo kept; More → = the copied email (R47)
- ("Correction:  I got it Game Night is this Wednesday", "Correction:  I got it Game Night is this Wednesday at 6:30 in the Noeth Clubhouse.", B + "2026-11-14-correction-i-got-it-game-night-notice.html"),
+ # Sat Nov 14 2026 9:38 AM ET Webmaster correction (Steven: add then end changes); teaser is the source sentence ("Noeth" -> "North", R133c Steven Nov 15); More → = the copied email (R47)
+ ("Correction:  I got it Game Night is this Wednesday", "Correction:  I got it Game Night is this Wednesday at 6:30 in the North Clubhouse.", B + "2026-11-14-correction-i-got-it-game-night-notice.html"),
  # Fri Nov 13 2026 sweep (Steven approved): cut, never reworded; More → = the copied email (R47)
  ("Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble", "Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!", B + "2026-11-13-singing-ensemble-christmas-cantata-notice.html"),
  ("December 12th, 2026. Line up 5:30 PM", "December 12th, 2026. Line up 5:30 PM in front of the North Clubhouse. Ending at South Clubhouse.", B + "2026-11-13-palm-hill-annual-golf-cart-parade-notice.html"),
- ("START. END. Palm Hill Country Club", "START. END. Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33770. Office: (727) 554-6799.", B + "2026-11-13-christmas-golf-cart-route-notice.html"),
+ ("Palm Hill Country Club, 1800 Seminole Boulevard", "Palm Hill Country Club, 1800 Seminole Boulevard, Largo, Florida 33778. Office: (727) 581-8729.", B + "2026-11-13-christmas-golf-cart-route-notice.html"),
  ("You may have received an email from Bob Newport today", "You may have received an email from Bob Newport today requesting you to purchase an Amazon Gift Card for him. It is a SCAM.", B + "2026-11-12-amazon-scam-email-notice.html"),
  # Steven Nov 12 2026 (voice): Carolyn Story Board piece, moved into Community Notices; teaser is the first sentence, More → the full page
  ("A board member is the guardian of your community, assets, and lifestyle.", "A board member is the guardian of your community, assets, and lifestyle.", B + "2026-11-carolyn-story-serving-on-the-board.html"),

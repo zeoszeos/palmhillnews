@@ -34,7 +34,7 @@ SOURCES = {
         sections=[dict(heading="Christmas Golf Cart Parade flyer", keys=["5:30 PM"])], approved_omit=[]),
     "2026-11-13-christmas-golf-cart-route-notice.html": dict(
         subject="Christmas Golf Cart Route", notice_title="Christmas Golf Cart Route", use_existing_page=True,
-        sections=[dict(heading="Christmas Golf Cart Route map", keys=["START"])], approved_omit=[]),
+        sections=[dict(heading="Christmas Golf Cart Route map", keys=["1800 Seminole Boulevard"])], approved_omit=[]),  # R133b (Steven Nov 15 2026): START/END map labels are not transcribed; key on the official address
     "2026-11-12-amazon-scam-email-notice.html": dict(
         subject="Amazon Scam Email", notice_title="Amazon Scam Email", use_existing_page=True,
         sections=[dict(heading="Amazon gift-card scam warning", keys=["SCAM"])], approved_omit=[]),

@@ -316,7 +316,10 @@ if _tel.applies(C.ISSUE):
             continue
         _old = _sp85.run(["git", "-C", str(_rp85), "show", f"HEAD:{_u}"], capture_output=True, text=True).stdout
         _new = (_rp85 / _u).read_text(encoding="utf-8") if (_rp85 / _u).exists() else ""
-        if set(re.findall(r'href="tel:[^"]+"', _old)) - set(re.findall(r'href="tel:[^"]+"', _new)): _lost85.append(_u)
+        # R133 (Steven Nov 15 2026): a tel: link for a known-wrong Palm Hill number (OCR'd from a map) is removed on purpose.
+        _gone85 = {t for t in set(re.findall(r'href="tel:[^"]+"', _old)) - set(re.findall(r'href="tel:[^"]+"', _new))
+                   if not any(re.sub(r"\D", "", b) in t for b in _sr83.PALM_HILL_KNOWN_BAD_PHONES)}
+        if _gone85: _lost85.append(_u)
     _v2lost = []
     for _u in _sp85.run(["git", "-C", str(_rp85), "grep", "-l", 'data-ph-listen-v="2"', "HEAD", "--", "pages/"], capture_output=True, text=True).stdout.split():
         _u = _u.split(":", 1)[1]
@@ -599,6 +602,30 @@ if C.ISSUE >= "2026-11-15":
     for _n130, _x130 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
         _p130 = _sr83.notice_repeat_from_previous_problems(_repo_arch, C.ISSUE, _x130, _keep130)
         L.ok("R130", not _p130, f"{_n130}: no previous-issue Community Notice returns except the keep-list" + (f" {'; '.join(_p130)}" if _p130 else ""))
+
+# R133 / R133b / R133c (Steven Nov 15 2026 ~11:13-11:15 AM ET): Palm Hill address = 1800 Seminole Boulevard, Largo, Florida
+# 33778; "Office" phone = (727) 581-8729 (after-hours (727) 269-8236 and other Reference Guide numbers allowed); no
+# handwritten map labels transcribed; content-file SOURCE_TYPO_FIXES wrong words absent. Checks the current issue's
+# preview, SEND, every notice/copy page this issue renders, and its not-yet-sent Community Notices archive rows.
+if C.ISSUE >= "2026-11-15":
+    _rp133 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _ok133 = _sr83.reference_guide_phones(page)
+    _x133 = [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
+    for _pg133 in sorted({w[0] for w in getattr(C, "WM_COPIES", []) or []} | {q["page"] for q in getattr(C, "NOTICE_PAGES", []) or []}):
+        _f133 = _rp133 / "pages" / _pg133
+        if _f133.exists(): _x133.append(("page " + _pg133, _f133.read_text(encoding="utf-8")))
+    _ai133 = json.loads((_rp133 / "archive" / "archive-items.json").read_text(encoding="utf-8"))
+    _rows133 = [r for r in _ai133["sections"]["community-notices"]["items"] if C.ISSUE in (r.get("issues") or [])]
+    _x133.append(("community-notices archive rows", "\n".join(_html.escape(r.get("text", "")) for r in _rows133)))
+    for _n133, _t133 in _x133:
+        _p133 = _sr83.palm_hill_facts_problems(_t133, _ok133)
+        L.ok("R133", not _p133, f"{_n133}: Palm Hill ZIP 33778, office (727) 581-8729, no handwritten map labels" + (f" {_p133}" if _p133 else ""))
+        _q133 = _sr83.source_typo_problems(_t133, getattr(C, "SOURCE_TYPO_FIXES", []))
+        L.ok("R133c", not _q133, f"{_n133}: source typos corrected at Steven's direction are absent" + (f" {_q133}" if _q133 else ""))
+# R134 (Steven Nov 15 2026 11:32 AM ET): text OCR'd from a handwritten image is not settled until Steven approves it.
+if C.ISSUE >= _sr83.R134_FROM:
+    _p134 = _sr83.ocr_items_problems(getattr(C, "WM_COPIES", []), getattr(C, "OCR_ITEMS", []), lc.NOTICES_EXPECTED or [])
+    L.ok("R134", not _p134, "OCR'd handwritten text is marked and approved by Steven" + (f" {' | '.join(_p134)}" if _p134 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)

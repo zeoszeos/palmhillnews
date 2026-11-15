@@ -689,6 +689,13 @@ ARCHIVE_BACKED = [("did-you-know.html", r["page"]) for r in _DYKN_ROWS + (_DYK_R
 # Steven Oct 23 5:09 AM: the two new Webmaster notices get Community Notices archive rows in this build (R59), teaser = issue teaser
 _NOTICE_ROWS = NOTICE_ARCHIVE_ROWS
 _aj.add_rows(REPO, "community-notices", _NOTICE_ROWS)
+# R133 (Steven Nov 15 2026): add_rows skips a row already listed, so a corrected teaser never reached the archive. A row that
+# belongs ONLY to not-yet-sent issues (this draft) has its text synced from the content file; a sent issue's row stays as sent (R10).
+sys.path.insert(0, SCRIPTS); import style_rules as _sr133
+_shipped133 = {i["date"] for i in _sr133.load_sent_issues(REPO)}
+for _r133 in _NOTICE_ROWS:
+    if _r133.get("issues") and not set(_r133["issues"]) & _shipped133:
+        _aj.set_field(REPO, "community-notices", {"page": _r133["page"], "date": _r133["date"]}, "text", _r133["text"])
 ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_ISSUE]
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
