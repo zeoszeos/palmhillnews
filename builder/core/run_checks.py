@@ -69,8 +69,12 @@ for _mc in C.MEETING_ROW_CHECKS:  # R62/R62b expected wording = content file dat
          f"{'Finance' if 'Finance' in _mc['start'] else 'P&E'} row {_mt[:90]}")
 # L07/L08 This Week / Upcoming = audit rows; treat-as-recurring never there
 tw = lc._section(page, "Events - This Week"); up = lc._section(page, UPH)
-L.ok("L07", [norm(x) for x in titles(tw)] == [norm(n) for _, n in audit["this_week"]] and f">{_W('THIS_WEEK')}<" in tw, f"This Week rows {titles(tw)}")
-L.ok("L08", [norm(x) for x in titles(up)] == [norm(n) for _, n in audit["upcoming"]] and f">{_W('NEXT_WEEK') if _NWS else C.UPCOMING_LABEL_EXPECTED}<" in up, f"{UPH} rows {titles(up)}")
+# R92c (Nov 22 box-only test build, Nov 15 2026): the audit stores calendar names; the page shows the content file's TITLE display
+# name (e.g. "Bookclub activity.  Lunch at a Vietnamese Restaurant" -> "Book Club Lunch at a Vietnamese Restaurant"). Compare
+# through the same TITLE map, so a renamed row is still checked against its calendar event (before: L08 failed on any renamed row).
+_T92c = getattr(C, "TITLE", {}) or {}
+L.ok("L07", [norm(x) for x in titles(tw)] == [norm(_T92c.get(n, n)) for _, n in audit["this_week"]] and f">{_W('THIS_WEEK')}<" in tw, f"This Week rows {titles(tw)}")
+L.ok("L08", [norm(x) for x in titles(up)] == [norm(_T92c.get(n, n)) for _, n in audit["upcoming"]] and f">{_W('NEXT_WEEK') if _NWS else C.UPCOMING_LABEL_EXPECTED}<" in up, f"{UPH} rows {titles(up)}")
 if _NWS:   # R92 guard: Next Week directly under This Week, header range = issue day +7..+13, every row inside it, no Upcoming section
     _nw = C.WINDOWS["NEXT_WEEK"]
     L.ok("R92", got.index("Events - Next Week") == got.index("Events - This Week") + 1 and "Events - Upcoming" not in got
@@ -367,7 +371,11 @@ elif _mcr.exists():
         L.ok("R86", _pe86 and all(not r["diffs"] and all(k == "Agenda: known typo" for k, _ in r["refs"] if k.startswith("Agenda")) for r in _pe86),
              "P&E rows: no counted differences (the Oct a.m. agenda wording stays a known typo, not counted)")
         _rpm86 = [r["name"] for r in _cal86 if any(k.startswith("RPM") for k, _ in r["diffs"])]
-        L.ok("R86", not _rpm86 and any(not r["cal_date"] for r in _R86["rows"]), f"RPM differences on calendar dates are reference only {_rpm86}; RPM-only meetings stay items")
+        # R86c (Nov 22 box-only test build, Nov 15 2026): an RPM-only meeting (no calendar date) stays a report item WHEN there is one;
+        # a week with none is not a failure (before: the check required at least one RPM-only row and failed the Nov 22 window).
+        _rpmonly86 = [r for r in _R86["rows"] if not r["cal_date"]]
+        L.ok("R86", not _rpm86 and all(r.get("rpm") or r.get("agenda") for r in _rpmonly86),
+             f"RPM differences on calendar dates are reference only {_rpm86}; RPM-only meetings stay items ({len(_rpmonly86)} this window)")
 else:
     L.ok("R86", False, "scripts/meeting_conflict_report.py missing")
 # R87 (Steven Oct 27 2026 2:24 PM, Tony's option c): from Nov 1 (MEETINGS_ALL_IN_WINDOW) the Meetings rows are every calendar

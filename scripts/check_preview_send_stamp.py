@@ -103,6 +103,7 @@ def stamps(html):
 
 def sync(local_preview, repo, issue):
     dst = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"
+    dst.parent.mkdir(parents=True, exist_ok=True)   # R70c: first build of a new issue
     if str(issue) < ABSOLUTE_FROM:  # Oct 25 rebuild path: byte copy, including R96 relative hrefs
         shutil.copyfile(local_preview, dst); return dst
     # R115: the local review copy stays relative (R96). The nested live preview gets SEND's absolute page URLs.
@@ -126,6 +127,14 @@ def stale_copy(issue, root, preview_html):
 
 def check(issue, root, repo):
     pv = Path(repo) / f"pages/previews/{issue}/PHNEWS-{issue}-preview.html"; sd = Path(root) / f"PHNEWS-{issue}-SEND.html"
+    # R70c (Nov 22 box-only test build, Nov 15 2026): the FIRST build of a new issue runs run_checks before sync() has ever written
+    # pages/previews/<issue>/, so this used to crash (FileNotFoundError). Fall back to the work-tree preview this build just wrote
+    # (same stamps; sync() copies it right after run_checks) and say so; the live-preview R94 block check runs on the next build.
+    first = not pv.exists()
+    if first:
+        lp = Path(root) / f"PHNEWS-{issue}-preview.html"
+        if not lp.exists(): return [f"R70c: no preview for {issue} in the work tree or pages/previews/ (build the issue first)"], (None, None)
+        pv = lp
     pt = pv.read_text(encoding="utf-8"); p = stamps(pt); fails = []
     # R115 (Steven Nov 7 2026) / R115b (Steven Nov 12 2026): every dated live preview from Nov 1 on
     # (not only this --issue) must use absolute page URLs, and those URLs must exist under pages/.
@@ -133,7 +142,7 @@ def check(issue, root, repo):
     # R94 (Steven Oct 30 2026 4:02 PM): from v2_from the live preview carries exactly one in-place Listen block and no other
     # script; the SEND/email copy carries none. Comparisons with SEND ignore only that block (page_listen.strip_inplace).
     sys.path.insert(0, str(Path(__file__).resolve().parent)); import page_listen as pl
-    if pl.v2_for(issue):
+    if pl.v2_for(issue) and not first:
         if pt.count("<!-- ph-inplace-listen:start -->") != 1: fails.append("R94: live preview lacks the in-place Listen block")
         if "<script" in pl.strip_inplace(pt).lower(): fails.append("R94: live preview has a script other than the in-place Listen block")
     if not sd.exists(): return fails, p

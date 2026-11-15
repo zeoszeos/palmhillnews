@@ -213,6 +213,15 @@
       "items": [
         {
           "date": "2026-11-01",
+          "title": "Way Back When",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-way-back-when.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-listen-way-back-when.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
+        {
+          "date": "2026-11-01",
           "title": "Serving on the Palm Hill Board of Directors",
           "url": "https://palmhillnews.vercel.app/pages/2026-11-carolyn-story-serving-on-the-board.html",
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-listen-carolyn-story-serving-on-the-board.html",
@@ -1497,6 +1506,14 @@
       "email_link_label": "Did You Know Archives →",
       "page_link_label": "Did You Know Archives →",
       "items": [
+        {
+          "date": "2026-11-22",
+          "title": "USE OF COMMON GROUNDS AND RECREATIONAL FACILITIES",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-22-did-you-know-use-of-common-grounds-golf-course.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
         {
           "date": "2026-11-15",
           "title": "HOMESITES AND CARE & MAINTENANCE OF PREMISES",

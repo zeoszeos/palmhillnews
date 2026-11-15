@@ -696,7 +696,12 @@ _shipped133 = {i["date"] for i in _sr133.load_sent_issues(REPO)}
 for _r133 in _NOTICE_ROWS:
     if _r133.get("issues") and not set(_r133["issues"]) & _shipped133:
         _aj.set_field(REPO, "community-notices", {"page": _r133["page"], "date": _r133["date"]}, "text", _r133["text"])
-ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_ISSUE]
+# R130b (Nov 22 box-only test build, Nov 15 2026): R59 checks only the notices this issue actually shows -- after NOTICES_DROPPED
+# AND the R130 previous-issue drops. Before this, a notice dropped by R130 (not listed in NOTICES_DROPPED) still had to be linked
+# from the issue, so the first week after R130 failed on last week's rows (e.g. the Nov 14 Game Night correction).
+_ON_ISSUE130 = {n[0] for n in NOTICES}
+ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_ISSUE and r["title"] in _ON_ISSUE130]
+assert all(r["title"] in _ON_ISSUE130 for r in _NOTICE_ROWS if ("community-notices.html", r["page"]) in ARCHIVE_BACKED), "R130b: R59 would require a notice that is off this issue"
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
