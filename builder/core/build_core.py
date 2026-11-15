@@ -251,6 +251,12 @@ for _p in NOTICE_PAGES:
     _np.notice_listen.add(str(REPO), _p["page"])
 for _w in WM_COPIES:   # R95: optional 5th element = render keywords (e.g. an RPM message's own source line/sender)
     _np.write(str(REPO), *_w[:4], **(_w[4] if len(_w) > 4 else {}))
+# R133 (Steven Nov 14 2026 10:40 PM ET): no date line under a notice title that repeats the email's Sent date (it reads as
+# the event date); the Sent date is in smaller print. Applied to every live notice page with a Sent box (pages/*.html only;
+# never pages/archive/**, previews or SEND files; R10 locked pages skipped).
+import style_rules as _sr133
+_r133 = _np.fix_all(str(REPO), skip=set(_sr133.R10_LOCKED_SHA256))
+print(f"R133 notice sent-date fix: {len(_r133)} page(s) updated", _r133 if _r133 else "")
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_OCT25]
 # Per-issue carry policy (content file NOTICES_DROPPED): keep notices still valid on/after the issue date, drop the previous
 # issue's one-offs that are expired or were news for that week only. Re-check every kept notice against the Friday inbox sweep.

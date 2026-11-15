@@ -1444,3 +1444,21 @@ def notice_repeat_from_previous_problems(repo=None, issue=None, html=None, keep=
                 "and is not on NOTICES_KEEP_FROM_PREVIOUS"
             )
     return hits
+
+
+# ---------------------------------------------------------------------------
+# R133 (Steven, Nov 14 2026 10:40 PM ET, voice): a notice page's top line under
+# the title must not show a date that could be read as the event date; the
+# email's sent date appears only in the Sent line, in smaller print than the
+# body (16px #555 vs 18px body). Shared fixer/guard live in notice_page.py.
+def notice_sent_date_problems(repo=None):
+    import os as _os, sys as _sys; _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))); import notice_page as _np133
+    root = _repo_root(repo)
+    hits = []
+    for f in _np133.notice_pages_with_sent(root):
+        rel = f.relative_to(root).as_posix()
+        if rel in R10_LOCKED_SHA256:
+            continue
+        for h in _np133.sent_date_problems(f.read_text(encoding="utf-8")):
+            hits.append(f"{f.name}: {h}")
+    return hits
