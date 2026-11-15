@@ -1245,15 +1245,113 @@ def masthead_seam_problems(html):
         style = m.group(1)
         if "border-spacing:0" not in style:
             hits.append("the masthead table is missing border-spacing:0")
-        if "#2d5016" not in style.lower():
-            hits.append("the masthead table is missing background #2D5016")
+        # R132 (Nov 14 2026): the inner table no longer paints its own green;
+        # only the wrapping masthead cell does (masthead_single_paint_problems).
     else:
         if 'class="header-palm-cell"' in html and "border-spacing:0" not in html:
             hits.append("the masthead table is missing border-spacing:0")
-    for td in palms:
-        if "background:#2D5016" not in td and 'bgcolor="#2D5016"' not in td:
-            hits.append("a palm cell is missing background #2D5016")
+    return hits
+
+
+# ---------------------------------------------------------------------------
+# R131 (Steven, Nov 14 2026, evening ET, chat: "the listen speaker icons on the main page are ? question marks instead of speakers." ... "these issues are only on the ipphone", then "gmail"): in the Gmail app on iPhone the Listen
+# speaker icons on the main page showed as "?" (broken-image) boxes, while the
+# section icons and palms loaded. The Listen icon was the only image used many
+# times (11x) and the only one shrunk ~21x: a 512x512, 236 KB RGBA PNG shown at
+# 24px, with negative margins. Gmail fetches every image through its image
+# proxy; the email now uses a small pre-sized 48x48 (2x for 24px) PNG at a new
+# URL (so no cached proxy failure for the old URL can be reused). Size, place
+# and margins on the page stay exactly as before (dropping the -3px margins
+# made every Listen row 3-5px taller on the laptop). The old 512px file stays
+# published so archived as-sent issues keep working.
+LISTEN_ICON_URL = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"
+LISTEN_ICON_REL = "public/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"
+LISTEN_ICON_MAX_BYTES = 20000
+LISTEN_ICON_MAX_PX = 48
+LISTEN_IMG_RE = re.compile(r'<img[^>]*speaker-read-aloud[^>]*>')
+
+
+def listen_icon_problems(html, repo=None):
+    """R131: every Listen speaker icon in the email is the small pre-sized 48px PNG (file in the repo, <= 20 KB)."""
+    if not html:
+        return []
+    hits = []
+    imgs = LISTEN_IMG_RE.findall(html)
+    for tag in imgs:
+        m = re.search(r'src="([^"]+)"', tag)
+        if not m or m.group(1) != LISTEN_ICON_URL:
+            hits.append(f"Listen icon uses {m.group(1) if m else '(no src)'}; use the 48px icon {LISTEN_ICON_URL}")
             break
+    if imgs:
+        f = _repo_root(repo) / LISTEN_ICON_REL
+        if not f.exists():
+            hits.append(f"Listen icon file {LISTEN_ICON_REL} is missing from the repo")
+        else:
+            if f.stat().st_size > LISTEN_ICON_MAX_BYTES:
+                hits.append(f"Listen icon file is {f.stat().st_size} bytes (max {LISTEN_ICON_MAX_BYTES})")
+            import struct
+            head = f.read_bytes()[:24]
+            if head[:8] != b"\x89PNG\r\n\x1a\n":
+                hits.append("Listen icon file is not a PNG")
+            else:
+                w, h = struct.unpack(">II", head[16:24])
+                if w > LISTEN_ICON_MAX_PX or h > LISTEN_ICON_MAX_PX:
+                    hits.append(f"Listen icon file is {w}x{h}px (max {LISTEN_ICON_MAX_PX}px)")
+    return hits
+
+
+# ---------------------------------------------------------------------------
+# R132 (Steven, Nov 14 2026, evening ET, chat: "the two lines on either side of the palm tree header are there", iPhone Gmail app only): two faint lines still showed on either
+# side of the masthead title in the Gmail app on iPhone after R129. Gmail iOS
+# shrinks the 660px email to fit the phone, so the 50%/1%/50% cell edges land on
+# fractional pixels; each cell painted its own #2D5016 and the anti-aliased cell
+# edges left a faint line at both title-cell edges (reproduced in a WebKit render
+# scaled to iPhone width). Fix: the inner banner table and its three cells paint
+# nothing; only the one wrapping masthead cell paints #2D5016, so there is no
+# painted edge inside the banner. Widths stay 50% / 1% / 50% (R129: Steven's
+# original palm centering).
+MASTHEAD_WRAP_TD = '<td bgcolor="#2D5016" height="105" style="height:105px;background:#2D5016;'
+_MASTHEAD_INNER_RE = re.compile(
+    r'(<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;border-spacing:0;[^"]*">\s*<tr>\s*<td class="header-palm-cell".*?</tr>\s*</table>)',
+    re.S,
+)
+
+
+def _masthead_inner(html):
+    i = html.find(MASTHEAD_WRAP_TD)
+    if i < 0:
+        return None
+    m = _MASTHEAD_INNER_RE.search(html, i)
+    return m
+
+
+def fix_masthead_single_paint(html):
+    """R132: strip #2D5016 from the inner banner table and its cells; the wrapping cell keeps it."""
+    if not html or "header-palm-cell" not in html:
+        return html
+    m = _masthead_inner(html)
+    if not m:
+        return html
+    inner = m.group(1)
+    new = inner.replace(' bgcolor="#2D5016"', "").replace("background:#2D5016;", "")
+    return html[: m.start(1)] + new + html[m.end(1):]
+
+
+def masthead_single_paint_problems(html):
+    """R132: fail unless only the wrapping masthead cell paints the green (no painted cell edges in the banner)."""
+    if not html or "header-palm-cell" not in html:
+        return []
+    if MASTHEAD_WRAP_TD not in html:
+        return ["the masthead wrapping cell must paint #2D5016 (bgcolor and background)"]
+    m = _masthead_inner(html)
+    if not m:
+        return ["could not find the masthead banner table (border-spacing:0, palm cells) inside the green wrapping cell"]
+    inner = m.group(1).lower()
+    hits = []
+    if "bgcolor=" in inner or "background" in inner:
+        hits.append("the masthead banner table or one of its cells paints its own background (Gmail iOS shows a faint line at each painted cell edge); only the wrapping cell may paint #2D5016")
+    if inner.count('width="50%"') != 2 or 'width="1%"' not in inner:
+        hits.append("masthead cells must stay 50% / 1% / 50% (R129 palm centering)")
     return hits
 
 # ---------------------------------------------------------------------------

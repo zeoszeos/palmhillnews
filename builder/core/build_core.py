@@ -45,7 +45,7 @@ THIS_WEEK, UPCOMING, RECURRING, MEETINGS = (C.WINDOWS[k] for k in ("THIS_WEEK", 
 assert CAL_WINDOW == C.WINDOWS["CAL_WINDOW"], "R21b: calendar window must come from ISSUE"
 BASE = "https://palmhillnews.vercel.app/pages/"; CAL = "https://www.palmhillcountryclub.net/calendar-1/"
 ARCH = BASE + "archive/"
-SPK = "https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png"
+SPK = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"  # R131: small 48px icon for Gmail iOS (was 2026-10-04/...-512-v3.png, still published for archived issues)
 G = "#3A6B1A"
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
@@ -230,7 +230,7 @@ def ev_rows(evs):
 LISTEN_INSET = "margin-right:14px;"
 def listen(href, size=15):
     return (f'<a href="{href}" style="color:{G};white-space:nowrap;font-size:14px;display:inline-block;{LISTEN_INSET}"><img src="{SPK}" width="24" height="24" alt="" '
-            f'style="display:inline-block;width:24px;height:24px;vertical-align:middle;border:0;outline:none;text-decoration:none;margin:-3px 4px -3px 0;">Listen</a>')
+            f'style="display:inline-block;width:24px;height:24px;vertical-align:middle;border:0;outline:none;text-decoration:none;margin:-3px 4px -3px 0;">Listen</a>')  # R131: icon file changed only; margins keep the approved row height
 def title_row(title, right):
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr><td valign="top" align="left" style="font-size:15px;line-height:18px;font-weight:bold;color:#333333;text-align:left;padding-right:8px;">{title}</td>'
             f'<td valign="top" align="right" style="font-size:13px;line-height:18px;text-align:right;white-space:nowrap;width:1%;">{right}</td></tr></table>')
@@ -806,6 +806,7 @@ if _tel.applies(ISSUE):
 # R129: fix 50%+50%+1% masthead seams (Nov 15+); archived as-sent copies are not rebuilt here.
 if ISSUE >= "2026-11-15":
     s = _sr.fix_masthead_seams(s)
+    s = _sr.fix_masthead_single_paint(s)  # R132: only the wrapping cell paints the green (Gmail iOS seams)
 OUTF.write_text(s, encoding="utf-8")
 _cn.check(str(OUTF))  # R60 rendered 3-line guard at 390/660px
 # STYLE-RULES R76 (Steven, Oct 25 2026 9:29 AM): from listen_settings v2_from on, every page this NL links with ?listen=1

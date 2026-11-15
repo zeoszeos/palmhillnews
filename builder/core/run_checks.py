@@ -583,6 +583,14 @@ if C.ISSUE >= "2026-11-15":
     for _n129, _x129 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
         _p129 = _sr83.masthead_seam_problems(_x129)
         L.ok("R129", not _p129, f"{_n129}: green masthead keeps original palm placement and paints gaps green" + (f" {_p129}" if _p129 else ""))
+# R131 / R132 (Steven Nov 14 2026, evening ET, Gmail app on iPhone): Listen icons are the small
+# 48px PNG; only the wrapping masthead cell paints the green.
+if C.ISSUE >= "2026-11-15":
+    for _n131, _x131 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p131 = _sr83.listen_icon_problems(_x131, _repo_arch)
+        L.ok("R131", not _p131, f"{_n131}: Listen icons use the small 48px speaker PNG" + (f" {_p131}" if _p131 else ""))
+        _p132 = _sr83.masthead_single_paint_problems(_x131)
+        L.ok("R132", not _p132, f"{_n131}: only the wrapping masthead cell paints the green (no painted cell edges)" + (f" {_p132}" if _p132 else ""))
 # R130 (Steven Nov 14 2026 5:58 PM ET): a Community Notice that ran in the previous
 # sent issue is off this issue unless it is on NOTICES_KEEP_FROM_PREVIOUS.
 # Check the current issue preview/SEND only — never the frozen archive issue pages.

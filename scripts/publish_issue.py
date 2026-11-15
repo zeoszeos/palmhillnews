@@ -52,6 +52,7 @@ if _dm.applies(I):
     if _dm.find_white(s) or not _dm.head_ok(s): raise SystemExit(f"R97: pure-white background left in SEND: {_dm.find_white(s)[:3]}")
 if I >= "2026-11-15":
     s = _sr.fix_masthead_seams(s)  # R129: masthead seam fix; never rewrite frozen as-sent copies of earlier issues
+    s = _sr.fix_masthead_single_paint(s)  # R132: only the wrapping masthead cell paints #2D5016
 s = _sr.assert_archive_labels(_sr.archive_labels(s), NAME)  # R41/R43
 s = _sr.assert_source_credits(s, NAME)
 # R45: an approved omit (STORY_OMIT_APPROVED in the issue content file) allows no Community Stories section.
