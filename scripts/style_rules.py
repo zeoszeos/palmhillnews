@@ -1540,3 +1540,354 @@ def ocr_items_problems(wm_copies, ocr_items, issue_titles):
                         f"(ocr_approved_by_steven={o.get('ocr_approved_by_steven')!r}; {o.get('ocr_approved_note', '')}). "
                         f"Ask: \"{OCR_FLAG_TEXT}\"")
     return hits
+
+
+# R135 / R136 / R137 (Steven, Nov 16 2026 ~5:30-5:33 PM ET, voice): six-point summaries from source wording only;
+# every decision is a rule plus a guard; pictures in the main-page summary cell from Nov 22 on.
+R135_FROM = "2026-11-22"
+R137_FROM = "2026-11-22"
+R137_THUMB_WIDTH = 80  # email-safe; same width as the masthead palms already used in the email
+_SIX_SECTIONS = (
+    "Community Notices", "Community Stories", "Committee Chair Reports",
+    "Events - This Week", "Events - Next Week", "Events - Upcoming",
+    "Weekly Manager Update", "Did You Know?", "From the Board President",
+    "Monthly Shareholders Report",
+)
+_MONTH_NUM = {n: i for i, n in enumerate(
+    "january february march april may june july august september october november december".split(), 1)}
+_MONTH_NUM.update({n[:3]: i for n, i in list(_MONTH_NUM.items())})
+_DATE_RE = re.compile(
+    r"\b(January|February|March|April|May|June|July|August|September|October|November|December|"
+    r"Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?"
+    r"(?:,?\s+(\d{4}))?", re.I)
+_TIME_RE = re.compile(r"\b(\d{1,2})(?::(\d{2}))\s*([AaPp])\.?\s*[Mm]\.?\b")
+# Notice-page email header stamps ("Sent: Friday, Nov 13, 2026, 10:38 AM ET") are metadata, not event date/time.
+_HEADER_STAMP_RE = re.compile(
+    r"(?:Sent:\s*)?(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday),\s+"
+    r"(?:January|February|March|April|May|June|July|August|September|October|November|December|"
+    r"Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2},\s+\d{4},\s+"
+    r"\d{1,2}:\d{2}\s*[AaPp]\.?\s*[Mm]\.?\s*(?:ET|E[SD]T)?",
+    re.I)
+_NUMDATE_RE = re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{2}|\d{4})\b")
+_VENUE_RE = re.compile(
+    r"\b(North Clubhouse|South Clubhouse|South Clubhouse Boardroom|South Board Room|South Boardroom|"
+    r"Board Room South|Boardroom South|North Club House|South Club House|Pro Shop|"
+    r"Small Meeting Room South|Small Meeting Room North|"
+    r"1800 Seminole Boulevard|1800 Seminole Blvd)\b", re.I)
+_CHROME_IMG_RE = re.compile(
+    r"speaker-read-aloud|masthead-palm|/phnews/v[0-9]/|palm-hill-office|helpful-webpages|"
+    r"trash-recycling|vehicle-safety", re.I)
+_PAGE_HREF_RE = re.compile(r'href="(https://palmhillnews\.vercel\.app/pages/([^"?#]+\.html)|/?pages/([^"?#]+\.html))')
+_ITEM_TR_RE = re.compile(r"<tr\b[^>]*>.*?</tr>", re.S | re.I)
+_IMG_RE = re.compile(r"<img\b[^>]*>", re.I)
+
+
+def issue_iso_from_html(html):
+    """Publication date YYYY-MM-DD from the masthead, or ''."""
+    m = re.search(
+        r"(?:Sunday|Saturday|Monday|Tuesday|Wednesday|Thursday|Friday), "
+        r"(January|February|March|April|May|June|July|August|September|October|November|December) "
+        r"(\d{1,2}), (\d{4})", html or "")
+    if not m:
+        return ""
+    from datetime import datetime as _dt
+    return _dt.strptime(f"{m.group(1)} {m.group(2)} {m.group(3)}", "%B %d %Y").date().isoformat()
+
+
+def _plain(html):
+    t = re.sub(r"(?is)<script.*?</script>|<style.*?</style>", " ", html or "")
+    t = re.sub(r"(?is)<br\s*/?>", " ", t)
+    t = re.sub(r"(?is)</(p|div|li|h\d|td|tr)>", " ", t)
+    t = re.sub(r"(?is)<[^>]+>", " ", t)
+    t = re.sub(r"&nbsp;", " ", t)
+    t = re.sub(r"&#x27;|&#39;|&apos;", "'", t)
+    t = re.sub(r"&amp;", "&", t)
+    t = re.sub(r"&quot;", '"', t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def _img_attrs(tag):
+    src = re.search(r'\bsrc="([^"]*)"', tag, re.I)
+    alt = re.search(r'\balt="([^"]*)"', tag, re.I)
+    w = re.search(r'\bwidth="([^"]*)"', tag, re.I)
+    return (src.group(1) if src else "", alt.group(1) if alt else None, w.group(1) if w else None)
+
+
+def _is_chrome_image(src, width=None):
+    if _CHROME_IMG_RE.search(src or ""):
+        return True
+    try:
+        n = int(re.sub(r"\D", "", str(width or "")) or 0)
+    except ValueError:
+        n = 0
+    return 0 < n <= 36
+
+
+def _content_images(html):
+    """Content (non-chrome) images in a page or cell: (src, alt, width, filename)."""
+    out = []
+    for tag in _IMG_RE.findall(html or ""):
+        src, alt, w = _img_attrs(tag)
+        if _is_chrome_image(src, w):
+            continue
+        name = re.sub(r"[?#].*$", "", src).rsplit("/", 1)[-1]
+        if not name:
+            continue
+        out.append((src, alt, w, name))
+    return out
+
+
+def _page_rels(cell_html):
+    rels, seen = [], set()
+    for m in _PAGE_HREF_RE.finditer(cell_html or ""):
+        rel = m.group(2) or m.group(3)
+        if not rel or rel in seen:
+            continue
+        if rel.startswith("archive/") or "recurring-activities" in rel or "all-events" in rel:
+            continue
+        if "listen-" in rel or rel.startswith("20") and "-listen-" in rel:
+            continue
+        seen.add(rel)
+        rels.append(rel)
+    return rels
+
+
+def _read_page(repo, rel):
+    root = _Path(repo) if repo else _repo_root()
+    p = root / "pages" / rel
+    if p.is_file():
+        return p.read_text(encoding="utf-8", errors="replace")
+    return ""
+
+
+
+def _top_level_trs(sec):
+    """Each card's outer <tr>, including nested title/date rows. Inner rows are not yielded on their own."""
+    rows, i = [], 0
+    while True:
+        m = re.search(r"<tr\b", sec[i:], re.I)
+        if not m:
+            break
+        start = i + m.start()
+        pos = sec.find(">", start) + 1
+        if pos <= 0:
+            break
+        depth = 1
+        while depth and pos < len(sec):
+            a = re.search(r"<tr\b", sec[pos:], re.I)
+            b = re.search(r"</tr>", sec[pos:], re.I)
+            if not b:
+                break
+            bpos = pos + b.start()
+            if a and (pos + a.start()) < bpos:
+                depth += 1
+                pos = pos + a.start() + 3
+            else:
+                depth -= 1
+                pos = bpos + 5
+        rows.append(sec[start:pos])
+        i = pos
+    return rows
+
+
+def iter_main_page_items(html):
+    """Yield main-page summary cells: title, summary_text (title + date line + teaser), cell_html, page_rels."""
+    items = []
+    for heading in _SIX_SECTIONS:
+        sec = issue_section(html or "", heading)
+        if not sec:
+            continue
+        for tr in _top_level_trs(sec):
+            td = re.search(r"<td\b[^>]*>.*$", tr, re.S | re.I)
+            cell = td.group(0) if td else tr
+            titles = _NOTICE_TITLE_TD_RE.findall(cell) or _NOTICE_TITLE_DIV_RE.findall(cell)
+            title = titles[0].strip() if titles else ""
+            if not title:
+                # event/meeting-style bold title without the notice td pattern
+                m = re.search(r"font-weight:bold[^>]*>([^<]{3,160})</", cell)
+                if m:
+                    title = re.sub(r"\s+", " ", m.group(1)).strip()
+            if not title or title.endswith("→") or title.startswith("See the ") or title.startswith("Committee Report Archives"):
+                continue
+            items.append(dict(section=heading, title=title, summary_text=_plain(cell),
+                              cell_html=cell, pages=_page_rels(cell)))
+    return items
+
+
+def _dates_in(text):
+    found = set()
+    for m in _DATE_RE.finditer(text or ""):
+        mon = _MONTH_NUM[m.group(1).rstrip(".").lower()[:3] if m.group(1).rstrip(".").lower() != "sept" else "sep"]
+        day = int(m.group(2))
+        year = int(m.group(3)) if m.group(3) else None
+        found.add((year, mon, day))
+    for m in _NUMDATE_RE.finditer(text or ""):
+        mo, day, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if y < 100:
+            y += 2000
+        if 1 <= mo <= 12 and 1 <= day <= 31:
+            found.add((y, mo, day))
+    return found
+
+
+def _times_in(text):
+    found = set()
+    for m in _TIME_RE.finditer(text or ""):
+        h, mi, ap = int(m.group(1)), int(m.group(2) or 0), m.group(3).upper()
+        found.add((h % 12, mi, ap))
+    return found
+
+
+def _venues_in(text):
+    return {re.sub(r"\s+", " ", m.group(0)).strip().lower() for m in _VENUE_RE.finditer(text or "")}
+
+
+def _date_in_summary(src_dates, sum_dates):
+    for y, mo, d in src_dates:
+        for sy, smo, sd in sum_dates:
+            if mo == smo and d == sd and (y is None or sy is None or y == sy):
+                return True
+    return not src_dates
+
+
+def _venue_in_summary(src_venues, sum_venues):
+    if not src_venues:
+        return True
+    aliases = {
+        "board room south": {"south clubhouse boardroom", "south board room", "south boardroom", "boardroom south", "board room south"},
+        "south clubhouse boardroom": {"board room south", "south board room", "south boardroom", "boardroom south", "south clubhouse boardroom", "south clubhouse"},
+        "south clubhouse": {"south clubhouse", "south club house"},
+        "north clubhouse": {"north clubhouse", "north club house"},
+        "1800 seminole boulevard": {"1800 seminole boulevard", "1800 seminole blvd"},
+        "1800 seminole blvd": {"1800 seminole boulevard", "1800 seminole blvd"},
+    }
+    for v in src_venues:
+        opts = aliases.get(v, {v})
+        if opts & sum_venues:
+            return True
+        # a more specific source venue is satisfied by a matching shorter place already listed
+        if any(v in s or s in v for s in sum_venues):
+            return True
+    return False
+
+
+def summary_six_point_report(html, repo=None):
+    """R135: return (fails, warnings). Date/time/place missing from a summary FAIL only when the source page has them.
+    who/what/why/how are warnings when clearly extractable. Never fails for a point the source lacks.
+    Scoped by the caller to Nov 22+."""
+    fails, warns = [], []
+    for it in iter_main_page_items(html):
+        if not it["pages"]:
+            continue
+        src = "\n".join(_read_page(repo, rel) for rel in it["pages"])
+        if not src:
+            continue
+        src_plain = _HEADER_STAMP_RE.sub(" ", _plain(src))
+        # Skip furniture on item pages: nav, listen, back. Sent-header stamps are not event date/time.
+        sm, src_d, src_t, src_v = it["summary_text"], _dates_in(src_plain), _times_in(src_plain), _venues_in(src_plain)
+        sum_d, sum_t, sum_v = _dates_in(sm), _times_in(sm), _venues_in(sm)
+        if src_d and not _date_in_summary(src_d, sum_d):
+            fails.append(f"R135: {it['title']!r} source has a date not in the main-page summary (title, date line, or teaser)")
+        if src_t and not (src_t & sum_t):
+            fails.append(f"R135: {it['title']!r} source has a time not in the main-page summary (title, date line, or teaser)")
+        if it["section"] != "Community Stories" and src_v and not _venue_in_summary(src_v, sum_v):
+            fails.append(f"R135: {it['title']!r} source has a place {sorted(src_v)} not in the main-page summary")
+        # what: the item title already names the event; warn only if it is empty (should not happen)
+        if not it["title"].strip():
+            warns.append(f"R135: a main-page item in {it['section']!r} has no title (what)")
+        # who / why / how: warn only, and only when a clear cue exists in the source
+        if re.search(r"\b(because|so that|in order to|to help|to provide)\b", src_plain, re.I):
+            if not re.search(r"\b(because|so that|in order to|to help|to provide)\b", sm, re.I):
+                warns.append(f"R135: {it['title']!r} source states a why that is not in the summary (warn only; do not invent)")
+        if re.search(r"\b(line up|sign[- ]up|how to|bring your|register)\b", src_plain, re.I):
+            if not re.search(r"\b(line up|sign[- ]up|how to|bring your|register)\b", sm, re.I):
+                warns.append(f"R135: {it['title']!r} source states a how that is not in the summary (warn only; do not invent)")
+    return fails, warns
+
+
+def summary_six_point_problems(html, repo=None):
+    """R135 failures only (date, time, place present in the source but missing from the summary)."""
+    fails, _ = summary_six_point_report(html, repo)
+    return fails
+
+
+def summary_six_point_warnings(html, repo=None):
+    """R135 warnings (who/what/why/how when a cue is clear); never a build failure."""
+    _, warns = summary_six_point_report(html, repo)
+    return warns
+
+
+def summary_picture_problems(html, repo=None):
+    """R137: a main-page item whose detail/source page has a content image must show that image in the
+    summary cell, at an absolute palmhillnews.vercel.app URL, with alt text. Chrome icons are ignored."""
+    fails = []
+    for it in iter_main_page_items(html):
+        if not it["pages"]:
+            continue
+        src_imgs = []
+        for rel in it["pages"]:
+            page = _read_page(repo, rel)
+            if page:
+                src_imgs.extend(_content_images(page))
+        if not src_imgs:
+            continue
+        cell_imgs = _content_images(it["cell_html"])
+        cell_names = {n.lower() for _, _, _, n in cell_imgs}
+        for src, alt, w, name in src_imgs:
+            if name.lower() not in cell_names:
+                fails.append(f"R137: {it['title']!r} has a picture on its item page ({name}) that is not in the main-page summary cell")
+                continue
+            # find the matching cell image
+            for csrc, calt, cw, cname in cell_imgs:
+                if cname.lower() != name.lower():
+                    continue
+                if "palmhillnews.vercel.app" not in (csrc or ""):
+                    fails.append(f"R137: {it['title']!r} summary image {cname} is not an absolute palmhillnews.vercel.app URL ({csrc})")
+                if calt is None or not str(calt).strip():
+                    fails.append(f"R137: {it['title']!r} summary image {cname} has no alt text")
+                break
+        if not cell_imgs:
+            # already reported per source file; keep a single clear line if multiple files
+            pass
+    return fails
+
+
+def style_rules_row_guard_problems(repo=None):
+    """R136: every STYLE-RULES rule row has a non-empty Enforced-in cell, or names its guard in the rule text
+    (some older rows put 'Guard:' in the rule column)."""
+    root = _Path(repo) if repo else _repo_root()
+    md = (root / "STYLE-RULES.md").read_text(encoding="utf-8")
+    hits = []
+    for i, line in enumerate(md.splitlines(), 1):
+        m = re.match(r"^\| ((?:R|RD|L)[0-9][A-Za-z0-9-]*) \|", line)
+        if not m:
+            continue
+        rid = m.group(1)
+        parts = [c.strip() for c in line.strip().strip("|").split("|")]
+        enforced = parts[-1] if len(parts) >= 3 else ""
+        body = parts[1] if len(parts) >= 2 else line
+        has_guard = bool(enforced) or bool(re.search(
+            r"Guard:|Enforced|`[^`]*(style_rules|run_checks|visual_regression|build_|assert_|check_)", body, re.I))
+        if not has_guard and enforced.lower() not in {"process", "builder content", "manual review"}:
+            hits.append(f"R136: STYLE-RULES.md line {i} ({rid}) has no Enforced-in cell and no guard mention in the rule text")
+    return hits
+
+
+R138_ISSUE = "2026-11-22"
+R138_TITLE = "North Clubhouse Bazaar"
+R138_SECTION = "Events - Next Week"
+
+
+def r138_bazaar_r18_exempt(title, section=None, issue_iso=""):
+    """R138: True only for the Nov 22 Events - Next Week item titled exactly 'North Clubhouse Bazaar'.
+    That one card may run past 3 lines; every other item, and this title on any other issue, still has a 3-line max."""
+    if (issue_iso or "") != R138_ISSUE:
+        return False
+    t = re.sub(r"\s+", " ", title or "").strip()
+    s = re.sub(r"\s+", " ", section or "").strip()
+    if t != R138_TITLE:
+        return False
+    if s and not s.startswith(R138_SECTION):
+        return False
+    return True
+

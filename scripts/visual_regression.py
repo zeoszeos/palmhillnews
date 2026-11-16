@@ -13,7 +13,7 @@ Needs: /workspace/.venv-vr (python -m venv; pip install playwright pillow numpy;
 """
 import sys, os, re, json, argparse, pathlib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from style_rules import title_month_violations, sunshine_main_card_problem, SUNSHINE_DYK_TITLE, reserved_only_hits, sep30_shareholders_main_problem, listen_iphone_tree_problems
+from style_rules import title_month_violations, sunshine_main_card_problem, SUNSHINE_DYK_TITLE, reserved_only_hits, sep30_shareholders_main_problem, listen_iphone_tree_problems, summary_six_point_problems, summary_picture_problems, issue_iso_from_html, R135_FROM, R137_FROM, r138_bazaar_r18_exempt
 from playwright.sync_api import sync_playwright
 from PIL import Image, ImageChops
 import numpy as np
@@ -149,6 +149,15 @@ def rule_checks(html, page):
         txt = re.sub(r"<[^>]+>", "", t).strip()
         if (re.match(r"(Agenda|Zoom)\b", txt) or "zoom.us" in h) and not h.startswith(("https://palmhillnews.vercel.app/", "/pages/")) and not re.match(r"^[\w./-]+\.html$", h):
             fails.append(f"R13 meeting link '{txt[:20]}' goes outside Vercel: {h.split('?')[0]}")
+    # R135 / R137 (Steven Nov 16 2026): from Nov 22, summaries keep source date/time/place; pictures in the summary cell
+    _iso135 = issue_iso_from_html(html or "")
+    _repo135 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _iso135 and _iso135 >= R135_FROM:
+        for _p135 in summary_six_point_problems(html or "", _repo135):
+            fails.append(_p135)
+    if _iso135 and _iso135 >= R137_FROM:
+        for _p137 in summary_picture_problems(html or "", _repo135):
+            fails.append(_p137)
     return fails
 
 def listen_checks(listens, view):
@@ -196,7 +205,7 @@ def main():
             fails += svc_checks(pg.evaluate(SVC_JS), view)
             if view == "mobile":  # R18: item summaries max 3 lines at 390px (and 660px below). R118: the Sunshine email card may pass 3.
                 _ex118 = sunshine_main_card_problem(html or "") == ""
-                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3 and not (_ex118 and x["title"].startswith(SUNSHINE_DYK_TITLE))]  # R18 (R39 phone exception removed Oct 17 6:32 PM: framing teaser fits)
+                fails += [f"R18 [390px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in pg.evaluate(SUMMARY_JS) if x["lines"] > 3 and not (_ex118 and x["title"].startswith(SUNSHINE_DYK_TITLE)) and not r138_bazaar_r18_exempt(x["title"], x.get("sec"), issue_iso_from_html(html or ""))]  # R18 (R39 phone exception removed Oct 17 6:32 PM: framing teaser fits). R138: Nov 22 North Clubhouse Bazaar only.
             for s in pg.evaluate(SECTIONS_JS):
                 name = f"{s['i']:02d}-{slug(s['title'])}-{view}.png"; manifest[name] = s["title"]
                 dst = (gold if a.capture else out) / name
@@ -210,7 +219,7 @@ def main():
         p660 = br.new_page(viewport={"width": 660, "height": 900}); p660.goto(url, wait_until="networkidle", timeout=60000)
         fails += [f.replace('[desktop]', '[660px]') for f in svc_checks(p660.evaluate(SVC_JS), 'desktop')]  # R27: email width
         _ex118b = sunshine_main_card_problem(html or "") == ""
-        fails += [f"R18 [660px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in p660.evaluate(SUMMARY_JS) if x["lines"] > 3 and not (_ex118b and x["title"].startswith(SUNSHINE_DYK_TITLE))]
+        fails += [f"R18 [660px] {x['sec'][:30]} / {x['title'][:40]}: summary is {x['lines']} lines (max 3)" for x in p660.evaluate(SUMMARY_JS) if x["lines"] > 3 and not (_ex118b and x["title"].startswith(SUNSHINE_DYK_TITLE)) and not r138_bazaar_r18_exempt(x["title"], x.get("sec"), issue_iso_from_html(html or ""))]  # R138: Nov 22 North Clubhouse Bazaar only
         br.close()
     fails = rule_checks(html, None) + fails
     if a.capture:
