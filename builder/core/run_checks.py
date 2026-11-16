@@ -627,6 +627,21 @@ if C.ISSUE >= _sr83.R134_FROM:
     _p134 = _sr83.ocr_items_problems(getattr(C, "WM_COPIES", []), getattr(C, "OCR_ITEMS", []), lc.NOTICES_EXPECTED or [])
     L.ok("R134", not _p134, "OCR'd handwritten text is marked and approved by Steven" + (f" {' | '.join(_p134)}" if _p134 else ""))
 
+# R135 / R136 / R137 (Steven, Nov 16 2026 ~5:30-5:33 PM ET): six-point summaries, every decision is a
+# rule plus a guard, and pictures in the main-page summary cell. R135/R137 apply from Nov 22 so archived
+# issues stay as sent. R136 checks STYLE-RULES.md itself (all issues).
+_repo_r135 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+_p136 = _sr83.style_rules_row_guard_problems(_repo_r135)
+L.ok("R136", not _p136, "every STYLE-RULES row has a guard or Enforced-in cell" + (f": {'; '.join(_p136[:8])}" if _p136 else ""))
+if C.ISSUE >= _sr83.R135_FROM:
+    for _n135, _x135 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _f135, _w135 = _sr83.summary_six_point_report(_x135, _repo_r135)
+        L.ok("R135", not _f135, f"{_n135}: summaries keep the source's date, time and place (only when the source has them)" + (f": {'; '.join(_f135[:8])}" if _f135 else ""))
+        for _w in _w135:
+            print("R135 WARN", _n135 + ":", _w)
+        _p137 = _sr83.summary_picture_problems(_x135, _repo_r135)
+        L.ok("R137", not _p137, f"{_n135}: pictures on an item page also appear in the main-page summary cell" + (f": {'; '.join(_p137[:8])}" if _p137 else ""))
+
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:
