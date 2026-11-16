@@ -731,6 +731,15 @@
       "page_link_label": "Committee Report Archives →",
       "items": [
         {
+          "date": "2026-11-09",
+          "title": "Communications Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-09-communications-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-22-listen-communications-committee-report.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
+        {
           "date": "2026-10-14",
           "title": "Planning and Environmental Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-10-14-planning-and-environmental-committee-report.html",

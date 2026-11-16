@@ -57,9 +57,13 @@ LOCKED = {
         'Ladies Christmas Luncheon',
         '2027 South Rec Club Seeking Officers',
     ],
-    # Nov 22: no chair report came in (palmhillblast / gotwicz read Nov 15 2026 2:15 PM ET; none from Chuck since the Nov 15 cutoff)
-    # (R104b: heading stays with "No reports this week." unless a fresh report arrives before publish)
-    "CHAIR_EXPECTED": {},
+    # Nov 22: Communications Committee report from Tony Ciaramitaro (tonysee99@outlook.com) to Chuck Silcox,
+    # cc Terri MacGilvray and palmhillblast, "Communications Committee Report - November 9, 2026 Meeting",
+    # Mon Nov 16 2026 12:54 PM ET (thread 1a1e57f65bfd72ee). Direct from Tony (not a Chuck forward).
+    # Meeting of Nov 9 is inside the 30-day window (cutoff Oct 23). Replaces the R104b placeholder.
+    "CHAIR_EXPECTED": {
+        'Communications Committee': 'Website: the new home page went live November 2, with a Coming Up box and near real-time notices.',
+    },
 }
 
 # =====================================================================================================================
@@ -817,6 +821,33 @@ COMMS_1012 = [
     ("p", "Communications Committee Chair"),
 ]
 COMMS_1012_TEASER = "Facebook: Henry Klain approved the two-month trial on October 9."  # Tony's wording (R18, fits 3 lines)
+# R77 (Nov 22): Communications Committee Report, meeting of Monday Nov 9, 2026 -- Tony Ciaramitaro (tonysee99@outlook.com) to
+# Chuck Silcox, cc Terri MacGilvray and palmhillblast, "Communications Committee Report - November 9, 2026 Meeting",
+# Mon Nov 16 2026 12:54 PM ET (thread 1a1e57f65bfd72ee). Tony's wording verbatim, bullet by bullet; Outlook put a stray
+# line break after the bullet marker on several items -- joined into one bullet each (no words changed). Title drops
+# "- Meeting of November 9, 2026" (date goes on the date line, R77). Replaces the Oct 12 Communications card (latest
+# per committee, 30-day retention) and the R104b "No reports this week." placeholder. No attachments, agenda, or Zoom
+# link in the email. Next meeting in the report ("Friday, December 4, 2026 at 9:00 a.m.") matches Tony's calendar
+# (Fri Dec 4, 9:00–11:00 a.m., Board Room South, CONFIRMED); location is not in Tony's wording, so it stays off the page.
+COMMS_1109_PAGE = "2026-11-09-communications-committee-report.html"
+COMMS_1109_LISTEN = "2026-11-22-listen-communications-committee-report.html"
+COMMS_1109 = [
+    ("ul", ["All nine members attended, and the October 12 minutes were approved.",
+            "RPM: the chair met with Megan Leftwich on November 3. RPM now sends regular resident and sales updates, and the committee returns reconciliation reports.",
+            "Website: the new home page went live November 2, with a Coming Up box and near real-time notices. How Palm Hill Works pages are with committee chairs for review. We need more current event photos. The committee is continuing its incremental work on website design and content updating and anticipate core completion by year end.",
+            "Domain email and files: Tony is researching a Palm Hill-owned email and file system so club files stop living in personal accounts. A recommendation may come to the Board around January.",
+            "Webmaster: 77 email blasts to 1,367 residents since October 12.",
+            "Community Channel: slides are now drafted automatically from the calendar, and RPM agreed to upload new slides daily as we increase frequency.",
+            "Calendar: a residents-only disclaimer will be added to the public calendar.",
+            "Facebook trial: the residents' group has 262 members, with zero comments by design. Final report for current Facebook trial to be submitted to the board next month.",
+            "e-Newsletter: about 60 to 70 percent of the weekly newsletter now comes from the calendar.",
+            "Candidates Night: Wednesday, January 6, at 6:30 p.m. Candidates will get possible questions ahead of time.",
+            "Next meeting: Friday, December 4, 2026 at 9:00 a.m."]),
+    ("p", "Thank you!"),
+    ("p", "Tony Ciaramitaro"),
+    ("p", "Communications Committee Chair"),
+]
+COMMS_1109_TEASER = "Website: the new home page went live November 2, with a Coming Up box and near real-time notices."  # Tony's wording (R18, first sentence of the Website bullet)
 # Chair reports with a generated full page (scripts/chair_report_page.py); the core writes the page (never overwriting a published
 # one), seeds its listen-* page and puts the card at the top of CHAIR, in this order (so the last one listed ends up first).
 CHAIR_REPORTS = [
@@ -834,6 +865,10 @@ CHAIR_REPORTS = [
          source="Source: Communications Committee Report (Tony Ciaramitaro)",
          card=("Communications Committee", "2026-10-12", COMMS_1012_TEASER,
         BASE + COMMS_1012_PAGE, BASE + COMMS_1012_LISTEN)),
+    dict(page=COMMS_1109_PAGE, listen=COMMS_1109_LISTEN, title="Communications Committee Report", blocks=COMMS_1109,
+         source="Source: Communications Committee Report (Tony Ciaramitaro)",
+         card=("Communications Committee", "2026-11-09", COMMS_1109_TEASER,
+        BASE + COMMS_1109_PAGE, BASE + COMMS_1109_LISTEN)),
 ]
 # Archive rows this issue adds (R59; archive/archive-items.json, idempotent on the row's page): (section, row)
 ARCHIVE_ROWS = [
@@ -841,6 +876,8 @@ ARCHIVE_ROWS = [
                                     "listen": PE_1014_LISTEN, "issues": ["2026-10-25"]}),
     ("committee-reports", {"date": "2026-10-12", "title": "Communications Committee Report", "page": COMMS_1012_PAGE,
                                     "listen": COMMS_1012_LISTEN, "issues": ["2026-11-01"]}),
+    ("committee-reports", {"date": "2026-11-09", "title": "Communications Committee Report", "page": COMMS_1109_PAGE,
+                                    "listen": COMMS_1109_LISTEN, "issues": ["2026-11-22"]}),
 ]
 # Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
 # attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
@@ -1040,8 +1077,8 @@ ICE_SOURCE_LABEL = "Oct P&E Committee Report"         # R60c linked Source wordi
 # R92 (Steven Oct 30 2026 11:40 AM): Events - Next Week (Nov 8-14) directly under This Week; label derived from ISSUE (L08).
 NEXT_WEEK_SECTION = True
 UPCOMING_LABEL_EXPECTED = None   # unused with NEXT_WEEK_SECTION (was stale Oct 25 carry-over "November 1 through November 22")
-CHAIR_DATES_EXPECTED = []   # Nov 22: no report inside 30 days (R104b placeholder)
-CHAIR_DATES_LABEL = "chair section shows No reports this week. (no report inside 30 days)"
+CHAIR_DATES_EXPECTED = ["Monday, Nov 9, 2026"]   # L14 chair report dates
+CHAIR_DATES_LABEL = "chair dates Communications Nov 9 (3-letter months)"
 RECURRING_CHECK_LABEL = "Recurring: Oct 25 window, By Date/Name/Location pages"
 
 # R100 (Steven Oct 31 2026 6:07 PM "Drop community notice"): Tony's Facebook group notice off the main page; Did You Know item kept.
