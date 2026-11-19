@@ -25,6 +25,13 @@ def ft(t):
     if not t: return "—"
     h, m = map(int, t.split(":")); return f"{(h % 12) or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
 def ftr(s, e): return ft(s) + (" to " + ft(e) if e else "")
+
+def rpm_date_or_start_differs(cal_date, cal_time, rpm_date, rpm_time):
+    """R139 (Steven, Nov 19 2026): a club-calendar and RPM pair mismatches only when the date or the
+    start time differs. End times are ignored (Note 1 of the Nov 4 report to Tony).
+    Returns (date_differs, start_differs). Displayed ranges may still show end times."""
+    return cal_date != rpm_date, cal_time != rpm_time
+
 def load_cal(work):
     fs = sorted(glob.glob(str(Path(work) / "data/cal-*.json")))
     if not fs: raise SystemExit("R86: no calendar snapshot data/cal-*.json in " + str(work))
@@ -76,7 +83,7 @@ def build(issue, work, repo=REPO):
                 f"(agenda says {fd(a['date'])}{', ' + ft(a['time']) if a['time'] else ''}; {a['kind']}, {a['page'].split('/')[-1]})."))
         for p in r["rpm"]:
             if not r["cal_date"]: continue
-            dd, td = r["cal_date"] != p["date"], (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end"))
+            dd, td = rpm_date_or_start_differs(r["cal_date"], r["cal_time"], p["date"], p.get("time"))
             if dd or td: refs.append(("RPM note (reference only): " + ("day and time" if dd and td else "day" if dd else "time"),
                 f"The calendar says {fd(r['cal_date'])}, {ftr(r['cal_time'], r.get('cal_end'))}; RPM says {fd(p['date'])}, {ftr(p.get('time'), p.get('end'))}. RPM is reference only (it never overrides the calendar)."))
         if r["cal_date"] and not r["rpm"]: refs.append(("RPM note (reference only): not on RPM", f"The calendar has {fd(r['cal_date'])}, {ftr(r['cal_time'], r.get('cal_end'))}; RPM has no entry for this meeting that month."))
@@ -96,6 +103,7 @@ def cells(r):
     return [r["name"], fd(r["cal_date"]), ft(r["cal_time"]), ag, rp, em, rec, rrec, st]
 NOTES = ["The Palm Hill calendar (Tony Ciaramitaro's booking-system feed) is the single source of truth (R86).",
          "RPM values: {rpm_fetched} (signed-in box browser session, Agenda view). RPM shows start and end times.",
+         "A club-calendar and RPM pair matches when date and start time agree; end times are ignored (R139).",
          "RPM is reference only: it helps spot meetings missing from the Palm Hill calendar and never overrides it. RPM day differences on calendar meetings are 'RPM note (reference only)' and are not counted; RPM-only meetings stay as items.",
          "Calendar recurring: ☑ = the calendar marks the entry as part of a recurring series, ☐ = not recurring (the feed's own 'recurring' marker).",
          "RPM recurring: ☑ = RPM month view shows its circular-arrow recurring icon on the entry, ☐ = no icon.",
@@ -138,7 +146,7 @@ def tony_rows(R):
     out = []
     for r in R["rows"]:
         ag = [a for a in r["agenda"] if r["cal_date"] != a["date"] or ((a.get("typo") or {}).get("time", a["time"]) and r["cal_time"] and (a.get("typo") or {}).get("time", a["time"]) != r["cal_time"])]
-        rp = [p for p in r["rpm"] if r["cal_date"] and (r["cal_date"] != p["date"] or (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")))]
+        rp = [p for p in r["rpm"] if r["cal_date"] and any(rpm_date_or_start_differs(r["cal_date"], r["cal_time"], p["date"], p.get("time")))]
         no_rpm = bool(r["cal_date"]) and not r["rpm"]
         if not (ag or rp or no_rpm or not r["cal_date"]): continue
         cal = "Not on the calendar" if not r["cal_date"] else f"{sd(r['cal_date'])}, {_ctr(r['cal_time'], r.get('cal_end'))}"
@@ -149,7 +157,9 @@ def tony_rows(R):
         why = []
         for a in ag: why.append("Agenda " + ("date" if a["date"] != r["cal_date"] else "time"))
         if not r["cal_date"]: why.append("Not on the Palm Hill calendar")
-        for p in rp: why.append("RPM " + ("day and time" if p["date"] != r["cal_date"] and (r["cal_time"], r.get("cal_end")) != (p.get("time"), p.get("end")) else "day" if p["date"] != r["cal_date"] else "time"))
+        for p in rp:
+            dd, td = rpm_date_or_start_differs(r["cal_date"], r["cal_time"], p["date"], p.get("time"))
+            why.append("RPM " + ("day and time" if dd and td else "day" if dd else "time"))
         if no_rpm: why.append("Not on RPM")
         if mv and rp: why[-1] = "RPM still has the old date"
         cat = 0 if ag else 1 if not r["cal_date"] else 3 if (no_rpm or r["committee"] == "Annual Meeting") else 2
