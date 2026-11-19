@@ -28,6 +28,11 @@ def main():
         shutil.rmtree(repo / "builder")   # batch 4 (R71): the tag's old per-issue builders are replaced by this checkout's core + issues/
         for d in ("scripts", "builder"):
             shutil.copytree(HERE / d, repo / d, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__"))
+        # Current scripts (R133+) read archive/sent-issues.json from PHNEWS_REPO; the Oct 25 tag may not have it.
+        src = HERE / "archive/sent-issues.json"
+        if src.exists():
+            (repo / "archive").mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, repo / "archive/sent-issues.json")
         shutil.copytree(WORK, work, symlinks=True, ignore=shutil.ignore_patterns("__pycache__"))  # copytree keeps mtimes (copy2)
         # Use the calendar snapshot the approved build used (recorded at the tag in builder/calendar-pull/2026-10-25.json): later
         # snapshots are hidden in the TEMP copy only (same calendar content, but the footer "Calendar check" time comes from the file).

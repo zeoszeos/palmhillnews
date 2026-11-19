@@ -6,6 +6,17 @@
   "archive_main": "https://palmhillnews.vercel.app/pages/archive/main.html",
   "issues": [
     {
+      "date": "2026-11-15",
+      "volume": 1,
+      "number": 18,
+      "issue_number": "Vol. 1, No. 18",
+      "label": "Week of Nov 15, 2026",
+      "sent": "2026-11-15T12:56:00-05:00",
+      "file_dated": "2026-11-15T11:34:00-05:00",
+      "format": "Email newsletter",
+      "url": "https://palmhillnews.vercel.app/pages/archive/issues/2026-11-15.html"
+    },
+    {
       "date": "2026-11-08",
       "volume": 1,
       "number": 17,
@@ -200,6 +211,15 @@
       "email_link_label": "Story Archives →",
       "page_link_label": "Story Archives →",
       "items": [
+        {
+          "date": "2026-11-01",
+          "title": "Way Back When",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-way-back-when.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-listen-way-back-when.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
         {
           "date": "2026-11-01",
           "title": "Serving on the Palm Hill Board of Directors",
@@ -710,6 +730,15 @@
       "email_link_label": "Committee Report Archives →",
       "page_link_label": "Committee Report Archives →",
       "items": [
+        {
+          "date": "2026-11-09",
+          "title": "Communications Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-09-communications-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-22-listen-communications-committee-report.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
         {
           "date": "2026-10-14",
           "title": "Planning and Environmental Committee Report",
@@ -1486,6 +1515,14 @@
       "email_link_label": "Did You Know Archives →",
       "page_link_label": "Did You Know Archives →",
       "items": [
+        {
+          "date": "2026-11-22",
+          "title": "USE OF COMMON GROUNDS AND RECREATIONAL FACILITIES",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-22-did-you-know-use-of-common-grounds-golf-course.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
         {
           "date": "2026-11-15",
           "title": "HOMESITES AND CARE & MAINTENANCE OF PREMISES",
