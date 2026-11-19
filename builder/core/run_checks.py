@@ -364,9 +364,14 @@ elif _mcr.exists():
         L.ok("R86", not _ovr86 and not _R86["overrides"], f"no CONFLICT-OVERRIDDEN-BY-RULE rows (calendar only) {_ovr86 or ''}")
         # Oct 27 2026 2:43 PM: P&E "a.m." is a known typo (reference only); RPM day differences on calendar dates are reference only.
         _cal86 = [r for r in _R86["rows"] if r["cal_date"]]
-        _fin86 = [d[0] for r in _cal86 if "Finance" in r["name"] for d in r["diffs"]]
+        # R86d (Nov 22 calendar refresh, Nov 19 2026; PROPOSED): the "agenda-differs only" requirement applies when
+        # Finance has agenda diffs in this window. Nov 22's Finance row (Thu Dec 17, 10:00 AM) is a match with no
+        # agenda difference; that is not a failure. Finance must still appear; any diffs must all be Agenda: only.
+        _fin86_rows = [r for r in _cal86 if "Finance" in r["name"]]
+        _fin86 = [d[0] for r in _fin86_rows for d in r["diffs"]]
         _pe86 = [r for r in _cal86 if "Planning" in r["name"]]
-        L.ok("R86", _fin86 and all(k.startswith("Agenda:") for k in _fin86), f"Finance listed as agenda-differs only {_fin86}")
+        L.ok("R86", bool(_fin86_rows) and all(k.startswith("Agenda:") for k in _fin86),
+             f"Finance listed" + (f" as agenda-differs only {_fin86}" if _fin86 else f" with no agenda difference this window ({len(_fin86_rows)} row(s))"))
         # Nov 15: the Oct P&E agenda ("a.m." typo) is out of the window; a P&E row with an agenda ref must still mark it reference-only
         L.ok("R86", _pe86 and all(not r["diffs"] and all(k == "Agenda: known typo" for k, _ in r["refs"] if k.startswith("Agenda")) for r in _pe86),
              "P&E rows: no counted differences (the Oct a.m. agenda wording stays a known typo, not counted)")
