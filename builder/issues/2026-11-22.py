@@ -97,6 +97,11 @@ EVENT_DETAIL = {
     # the Bazaar listing's home phone is left out (not OK'd for print), same as the Oct 31 North Clubhouse Craft Fair row.
     "North Clubhouse Bazaar": "Rent a table for $20 to sell your goods, 9 a.m. to 1 p.m. Christmas decorations welcome as donations. See the club calendar for who to contact to book.",
     "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Lunch before book club, on the same day as the discussion in the South Hall instead of 12/10. Members only.",
+    # Nov 20 2026 calendar re-pull: one-off Hoss Collar Shuffle (Sun Nov 22). The listing's personal phone is left out
+    # (not OK'd for print), same as the North Clubhouse Bazaar row. Wording is the calendar info minus the contact line.
+    "Hoss Collar Shuffle": "New players arrive 6:00pm to learn the basics. Cost $1, bring exact amount. Wear closed toe shoes. All levels welcome.",
+    # Same pull: new off-site book-club lunch on Jan 21, 2027. Detail = calendar info, verbatim.
+    "Bookclub Activity.  Lunch at a seafood restaurant TBA": "For members and those wishing to join bookclub. Book discussed on 1/14:  Remarkably Bright Creatures by VanPelt.",
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html",
@@ -137,9 +142,11 @@ EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
 INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
                 "Veterans Day Program", "Bookclub:Foster by Claire Keegan",
                 "Bookclub Lunch at Irish Pub", "December Cruise Information Meeting", "Bridge Club",
-                "North Clubhouse Bazaar", "Bookclub activity.  Lunch at a Vietnamese Restaurant"}   # Nov 22 box-only test
+                "North Clubhouse Bazaar", "Bookclub activity.  Lunch at a Vietnamese Restaurant",
+                "Hoss Collar Shuffle", "Bookclub Activity.  Lunch at a seafood restaurant TBA"}   # Nov 22; Hoss + Jan 21 lunch from Nov 20 calendar re-pull
 TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan", "Bookclub Lunch at Irish Pub": "Book Club Lunch at Irish Pub",
-         "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Book Club Lunch at a Vietnamese Restaurant", "December Bookclub": "December Book Club"}   # Nov 22 box-only test
+         "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Book Club Lunch at a Vietnamese Restaurant", "December Bookclub": "December Book Club",
+         "Bookclub Activity.  Lunch at a seafood restaurant TBA": "Book Club Lunch at a seafood restaurant TBA"}   # Nov 22; Jan 21 lunch from Nov 20 calendar re-pull
 # Oct 25: events new to the issue window (calendar re-pull Oct 20 2:40 PM). Detail = the calendar listing text (light edits only).
 # Calendar re-pull Oct 22 7:55 PM: new one-off Bridge Club (Oct 26, Pool Room South); detail = its calendar listing text verbatim
 # (batch 5: these additions were EVENT_DETAIL.update / EVENT_LINK[...] = ... statements; folded into the data above, same order)
