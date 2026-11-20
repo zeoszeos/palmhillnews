@@ -1541,24 +1541,30 @@ def ocr_items_problems(wm_copies, ocr_items, issue_titles):
                         f"Ask: \"{OCR_FLAG_TEXT}\"")
     return hits
 
-# R135 (Steven, Nov 20 2026 1:13 PM ET, voice): Residents Reference Guide trash/recycling lines match the
-# Fed Up Trash Valet source (RPM email Nov 17 2026 3:48 PM ET, gotwicz 1a1eb44bde4f4eee; Bob Newport clear-bags note Nov 18).
-# Compact: source wording only (omit details for space, never alter). Debris/brush and Sanitation hours are unchanged.
+# R140 (Steven, Nov 20 2026 5:03 PM ET, voice): Residents Reference Guide trash/recycling entry is a
+# minimal bulleted list starting with "Starting December 1st" (Steven's wording). Full Fed Up Trash Valet
+# detail belongs in a Community Notice (R141). Debris/brush and Sanitation hours are unchanged.
 # Archived as-sent issues are not rewritten (R10). Applies from the Nov 22 issue on.
-R135_FROM = "2026-11-22"
+# Renumbered from the earlier draft R135 in this PR so it does not collide with R135–R138 in PR #177
+# (main-page summaries) or R139 in PR #178.
+R140_FROM = "2026-11-22"
 REFERENCE_TRASH_BULLETS = [
-    "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. The first collection will be the recycling on December 2nd.",
-    "Trash: Mondays and Thursdays for the ENTIRE community",
-    "Recycling: Wednesdays for the ENTIRE community. Clear bags are still required for recycling.",
-    "Collection takes place between 8:00 a.m. and 4:00 p.m. on service days. Place your trash or recycling bags on the sidewalk or at the end of your driveway by 8:00 a.m. on collection days.",
+    "Starting December 1st: Trash Mondays and Thursdays, entire community",
+    "Recycling Wednesdays, entire community (clear bags required)",
+    "Bags out by 8:00 a.m. on collection days",
 ]
 REFERENCE_TRASH_REQUIRED = tuple(REFERENCE_TRASH_BULLETS)
-_R135_HEAD = "Trash, Recycling &amp; Sanitation</div>"
-_R135_OLD = ("North Area:", "Palm Forest:", "South Area:", "Mon (trash)", "Thu (recycling)", "Tue (trash)", "Fri (recycling)")
-_R135_KEEP = re.compile(r"^•\s*(Debris/brush|Sanitation:)")
-_R135_BULLET = re.compile(r"<div>• .*?</div>")
+_R140_HEAD = "Trash, Recycling &amp; Sanitation</div>"
+_R140_OLD = ("North Area:", "Palm Forest:", "South Area:", "Mon (trash)", "Thu (recycling)", "Tue (trash)", "Fri (recycling)")
+_R140_MOVED = (
+    "Fed Up Trash Valet",
+    "Effective December 1, 2026",
+    "Collection takes place between",
+)
+_R140_KEEP = re.compile(r"^•\s*(Debris/brush|Sanitation:)")
+_R140_BULLET = re.compile(r"<div>• .*?</div>")
 
-def _r135_section(html):
+def _r140_section(html):
     i = (html or "").find("Trash, Recycling")
     if i < 0:
         return ""
@@ -1566,35 +1572,91 @@ def _r135_section(html):
     return html[i:j] if j > i else html[i:]
 
 def apply_reference_trash(html):
-    """Replace the area-by-area trash/recycling bullets in the Residents Reference Guide with the R135 source lines.
-    Leaves the heading, Debris/brush, and Sanitation hours in place. Idempotent."""
-    if not html or _R135_HEAD not in html:
+    """Replace the area-by-area (or earlier long-form) trash/recycling bullets in the Residents
+    Reference Guide with the R140 minimal list. Leaves the heading, Debris/brush, and Sanitation
+    hours in place. Idempotent."""
+    if not html or _R140_HEAD not in html:
         return html
-    start = html.find(_R135_HEAD) + len(_R135_HEAD)
+    start = html.find(_R140_HEAD) + len(_R140_HEAD)
     end = html.find("</td>", start)
     if end < 0:
         return html
     block = html[start:end]
-    kept = [m.group(0) for m in _R135_BULLET.finditer(block)
-            if _R135_KEEP.search(re.sub(r"<[^>]+>", "", m.group(0)))]
+    kept = [m.group(0) for m in _R140_BULLET.finditer(block)
+            if _R140_KEEP.search(re.sub(r"<[^>]+>", "", m.group(0)))]
     new = "".join(f"<div>• {__import__('html').escape(b, quote=False)}</div>" for b in REFERENCE_TRASH_BULLETS) + "".join(kept)
     return html[:start] + new + html[end:]
 
 def reference_trash_problems(html):
-    """R135: the Reference Guide trash section carries the source schedule and not the old area-by-area days."""
-    sec = _r135_section(html)
+    """R140: the Reference Guide trash section is the minimal bullet list, not the old area days
+    and not the full Fed Up Trash Valet detail (that belongs in the Community Notice, R141)."""
+    sec = _r140_section(html)
     text = re.sub(r"<[^>]+>", " ", sec)
     text = text.replace("&amp;", "&").replace("&#x27;", "'")
     hits = []
     if "Trash, Recycling" not in (html or ""):
-        return ["R135: Residents Reference Guide trash section not found"]
+        return ["R140: Residents Reference Guide trash section not found"]
+    if "Starting December 1st" not in text:
+        hits.append("R140: Reference Guide trash entry must start with 'Starting December 1st'")
     for req in REFERENCE_TRASH_REQUIRED:
         if req not in text:
-            hits.append(f"R135: missing source wording: {req[:80]!r}")
-    for old in _R135_OLD:
+            hits.append(f"R140: missing minimal bullet: {req[:80]!r}")
+    for old in _R140_OLD:
         if old in text:
-            hits.append(f"R135: old area schedule still present: {old!r}")
+            hits.append(f"R140: old area schedule still present: {old!r}")
+    for moved in _R140_MOVED:
+        if moved in text:
+            hits.append(f"R140: full valet detail still in the Reference Guide (belongs in the Community Notice): {moved!r}")
     for keep in ("Debris/brush", "Sanitation:"):
         if keep not in text:
-            hits.append(f"R135: kept line missing: {keep}")
+            hits.append(f"R140: kept line missing: {keep}")
+    return hits
+
+# R141 (Steven, Nov 20 2026 5:03 PM ET, voice): the full Fed Up Trash Valet source details run as a
+# Community Notice on the Nov 22 issue, in the source's own wording. Sources: RPM email Nov 17 2026
+# 3:48 PM ET (gotwicz 1a1eb44bde4f4eee) and Bob Newport Webmaster note Nov 18 (1a1f09b8bf98e63b).
+R141_FROM = "2026-11-22"
+VALET_NOTICE_TITLE = "New Valet Trash Service"
+VALET_NOTICE_PAGE = "2026-11-17-new-valet-trash-service-notice.html"
+VALET_NOTICE_REQUIRED = (
+    "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. The first collection will be the recycling on December 2nd.",
+    "Trash: Mondays and Thursdays for the ENTIRE community",
+    "Recycling: Wednesdays for the ENTIRE community",
+    "Collection takes place between 8:00 a.m. and 4:00 p.m. on service days.",
+    "Place your trash or recycling bags on the sidewalk or at the end of your driveway by 8:00 a.m. on collection days.",
+    "There is no collection on New Year's Eve and Day, Easter, Memorial Day, July 4th, Labor Day, Thanksgiving, or Christmas Eve and Day. If a scheduled pickup falls on one of these holidays, collection will take place the following day.",
+    "Clear bags are still required for recycling.",
+)
+
+def _r141_notices_section(html):
+    i = (html or "").find("Community Notices")
+    if i < 0:
+        return ""
+    # the section runs until the next major section table or a later unique heading
+    for mark in ("Residents Reference Guide", "Committee Chair Reports", ">Meetings this month<"):
+        j = html.find(mark, i + 1)
+        if j > i:
+            return html[i:j]
+    return html[i:]
+
+def valet_notice_problems(issue_html, page_html):
+    """R141: the issue's Community Notices section names the valet notice, and the copy page
+    carries every required source sentence."""
+    hits = []
+    sec = _r141_notices_section(issue_html)
+    sec_text = re.sub(r"<[^>]+>", " ", sec).replace("&amp;", "&").replace("&#x27;", "'")
+    if VALET_NOTICE_TITLE not in (issue_html or "") or VALET_NOTICE_TITLE not in sec_text:
+        hits.append(f"R141: Community Notices missing {VALET_NOTICE_TITLE!r}")
+    if "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC." not in sec_text:
+        hits.append("R141: Community Notices teaser missing the Effective December 1 source sentence")
+    if VALET_NOTICE_PAGE not in (issue_html or ""):
+        hits.append(f"R141: issue does not link the valet copy page {VALET_NOTICE_PAGE}")
+    page_text = re.sub(r"<[^>]+>", " ", page_html or "")
+    page_text = page_text.replace("&amp;", "&").replace("&#x27;", "'").replace("&#39;", "'")
+    if not (page_html or "").strip():
+        hits.append(f"R141: copy page {VALET_NOTICE_PAGE} is missing or empty")
+        return hits
+    for req in VALET_NOTICE_REQUIRED:
+        if req not in page_text:
+            hits.append(f"R141: copy page missing source wording: {req[:80]!r}")
     return hits

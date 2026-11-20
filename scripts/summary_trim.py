@@ -9,6 +9,8 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Steven Nov 20 2026 5:03 PM ET (voice): Fed Up Trash Valet details as a Community Notice (R141); teaser is the first source sentences; More → = the copied RPM email plus Bob Newport's clear-bags note
+ ("Effective December 1, 2026, Palm Hill will begin a new valet trash", "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC.", B + "2026-11-17-new-valet-trash-service-notice.html"),
  # Sat Nov 14 2026 9:38 AM ET Webmaster correction (Steven: add then end changes); teaser is the source sentence ("Noeth" -> "North", R133c Steven Nov 15); More → = the copied email (R47)
  ("Correction:  I got it Game Night is this Wednesday", "Correction:  I got it Game Night is this Wednesday at 6:30 in the North Clubhouse.", B + "2026-11-14-correction-i-got-it-game-night-notice.html"),
  # Fri Nov 13 2026 sweep (Steven approved): cut, never reworded; More → = the copied email (R47)

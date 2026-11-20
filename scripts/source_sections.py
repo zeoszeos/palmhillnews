@@ -17,6 +17,10 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Steven Nov 20 2026 5:03 PM ET (voice, R141): RPM valet-trash email (gotwicz 1a1eb44bde4f4eee) plus Bob Newport clear-bags note, one Community Notice.
+    "2026-11-17-new-valet-trash-service-notice.html": dict(
+        subject="[#XN9606941] Message from Home Owners of Palm Hill, Inc - New Valet Trash Service Begins December 2nd", notice_title="New Valet Trash Service", use_existing_page=True,
+        sections=[dict(heading="New valet trash service", keys=["Fed Up Trash Valet"])], approved_omit=[]),
     # Steven Nov 12 2026 (voice): Carolyn Story Board piece, moved into Community Notices; More → / Listen open the existing verbatim page.
     "2026-11-carolyn-story-serving-on-the-board.html": dict(
         subject="Serving on the Palm Hill Board of Directors", notice_title="Serving on the Palm Hill Board of Directors", use_existing_page=True,

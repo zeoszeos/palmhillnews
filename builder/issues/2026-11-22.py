@@ -52,6 +52,7 @@ R60C_ICE_NOTICE = False               # the ice machine notice is dropped for No
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {
     "NOTICES_EXPECTED": [   # R130: Nov 15 repeats dropped except the PROPOSED keep-list (pending Steven)
+        'New Valet Trash Service',  # R141 (Steven Nov 20 2026 5:03 PM ET): full Fed Up Trash Valet details
         'Palm Hill Annual Golf Cart Parade',
         'Christmas Golf Cart Route',
         'Ladies Christmas Luncheon',
@@ -298,7 +299,47 @@ OCR_ITEMS = [
     dict(title="2027 South Rec Club Seeking Officers", page=WM_COPY_SOUTHREC, image=SOUTHREC_IMG, ocr_source=True, handwritten=False,
          ocr_approved_by_steven=None, ocr_approved_note="Printed flyer (not handwritten); notice added at Steven's direction Oct 23 2026"),
 ]
+# R141 (Steven Nov 20 2026 5:03 PM ET, voice): full Fed Up Trash Valet details as a Community Notice.
+# RPM email gotwicz 1a1eb44bde4f4eee, Tue Nov 17 2026 3:48 PM ET, subject "New Valet Trash Service Begins December 2nd".
+# Clear-bags sentence from Webmaster Bob Newport, Wed Nov 18 (1a1f09b8bf98e63b). Source wording only; R93 date off the title.
+WM_COPY_VALET = "2026-11-17-new-valet-trash-service-notice.html"
+VALET_TITLE = "New Valet Trash Service"
+VALET_BODY = "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC."  # R18: first source sentence; first-collection sentence is on the date line and copy page
+VALET_DATE = "Effective: December 1, 2026 · First collection: recycling on December 2nd"
+VALET_SUBJECT = "[#XN9606941] Message from Home Owners of Palm Hill, Inc - New Valet Trash Service Begins December 2nd"
+VALET_SENT = "Tuesday, Nov 17, 2026, 3:48 PM ET"
+VALET_BLOCKS = [
+    ("p", "Dear Palm Hill Residents,"),
+    ("p", "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. The first collection will be the recycling on December 2nd. Please review the details below."),
+    ("h", "Collection Schedule"),
+    ("ul", [
+        "Trash: Mondays and Thursdays for the ENTIRE community (You will now have two days of collection from your home!)",
+        "Recycling: Wednesdays for the ENTIRE community",
+        "Collection takes place between 8:00 a.m. and 4:00 p.m. on service days.",
+    ]),
+    ("h", "What You Need to Do"),
+    ("ul", ["Place your trash or recycling bags on the sidewalk or at the end of your driveway by 8:00 a.m. on collection days."]),
+    ("h", "Items Not Accepted"),
+    ("ul", [
+        "Oversized items that don't fit in normal plastic kitchen bags",
+        "Excessively heavy bags (If you can't pick it up, split it up)",
+        "Broken glass or sharp or dangerous objects protruding from bags",
+        "Hazardous, biohazardous, explosive, or other materials not allowed by law",
+    ]),
+    ("h", "Holiday Schedule"),
+    ("p", "There is no collection on New Year's Eve and Day, Easter, Memorial Day, July 4th, Labor Day, Thanksgiving, or Christmas Eve and Day. If a scheduled pickup falls on one of these holidays, collection will take place the following day."),
+    ("p", "Any questions can be directed to the Palm Hill business office at (727) 581-8729."),
+    ("p", "Sincerely,"),
+    ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
+    ("p", "(727) 581-2662 | www.resourcepropertymgmt.com"),
+    ("p", "Clear bags are still required for recycling."),
+    ("p", "Bob Newport"),
+]
 WM_COPIES = [
+    # R141 (Steven Nov 20 2026 5:03 PM ET): RPM valet-trash email, plus Bob Newport's clear-bags note at the end.
+    (WM_COPY_VALET, VALET_SUBJECT, VALET_SENT, VALET_BLOCKS,
+        dict(source="Source: Resource Property Management message to residents, Nov 17, copied as sent. Clear-bags sentence from Webmaster notice (Bob Newport), Nov 18.",
+             sender="Resource Property Management", title=VALET_TITLE)),
     # Sat Nov 14 2026 9:38 AM ET correction (Steven: add then end changes): newest first
     (WM_COPY_GAME_NIGHT, GAME_NIGHT_SUBJECT, GAME_NIGHT_SENT, [
         ("p", GAME_NIGHT_BODY),
@@ -595,6 +636,8 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # R141 (Steven Nov 20 2026 5:03 PM ET): full Fed Up Trash Valet details; newest first, ahead of the keep-list.
+    (VALET_TITLE, VALET_BODY, "RPM", BASE + WM_COPY_VALET),
     # Steven Nov 12 2026 (voice): Carolyn Story's Board piece, moved from Community Stories into Community Notices.
     # Full verbatim page + Listen stay at CAROLYN_BOARD_PAGE (Link Nov 2026 p 36).
     (CAROLYN_BOARD_TITLE, CAROLYN_BOARD_BODY, "Carolyn Story", BASE + CAROLYN_BOARD_PAGE),
@@ -691,6 +734,7 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    VALET_TITLE: VALET_DATE,
     CAROLYN_BOARD_TITLE: CAROLYN_BOARD_DATE,
     GAME_NIGHT_TITLE: GAME_NIGHT_DATE,
     CANTATA_TITLE: CANTATA_DATE,
@@ -1027,7 +1071,9 @@ R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 
 # ---------- Community Notices (6): archive rows added by this issue (R59) ----------
-NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-15", id="2026-11-15-correction-i-got-it-game-night", title=GAME_NIGHT_TITLE,
+NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-22", id="2026-11-22-new-valet-trash-service", title=VALET_TITLE,
+                     text=VALET_BODY, page=WM_COPY_VALET, source="Resource Property Management message, Nov 17; clear-bags sentence from Webmaster notice (Bob Newport), Nov 18", issues=["2026-11-22"]),
+                dict(date="2026-11-15", id="2026-11-15-correction-i-got-it-game-night", title=GAME_NIGHT_TITLE,
                      text=GAME_NIGHT_BODY, page=WM_COPY_GAME_NIGHT, source="Palm Hill Webmaster notice, Nov 14", issues=["2026-11-15"]),
                 dict(date="2026-11-15", id="2026-11-15-singing-ensemble-christmas-cantata", title=CANTATA_TITLE,
                      text="Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!",
