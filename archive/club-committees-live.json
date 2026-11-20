@@ -1,7 +1,7 @@
 {
- "fetched_at": "2026-11-12T13:49:51-05:00",
+ "fetched_at": "2026-11-20T10:34:01-05:00",
  "url": "https://www.palmhillcountryclub.net/committees/",
- "count": 123,
+ "count": 124,
  "items": [
   {
    "group": "board",
@@ -570,6 +570,14 @@
    "label": "10/22/2026",
    "note": "",
    "url": "https://drive.google.com/file/d/1JJPjj_VCvC5wlA_h3VXQ__jJpoK6HFqk/view?usp=sharing"
+  },
+  {
+   "group": "finance",
+   "meeting": "",
+   "date": "2026-11-16",
+   "label": "11/16/2026",
+   "note": "",
+   "url": "https://drive.google.com/file/d/1Glug0BTEAayBnuq7r_iJb6Jmte-7CwHh/view?usp=sharing"
   },
   {
    "group": "golf",
