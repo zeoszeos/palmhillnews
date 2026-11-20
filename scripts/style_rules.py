@@ -1540,3 +1540,61 @@ def ocr_items_problems(wm_copies, ocr_items, issue_titles):
                         f"(ocr_approved_by_steven={o.get('ocr_approved_by_steven')!r}; {o.get('ocr_approved_note', '')}). "
                         f"Ask: \"{OCR_FLAG_TEXT}\"")
     return hits
+
+# R135 (Steven, Nov 20 2026 1:13 PM ET, voice): Residents Reference Guide trash/recycling lines match the
+# Fed Up Trash Valet source (RPM email Nov 17 2026 3:48 PM ET, gotwicz 1a1eb44bde4f4eee; Bob Newport clear-bags note Nov 18).
+# Compact: source wording only (omit details for space, never alter). Debris/brush and Sanitation hours are unchanged.
+# Archived as-sent issues are not rewritten (R10). Applies from the Nov 22 issue on.
+R135_FROM = "2026-11-22"
+REFERENCE_TRASH_BULLETS = [
+    "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. The first collection will be the recycling on December 2nd.",
+    "Trash: Mondays and Thursdays for the ENTIRE community",
+    "Recycling: Wednesdays for the ENTIRE community. Clear bags are still required for recycling.",
+    "Collection takes place between 8:00 a.m. and 4:00 p.m. on service days. Place your trash or recycling bags on the sidewalk or at the end of your driveway by 8:00 a.m. on collection days.",
+]
+REFERENCE_TRASH_REQUIRED = tuple(REFERENCE_TRASH_BULLETS)
+_R135_HEAD = "Trash, Recycling &amp; Sanitation</div>"
+_R135_OLD = ("North Area:", "Palm Forest:", "South Area:", "Mon (trash)", "Thu (recycling)", "Tue (trash)", "Fri (recycling)")
+_R135_KEEP = re.compile(r"^•\s*(Debris/brush|Sanitation:)")
+_R135_BULLET = re.compile(r"<div>• .*?</div>")
+
+def _r135_section(html):
+    i = (html or "").find("Trash, Recycling")
+    if i < 0:
+        return ""
+    j = html.find("</td>", i)
+    return html[i:j] if j > i else html[i:]
+
+def apply_reference_trash(html):
+    """Replace the area-by-area trash/recycling bullets in the Residents Reference Guide with the R135 source lines.
+    Leaves the heading, Debris/brush, and Sanitation hours in place. Idempotent."""
+    if not html or _R135_HEAD not in html:
+        return html
+    start = html.find(_R135_HEAD) + len(_R135_HEAD)
+    end = html.find("</td>", start)
+    if end < 0:
+        return html
+    block = html[start:end]
+    kept = [m.group(0) for m in _R135_BULLET.finditer(block)
+            if _R135_KEEP.search(re.sub(r"<[^>]+>", "", m.group(0)))]
+    new = "".join(f"<div>• {__import__('html').escape(b, quote=False)}</div>" for b in REFERENCE_TRASH_BULLETS) + "".join(kept)
+    return html[:start] + new + html[end:]
+
+def reference_trash_problems(html):
+    """R135: the Reference Guide trash section carries the source schedule and not the old area-by-area days."""
+    sec = _r135_section(html)
+    text = re.sub(r"<[^>]+>", " ", sec)
+    text = text.replace("&amp;", "&").replace("&#x27;", "'")
+    hits = []
+    if "Trash, Recycling" not in (html or ""):
+        return ["R135: Residents Reference Guide trash section not found"]
+    for req in REFERENCE_TRASH_REQUIRED:
+        if req not in text:
+            hits.append(f"R135: missing source wording: {req[:80]!r}")
+    for old in _R135_OLD:
+        if old in text:
+            hits.append(f"R135: old area schedule still present: {old!r}")
+    for keep in ("Debris/brush", "Sanitation:"):
+        if keep not in text:
+            hits.append(f"R135: kept line missing: {keep}")
+    return hits

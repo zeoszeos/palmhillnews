@@ -639,6 +639,11 @@ if C.ISSUE >= "2026-11-15":
 if C.ISSUE >= _sr83.R134_FROM:
     _p134 = _sr83.ocr_items_problems(getattr(C, "WM_COPIES", []), getattr(C, "OCR_ITEMS", []), lc.NOTICES_EXPECTED or [])
     L.ok("R134", not _p134, "OCR'd handwritten text is marked and approved by Steven" + (f" {' | '.join(_p134)}" if _p134 else ""))
+# R135 (Steven Nov 20 2026 1:13 PM ET): Reference Guide trash/recycling matches the Fed Up Trash Valet source.
+if C.ISSUE >= _sr83.R135_FROM:
+    for _n135, _x135 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p135 = _sr83.reference_trash_problems(_x135)
+        L.ok("R135", not _p135, f"{_n135}: Reference Guide trash schedule matches the Fed Up Trash Valet source" + (f" {_p135}" if _p135 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
