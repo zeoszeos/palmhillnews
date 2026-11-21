@@ -101,7 +101,10 @@ if getattr(C, "NOTICE_DATES", False):
         _dl = C.NOTICE_DATE_LINE.get(_t)
         L.ok("R93", bool(_dl) != (_t in C.NOTICE_NO_DATE), f"{_t}: date line or approved No date (not both)")
         if _dl:
-            L.ok("R93", f'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">{_html.escape(_dl)}</div>' in cn,
+            # Visible text must match the date line (R85 may wrap a phone in a tel: link inside this div).
+            _dl_hits = re.findall(r'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">(.*?)</div>', cn)
+            _dl_vis = [_html.unescape(re.sub(r"<[^>]+>", "", h)) for h in _dl_hits]
+            L.ok("R93", _dl in _dl_vis or f'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">{_html.escape(_dl)}</div>' in cn,
                  f"{_t}: date line directly under the title")
             _h = dict(_items).get(_t); _sp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _h.rsplit("/", 1)[1] if _h else None
             _st = " ".join(re.sub(r"<[^>]+>", " ", _html.unescape(_sp.read_text(encoding="utf-8"))).split()).lower() if _sp and _sp.exists() else ""

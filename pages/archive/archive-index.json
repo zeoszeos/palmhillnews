@@ -921,6 +921,14 @@
       "page_link_label": "Weekly Manager Report Archives →",
       "items": [
         {
+          "date": "2026-11-13",
+          "title": "Weekly Manager Update",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-13-weekly-manager-update.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
+        {
           "date": "2026-11-06",
           "title": "Weekly Manager Update",
           "url": "https://palmhillnews.vercel.app/pages/2026-11-06-weekly-manager-update.html",
@@ -1130,6 +1138,38 @@
       "email_link_label": "Notice Archives →",
       "page_link_label": "Notice Archives →",
       "items": [
+        {
+          "date": "2026-11-22",
+          "title": "Thanksgiving Holiday Schedule",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-20-holiday-schedule-trash-sanitation-field-notice.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
+        {
+          "date": "2026-11-22",
+          "title": "Spectrum Fiber Upgrade",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-20-spectrum-fiber-upgrade-notice.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
+        {
+          "date": "2026-11-22",
+          "title": "Pianist Needed for Cantata Ensemble",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-19-pianist-needed-for-cantata-ensemble-notice.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
+        {
+          "date": "2026-11-22",
+          "title": "Cornhole Tournament",
+          "url": "https://palmhillnews.vercel.app/pages/2026-10-31-cornhole-tournament-notice.html",
+          "issues": [
+            "2026-11-22"
+          ]
+        },
         {
           "date": "2026-11-22",
           "title": "New Valet Trash Service",

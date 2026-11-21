@@ -17,6 +17,16 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Steven Nov 20 2026 6:33 PM ET: RPM Thanksgiving and Spectrum emails (gotwicz) and Webmaster pianist notice, one email = one notice.
+    "2026-11-20-holiday-schedule-trash-sanitation-field-notice.html": dict(
+        subject="[#XN9638266] Message from Home Owners of Palm Hill, Inc - HOLIDAY SCHEDULE-TRASH & SANITATION FIELD", notice_title="Thanksgiving Holiday Schedule", use_existing_page=True,
+        sections=[dict(heading="Thanksgiving holiday schedule", keys=["Thanksgiving Holiday"])], approved_omit=[]),
+    "2026-11-20-spectrum-fiber-upgrade-notice.html": dict(
+        subject="[#XN9635927] Message from Home Owners of Palm Hill, Inc -", notice_title="Spectrum Fiber Upgrade", use_existing_page=True,
+        sections=[dict(heading="Spectrum Fiber upgrade", keys=["Fiber"])], approved_omit=[]),
+    "2026-11-19-pianist-needed-for-cantata-ensemble-notice.html": dict(
+        subject="Pianist Needed for Cantata Ensemble", notice_title="Pianist Needed for Cantata Ensemble", use_existing_page=True,
+        sections=[dict(heading="Pianist needed for Cantata Ensemble", keys=["pianist"])], approved_omit=[]),
     # Steven Nov 20 2026 5:03 PM ET (voice, R141): RPM valet-trash email (gotwicz 1a1eb44bde4f4eee) plus Bob Newport clear-bags note, one Community Notice.
     "2026-11-17-new-valet-trash-service-notice.html": dict(
         subject="[#XN9606941] Message from Home Owners of Palm Hill, Inc - New Valet Trash Service Begins December 2nd", notice_title="New Valet Trash Service", use_existing_page=True,
@@ -65,7 +75,7 @@ SOURCES = {
     # Sat Oct 31 2026 6 PM deadline sweep (staged pending Steven): three Sat Oct 31 Webmaster emails (leonowicz) -> Nov 1 notices
     "2026-10-31-cornhole-tournament-notice.html": dict(
         subject="Cornhole Tournament", notice_title="Cornhole Tournament", use_existing_page=True,
-        sections=[dict(heading="Cornhole Tournament flyer", keys=["Registration ends"])], approved_omit=[]),
+        sections=[dict(heading="Cornhole Tournament reminder", keys=["few openings"])], approved_omit=[]),
     "2026-10-31-senior-empowerment-lunch-and-learn-notice.html": dict(
         subject="REMINDER: Senior Empowerment Lunch & Learn", notice_title="Senior Empowerment Lunch & Learn", use_existing_page=True,
         sections=[dict(heading="Lunch & Learn reminders", keys=["Lunch registration"])], approved_omit=[]),
