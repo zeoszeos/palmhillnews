@@ -1660,3 +1660,28 @@ def valet_notice_problems(issue_html, page_html):
         if req not in page_text:
             hits.append(f"R141: copy page missing source wording: {req[:80]!r}")
     return hits
+
+# R142 (Steven, Nov 20 2026 7:40 PM ET, chat: "Cut those"): when a forwarded weekly
+# manager update is unredacted, legal/safety items Steven cuts stay out of every
+# Nov 13 update output. Remaining wording stays exactly as she wrote it.
+# Applies from the Nov 22 issue on. Frozen as-sent pages are not rewritten (R10).
+R142_FROM = "2026-11-22"
+R142_PAGE = "2026-11-13-weekly-manager-update.html"
+WMU_REDACT_PHRASES = (
+    "shot and killed",
+    "Assault and Battery",
+    "CAI",
+)
+
+def wmu_legal_redact_problems(html, label=""):
+    """R142: the cut legal/safety phrases must not appear in this Nov 13 update output."""
+    text = html or ""
+    hits = []
+    where = f" in {label}" if label else ""
+    for phrase in WMU_REDACT_PHRASES:
+        if phrase == "CAI":
+            if re.search(r"\bCAI\b", text):
+                hits.append(f"R142: cut phrase 'CAI' still present{where}")
+        elif phrase in text:
+            hits.append(f"R142: cut phrase {phrase!r} still present{where}")
+    return hits

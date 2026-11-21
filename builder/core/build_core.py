@@ -490,7 +490,12 @@ if STORY:
         _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + [ISSUE])
 # Weekly Manager Update page (WMU_* data from the issue content file): built from the previous page's card template, item by item.
 _wp = PAGES / WMU_1023_PAGE
-if not _wp.exists():  # published page (nav/Listen kept current by build_archive.js) is never overwritten
+# R10: a locked or already-sent update page is never overwritten. An unsent issue rebuilds
+# from WMU_INTRO / WMU_1023 so later editorial cuts (R142) go through the builder, not a hand patch.
+sys.path.insert(0, SCRIPTS); import style_rules as _sr142
+_wmu_rel = f"pages/{WMU_1023_PAGE}"
+_wmu_sent = ISSUE in {i.get("date") for i in _sr142.load_sent_issues(REPO)}
+if (not _wp.exists()) or (not _wmu_sent and _wmu_rel not in _sr142.R10_LOCKED_SHA256):
     _tpl = (PAGES / WMU_TEMPLATE).read_text(encoding="utf-8")
     def _li(x):
         if isinstance(x, tuple):

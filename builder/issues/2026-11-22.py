@@ -1033,17 +1033,17 @@ STORY_DATE_LABEL = "Nov 2026"   # archive "date_label" for this issue's story ro
 # 4:44 PM ET; forwarded to palmhillblast 1a1e9f23bcff3551, Tue Nov 17 2026 9:38 AM ET) replaces Nov 6 on this
 # issue (retention rule; Steven Nov 20 2026 6:33 PM ET). Built from the Nov 6 page's card template with her
 # wording item by item (never hand-edited), same pattern as Nov 8 PR #158. Opening prose is WMU_INTRO (not
-# bullets). Attachments are held (R65b) pending Steven: Brightview Quality_Site_Assessment_Palm_Hill_Country_Club.pdf,
-# Electrical Box.jpg (named in the last bullet), and "A Message to CAI Members Following DC Condo Tragedy.eml"
-# (legal/safety item; the CAI email is not hosted or quoted beyond her opening sentence). Nov 6 page and
-# archive row stay as published. The page sign-off stays the weekly-update shell.
+# bullets). R142 (Steven Nov 20 2026 7:40 PM ET, "Cut those"): the DC shooting paragraph, the CAI CEO / safety
+# resources mention, and the Assault and Battery Policy bullet are cut; remaining wording is hers exactly.
+# Attachments are held (R65b) pending Steven: Brightview Quality_Site_Assessment_Palm_Hill_Country_Club.pdf
+# and Electrical Box.jpg (named in the last bullet). The held CAI CEO email is not hosted or quoted. Nov 6 page
+# and archive row stay as published. The page sign-off stays the weekly-update shell.
 WMU_1023_PAGE = "2026-11-13-weekly-manager-update.html"
 WMU_GREETING = "Hello Everyone,"
 WMU_INTRO = [
-    "It was a bit of a crazy week with the Microsoft Outage affecting our email for most of the day on Thursday. Additionally, if you didn't see the email from CAI, an Association manager was shot and killed in DC yesterday, along with an additional 5 people injured. I've attached the email from CAI's CEO, which includes some safety resources.",
+    "It was a bit of a crazy week with the Microsoft Outage affecting our email for most of the day on Thursday.",
 ]
 WMU_1023 = [
-    "The Assault and Battery Policy came back with the same premium that was provided previously in spite of the coverage being reduced to 5 months. Please advise whether you would like me to proceed with paying the premium or revisit this at Friday's meeting.",
     "The quote to re-strap the chairs and lounge chairs for the pool areas was approved by Henry, and we are coordinating with the vendor to have the furniture picked up, work completed, and chairs returned. The timeline for this is approximately 10 weeks.",
     "The first email for the upcoming Spectrum disconnection of the coaxial service has gone out. It provides owners with the phone number for Spectrum and lets them know that they need to schedule the switch by December 1st.",
     "61 Thatch West began demolition of the old home this week. There was an issue with the equipment, and it has not been completed. They will be returning to complete the work as soon as the machine is repaired. The owner has been providing us with regular updates on the status of the process.",
@@ -1078,7 +1078,7 @@ ARCHIVE_ROWS_LATE = [   # archive rows added after the weekly update page is bui
 WMU_CARD_OLD = '<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'
 WMU_CARD_OLD_MARK = "Duke Energy Waiver"
 WMU_CARD_DATE = "Friday, Nov 13, 2026"
-# First source sentence of the opening paragraph (not the first bullet, which is the Assault and Battery Policy item).
+# First source sentence of the remaining opening paragraph (R142).
 WMU_CARD_TEASER = "It was a bit of a crazy week with the Microsoft Outage affecting our email for most of the day on Thursday."
 
 

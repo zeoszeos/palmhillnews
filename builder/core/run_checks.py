@@ -656,6 +656,29 @@ if C.ISSUE >= _sr83.R141_FROM:
     for _n141, _x141 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
         _p141 = _sr83.valet_notice_problems(_x141, _pg141)
         L.ok("R141", not _p141, f"{_n141}: valet-trash source details are in the Community Notice" + (f" {_p141}" if _p141 else ""))
+# R142 (Steven Nov 20 2026 7:40 PM ET, "Cut those"): legal/safety items cut from the unredacted
+# Nov 13 weekly manager update must not appear in the update page, preview, SEND, or archive.
+if C.ISSUE >= _sr83.R142_FROM:
+    _rp142 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _targets142 = []
+    _pf142 = _rp142 / "pages" / _sr83.R142_PAGE
+    if _pf142.exists():
+        _targets142.append((_sr83.R142_PAGE, _pf142.read_text(encoding="utf-8")))
+    _targets142.append(("preview", page))
+    _sf142 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sf142.exists():
+        _targets142.append(("SEND", _sf142.read_text(encoding="utf-8")))
+    _af142 = _rp142 / "pages/archive/weekly-manager-updates.html"
+    if _af142.exists():
+        _targets142.append(("weekly-manager-updates archive", _af142.read_text(encoding="utf-8")))
+    # Also fail if the issue content still lists a cut phrase (builder source, not a hand patch).
+    for _attr142 in ("WMU_INTRO", "WMU_1023"):
+        _src142 = getattr(C, _attr142, None) or []
+        _blob142 = "\n".join(_src142 if isinstance(_src142, (list, tuple)) else [_src142])
+        _targets142.append((f"content {_attr142}", _blob142))
+    for _n142, _x142 in _targets142:
+        _p142 = _sr83.wmu_legal_redact_problems(_x142, _n142)
+        L.ok("R142", not _p142, f"{_n142}: cut legal/safety phrases are absent" + (f" {_p142}" if _p142 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
