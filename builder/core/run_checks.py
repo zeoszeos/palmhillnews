@@ -101,7 +101,10 @@ if getattr(C, "NOTICE_DATES", False):
         _dl = C.NOTICE_DATE_LINE.get(_t)
         L.ok("R93", bool(_dl) != (_t in C.NOTICE_NO_DATE), f"{_t}: date line or approved No date (not both)")
         if _dl:
-            L.ok("R93", f'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">{_html.escape(_dl)}</div>' in cn,
+            # Visible text must match the date line (R85 may wrap a phone in a tel: link inside this div).
+            _dl_hits = re.findall(r'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">(.*?)</div>', cn)
+            _dl_vis = [_html.unescape(re.sub(r"<[^>]+>", "", h)) for h in _dl_hits]
+            L.ok("R93", _dl in _dl_vis or f'ph-notice-date" style="font-size:14px;color:#666666;text-align:left;padding-top:2px;">{_html.escape(_dl)}</div>' in cn,
                  f"{_t}: date line directly under the title")
             _h = dict(_items).get(_t); _sp = Path(_os.environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO)) / "pages" / _h.rsplit("/", 1)[1] if _h else None
             _st = " ".join(re.sub(r"<[^>]+>", " ", _html.unescape(_sp.read_text(encoding="utf-8"))).split()).lower() if _sp and _sp.exists() else ""
@@ -639,6 +642,43 @@ if C.ISSUE >= "2026-11-15":
 if C.ISSUE >= _sr83.R134_FROM:
     _p134 = _sr83.ocr_items_problems(getattr(C, "WM_COPIES", []), getattr(C, "OCR_ITEMS", []), lc.NOTICES_EXPECTED or [])
     L.ok("R134", not _p134, "OCR'd handwritten text is marked and approved by Steven" + (f" {' | '.join(_p134)}" if _p134 else ""))
+# R140 (Steven Nov 20 2026 5:03 PM ET): Reference Guide trash/recycling is the minimal Starting December 1st list.
+# R141: full Fed Up Trash Valet source details run as a Community Notice (copy page + teaser).
+if C.ISSUE >= _sr83.R140_FROM:
+    _rp140 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    for _n140, _x140 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p140 = _sr83.reference_trash_problems(_x140)
+        L.ok("R140", not _p140, f"{_n140}: Reference Guide trash entry is the minimal bullet list" + (f" {_p140}" if _p140 else ""))
+if C.ISSUE >= _sr83.R141_FROM:
+    _rp141 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _pf141 = _rp141 / "pages" / _sr83.VALET_NOTICE_PAGE
+    _pg141 = _pf141.read_text(encoding="utf-8") if _pf141.exists() else ""
+    for _n141, _x141 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p141 = _sr83.valet_notice_problems(_x141, _pg141)
+        L.ok("R141", not _p141, f"{_n141}: valet-trash source details are in the Community Notice" + (f" {_p141}" if _p141 else ""))
+# R142 (Steven Nov 20 2026 7:40 PM ET, "Cut those"): legal/safety items cut from the unredacted
+# Nov 13 weekly manager update must not appear in the update page, preview, SEND, or archive.
+if C.ISSUE >= _sr83.R142_FROM:
+    _rp142 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _targets142 = []
+    _pf142 = _rp142 / "pages" / _sr83.R142_PAGE
+    if _pf142.exists():
+        _targets142.append((_sr83.R142_PAGE, _pf142.read_text(encoding="utf-8")))
+    _targets142.append(("preview", page))
+    _sf142 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sf142.exists():
+        _targets142.append(("SEND", _sf142.read_text(encoding="utf-8")))
+    _af142 = _rp142 / "pages/archive/weekly-manager-updates.html"
+    if _af142.exists():
+        _targets142.append(("weekly-manager-updates archive", _af142.read_text(encoding="utf-8")))
+    # Also fail if the issue content still lists a cut phrase (builder source, not a hand patch).
+    for _attr142 in ("WMU_INTRO", "WMU_1023"):
+        _src142 = getattr(C, _attr142, None) or []
+        _blob142 = "\n".join(_src142 if isinstance(_src142, (list, tuple)) else [_src142])
+        _targets142.append((f"content {_attr142}", _blob142))
+    for _n142, _x142 in _targets142:
+        _p142 = _sr83.wmu_legal_redact_problems(_x142, _n142)
+        L.ok("R142", not _p142, f"{_n142}: cut legal/safety phrases are absent" + (f" {_p142}" if _p142 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)

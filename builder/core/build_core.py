@@ -490,7 +490,12 @@ if STORY:
         _aj.set_field(REPO, "community-stories", {"date": STORY["date"], "title": STORY["archive_title"]}, "issues", _mi[0].get("issues", []) + [ISSUE])
 # Weekly Manager Update page (WMU_* data from the issue content file): built from the previous page's card template, item by item.
 _wp = PAGES / WMU_1023_PAGE
-if not _wp.exists():  # published page (nav/Listen kept current by build_archive.js) is never overwritten
+# R10: a locked or already-sent update page is never overwritten. An unsent issue rebuilds
+# from WMU_INTRO / WMU_1023 so later editorial cuts (R142) go through the builder, not a hand patch.
+sys.path.insert(0, SCRIPTS); import style_rules as _sr142
+_wmu_rel = f"pages/{WMU_1023_PAGE}"
+_wmu_sent = ISSUE in {i.get("date") for i in _sr142.load_sent_issues(REPO)}
+if (not _wp.exists()) or (not _wmu_sent and _wmu_rel not in _sr142.R10_LOCKED_SHA256):
     _tpl = (PAGES / WMU_TEMPLATE).read_text(encoding="utf-8")
     def _li(x):
         if isinstance(x, tuple):
@@ -498,9 +503,14 @@ if not _wp.exists():  # published page (nav/Listen kept current by build_archive
         return f"<li>{escape(x, quote=False)}</li>"
     _a = _tpl.index('<main><section class="content-card">') + len('<main><section class="content-card">')
     _b = _tpl.index('<p class="signoff">', _a)
-    _tpl = _tpl[:_a] + f"\n<p>{WMU_GREETING}</p>\n<ul>\n" + "\n".join(_li(x) for x in WMU_1023) + "\n</ul>\n" + _tpl[_b:]
-    _a = _tpl.index('<section class="content-card attachments"'); _b = _tpl.index("</section>", _a) + len("</section>\n")
-    _tpl = _tpl[:_a] + _tpl[_b:]   # Oct 16 photo attachment does not carry over; the RPM minutes PDF is not hosted (flagged)
+    # Optional intro paragraphs (WMU_INTRO) sit between the greeting and the bullet list, so opening
+    # prose from Megan's email is not forced into bullets. Absent or empty = previous greeting+list shape.
+    _intro = "".join(f"<p>{escape(p, quote=False)}</p>\n" for p in (globals().get("WMU_INTRO") or []))
+    _tpl = _tpl[:_a] + f"\n<p>{WMU_GREETING}</p>\n{_intro}<ul>\n" + "\n".join(_li(x) for x in WMU_1023) + "\n</ul>\n" + _tpl[_b:]
+    # A prior update built with R65b (no Attachments card) has nothing to strip; only remove a carried card when present.
+    if '<section class="content-card attachments"' in _tpl:
+        _a = _tpl.index('<section class="content-card attachments"'); _b = _tpl.index("</section>", _a) + len("</section>\n")
+        _tpl = _tpl[:_a] + _tpl[_b:]   # Oct 16 photo attachment does not carry over; the RPM minutes PDF is not hosted (flagged)
     for o, n in WMU_REPLACE:
         _tpl = _tpl.replace(o, n)
     assert WMU_TEMPLATE_DATE not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU template still has the template page's date refs"
@@ -750,6 +760,11 @@ _conf = re.compile(r'<p style="font-size:12px;color:#666666;font-style:italic;te
 assert len(_conf.findall(s)) == 1, "R25: footer calendar-confirm sentence not found exactly once"
 s = _conf.sub(lambda m: CALCHECK_P, s)
 assert "All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1, "R25 footer"
+# R140 (Steven Nov 20 2026 5:03 PM ET): Reference Guide trash/recycling is the minimal Starting December 1st list.
+if ISSUE >= _sr.R140_FROM:
+    s = _sr.apply_reference_trash(s)
+    _p140 = _sr.reference_trash_problems(s)
+    if _p140: raise SystemExit("R140: " + "; ".join(_p140))
 s = _sr.service_box_fit(s)  # STYLE-RULES R27: footer service-request lines on one line at desktop width
 (REPO / "builder/calendar-pull").mkdir(exist_ok=True)
 (REPO / f"builder/calendar-pull/{ISSUE}.json").write_text(json.dumps({"calendar_file": os.path.basename(CALF), "pulled_at": _ct.isoformat(), "footer": CALCHECK}, indent=1) + "\n")

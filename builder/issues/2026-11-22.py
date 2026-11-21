@@ -33,7 +33,8 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info fro
                    "Taste of Golf",                              # Steven Nov 12 2026 (voice): drop the Oct 14 sign-up promo; keep Taste of Golf Instructions + the event row
                    # R130 (Steven Nov 14 2026 5:58 PM ET): drop every Community Notice that also ran
                    # in last week's (Nov 8) issue, except the keep-list below. Pages and archive rows stay.
-                   "Cornhole Tournament",
+                   # "Cornhole Tournament" removed from this drop list: Steven Nov 20 2026 6:33 PM ET chose
+                   # to add a Nov 16 reminder that reuses the Oct 31 notice page (not a Nov 15 repeat).
                    "How to access the Palm Hill Community Channel",
                    "Social Shuffle",
                    "A convenient way to send holiday cards for Palm Hill residents",
@@ -52,6 +53,11 @@ R60C_ICE_NOTICE = False               # the ice machine notice is dropped for No
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {
     "NOTICES_EXPECTED": [   # R130: Nov 15 repeats dropped except the PROPOSED keep-list (pending Steven)
+        'Thanksgiving Holiday Schedule',  # Steven Nov 20 2026 6:33 PM ET: RPM Thanksgiving email
+        'Spectrum Fiber Upgrade',  # Steven Nov 20 2026 6:33 PM ET: RPM Spectrum Fiber email
+        'Pianist Needed for Cantata Ensemble',  # Steven Nov 20 2026 6:33 PM ET: Webmaster pianist notice
+        'New Valet Trash Service',  # R141 (Steven Nov 20 2026 5:03 PM ET): full Fed Up Trash Valet details
+        'Cornhole Tournament',  # Steven Nov 20 2026 6:33 PM ET: Nov 16 reminder, Oct 31 page
         'Palm Hill Annual Golf Cart Parade',
         'Christmas Golf Cart Route',
         'Ladies Christmas Luncheon',
@@ -97,6 +103,11 @@ EVENT_DETAIL = {
     # the Bazaar listing's home phone is left out (not OK'd for print), same as the Oct 31 North Clubhouse Craft Fair row.
     "North Clubhouse Bazaar": "Rent a table for $20 to sell your goods, 9 a.m. to 1 p.m. Christmas decorations welcome as donations. See the club calendar for who to contact to book.",
     "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Lunch before book club, on the same day as the discussion in the South Hall instead of 12/10. Members only.",
+    # Nov 20 2026 calendar re-pull: one-off Hoss Collar Shuffle (Sun Nov 22). The listing's personal phone is left out
+    # (not OK'd for print), same as the North Clubhouse Bazaar row. Wording is the calendar info minus the contact line.
+    "Hoss Collar Shuffle": "New players arrive 6:00pm to learn the basics. Cost $1, bring exact amount. Wear closed toe shoes. All levels welcome.",
+    # Same pull: new off-site book-club lunch on Jan 21, 2027. Detail = calendar info, verbatim.
+    "Bookclub Activity.  Lunch at a seafood restaurant TBA": "For members and those wishing to join bookclub. Book discussed on 1/14:  Remarkably Bright Creatures by VanPelt.",
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html",
@@ -137,9 +148,11 @@ EVENT_PAGE = {"Bocce Party": ("2026-10-28-bocce-party.html",
 INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "North Clubhouse Craft Fair", "Pot Luck Supper", "Fall Festival",
                 "Veterans Day Program", "Bookclub:Foster by Claire Keegan",
                 "Bookclub Lunch at Irish Pub", "December Cruise Information Meeting", "Bridge Club",
-                "North Clubhouse Bazaar", "Bookclub activity.  Lunch at a Vietnamese Restaurant"}   # Nov 22 box-only test
+                "North Clubhouse Bazaar", "Bookclub activity.  Lunch at a Vietnamese Restaurant",
+                "Hoss Collar Shuffle", "Bookclub Activity.  Lunch at a seafood restaurant TBA"}   # Nov 22; Hoss + Jan 21 lunch from Nov 20 calendar re-pull
 TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan", "Bookclub Lunch at Irish Pub": "Book Club Lunch at Irish Pub",
-         "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Book Club Lunch at a Vietnamese Restaurant", "December Bookclub": "December Book Club"}   # Nov 22 box-only test
+         "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Book Club Lunch at a Vietnamese Restaurant", "December Bookclub": "December Book Club",
+         "Bookclub Activity.  Lunch at a seafood restaurant TBA": "Book Club Lunch at a seafood restaurant TBA"}   # Nov 22; Jan 21 lunch from Nov 20 calendar re-pull
 # Oct 25: events new to the issue window (calendar re-pull Oct 20 2:40 PM). Detail = the calendar listing text (light edits only).
 # Calendar re-pull Oct 22 7:55 PM: new one-off Bridge Club (Oct 26, Pool Room South); detail = its calendar listing text verbatim
 # (batch 5: these additions were EVENT_DETAIL.update / EVENT_LINK[...] = ... statements; folded into the data above, same order)
@@ -290,8 +303,106 @@ OCR_ITEMS = [
          ocr_approved_by_steven=None, ocr_approved_note="Printed flyer (not handwritten); notice added at Steven's direction Nov 13 2026 (R125)"),
     dict(title="2027 South Rec Club Seeking Officers", page=WM_COPY_SOUTHREC, image=SOUTHREC_IMG, ocr_source=True, handwritten=False,
          ocr_approved_by_steven=None, ocr_approved_note="Printed flyer (not handwritten); notice added at Steven's direction Oct 23 2026"),
+    dict(title="Cornhole Tournament", page=WM_COPY_CORNHOLE, image=CORNHOLE_IMG, ocr_source=True, handwritten=False,
+         ocr_approved_by_steven=None, ocr_approved_note="Printed flyer (not handwritten); notice first added at Steven's direction Oct 31 2026; Nov 16 reminder reuses this page (Steven Nov 20 2026 6:33 PM ET)"),
 ]
+# R141 (Steven Nov 20 2026 5:03 PM ET, voice): full Fed Up Trash Valet details as a Community Notice.
+# RPM email gotwicz 1a1eb44bde4f4eee, Tue Nov 17 2026 3:48 PM ET, subject "New Valet Trash Service Begins December 2nd".
+# Clear-bags sentence from Webmaster Bob Newport, Wed Nov 18 (1a1f09b8bf98e63b). Source wording only; R93 date off the title.
+WM_COPY_VALET = "2026-11-17-new-valet-trash-service-notice.html"
+VALET_TITLE = "New Valet Trash Service"
+VALET_BODY = "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC."  # R18: first source sentence; first-collection sentence is on the date line and copy page
+VALET_DATE = "Effective: December 1, 2026 · First collection: recycling on December 2nd"
+VALET_SUBJECT = "[#XN9606941] Message from Home Owners of Palm Hill, Inc - New Valet Trash Service Begins December 2nd"
+VALET_SENT = "Tuesday, Nov 17, 2026, 3:48 PM ET"
+VALET_BLOCKS = [
+    ("p", "Dear Palm Hill Residents,"),
+    ("p", "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. The first collection will be the recycling on December 2nd. Please review the details below."),
+    ("h", "Collection Schedule"),
+    ("ul", [
+        "Trash: Mondays and Thursdays for the ENTIRE community (You will now have two days of collection from your home!)",
+        "Recycling: Wednesdays for the ENTIRE community",
+        "Collection takes place between 8:00 a.m. and 4:00 p.m. on service days.",
+    ]),
+    ("h", "What You Need to Do"),
+    ("ul", ["Place your trash or recycling bags on the sidewalk or at the end of your driveway by 8:00 a.m. on collection days."]),
+    ("h", "Items Not Accepted"),
+    ("ul", [
+        "Oversized items that don't fit in normal plastic kitchen bags",
+        "Excessively heavy bags (If you can't pick it up, split it up)",
+        "Broken glass or sharp or dangerous objects protruding from bags",
+        "Hazardous, biohazardous, explosive, or other materials not allowed by law",
+    ]),
+    ("h", "Holiday Schedule"),
+    ("p", "There is no collection on New Year's Eve and Day, Easter, Memorial Day, July 4th, Labor Day, Thanksgiving, or Christmas Eve and Day. If a scheduled pickup falls on one of these holidays, collection will take place the following day."),
+    ("p", "Any questions can be directed to the Palm Hill business office at (727) 581-8729."),
+    ("p", "Sincerely,"),
+    ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
+    ("p", "(727) 581-2662 | www.resourcepropertymgmt.com"),
+    ("p", "Clear bags are still required for recycling."),
+    ("p", "Bob Newport"),
+]
+
+# Steven Nov 20 2026 6:33 PM ET: add these to the Nov 22 issue (source wording only; R18 teasers; R93 date off the title).
+# 1) RPM Thanksgiving holiday schedule, gotwicz 1a1fac42b6f6c314, Fri Nov 20 2026 4:02 PM ET.
+WM_COPY_HOLIDAY_SCHED = "2026-11-20-holiday-schedule-trash-sanitation-field-notice.html"
+HOLIDAY_SCHED_TITLE = "Thanksgiving Holiday Schedule"
+HOLIDAY_SCHED_BODY = "Due to the Thanksgiving Holiday, Maintenance & Administrative offices will be off/closed Thursday, November 26 & Friday, November 27, 2026. The sanitation field will be closed both days."  # R18: first two source sentences
+HOLIDAY_SCHED_DATE = "Offices and sanitation field closed: Thursday, November 26 & Friday, November 27, 2026 · Recycling: Wednesday, November 25th"
+HOLIDAY_SCHED_SUBJECT = "[#XN9638266] Message from Home Owners of Palm Hill, Inc - HOLIDAY SCHEDULE-TRASH & SANITATION FIELD"
+HOLIDAY_SCHED_SENT = "Friday, Nov 20, 2026, 4:02 PM ET"
+HOLIDAY_SCHED_BLOCKS = [
+    ("p", "Due to the Thanksgiving Holiday, Maintenance & Administrative offices will be off/closed Thursday, November 26 & Friday, November 27, 2026.  The sanitation field will be closed both days."),
+    ("p", "Trash will remain normal for the week and recyclables will collected on Wednesday, November 25th for the entire park."),
+    ("p", "Sincerely,"),
+    ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
+    ("p", "(727) 581-2662 | www.resourcepropertymgmt.com"),
+]
+# 2) RPM Spectrum Fiber upgrade, gotwicz 1a1fa3b629ace05e, Fri Nov 20 2026 1:32 PM ET. Subject line after the ticket number is blank; title is taken from the first sentence.
+WM_COPY_SPECTRUM = "2026-11-20-spectrum-fiber-upgrade-notice.html"
+SPECTRUM_TITLE = "Spectrum Fiber Upgrade"
+SPECTRUM_BODY = "Palm Hill has upgraded its Spectrum service to a Fiber solution, which is now fully operational, enhancing service quality and reliability in the community. If you have not called to schedule a professional installation to upgrade your equipment, call 855-326-5115 by December 1, 2026, to prevent any service interruptions. Effective December 8, 2026, all accounts that have not been upgraded will be disconnected."  # R18: source sentences; 3-line guard may cut
+SPECTRUM_DATE = "Schedule installation by: December 1, 2026 · Unupgraded accounts disconnected: December 8, 2026 · Call: 855-326-5115"
+SPECTRUM_SUBJECT = "[#XN9635927] Message from Home Owners of Palm Hill, Inc -"
+SPECTRUM_SENT = "Friday, Nov 20, 2026, 1:32 PM ET"
+SPECTRUM_BLOCKS = [
+    ("p", "Palm Hill has upgraded its Spectrum service to a Fiber solution, which is now fully operational, enhancing service quality and reliability in the community. To ensure a seamless transition for the entire community, we are proceeding with the final phase of our infrastructure upgrade and will be removing old equipment."),
+    ("p", "If you have not called to schedule a professional installation to upgrade your equipment, call 855-326-5115 by December 1, 2026, to prevent any service interruptions. Effective December 8, 2026, all accounts that have not been upgraded will be disconnected. If you have already upgraded your service, no further action is needed."),
+    ("p", "If you have any questions, please contact Spectrum at 855-326-5115."),
+    ("p", "Sincerely,"),
+    ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
+    ("p", "(727) 581-2662 | www.resourcepropertymgmt.com"),
+]
+# 3) Webmaster pianist notice, gotwicz 1a1f59984188f5fd, Thu Nov 19 2026 3:57 PM ET.
+WM_COPY_PIANIST = "2026-11-19-pianist-needed-for-cantata-ensemble-notice.html"
+PIANIST_TITLE = "Pianist Needed for Cantata Ensemble"
+PIANIST_BODY = "The Cantata Ensemble is seeking a pianist to accompany our performance on Sunday, December 6th. If you are interested, please text me at 269-317-6890."  # R18: source sentences
+PIANIST_DATE = "Performance: Sunday, December 6th · Text: 269-317-6890"
+PIANIST_SUBJECT = "Pianist Needed for Cantata Ensemble"
+PIANIST_SENT = "Thursday, Nov 19, 2026, 3:57 PM ET"
+PIANIST_BLOCKS = [
+    ("p", "The Cantata Ensemble is seeking a pianist to accompany our performance on Sunday, December 6th. If you are interested, please text me at 269-317-6890."),
+    ("p", "Many thanks,"),
+    ("p", "Mollie Cardno"),
+]
+# 4) Corn Hole reminder: Nov 16 email wording (gotwicz 1a1e6730552bf448, Mon Nov 16 2026 5:20 PM ET); More → existing Oct 31 page.
+CORNHOLE_REMINDER_BODY = "There are still a few openings for our first cornhole tournament on Saturday, November 28, 2026. Sign up sheets & details are located in both clubhouses. All levels welcome, let's fill this tournament up!"  # R18: Nov 16 source sentences
+CORNHOLE_REMINDER_DATE = "Tournament: Saturday, November 28, 2026 · Contact: 518-866-2079"
+
 WM_COPIES = [
+    # Steven Nov 20 2026 6:33 PM ET: newest first (Thanksgiving 4:02 PM, Spectrum 1:32 PM, pianist Nov 19).
+    (WM_COPY_HOLIDAY_SCHED, HOLIDAY_SCHED_SUBJECT, HOLIDAY_SCHED_SENT, HOLIDAY_SCHED_BLOCKS,
+        dict(source="Source: Resource Property Management message to residents, Nov 20, copied as sent.",
+             sender="Resource Property Management", title=HOLIDAY_SCHED_TITLE)),
+    (WM_COPY_SPECTRUM, SPECTRUM_SUBJECT, SPECTRUM_SENT, SPECTRUM_BLOCKS,
+        dict(source="Source: Resource Property Management message to residents, Nov 20, copied as sent.",
+             sender="Resource Property Management", title=SPECTRUM_TITLE)),
+    (WM_COPY_PIANIST, PIANIST_SUBJECT, PIANIST_SENT, PIANIST_BLOCKS,
+        dict(title=PIANIST_TITLE)),
+    # R141 (Steven Nov 20 2026 5:03 PM ET): RPM valet-trash email, plus Bob Newport's clear-bags note at the end.
+    (WM_COPY_VALET, VALET_SUBJECT, VALET_SENT, VALET_BLOCKS,
+        dict(source="Source: Resource Property Management message to residents, Nov 17, copied as sent. Clear-bags sentence from Webmaster notice (Bob Newport), Nov 18.",
+             sender="Resource Property Management", title=VALET_TITLE)),
     # Sat Nov 14 2026 9:38 AM ET correction (Steven: add then end changes): newest first
     (WM_COPY_GAME_NIGHT, GAME_NIGHT_SUBJECT, GAME_NIGHT_SENT, [
         ("p", GAME_NIGHT_BODY),
@@ -588,6 +699,14 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Steven Nov 20 2026 6:33 PM ET: newest first, ahead of the valet notice and the keep-list.
+    (HOLIDAY_SCHED_TITLE, HOLIDAY_SCHED_BODY, "RPM", BASE + WM_COPY_HOLIDAY_SCHED),
+    (SPECTRUM_TITLE, SPECTRUM_BODY, "RPM", BASE + WM_COPY_SPECTRUM),
+    (PIANIST_TITLE, PIANIST_BODY, "Webmaster", BASE + WM_COPY_PIANIST),
+    # R141 (Steven Nov 20 2026 5:03 PM ET): full Fed Up Trash Valet details; newest first, ahead of the keep-list.
+    (VALET_TITLE, VALET_BODY, "RPM", BASE + WM_COPY_VALET),
+    # Steven Nov 20 2026 6:33 PM ET: Nov 16 reminder; More → existing Oct 31 notice page.
+    ("Cornhole Tournament", CORNHOLE_REMINDER_BODY, "Webmaster", BASE + WM_COPY_CORNHOLE),
     # Steven Nov 12 2026 (voice): Carolyn Story's Board piece, moved from Community Stories into Community Notices.
     # Full verbatim page + Listen stay at CAROLYN_BOARD_PAGE (Link Nov 2026 p 36).
     (CAROLYN_BOARD_TITLE, CAROLYN_BOARD_BODY, "Carolyn Story", BASE + CAROLYN_BOARD_PAGE),
@@ -612,9 +731,7 @@ NOTICES = [
      "The next Link Deadline arrives this Thursday, November 5. Anything you need or want to appear in the December Link needs to be submitted by November 5. Submit your information to: phcclink@gmail.com",
      "Webmaster", BASE + WM_COPY_LINK_DEC),
     # Sat Oct 31 6 PM sweep (STAGED pending Steven): Sat Oct 31 Webmaster emails, newest first (11:11, 9:53, 8:02 AM ET); teasers = source wording (R18)
-    ("Cornhole Tournament",
-     "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. All levels welcome. Sign up in both clubhouses. Contact Earl & Sandy Sullivan 518-866-2079.",
-     "Webmaster", BASE + WM_COPY_CORNHOLE),
+    # Cornhole Tournament moved up: Steven Nov 20 2026 6:33 PM ET reminder uses the Nov 16 wording and this same Oct 31 page.
     ("Senior Empowerment Lunch & Learn",
      "Lunch registration is now closed. Advance sign-up was required to receive lunch. You may still attend without signing up. Please sign in when you arrive.",
      "Webmaster", BASE + WM_COPY_SENIOR_LL),
@@ -684,6 +801,10 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    HOLIDAY_SCHED_TITLE: HOLIDAY_SCHED_DATE,
+    SPECTRUM_TITLE: SPECTRUM_DATE,
+    PIANIST_TITLE: PIANIST_DATE,
+    VALET_TITLE: VALET_DATE,
     CAROLYN_BOARD_TITLE: CAROLYN_BOARD_DATE,
     GAME_NIGHT_TITLE: GAME_NIGHT_DATE,
     CANTATA_TITLE: CANTATA_DATE,
@@ -693,7 +814,7 @@ NOTICE_DATE_LINE = {
     LADIES_LUNCH_TITLE: LADIES_LUNCH_DATE,
     CHAIR_YOGA_TITLE: CHAIR_YOGA_DATE,
     WATER_1111_TITLE: WATER_1111_DATE,
-    "Cornhole Tournament": "Tournament: Saturday, November 28, 2026 · Registration ends: 10:15AM",               # Webmaster Oct 31 flyer (staged)
+    "Cornhole Tournament": CORNHOLE_REMINDER_DATE,  # Steven Nov 20 2026 6:33 PM ET: Nov 16 reminder (tournament date from that email)
     "Senior Empowerment Lunch & Learn": "When: Wednesday, November 4, 10 a.m.\u20131 p.m. · South Clubhouse",       # Webmaster Oct 31 (staged)
     "Worship Service": "Service: Sunday, November 1, 4:00 p.m. (Doors open at 3:30) · North Club House",                    # Webmaster Oct 31 (staged)
     "December Link Deadline": "Deadline: Thursday, November 5",                                                     # Webmaster Oct 30 (staged)
@@ -908,41 +1029,38 @@ RULES_ARCHIVE_SOURCE = "Source: Rules and Regulations Committee Report (Bob Newp
 STORY_DATE_LABEL = "Nov 2026"   # archive "date_label" for this issue's story row (Link month, same form as Feb 2026 / Oct 2026)
 
 # ---------- Weekly Manager Update (page items, PDF attachment, main-page card) ----------
-# Weekly Manager Update Nov 6 (Megan Leftwich, weekly update email dated Friday, November 6, 2026) replaces Oct 30
-# on this issue (retention rule). Built from the Oct 30 page's card template with her wording item by item (never
-# hand-edited). No document was attached, so nothing is hosted (R65b). Oct 30 page and archive row stay as published.
-# The Inliner day list and the Manager's Corner paragraphs sit under their bullets the way an earlier update nests
-# follow-on paragraphs. The page sign-off stays the weekly-update shell.
-WMU_1023_PAGE = "2026-11-06-weekly-manager-update.html"
-WMU_1023 = [
-    "The signed laundry lease has been sent over to Laundry Leasing Co. for them to countersign and then get the laundry room set up.",
-    "The signed waiver for the transformer installation was sent to Duke yesterday. We can now expect approximately 6 weeks for the installation to be completed.",
-    ("Inliner has been sent both signed change orders and has confirmed scheduling starting next Monday. The schedule is as follows:", [
-        "Monday - shore up floor of basin",
-        "Tuesday - install 48\" CIPP",
-        "Wednesday - Wrap up any lining issues and roadway begins",
-        "Thursday - Roadway work",
-        "Friday - Roadway completion"]),
-    "I already forwarded the information from Spectrum that they will begin removal of all coaxial infrastructure on 12/8. We will send out a notice to the residents regarding this. There is a lot going on, and with the Inliner work and meeting notices going out today, I don't want this to get lost in the shuffle. I have it calendared to send out next Thursday the 12th.",
-    "With the Valet Trash being approved, we will be sending out weekly reminders that the trash and recycling pickup days will be changing. We will also be letting everyone know to have their bags out to the curb by 8am.",
-    "The documents to bind the Assault & Battery coverage have been signed and returned to the insurance broker. We are now waiting on an invoice.",
-    "The North pool lights were repaired this week. They brought the wrong lights with them on Monday and had to return on Wednesday.",
-    "I am getting a quote to re-strap 18 lounge chairs and 3 regular chairs for the pool area.",
-    "I met with Tony C from Communications this week. He has been working to update the website and the calendar, as you are all aware. We will be utilizing the calendar on the website for booking the Board Room and Small Conference Room in order to keep everything in one place. He is keeping the momentum from Victoria going!",
-    ("We have started to get the meeting notice setup in GetQuorum for the First Notice and will be starting to make copies next week. I have submitted a Manager's Corner to the Link about the voting certificates and voting overall:", [
-        "The Palm Hill election will be here soon, and we want everyone to be ready! The Annual Meeting is held at 1:00 p.m. in the North Clubhouse on the third Wednesday in January, which this coming year falls on January 20, 2027. Here are a few things to know before it is time to vote.",
-        "Know Your Voting Certificate: Every home has a voting certificate on file. For most owners, it was completed when you purchased your home. It names the designated voter for your unit. If your household plans have changed, you can update the certificate at any time by completing a new form signed by ALL owners of the home. Not sure who your designated voter is? Just call or stop by the office. We're happy to help!",
-        "Sign Your Ballot: Please ensure the designated voter signs your ballot. If the designated voter on the voting certificate hasn't signed it, the election inspectors will have to mark the ballot invalid on the morning of the meeting. We'd hate for your vote not to count!",
-        "Watch for Emails from GetQuorum. Palm Hill uses GetQuorum to send electronic notices for the association. If you've consented to receive notices electronically, look for emails from GetQuorum. They contain your meeting notice and the link to vote when the time comes. Don't see them? Check your spam or junk folder and add GetQuorum to your safe senders list.",
-        "A Note About Online Voting: Online voting is handled entirely by GetQuorum, so the office isn't involved in the process. When voting closes, we simply receive a report with the vote counts. If you have a technical question about your online ballot, the instructions in your GetQuorum email are the best place to start.",
-        "Why Your Vote Matters: Every ballot helps Palm Hill reach quorum and keeps your community running smoothly. Please take a moment to vote, whether online or by paper ballot."]),
+# Weekly Manager Update Nov 13 (Megan Leftwich, "Weekly Update 2026.11.13", originally sent Fri Nov 13 2026
+# 4:44 PM ET; forwarded to palmhillblast 1a1e9f23bcff3551, Tue Nov 17 2026 9:38 AM ET) replaces Nov 6 on this
+# issue (retention rule; Steven Nov 20 2026 6:33 PM ET). Built from the Nov 6 page's card template with her
+# wording item by item (never hand-edited), same pattern as Nov 8 PR #158. Opening prose is WMU_INTRO (not
+# bullets). R142 (Steven Nov 20 2026 7:40 PM ET, "Cut those"): the DC shooting paragraph, the CAI CEO / safety
+# resources mention, and the Assault and Battery Policy bullet are cut; remaining wording is hers exactly.
+# Attachments are held (R65b) pending Steven: Brightview Quality_Site_Assessment_Palm_Hill_Country_Club.pdf
+# and Electrical Box.jpg (named in the last bullet). The held CAI CEO email is not hosted or quoted. Nov 6 page
+# and archive row stay as published. The page sign-off stays the weekly-update shell.
+WMU_1023_PAGE = "2026-11-13-weekly-manager-update.html"
+WMU_GREETING = "Hello Everyone,"
+WMU_INTRO = [
+    "It was a bit of a crazy week with the Microsoft Outage affecting our email for most of the day on Thursday.",
 ]
-WMU_TEMPLATE = "2026-10-30-weekly-manager-update.html"   # previous update page = card template
-WMU_GREETING = "Hello Everyone, Happy Friday!"
-WMU_TEMPLATE_DATE = "2026-10-30"                         # must not survive in the new page (above the Listen block)
-WMU_REPLACE = [("October 30, 2026", "November 6, 2026"), ("Oct 30, 2026", "Nov 6, 2026"),
-               ("2026-10-30-weekly-manager-update", "2026-11-06-weekly-manager-update"), ("2026.10.30", "2026.11.6")]
-# No document attachment on this update (signature images only, not newsletter copy). R65b: no PDF, no Attachments card.
+WMU_1023 = [
+    "The quote to re-strap the chairs and lounge chairs for the pool areas was approved by Henry, and we are coordinating with the vendor to have the furniture picked up, work completed, and chairs returned. The timeline for this is approximately 10 weeks.",
+    "The first email for the upcoming Spectrum disconnection of the coaxial service has gone out. It provides owners with the phone number for Spectrum and lets them know that they need to schedule the switch by December 1st.",
+    "61 Thatch West began demolition of the old home this week. There was an issue with the equipment, and it has not been completed. They will be returning to complete the work as soon as the machine is repaired. The owner has been providing us with regular updates on the status of the process.",
+    "Brightview sent their monthly site assessment, which is attached. I have already shared this with Sean from B&G.",
+    "Based on information provided by Nancy with Real Estate, she polled everyone, and nobody had an issue with discontinuing charging for renter badges. We will stop doing so and adjust the paperwork accordingly.",
+    "We were provided with a \"target\" start date of 11/16 and an end date of 1/8/2027 for the installation of the transformer. There will be an electrical outage in the building during installation. We do not yet have any details on how long this will be. I have notified Linda Keehl of this in case we need to relocate any events. The office staff and I are figuring out where and how we will work depending on how long the outage lasts. We may work from the North Clubhouse. If any of you have any suggestions of possible solutions, please let me know. We could also rent a generator, depending on how long the outage is expected to last.",
+    "The clay for the bocce courts was delivered on Wednesday morning.",
+    "The attachment for the tractor arrived today.",
+    "Installation of the window coatings at the North Clubhouse was completed on Wednesday.",
+    "The first notice for the annual meeting has been printed and stuffed in envelopes. We have set up the distribution with GetQuorum. We are giving them a chance to email new owners, and the notice will be sent out early on the 18th.",
+    "Symbiont was out and repaired the heaters on the north pool on Thursday. They have provided a quote to replace the electrical box outside of the heater area. Picture attached.",
+]
+WMU_TEMPLATE = "2026-11-06-weekly-manager-update.html"   # previous update page = card template
+WMU_TEMPLATE_DATE = "2026-11-06"                         # must not survive in the new page (above the Listen block)
+WMU_REPLACE = [("November 6, 2026", "November 13, 2026"), ("Nov 6, 2026", "Nov 13, 2026"),
+               ("2026-11-06-weekly-manager-update", "2026-11-13-weekly-manager-update"), ("2026.11.6", "2026.11.13")]
+# Attachments held for Steven (R65b): no PDF/EML/JPG hosted, no Attachments card. Signature images only were not treated as newsletter copy on prior updates.
 WMU_1023_PDF_SRC = None
 WMU_PDF_INLINE = {}
 WMU_PDF_MISSING = []
@@ -952,13 +1070,17 @@ ARCHIVE_ROWS_LATE = [   # archive rows added after the weekly update page is bui
     ("weekly-manager-updates", {"date": "2026-10-30", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
                                          "page": "2026-10-30-weekly-manager-update.html", "issues": ["2026-11-01"]}),
     ("weekly-manager-updates", {"date": "2026-11-06", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
-                                         "page": WMU_1023_PAGE, "issues": ["2026-11-08"]}),
+                                         "page": "2026-11-06-weekly-manager-update.html", "issues": ["2026-11-08"]}),
+    ("weekly-manager-updates", {"date": "2026-11-13", "title": "Weekly Manager Update", "byline": "Megan Leftwich",
+                                         "page": WMU_1023_PAGE, "issues": ["2026-11-22"]}),
 ]
 # Main-page Weekly Manager Update card: the seed card to replace (title + a phrase proving it is the old one) and the new date line/teaser
 WMU_CARD_OLD = '<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update — October 9</div>'
 WMU_CARD_OLD_MARK = "Duke Energy Waiver"
-WMU_CARD_DATE = "Friday, Nov 6, 2026"
-WMU_CARD_TEASER = "The signed laundry lease has been sent over to Laundry Leasing Co. for them to countersign and then get the laundry room set up."
+WMU_CARD_DATE = "Friday, Nov 13, 2026"
+# First source sentence of the remaining opening paragraph (R142).
+WMU_CARD_TEASER = "It was a bit of a crazy week with the Microsoft Outage affecting our email for most of the day on Thursday."
+
 
 # ---------- Manager reports with a Listen on the title line ----------
 MANAGER_LISTEN = [("Shareholders Report — September 30 Board Meeting", BASE + "2026-09-30-shareholders-report.html"),
@@ -1020,7 +1142,17 @@ R66C_SOURCE_JSON = "builder/oct18/data/dyk-traffic-rules-source.json"; R66C_ROW_
 R66C_PHRASES = ["the speed limit", "stop signs", "lights after dark", "operators under 16", "motorcycles", "golf cart registration"]
 
 # ---------- Community Notices (6): archive rows added by this issue (R59) ----------
-NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-15", id="2026-11-15-correction-i-got-it-game-night", title=GAME_NIGHT_TITLE,
+NOTICE_ARCHIVE_ROWS = [dict(date="2026-11-22", id="2026-11-22-holiday-schedule-trash-sanitation-field", title=HOLIDAY_SCHED_TITLE,
+                     text=HOLIDAY_SCHED_BODY, page=WM_COPY_HOLIDAY_SCHED, source="Resource Property Management message, Nov 20", issues=["2026-11-22"]),
+                dict(date="2026-11-22", id="2026-11-22-spectrum-fiber-upgrade", title=SPECTRUM_TITLE,
+                     text=SPECTRUM_BODY, page=WM_COPY_SPECTRUM, source="Resource Property Management message, Nov 20", issues=["2026-11-22"]),
+                dict(date="2026-11-22", id="2026-11-22-pianist-needed-for-cantata-ensemble", title=PIANIST_TITLE,
+                     text=PIANIST_BODY, page=WM_COPY_PIANIST, source="Palm Hill Webmaster notice, Nov 19", issues=["2026-11-22"]),
+                dict(date="2026-11-22", id="2026-11-22-new-valet-trash-service", title=VALET_TITLE,
+                     text=VALET_BODY, page=WM_COPY_VALET, source="Resource Property Management message, Nov 17; clear-bags sentence from Webmaster notice (Bob Newport), Nov 18", issues=["2026-11-22"]),
+                dict(date="2026-11-22", id="2026-11-22-cornhole-tournament", title="Cornhole Tournament",
+                     text=CORNHOLE_REMINDER_BODY, page=WM_COPY_CORNHOLE, source="Palm Hill Webmaster notice, Nov 16 (reminder); copy page is the Oct 31 notice", issues=["2026-11-22"]),
+                dict(date="2026-11-15", id="2026-11-15-correction-i-got-it-game-night", title=GAME_NIGHT_TITLE,
                      text=GAME_NIGHT_BODY, page=WM_COPY_GAME_NIGHT, source="Palm Hill Webmaster notice, Nov 14", issues=["2026-11-15"]),
                 dict(date="2026-11-15", id="2026-11-15-singing-ensemble-christmas-cantata", title=CANTATA_TITLE,
                      text="Share your singing talents with us as the Palm Hill Christmas Cantata Ensemble begins rehearsing this Sunday!",
@@ -1087,6 +1219,8 @@ TONY_FB_NOTICE = False
 # R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
 # in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
 REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE),
+                 ("Pianist Needed for Cantata Ensemble", "269-317-6890", WM_COPY_PIANIST),
+                 ("Spectrum Fiber Upgrade", "855-326-5115", WM_COPY_SPECTRUM),
                  ("Christmas Golf Cart Route", "(727) 581-8729", WM_COPY_ROUTE)]  # R133 (Steven Nov 15 2026): official office number
 _NOV1_TOP_BANNER = dict(heading="\u23f0 Did you set your clocks back one hour?",
                   body="Daylight Saving Time ended at 2 a.m. on Sunday, November 1. Enjoy the extra hour!")
@@ -1103,8 +1237,6 @@ FIRST_NOTICE = None   # Nov 8: December Link Deadline (Nov 5) dropped as stale
 # sections (by key: president, story, chair, manager, dyk, ...) with no current item are left out entirely (header and all). Archive pages and URLs stay live.
 HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 1; no new message (Steven Nov 1 11:55 AM)",
                  # R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 card leaves this main page.
-                 "shareholders": "September 30 monthly report; no newer monthly report (Steven Nov 7 2026)",
-                 # Nov 22 BOX-ONLY TEST (pending Steven): no weekly update newer than Nov 6 reached palmhillblast/gotwicz by Sun Nov 15
-                 # 2:15 PM ET (Susan Fisher asked Nov 15 about an 11/13 report). The Nov 6 update ran Nov 8 and Nov 15, so it is not
-                 # carried a third time. Its page and archive row stay. Restore the section when Megan's next update arrives.
-                 "manager": "No weekly update newer than Nov 6 (ran Nov 8 and Nov 15); box-only test, pending Steven"}
+                 "shareholders": "September 30 monthly report; no newer monthly report (Steven Nov 7 2026)"}
+# Steven Nov 20 2026 6:33 PM ET: Megan's Nov 13 weekly update is now in this issue, so the Weekly Manager Update
+# section is restored (the earlier HIDE_SECTIONS "manager" / no-update-newer-than-Nov-6 state is removed).

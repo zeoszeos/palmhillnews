@@ -9,6 +9,12 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Steven Nov 20 2026 6:33 PM ET: Thanksgiving / Spectrum / pianist notices; teasers are source sentences, cut never reworded; More → = the copied email
+ ("Due to the Thanksgiving Holiday, Maintenance &amp; Administrative offices", "Due to the Thanksgiving Holiday, Maintenance &amp; Administrative offices will be off/closed.", B + "2026-11-20-holiday-schedule-trash-sanitation-field-notice.html"),
+ ("Palm Hill has upgraded its Spectrum service to a Fiber solution", "Palm Hill has upgraded its Spectrum service to a Fiber solution.", B + "2026-11-20-spectrum-fiber-upgrade-notice.html"),
+ ("The Cantata Ensemble is seeking a pianist to accompany our performance", "The Cantata Ensemble is seeking a pianist to accompany our performance on Sunday, December 6th.", B + "2026-11-19-pianist-needed-for-cantata-ensemble-notice.html"),
+ # Steven Nov 20 2026 5:03 PM ET (voice): Fed Up Trash Valet details as a Community Notice (R141); teaser is the first source sentences; More → = the copied RPM email plus Bob Newport's clear-bags note
+ ("Effective December 1, 2026, Palm Hill will begin a new valet trash", "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC.", B + "2026-11-17-new-valet-trash-service-notice.html"),
  # Sat Nov 14 2026 9:38 AM ET Webmaster correction (Steven: add then end changes); teaser is the source sentence ("Noeth" -> "North", R133c Steven Nov 15); More → = the copied email (R47)
  ("Correction:  I got it Game Night is this Wednesday", "Correction:  I got it Game Night is this Wednesday at 6:30 in the North Clubhouse.", B + "2026-11-14-correction-i-got-it-game-night-notice.html"),
  # Fri Nov 13 2026 sweep (Steven approved): cut, never reworded; More → = the copied email (R47)
@@ -26,8 +32,8 @@ SHORT = [
  # Sat Nov 7 2026 morning sweep: cut, never reworded; More → = the copied email (R47)
  ("The chair yoga class for Monday, November 9, is cancelled.", "The chair yoga class for Monday, November 9, is cancelled.", B + "2026-11-07-chair-yoga-class-canceled-notice.html"),
  ("South Potable Water Shut off scheduled for Wednesday, November 11th", "South Potable Water Shut off scheduled for Wednesday, November 11th @ 10:00am has been rescheduled", B + "2026-11-06-south-potable-water-shut-off-rescheduled-notice.html"),
- # Sat Oct 31 2026 6 PM deadline sweep (staged pending Steven): Sat Oct 31 Webmaster emails; cut, never reworded; More → = the copied email (R47)
- ("Registration ends at 10:15AM. $5 per player", "Registration ends at 10:15AM. $5 per player, includes hot dog lunch. Contact Earl & Sandy Sullivan 518-866-2079.", B + "2026-10-31-cornhole-tournament-notice.html"),
+ # Steven Nov 20 2026 6:33 PM ET: Corn Hole reminder uses Nov 16 wording; More → still the Oct 31 notice page (R47)
+ ("There are still a few openings for our first cornhole tournament", "There are still a few openings for our first cornhole tournament on Saturday, November 28, 2026.", B + "2026-10-31-cornhole-tournament-notice.html"),
  ("Lunch registration is now closed. Advance sign-up", "Lunch registration is now closed. Advance sign-up was required to receive lunch. You may still attend without signing up.", B + "2026-10-31-senior-empowerment-lunch-and-learn-notice.html"),
  ("Please join us at our Palm Hill Worship service", "Please join us at our Palm Hill Worship service on Sunday, November 1 at 4 o\u2019clock in the North Club House.", B + "2026-10-31-worship-service-notice.html"),
  # Sat Oct 31 2026 morning sweep (staged pending Steven): Fri Oct 30 Webmaster emails; cut, never reworded; More → = the copied email (R47)
