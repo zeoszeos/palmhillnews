@@ -38,6 +38,7 @@ FIX = {  # R-rules with a specific fix line (others: rule title from STYLE-RULES
 "R134": "ask Steven \"Steve, I did OCR from this email. Does it look okay to you?\"; only after he confirms, set ocr_approved_by_steven=True (who/when in ocr_approved_note) in OCR_ITEMS and rebuild",
     "R140": "set REFERENCE_TRASH_BULLETS in style_rules.py to the minimal Starting December 1st list, run apply_reference_trash in the builder, and rebuild; never hand-edit the HTML",
     "R141": "add the valet-trash Community Notice in the issue content file (WM_COPIES + NOTICES) with the required source sentences on the copy page, then rebuild; never invent copy or hand-edit the HTML",
+    "R143": "if the dated event is on Tony's club calendar, drop it from Community Notices (keep the notice page and link it from the calendar row); if it is not on the calendar, leave the notice; list a previously approved dual listing in R143_KEEP_AS_NOTICE only when Steven has said to keep it; rebuild, never hand-edit the HTML",
 "R130": "drop the repeat from NOTICES / NOTICES_EXPECTED or add it to NOTICES_KEEP_FROM_PREVIOUS; never delete the notice page or archive row",
     "R90": "set source_line ('Source: <kind> email \"<subject>\" from <sender>, <Mon D, YYYY>.') on the DYK_NEW_JSON item and rerun builder/nov1/stage_nov1_content.py",
     "R91": "DYK_REPRISE items: title = live page heading, text_html = the content constant printed then, href = the existing live page; parked pages must be git rm'd and their archive rows removed (copy kept on the parked branch)",

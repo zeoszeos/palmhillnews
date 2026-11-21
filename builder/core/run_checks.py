@@ -680,6 +680,19 @@ if C.ISSUE >= _sr83.R142_FROM:
         _p142 = _sr83.wmu_legal_redact_problems(_x142, _n142)
         L.ok("R142", not _p142, f"{_n142}: cut legal/safety phrases are absent" + (f" {_p142}" if _p142 else ""))
 
+# R143 (Steven Nov 21 2026 4:02 PM ET): a dated event on the club calendar is not also a Community Notice.
+if C.ISSUE >= _sr83.R143_FROM:
+    import glob as _glob143
+    _cals143 = sorted(_glob143.glob(str(ROOT / "data" / "cal-*.json")))
+    _evs143 = []
+    if _cals143:
+        _evs143 = __import__("json").load(open(_cals143[-1], encoding="utf-8")).get("events") or []
+    _keep143 = set(getattr(C, "R143_KEEP_AS_NOTICE", ()) or ())
+    _year143 = int(C.ISSUE[:4])
+    for _n143, _x143 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p143 = _sr83.calendar_notice_duplicate_problems(_x143, _evs143, keep_as_notice=_keep143, default_year=_year143, label=_n143)
+        L.ok("R143", not _p143, f"{_n143}: dated club-calendar events are not duplicated as Community Notices" + (f" {_p143}" if _p143 else ""))
+
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:

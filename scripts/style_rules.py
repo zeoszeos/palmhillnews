@@ -1685,3 +1685,94 @@ def wmu_legal_redact_problems(html, label=""):
         elif phrase in text:
             hits.append(f"R142: cut phrase {phrase!r} still present{where}")
     return hits
+
+
+# R143 (Steven, Nov 21 2026 4:02 PM ET): a dated event that is on Tony's club calendar
+# appears in the calendar sections, not duplicated as a Community Notice. If it is not
+# on the calendar, the notice stays; do not invent a calendar entry.
+R143_FROM = "2026-11-22"
+_R143_GENERIC = {"the", "a", "an", "of", "and", "for", "at", "in", "on", "palm", "hill", "annual", "club"}
+_R143_MONTHS = {
+    "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+    "july": 7, "august": 8, "september": 9, "october": 10, "november": 11, "december": 12,
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "jun": 6, "jul": 7, "aug": 8, "sep": 9, "sept": 9,
+    "oct": 10, "nov": 11, "dec": 12,
+}
+
+def _r143_norm_name(s):
+    return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+def r143_names_same_event(notice_title, cal_name):
+    """True when the notice title and calendar name refer to the same event (exact, or one name's distinctive tokens are a subset of the other)."""
+    a, b = _r143_norm_name(notice_title), _r143_norm_name(cal_name)
+    if not a or not b:
+        return False
+    if a == b:
+        return True
+    ta = set(a.split()) - _R143_GENERIC
+    tb = set(b.split()) - _R143_GENERIC
+    return bool(ta and tb) and (ta <= tb or tb <= ta)
+
+def r143_parse_dates(text, default_year=2026):
+    """ISO dates mentioned in a notice date line or body (numeric or month-name forms)."""
+    out, t = [], text or ""
+    for m in re.finditer(r"\b(\d{1,2})/(\d{1,2})/(\d{2}|\d{4})\b", t):
+        mo, d, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if y < 100:
+            y += 2000
+        out.append(f"{y:04d}-{mo:02d}-{d:02d}")
+    mon = "|".join(_R143_MONTHS)
+    for m in re.finditer(rf"\b({mon})\s+(\d{{1,2}})(?:st|nd|rd|th)?(?:,\s*(\d{{4}}))?", t, re.I):
+        mo = _R143_MONTHS[m.group(1).lower()]
+        d = int(m.group(2))
+        y = int(m.group(3)) if m.group(3) else default_year
+        out.append(f"{y:04d}-{mo:02d}-{d:02d}")
+    return list(dict.fromkeys(out))
+
+def r143_notices_from_html(html):
+    """Community Notice titles and their date-line text from a preview or SEND."""
+    if not html:
+        return []
+    m = re.search(r"Community Notices(.*?)(?:Weekly Manager Update|Community Stories|Did You Know\??)", html, re.S | re.I)
+    sec = m.group(1) if m else html
+    items = []
+    for block in re.finditer(
+        r'font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">([^<]+)</td>'
+        r'(.*?)(?=font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">|\Z)',
+        sec, re.S):
+        title = re.sub(r"\s+", " ", _html_unescape_r143(block.group(1))).strip()
+        rest = block.group(2)
+        dm = re.search(r'class="ph-notice-date"[^>]*>(.*?)</div>', rest, re.S)
+        date_line = re.sub(r"<[^>]+>", " ", dm.group(1) if dm else "")
+        date_line = re.sub(r"\s+", " ", _html_unescape_r143(date_line)).strip()
+        items.append((title, date_line))
+    return items
+
+def _html_unescape_r143(s):
+    import html as _h
+    return _h.unescape((s or "").replace("&nbsp;", " "))
+
+def calendar_notice_duplicate_problems(html, events, keep_as_notice=(), default_year=2026, label=""):
+    """R143: Community Notices must not also be a confirmed club-calendar event on the same date, unless listed in keep_as_notice."""
+    keep = set(keep_as_notice or ())
+    confirmed = [e for e in (events or []) if (e.get("status") or "").upper() == "CONFIRMED"]
+    hits = []
+    where = f" in {label}" if label else ""
+    for title, date_line in r143_notices_from_html(html):
+        if title in keep:
+            continue
+        dates = r143_parse_dates(date_line, default_year=default_year)
+        if not dates:
+            continue
+        for e in confirmed:
+            if e.get("date") not in dates:
+                continue
+            if r143_names_same_event(title, e.get("name") or ""):
+                hits.append(
+                    f"R143: {title!r} on {e['date']} is also a club calendar event "
+                    f"({e.get('name')} {e['date']} {e.get('start') or ''} {e.get('venue') or ''}) "
+                    f"and must appear in the calendar sections, not as a Community Notice{where}"
+                )
+                break
+    return hits
+
