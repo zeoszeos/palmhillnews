@@ -82,7 +82,8 @@ if _NWS:   # R92 guard: Next Week directly under This Week, header range = issue
          f"Next Week directly under This Week, {_W('NEXT_WEEK')}, {len(audit['upcoming'])} rows in window")
 # A3: one shared treat-as-recurring list
 b25 = (H / "build_core.py").read_text(encoding="utf-8")
-_as = lambda src: set(eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))
+import ast as _ast
+_as = lambda src: set(_ast.literal_eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))  # literal_eval: never executes scraped text
 L.ok("L09a", set(lc.TREAT_AS_RECURRING) == _as(b25) == _as((H / "recurring.py").read_text(encoding="utf-8")), "TREAT_AS_RECURRING == builder/recurring AS_RECURRING")
 for n in lc.TREAT_AS_RECURRING:
     L.ok("L09", n not in tw and n not in up, f'This Week/Upcoming exclude "{n}"')

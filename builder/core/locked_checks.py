@@ -344,65 +344,59 @@ def check_recurring_page_layout(html_s, label, issue_long, n_rows, rows_in_order
     # only committee/board titles are excluded; other Meetings-category items follow Tony's recurring flag.
     _titles = re.findall(r'class="ph-row-title">([^<]+)<', html_s)
     _mtg = [t for t in _titles if re.search(r"\bcommittee\b.*\bmeeting\b", t, re.I) or re.search(r"\bboard of directors\b", t, re.I)]
-    assert not _mtg, f"L23k recurring page {label}: committee/board meeting rows must not appear: {_mtg}"
+    if not (not _mtg): raise SystemExit(f"L23k recurring page {label}: committee/board meeting rows must not appear: {_mtg}")
     # L23j (Steven, Oct 10 ~1:35 AM ET, PR #19): no footer on these pages -- no beige VANTACA NON-URGENT / URGENT
     # service-request box and no italic "For the latest details, always confirm ..." line.
     for marker in ('class="ph-footer"', 'class="ph-urgent', 'VANTACA', 'SERVICE REQUESTS', 'class="ph-fineprint"', 'For the latest details'):
-        assert marker not in html_s, f"L23j recurring page {label}: footer marker {marker!r} must be gone"
+        if not (marker not in html_s): raise SystemExit(f"L23j recurring page {label}: footer marker {marker!r} must be gone")
     for marker in ('class="ph-banner"', 'class="ph-masthead"', 'class="ph-palm"', 'class="ph-tagline"', 'class="ph-address"', 'ph-issuedate'):
-        assert marker not in html_s, f"L23a recurring page {label}: masthead marker {marker} present"
-    assert len(re.findall(r'<h1 class="ph-section">Recurring Meetings &amp; Events<span class="ph-section-sub">[^<]+</span></h1>\n'
+        if not (marker not in html_s): raise SystemExit(f"L23a recurring page {label}: masthead marker {marker} present")
+    if not (len(re.findall(r'<h1 class="ph-section">Recurring Meetings &amp; Events<span class="ph-section-sub">[^<]+</span></h1>\n'
                           + r'<div class="ph-section-date"><span class="ph-section-volno">Vol\. \d+, No\. \d+</span>'
-                          + re.escape(f'<span class="ph-section-issuedate">{issue_long}</span></div>\n<nav class="ph-links"'), html_s)) == 1, \
-        f"L23b/L23g recurring page {label}: Vol/No (left) + issue date (right) line must sit directly under the green section title"
+                          + re.escape(f'<span class="ph-section-issuedate">{issue_long}</span></div>\n<nav class="ph-links"'), html_s)) == 1): raise SystemExit(f"L23b/L23g recurring page {label}: Vol/No (left) + issue date (right) line must sit directly under the green section title")
     # L23g: exactly one Vol/No + one issue date on the page; old centred bold <p class="ph-section-date"> gone.
-    assert '<p class="ph-section-date">' not in html_s, f"L23g recurring page {label}: old centred bold issue date still present"
-    assert html_s.count('class="ph-section-volno"') == 1 and html_s.count('class="ph-section-issuedate"') == 1, f"L23g recurring page {label}: Vol/No/date line count"
+    if not ('<p class="ph-section-date">' not in html_s): raise SystemExit(f"L23g recurring page {label}: old centred bold issue date still present")
+    if not (html_s.count('class="ph-section-volno"') == 1 and html_s.count('class="ph-section-issuedate"') == 1): raise SystemExit(f"L23g recurring page {label}: Vol/No/date line count")
     if volno is not None:
-        assert f'<span class="ph-section-volno">{volno}</span>' in html_s, f"L23g recurring page {label}: Vol/No must be {volno}"
+        if not (f'<span class="ph-section-volno">{volno}</span>' in html_s): raise SystemExit(f"L23g recurring page {label}: Vol/No must be {volno}")
     # L23e (Steven, Oct 10 ~12:55 AM ET; date-only Oct 10 ~2:50 PM ET): window INSIDE green title bar as italic
     # subtitle — date only ("Oct 11 through Nov 9, 2026"), no "Recurring activities," prefix; By Date / By Name = green band.
     subs = re.findall(r'<span class="ph-section-sub">([^<]+)</span>', html_s)
-    assert len(subs) == 1 and re.fullmatch(r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2} through '
-                                           r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4}', subs[0]), \
-        f"L23e recurring page {label}: window subtitle missing/wrong inside green bar: {subs}"
-    assert "Recurring activities," not in html_s, f"L23e recurring page {label}: 'Recurring activities,' prefix must be gone"
-    assert html_s.count(subs[0]) == 1, f"L23e recurring page {label}: window line must appear only in the green bar"
-    assert "Recurring Palm Hill activities" not in html_s and not re.search(r'<p class="ph-lead">Recurring activities', html_s), \
-        f"L23e recurring page {label}: old window lead line below the bar must be gone"
-    assert html_s.count(f'<p class="ph-view ph-view-title">{label}</p>\n<div class="ph-activities"') == 1, \
-        f"L23e recurring page {label}: green-band {label} title must sit directly above the list"
-    assert "ph-view-date" not in html_s, f"L23b recurring page {label}: date must not sit under By Date / By Name"
+    if not (len(subs) == 1 and re.fullmatch(r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2} through '
+                                           r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4}', subs[0])): raise SystemExit(f"L23e recurring page {label}: window subtitle missing/wrong inside green bar: {subs}")
+    if not ("Recurring activities," not in html_s): raise SystemExit(f"L23e recurring page {label}: 'Recurring activities,' prefix must be gone")
+    if not (html_s.count(subs[0]) == 1): raise SystemExit(f"L23e recurring page {label}: window line must appear only in the green bar")
+    if not ("Recurring Palm Hill activities" not in html_s and not re.search(r'<p class="ph-lead">Recurring activities', html_s)): raise SystemExit(f"L23e recurring page {label}: old window lead line below the bar must be gone")
+    if not (html_s.count(f'<p class="ph-view ph-view-title">{label}</p>\n<div class="ph-activities"') == 1): raise SystemExit(f"L23e recurring page {label}: green-band {label} title must sit directly above the list")
+    if not ("ph-view-date" not in html_s): raise SystemExit(f"L23b recurring page {label}: date must not sit under By Date / By Name")
     rows = re.findall(r'<div class="ph-row(?: ph-alt)?">(.*?)</div></div>\n', html_s)
-    assert len(rows) == n_rows, f"L23c recurring page {label}: {len(rows)} rows != {n_rows}"
+    if not (len(rows) == n_rows): raise SystemExit(f"L23c recurring page {label}: {len(rows)} rows != {n_rows}")
     pat = re.compile(r'<div class="ph-row-line"><div class="ph-row-title">[^<]+</div><div class="ph-row-loc">[^<]+</div></div>'
                      r'<div class="ph-row-meta">[A-Z][a-z]+day, (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4} • [^<•]+$')
     bad = [r for r in rows if not pat.match(r)]
-    assert not bad, f"L23c recurring page {label}: {len(bad)} rows not title-left/location-right, e.g. {bad[0][:160]}"
+    if not (not bad): raise SystemExit(f"L23c recurring page {label}: {len(bad)} rows not title-left/location-right, e.g. {bad[0][:160]}")
     # L23f (Steven, Oct 10 ~1:05 AM ET, PR #19): ONE title per event. No By Date day-divider headings and no By Name
     # group headings (no ph-subhead / h2 anywhere in the list); each row shows the activity name once, with
     # "Day, Mon D, YYYY • time" directly under it. Rows must appear in the expected order with the right name + date.
     lst = html_s.split('<div class="ph-activities"', 1)[1].split('</main>', 1)[0]
-    assert 'ph-subhead' not in html_s and '<h2' not in lst and '<h3' not in lst, \
-        f"L23f recurring page {label}: date/name divider headings must be gone (one title per event)"
+    if not ('ph-subhead' not in html_s and '<h2' not in lst and '<h3' not in lst): raise SystemExit(f"L23f recurring page {label}: date/name divider headings must be gone (one title per event)")
     # L23i (Steven, Oct 10 ~1:27 AM ET): caution line centred (ph-lead-center), exactly once.
-    assert html_s.count('<p class="ph-lead ph-lead-center">Times and rooms are subject to change. The club calendar may require sign-in.</p>') == 1, \
-        f"L23i recurring page {label}: 'Times and rooms...' line must be centred (ph-lead-center)"
+    if not (html_s.count('<p class="ph-lead ph-lead-center">Times and rooms are subject to change. The club calendar may require sign-in.</p>') == 1): raise SystemExit(f"L23i recurring page {label}: 'Times and rooms...' line must be centred (ph-lead-center)")
     # L23h: simple per-row zebra -- even index white (no ph-alt), odd index pale green (ph-alt); no clumping.
     flags = [m == ' ph-alt' for m in re.findall(r'<div class="ph-row( ph-alt)?">', lst)]
-    assert flags == [i % 2 == 1 for i in range(len(flags))], f"L23h recurring page {label}: rows must alternate white / pale green per row"
+    if not (flags == [i % 2 == 1 for i in range(len(flags))]): raise SystemExit(f"L23h recurring page {label}: rows must alternate white / pale green per row")
     for r in rows:
-        assert r.count('class="ph-row-title"') == 1, f"L23f recurring page {label}: row has != 1 title: {r[:120]}"
+        if not (r.count('class="ph-row-title"') == 1): raise SystemExit(f"L23f recurring page {label}: row has != 1 title: {r[:120]}")
     if rows_in_order is not None:
         import html as _h
         got = [(_h.unescape(re.search(r'class="ph-row-title">([^<]+)<', r).group(1)),
                 _h.unescape(re.search(r'class="ph-row-meta">([^<•]+?) •', r).group(1))) for r in rows]
-        assert got == list(rows_in_order), f"L23f recurring page {label}: row order/name/date mismatch"
+        if not (got == list(rows_in_order)): raise SystemExit(f"L23f recurring page {label}: row order/name/date mismatch")
     # L23d (Steven, Oct 10 ~12:45 AM ET, PR #19): 3-letter months THROUGHOUT these pages (issue date, intro window,
     # By Date dividers, row dates). No full month name may appear anywhere in the page.
     full = [m for m in FULL_MONTHS if re.search(r'\b' + m + r'\b', html_s)]
-    assert not full, f"L23d recurring page {label}: full month name(s) {full} present; use Jan..Dec"
-    assert re.fullmatch(r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4}', issue_long), f"L23d issue date {issue_long!r} not 3-letter"
+    if not (not full): raise SystemExit(f"L23d recurring page {label}: full month name(s) {full} present; use Jan..Dec")
+    if not (re.fullmatch(r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4}', issue_long)): raise SystemExit(f"L23d issue date {issue_long!r} not 3-letter")
 
 
 # L27 + L29 (Steven, Oct 10, 2026 ~2:10 PM ET linked webmaster Source only; amended Oct 11, 2026 ~8:37 AM ET

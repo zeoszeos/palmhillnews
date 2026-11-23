@@ -7,6 +7,8 @@ Input: ROOT/source/ (Oct 11 as-sent shell + Oct 18 seed), ROOT/data/cal-*.json (
        content below (each item names its source), and the issue's content file.
 Output: ROOT/PHNEWS-<issue>-preview.html, ROOT/local-<SHORT>/ review copy, archive rows/pages in REPO.
 """
+def _guard(ok, msg):  # replaces assert (assert is stripped by python -O); same stop-the-build effect as the R-guards
+    if not ok: raise SystemExit(msg)
 import json, os, re, sys, glob, time
 _R49_T0 = time.time() - 1  # STYLE-RULES R49: pages written by this run get the Listen-coverage check at the end
 from datetime import date, datetime
@@ -42,14 +44,14 @@ OUTF = ROOT / f"PHNEWS-{ISSUE}-preview.html"
 # R69 section windows, derived from ISSUE (builder/core/issue_ctx.windows): This Week 0-6, Upcoming 7-28 (~3 weeks, Oct 9 rule),
 # Recurring 0-29, Meetings 0-30 days inclusive.
 THIS_WEEK, UPCOMING, RECURRING, MEETINGS = (C.WINDOWS[k] for k in ("THIS_WEEK", "UPCOMING", "RECURRING", "MEETINGS"))
-assert CAL_WINDOW == C.WINDOWS["CAL_WINDOW"], "R21b: calendar window must come from ISSUE"
+if not (CAL_WINDOW == C.WINDOWS["CAL_WINDOW"]): raise SystemExit("R21b: calendar window must come from ISSUE")
 BASE = "https://palmhillnews.vercel.app/pages/"; CAL = "https://www.palmhillcountryclub.net/calendar-1/"
 ARCH = BASE + "archive/"
 SPK = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"  # R131: small 48px icon for Gmail iOS (was 2026-10-04/...-512-v3.png, still published for archived issues)
 G = "#3A6B1A"
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
-assert all(globals()[k] == v for k, v in _ix.PRESEED.items()), "R71: core BASE/CAL/ARCH/G must equal issue_ctx.PRESEED"
+if not (all(globals()[k] == v for k, v in _ix.PRESEED.items())): raise SystemExit("R71: core BASE/CAL/ARCH/G must equal issue_ctx.PRESEED")
 # R71 (batch 5): this issue's content (builder/issues/<date>.py) -- events, meetings, notices, reports, DYK -- injected here, logic below.
 _CONTENT = _ix.content_data(C); globals().update(_CONTENT)
 
@@ -94,7 +96,7 @@ this_week, upcoming = evsel(THIS_WEEK), evsel(UPCOMING)
 
 # Event text/links/More → pages (EVENT_DETAIL, EVENT_EXTRA_SRC, EVENT_LINK, PHONE_OK_PAGES, EVENT_PAGE, INFO_COVERED, TITLE) come
 # from the issue content file (R71, batch 5); injected by _ix.content_data(C) above.
-assert not any(re.search(r"\d{3}-\d{3}-\d{4}", v) for v in EVENT_DETAIL.values() if v), "phone rule: no phone numbers in issue summaries"
+if not (not any(re.search(r"\d{3}-\d{3}-\d{4}", v) for v in EVENT_DETAIL.values() if v)): raise SystemExit("phone rule: no phone numbers in issue summaries")
 # R21: events whose summary already carries the whole calendar listing (checked by hand Oct 16) - no More → page needed
 # STYLE-RULES R56 (Steven Oct 21 2026 10:44 AM, "middle path"): an event matched to a Webmaster/resident email notice shows calendar
 # facts only; More → opens that notice page; no per-event page is generated or linked (already-published pages such as
@@ -146,7 +148,7 @@ for _e in list(meetings):
     if _rkey(_e) in _seen: meetings.remove(_e); _dropped.append((_e["date"], _e["name"]))
     else: _seen.add(_rkey(_e))
 print("R87 exact-duplicate meetings dropped:" if _ALLW else "R54 meetings dropped (already listed):", _dropped)
-assert len({_rkey(e) for e in meetings}) == len(meetings), "R54/R87: a committee/board meeting is listed twice"
+if not (len({_rkey(e) for e in meetings}) == len(meetings)): raise SystemExit("R54/R87: a committee/board meeting is listed twice")
 # RESTORED from build_oct11_final.py MEETING_DETAIL (Oct 9-11 rules L27): Webmaster agenda/Zoom notices drive the Oct 11 layout.
 import urllib.parse as _up
 def _nopwd(u):
@@ -171,7 +173,7 @@ def mtg_rows():
             nu = BASE + d["notice_page"]
             srcx = (f'Source: <a href="{CAL}" style="color:{G};">Calendar</a>,&nbsp;&nbsp; ' if e.get("from_calendar", True) else 'Source: ') + f'<a href="{nu}" style="color:{G};">Webmaster</a>'
             # STYLE-RULES.md R13 (Steven Oct 16 6:51 PM, Oct 11 precedent): Zoom → goes to the Vercel Zoom page, never zoom.us
-            assert d.get("zoom_page"), f"{d['name']}: webmaster notice needs zoom_page (Vercel) - never link zoom.us directly"
+            if not (d.get("zoom_page")): raise SystemExit(f"{d['name']}: webmaster notice needs zoom_page (Vercel) - never link zoom.us directly")
             sys.path.insert(0, SCRIPTS); import meeting_zoom_page as _mzp
             import page_listen as _plm
             def _v2_listen(html):
@@ -198,7 +200,7 @@ def mtg_rows():
 sys.path.insert(0, SCRIPTS); import style_rules as _sr56
 def ev_rows(evs):
     out = []
-    assert all(v[0] == "More →" for v in EVENT_LINK.values()), "STYLE-RULES R23: event/notice links say More →"
+    if not (all(v[0] == "More →" for v in EVENT_LINK.values())): raise SystemExit("STYLE-RULES R23: event/notice links say More →")
     for e in evs:  # STYLE-RULES R21 guard
         if (e.get("info") or "").strip() and e["name"] not in EVENT_LINK and e["name"] not in INFO_COVERED:
             _todo(f"R21: {e['date']} {e['name']} has calendar listing text but no More → page (add EVENT_PAGE/EVENT_LINK or INFO_COVERED)")
@@ -221,10 +223,10 @@ def ev_rows(evs):
     for e, row in zip(evs, out):  # R56 guard
         if e["name"] in MATCHED_NOTICE:
             _u = MATCHED_NOTICE[e["name"]]; _lp = PAGES / _u.rsplit("/", 1)[1]
-            assert _lp.exists(), f"R56: notice page missing {_lp}"
+            if not (_lp.exists()): raise SystemExit(f"R56: notice page missing {_lp}")
             _sr56.assert_matched_event_card(row, e["name"], _u, CAL, _lp.read_text(encoding="utf-8")); print("R56 matched:", e["date"], e["name"], "->", _lp.name)
     for _n, _u in MATCHED_NOTICE.items():  # R56b (Steven Oct 21 11:20 AM): a matched event's notice must be listed in Community Notices
-        if any(e["name"] == _n for e in evs): assert any(n[3] == _u for n in NOTICES), f"R56b: {_n} links notice {_u} but it is not in Community Notices"
+        if any(e["name"] == _n for e in evs): _guard(any(n[3] == _u for n in NOTICES), f"R56b: {_n} links notice {_u} but it is not in Community Notices")
     return "".join(out)
 # R1 (Steven Oct 24 12:18 PM): every Listen button sits ~14px in from its row's right edge (shared, not per-page)
 LISTEN_INSET = "margin-right:14px;"
@@ -244,7 +246,7 @@ def title_row(title, right):
 sys.path.insert(0, SCRIPTS); import notice_page as _np
 # R60c-style source checks + generated notice pages (NOTICE_PAGES, content file) + Webmaster copy pages (WM_COPIES)
 for _sv, _spg, _smsg in SOURCE_VERBATIM:
-    assert _sv in (PAGES / _spg).read_text(encoding="utf-8"), _smsg
+    if not (_sv in (PAGES / _spg).read_text(encoding="utf-8")): raise SystemExit(_smsg)
 _R85_GEN = {_p["page"] for _p in NOTICE_PAGES} | {_w[0] for _w in WM_COPIES}  # R85b: copy pages this build renders (may carry a pre-Nov-1 source date)
 for _p in NOTICE_PAGES:
     (PAGES / _p["page"]).write_text(_np.render(_p["subject"], _p["sent"], _p["blocks"], **_p["kw"]), encoding="utf-8")
@@ -258,8 +260,8 @@ NOTICES_DROPPED_ISSUE = set(C.NOTICES_DROPPED)
 _unknown = NOTICES_DROPPED_ISSUE - {n[0] for n in NOTICES}
 if _unknown: raise SystemExit(f"R71: {ISSUE} NOTICES_DROPPED names unknown notice title(s): {sorted(_unknown)}")
 NOTICES = [n for n in NOTICES if n[0] not in NOTICES_DROPPED_ISSUE]
-assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE
-assert not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25
+if not (not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE): raise SystemExit('guard failed: not {n[0] for n in NOTICES} & NOTICES_DROPPED_ISSUE')
+if not (not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25): raise SystemExit('guard failed: not {n[0] for n in NOTICES} & NOTICES_DROPPED_OCT25')
 # R130 (Steven Nov 14 2026 5:58 PM ET): drop a Community Notice that ran in the previous
 # sent issue, unless it is on NOTICES_KEEP_FROM_PREVIOUS. Applies from Nov 15. Pages,
 # archive rows, and URLs stay (NOTICE_ARCHIVE_ROWS / existing pages are not deleted).
@@ -279,7 +281,7 @@ def notice_rows():
     for i, (t, txt, sl, sh) in enumerate(items):
         ph = t == TONY_FB[0] and TONY_FB_PLACEHOLDER
         lh = (NOTICE_LISTEN_OVERRIDE.get(t, sh) + "?listen=1") if sh else (FB_LISTEN if t == TONY_FB[0] else None)
-        assert lh, f"R60: notice {t!r} has no Listen page"
+        if not (lh): raise SystemExit(f"R60: notice {t!r} has no Listen page")
         right = listen(lh)
         src = f'Source: <a href="{sh}" style="color:{G};">{escape(sl)}</a>' if sh else f"Source: {escape(sl)}"
         rowbg = "#FFF3B0" if ph else bg(i)
@@ -334,8 +336,8 @@ def chair_cards():
     # R63 guard: every chair card's Listen sits on its title line (before the date line); none beside Read Full Report
     for _r in out:
         if ">Listen</a>" in _r:
-            assert _r.index(">Listen</a>") < _r.index('color:#666666;margin-top:2px;'), "R63: chair card Listen must be on the title line"
-            assert ">Listen</a>" not in _r[_r.index("Read Full Report"):], "R63: Listen beside Read Full Report"
+            if not (_r.index(">Listen</a>") < _r.index('color:#666666;margin-top:2px;')): raise SystemExit("R63: chair card Listen must be on the title line")
+            if not (">Listen</a>" not in _r[_r.index("Read Full Report"):]): raise SystemExit("R63: Listen beside Read Full Report")
     out.append(f'<tr><td style="padding:6px 8px;font-size:14px;"><a href="{ARCH}committee-reports.html" style="color:{G};">Committee Report Archives →</a></td></tr>')
     return "".join(out)
 
@@ -350,7 +352,7 @@ stamp = os.environ.get("PHNEWS_BUILD_STAMP") or datetime.now(ZoneInfo("America/N
 s = s.replace(">3:07 PM<", f">{stamp}<")
 
 def section_span(s, heading):
-    h = s.find(f">{heading}</span>"); assert h > 0, heading
+    h = s.find(f">{heading}</span>"); _guard(h > 0, heading)
     a = max(s.rfind('<div class="canonical-section">', 0, h), s.rfind('<div class="section04">', 0, h))
     nxt = [x for x in (s.find('<div class="canonical-section">', h), s.find('<div class="section04">', h),
                        s.find('<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 0 0;">', h)) if x > 0]
@@ -371,7 +373,7 @@ else:
     replace_table("Committee &amp; Board Meeting Schedules", mtg_rows())
     _a, _b = section_span(s, "Committee &amp; Board Meeting Schedules")
     _sec = re.sub(r'<div style="font-size:14px;font-style:italic;color:#FFFFFF;margin-top:3px;">[^<]*</div>(</div>)', r"\1", s[_a:_b], count=1)
-    assert " through " not in _sec[:_sec.find('<table')], "R78: Meetings header must carry no date range"
+    if not (" through " not in _sec[:_sec.find('<table')]): raise SystemExit("R78: Meetings header must carry no date range")
     s = s[:_a] + _sec + s[_b:]
 replace_table("Committee Chair Reports", chair_cards())
 # R99 (Steven Oct 31 2026): optional one-issue TOP_BANNER (content file dict heading/body, verbatim) in its own light banner
@@ -382,11 +384,11 @@ BANNER_ICONS = {"\u23f0": "&#9200;", "\U0001F1FA\U0001F1F8": "&#127482;&#127480;
 _tbs = list(globals().get("TOP_BANNERS") or ([TOP_BANNER] if globals().get("TOP_BANNER") else []))
 if _tbs:
     _a99, _ = section_span(s, "Committee &amp; Board Meeting Schedules")
-    assert not re.search(r'<div class="(canonical-section|section04)">', s[:_a99]), "R99: banner must sit above the first section"
+    if not (not re.search(r'<div class="(canonical-section|section04)">', s[:_a99])): raise SystemExit("R99: banner must sit above the first section")
     _ban = ""
     for _tb in _tbs:
         _h99 = _tb["heading"]; _ent = next((v for k, v in BANNER_ICONS.items() if _h99.startswith(k)), None)
-        assert _ent, "R101: banner heading must start with a known icon"
+        if not (_ent): raise SystemExit("R101: banner heading must start with a known icon")
         _h99 = escape(_h99[len(next(k for k in BANNER_ICONS if _h99.startswith(k))):].strip())
         _ic = f'<span aria-hidden="true" style="font-size:18px;line-height:22px;">{_ent}</span>'
         _ban += ('<table class="ph-top-banner" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px 0;border-collapse:separate;">'
@@ -425,9 +427,9 @@ if _NW:  # R92: rename Upcoming -> Next Week (icon kept) and move it directly af
     _, t1 = section_span(s, "Events - This Week")
     s = s[:t1] + nw + s[t1:]
 if _AE:  # R79 All Events pages are written by recurring.py + recurring_grouped.py (same shell and sorts as Recurring)
-    assert not any(e.get("recurring") or e["name"] in AS_RECURRING for e in all_events), "R79: an All Events row is on the Recurring pages"
+    if not (not any(e.get("recurring") or e["name"] in AS_RECURRING for e in all_events)): raise SystemExit("R79: an All Events row is on the Recurring pages")
     for _o in ("date", "name", "location"):
-        assert (PAGES / f"{ISSUE}-all-events-by-{_o}.html").exists(), f"R79: run recurring.py + recurring_grouped.py first ({ISSUE}-all-events-by-{_o}.html)"
+        if not ((PAGES / f"{ISSUE}-all-events-by-{_o}.html").exists()): raise SystemExit(f"R79: run recurring.py + recurring_grouped.py first ({ISSUE}-all-events-by-{_o}.html)")
 # Recurring: window text; Oct 18 recurring pages don't exist yet -> keep live Oct 11 pages (flagged)
 s = s.replace("Oct 11 through Nov 9, 2026", f"{md(RECURRING[0])} through {md(RECURRING[1])}, 2026")
 # STYLE-RULES R20: the issue links to its own week's Recurring pages (recurring_oct18.py + recurring_grouped.py ... 2026-10-18)
@@ -445,7 +447,8 @@ s = s.replace("2026-10-11-recurring-activities-by-", f"{RECURRING[0]}-recurring-
 def _R18_CUT(text, n):
     import re as _re0
     sents = _re0.split(r"(?<=[.!?])\s+", text.strip()); cut = " ".join(sents[:n])
-    assert text.startswith(cut) and cut, ("R18c cut is not a prefix of the source", text); return cut
+    if not (text.startswith(cut) and cut): raise SystemExit(("R18c cut is not a prefix of the source", text))
+    return cut
 STORY = None
 if C.STORY:   # content file STORY = dict(json=<story data json>, listen=<listen page>, teaser_sentences=n)
     _JC = json.load(open(REPO / C.STORY["json"], encoding="utf-8"))
@@ -458,8 +461,8 @@ if C.STORY:   # content file STORY = dict(json=<story data json>, listen=<listen
 COMMUNITY_STORIES_OMIT_APPROVED = ((getattr(C, "STORY_OMIT_APPROVED", None) if not STORY else None)
     or (C.STORY_OMIT_DRYRUN_NOTE if os.environ.get("PHNEWS_DRYRUN") == "1" and C.DRYRUN_OK and not STORY else None))
 if STORY: _story_page = (PAGES / STORY["page"]).read_text(encoding="utf-8")
-if STORY: assert STORY["teaser"].replace("'", "\u2019") in _story_page or STORY["teaser"] in _story_page, "R45: story teaser must be verbatim from the story page"
-if STORY: assert (PAGES / STORY["listen"]).exists(), "R45: story listen page missing"
+if STORY: _guard(STORY["teaser"].replace("'", "\u2019") in _story_page or STORY["teaser"] in _story_page, "R45: story teaser must be verbatim from the story page")
+if STORY: _guard((PAGES / STORY["listen"]).exists(), "R45: story listen page missing")
 if STORY:
     _d = date.fromisoformat(STORY["date"])
     _row = (f'<tr style="background:#FFFFFF;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
@@ -513,7 +516,7 @@ if (not _wp.exists()) or (not _wmu_sent and _wmu_rel not in _sr142.R10_LOCKED_SH
         _tpl = _tpl[:_a] + _tpl[_b:]   # Oct 16 photo attachment does not carry over; the RPM minutes PDF is not hosted (flagged)
     for o, n in WMU_REPLACE:
         _tpl = _tpl.replace(o, n)
-    assert WMU_TEMPLATE_DATE not in _tpl.split("<!-- ph-page-listen:start -->")[0], "WMU template still has the template page's date refs"
+    if not (WMU_TEMPLATE_DATE not in _tpl.split("<!-- ph-page-listen:start -->")[0]): raise SystemExit("WMU template still has the template page's date refs")
     _wp.write_text(_tpl, encoding="utf-8")
 # R65: the weekly update's attached PDF (WMU_1023_PDF*, content file) is copied (never moved) and linked in an Attachments card.
 # R72 (batch 6, Steven Oct 24 2026 10:40 PM "do them all"): the PDF source is a content-file path relative to the work tree.
@@ -521,7 +524,7 @@ if (not _wp.exists()) or (not _wmu_sent and _wmu_rel not in _sr142.R10_LOCKED_SH
 # decision -- no PDF is hosted and the page carries no Attachments card (the template's card is already removed above).
 if WMU_1023_PDF_SRC is None:
     _wt = _wp.read_text(encoding="utf-8")
-    assert 'class="content-card attachments"' not in _wt and "/pages/assets/manager/" not in _wt, "R65b: weekly update page must not carry another update's attachment"
+    if not ('class="content-card attachments"' not in _wt and "/pages/assets/manager/" not in _wt): raise SystemExit("R65b: weekly update page must not carry another update's attachment")
 else:
     if Path(WMU_1023_PDF_SRC).is_absolute(): raise SystemExit("R72 FAIL: WMU_1023_PDF_SRC must be relative to PHNEWS_WORK, not a fixed folder. Why: builds must not depend on one machine's folders. Fix: copy the PDF into <work>/source/ and set the relative path in the content file.")
     WMU_1023_PDF_SRC = ROOT / WMU_1023_PDF_SRC
@@ -542,16 +545,16 @@ else:
     for _ph, _hr in _inl.items():
         _lk = f'<a href="/pages/{_hr}" target="_blank" rel="noopener">{_ph}</a>'
         if _lk not in _wt:
-            assert _wt.count(_ph) == 1, f"R65c: inline attachment phrase must appear exactly once in the update page: {_ph!r}"
+            if not (_wt.count(_ph) == 1): raise SystemExit(f"R65c: inline attachment phrase must appear exactly once in the update page: {_ph!r}")
             _wt = _wt.replace(_ph, _lk); _wp.write_text(_wt, encoding="utf-8")
-        assert _wt.count(_lk) == 1, f"R65c: inline attachment link missing for {_ph!r}"
+        if not (_wt.count(_lk) == 1): raise SystemExit(f"R65c: inline attachment link missing for {_ph!r}")
     _nlink = 1 + sum(1 for _h in _inl.values() if _h == WMU_1023_PDF)
-    assert _wt.count(f'href="/pages/{WMU_1023_PDF}"') == _nlink and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size, "R65: weekly update PDF link/copy missing"
+    if not (_wt.count(f'href="/pages/{WMU_1023_PDF}"') == _nlink and _pdf.stat().st_size == WMU_1023_PDF_SRC.stat().st_size): raise SystemExit("R65: weekly update PDF link/copy missing")
 for _sec, _row in ARCHIVE_ROWS_LATE: _arch_row(_sec, _row)
 # Weekly Manager Update card on the main page: the newest update replaces the seed card (retention rule); WMU_CARD_* in the content file
 _W_OLD = s[s.find(WMU_CARD_OLD):]
 _W_OLD = _W_OLD[:_W_OLD.find('</td></tr>')]
-assert WMU_CARD_OLD_MARK in _W_OLD
+if not (WMU_CARD_OLD_MARK in _W_OLD): raise SystemExit('guard failed: WMU_CARD_OLD_MARK in _W_OLD')
 _W_NEW = ('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Manager Update</div>'  # R19: date only on the date line
     f'<div style="font-size:14px;color:#666666;margin-top:2px;">{WMU_CARD_DATE}</div>'
     f'<div style="font-size:15px;color:#333333;margin-top:3px;">{WMU_CARD_TEASER}</div>'
@@ -560,14 +563,14 @@ _W_NEW = ('<div style="font-size:15px;font-weight:bold;color:#333333;">Weekly Ma
 s = s.replace(_W_OLD, _W_NEW)
 # Manager reports: Listen icon on the title line (pages have built-in Listen; ?listen=1 autostarts)
 for t, href in MANAGER_LISTEN:
-    old = f'<div style="font-size:15px;font-weight:bold;color:#333333;">{t}</div>'; assert old in s, t
+    old = f'<div style="font-size:15px;font-weight:bold;color:#333333;">{t}</div>'; _guard(old in s, t)
     s = s.replace(old, title_row(t, listen(href + "?listen=1")))
 # Henry October already the President's Message (to-do #7). Did You Know: archive link (to-do, Oct 11 evening)
 old = f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and committee recordings →</a></div>'
-assert old in s
+if not (old in s): raise SystemExit('guard failed: old in s')
 s = s.replace(old, f'<a href="{ARCH}videos.html" style="color:{G};">Latest Board and Committee Meeting Videos →</a><span style="color:#999999;"> · </span><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></div>')
 # Did You Know: Tony's FB variation (verbatim, Oct 16) appended as 2nd row
-a = s.find(">Did You Know?</span>"); e = s.find("</table></div>", a); assert a > 0 and e > 0
+a = s.find(">Did You Know?</span>"); e = s.find("</table></div>", a); _guard(a > 0 and e > 0, 'guard failed: a > 0 and e > 0')
 DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
     f'<div style="font-size:15px;color:#333333;margin-top:3px;">{DYK_FB_TEXT}</div>'
     f'<div style="font-size:14px;margin-top:4px;"><a href="{FBURL}" style="color:{G};">{FBURL}</a></div>'
@@ -581,12 +584,12 @@ DYK_FB = (f'<tr style="background:#F5F5F5;page-break-inside:avoid;break-inside:a
 import html as _html
 sys.path.insert(0, SCRIPTS); import style_rules as _sr_dyk
 _DYK_SRC = json.load(open(ROOT / DYK_RULES_SOURCE_FILE))
-assert _sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC), "R39: DYK summary must be at most 3 of Dave's verbatim sentences"
+if not (_sr_dyk.dyk_summary_ok(DYK_RULES_SUMMARY, _DYK_SRC)): raise SystemExit("R39: DYK summary must be at most 3 of Dave's verbatim sentences")
 # R39: the Did You Know archive row shows the same summary (archive/archive-items.json, id traffic-rules)
 _AI = _aj.path(REPO)
 _aj.set_field(REPO, "did-you-know", DYK_RULES_ARCHIVE_KEY, "text", DYK_RULES_SUMMARY)
 if DYK_RULES_TEASER_MODE == "framing":
-    assert _sr_dyk.dyk_framing_ok(DYK_RULES_TEASER, DYK_CONTRIBUTOR_NAMES, _DYK_SRC), "R39: framing teaser has a name, quotes a rule, or is over 3 lines"
+    if not (_sr_dyk.dyk_framing_ok(DYK_RULES_TEASER, DYK_CONTRIBUTOR_NAMES, _DYK_SRC)): raise SystemExit("R39: framing teaser has a name, quotes a rule, or is over 3 lines")
     _DYK_MAIN = DYK_RULES_TEASER
 else:
     _DYK_MAIN = DYK_RULES_SUMMARY
@@ -606,24 +609,24 @@ DYK_ITEMS = []
 # Steven Oct 21 11:25 AM: final page URLs (Oct 18 pattern pages/<issue>-did-you-know-<slug>.html, written by the stage script)
 def _dyk_final(pp): return DYK_PAGE_PREFIX + pp
 for _it in _DYK25["items"]:
-    assert _sr_dyk.dyk_summary_ok(_TEASE[_it["id"]], _it["paragraphs"]), ("R39 distilled teaser not verbatim", _it["id"])
+    if not (_sr_dyk.dyk_summary_ok(_TEASE[_it["id"]], _it["paragraphs"])): raise SystemExit(("R39 distilled teaser not verbatim", _it["id"]))
     DYK_ITEMS.append((_it["id"], _dyk_row(_DYK_TITLE.get(_it["id"], _it["title_display"]), _TEASE[_it["id"]], BASE + _dyk_final(_it["preview_page"]))))
 _d3src = _DYK3["email_paragraphs"] + [x for _, x in _DYK3["rule_items"]]
 # Steven Oct 21 11:22 AM: teaser = distilled summary in the official rule's own words (R39 distilled: verbatim sentences, <= 300 chars)
 # Steven Oct 21 11:39 AM: teaser in the rule's own words (his wording). Guard: every content word is in the official rule text.
 # R18c (Steven Oct 24 12:18 PM): cut at the semicolon (no rewording) so the phone teaser is <= 3 lines
 _DYK3_TEASER = _DYK3_TEASER_FULL.split("; ")[0] + "."
-assert _DYK3_TEASER_FULL.startswith(_DYK3_TEASER[:-1])
+if not (_DYK3_TEASER_FULL.startswith(_DYK3_TEASER[:-1])): raise SystemExit('guard failed: _DYK3_TEASER_FULL.startswith(_DYK3_TEASER[:-1])')
 _rw = set(re.findall(r"[a-z0-9$.]+", " ".join(x for _, x in _DYK3["rule_items"]).lower().replace("home/unit", "home unit")))
 _tw = [w.strip(".") for w in re.findall(r"[a-z0-9$.]+", _DYK3_TEASER.lower().replace("home/unit", "home unit"))]
 _bad = [w for w in _tw if w and w not in _rw and w.rstrip(".") not in {x.rstrip(".") for x in _rw} and w not in {"if", "are", "total"}]
-assert not _bad, f"R39: DYK #3 teaser words not in the official rule: {_bad}"
+if not (not _bad): raise SystemExit(f"R39: DYK #3 teaser words not in the official rule: {_bad}")
 # R66 (Steven Oct 24 2026 3:02 PM): Rules DYK teaser generated from the rule's lettered parts; phrase override per item.
 _DYK3_TEASER, _r66p = _sr_dyk.rules_dyk_teaser(_DYK3["rule_items"], _R66_PHRASES.get(_DYK3["id"]))
 _sr_dyk.assert_rules_dyk(_DYK3_TEASER, _DYK3["rule_items"], _r66p, _DYK3["id"])
-assert _DYK3_TEASER == DYK_RULES_ITEM_TEASER_APPROVED, _DYK3_TEASER  # Steven's chosen wording (content file)
+if not (_DYK3_TEASER == DYK_RULES_ITEM_TEASER_APPROVED): raise SystemExit(_DYK3_TEASER)  # Steven's chosen wording (content file)
 # R66 covers every Rules DYK item (any item carrying rule_items); the Spectrum items are not rules.
-assert not any("rule_items" in _it for _it in _DYK25["items"]), "R66: new Rules DYK item needs an _R66_PHRASES entry / review"
+if not (not any("rule_items" in _it for _it in _DYK25["items"])): raise SystemExit("R66: new Rules DYK item needs an _R66_PHRASES entry / review")
 DYK_ITEMS.insert(0, (_DYK3["id"], _dyk_row(_DYK3["title_display"], _DYK3_TEASER, BASE + _dyk_final(_DYK3["preview_page"]))))  # Steven Oct 20 3:03 PM: Dave's rules item FIRST (R31)
 DYK_MULTI_APPROVED = _DYK25["dyk_multi_approved"] + "; " + _DYK3["multi_approved"]
 # R88 (Steven Oct 29 2026 11:11 AM): an issue may add NEW Did You Know items from its own data file (content flag DYK_NEW_JSON,
@@ -633,9 +636,9 @@ _DYKN = json.load(open(REPO / C.DYK_NEW_JSON, encoding="utf-8")) if globals().ge
 _DYKN_ROWS = []
 if _DYKN:
     for _it in reversed(_DYKN["items"]):
-        assert _sr_dyk.dyk_new_item_teaser_ok(_it), ("R88/R118 teaser not the printed main-card text", _it["id"])
+        if not (_sr_dyk.dyk_new_item_teaser_ok(_it)): raise SystemExit(("R88/R118 teaser not the printed main-card text", _it["id"]))
         _pg = _DYKN["page_prefix"] + _it["preview_page"]
-        assert (REPO / "pages" / _pg).exists(), f"R88: DYK page pages/{_pg} missing -- run builder/nov1/stage_nov1_content.py"
+        if not ((REPO / "pages" / _pg).exists()): raise SystemExit(f"R88: DYK page pages/{_pg} missing -- run builder/nov1/stage_nov1_content.py")
         DYK_ITEMS.insert(0, (_it["id"], _dyk_row(_it["title_display"], _it["teaser"], BASE + _pg)))
         _r = dict(date=_DYKN["row_date"], id=_it["id"].replace(_DYKN["page_prefix"], ""), title=_it["title_display"], text=_it["teaser"],
                   page=_pg, issues=[_DYKN["row_date"]])
@@ -652,22 +655,22 @@ _REP = globals().get("DYK_REPRISE") or []
 for _it in reversed(_REP):
     _txt = _html.unescape(globals()[_it["text_html"]])
     _pgf = PAGES / _it["href"].split("/pages/", 1)[1]
-    assert _pgf.exists() and _html.escape(_txt, quote=True).replace("&#x27;", "'") in _pgf.read_text(encoding="utf-8") and _it["title"] in _pgf.read_text(encoding="utf-8"), f"R91: {_it['id']} teaser/title not verbatim on its live page"
+    if not (_pgf.exists() and _html.escape(_txt, quote=True).replace("&#x27;", "'") in _pgf.read_text(encoding="utf-8") and _it["title"] in _pgf.read_text(encoding="utf-8")): raise SystemExit(f"R91: {_it['id']} teaser/title not verbatim on its live page")
     if _it.get("sentences"):  # R18c: cut at a sentence end (no rewording) so the teaser fits 3 lines
         _txt = " ".join(re.split(r"(?<=[.?!])\s+", _txt)[:_it["sentences"]])
     DYK_ITEMS.insert(0, (_it["id"], _dyk_row(_it["title"], _txt, _it["href"])))
 for _pp in globals().get("DYK_PARKED_PAGES") or []:
-    assert not any(_pp in r for _, r in DYK_ITEMS), f"R91: parked page {_pp} still on the main page"
+    if not (not any(_pp in r for _, r in DYK_ITEMS)): raise SystemExit(f"R91: parked page {_pp} still on the main page")
 if not _DYK_CARRY:
     _new_ids = [_it["id"] for _it in _REP] + ([_it["id"] for _it in _DYKN["items"]] if _DYKN else [])
     # R104: a week with no new Did You Know item hides the section (HIDE_SECTIONS "dyk") instead of carrying last week's (R89)
-    assert _new_ids or "dyk" in (globals().get("HIDE_SECTIONS") or {}), "R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE), or HIDE_SECTIONS dyk (R104)"
+    if not (_new_ids or "dyk" in (globals().get("HIDE_SECTIONS") or {})): raise SystemExit("R89: DYK_CARRY_PREVIOUS=False needs this issue's own items (DYK_NEW_JSON or DYK_REPRISE), or HIDE_SECTIONS dyk (R104)")
     DYK_ITEMS = [x for x in DYK_ITEMS if x[0] in _new_ids]
-    assert [i for i, _ in DYK_ITEMS] == _new_ids, "R89: main page Did You Know must be exactly the new items"
+    if not ([i for i, _ in DYK_ITEMS] == _new_ids): raise SystemExit("R89: main page Did You Know must be exactly the new items")
 if "dyk" not in (globals().get("HIDE_SECTIONS") or {}):
     _sr_dyk.assert_dyk_items([{"id": i, "paragraphs": [r]} for i, r in DYK_ITEMS], DYK_MULTI_APPROVED)  # R50: a shown section has at least one item
 else:
-    assert not DYK_ITEMS, "R104/R89: hidden Did You Know section must have no new or carried item"
+    if not (not DYK_ITEMS): raise SystemExit("R104/R89: hidden Did You Know section must have no new or carried item")
 t0 = s.find("<table", a)
 s = s[:t0] + '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px 0;">' + "".join(r for _, r in DYK_ITEMS) + f'<tr><td style="padding:2px 8px;font-size:14px;"><a href="{ARCH}did-you-know.html" style="color:{G};">Did You Know Archives →</a></td></tr>' + s[e:]  # R50: one archive link after the last item
 _sr_dyk.assert_dyk_blocks(s, len(DYK_ITEMS))  # R57
@@ -711,13 +714,13 @@ for _r133 in _NOTICE_ROWS:
 # from the issue, so the first week after R130 failed on last week's rows (e.g. the Nov 14 Game Night correction).
 _ON_ISSUE130 = {n[0] for n in NOTICES}
 ARCHIVE_BACKED += [("community-notices.html", r["page"]) for r in _NOTICE_ROWS if r["title"] not in NOTICES_DROPPED_ISSUE and r["title"] in _ON_ISSUE130]
-assert all(r["title"] in _ON_ISSUE130 for r in _NOTICE_ROWS if ("community-notices.html", r["page"]) in ARCHIVE_BACKED), "R130b: R59 would require a notice that is off this issue"
+if not (all(r["title"] in _ON_ISSUE130 for r in _NOTICE_ROWS if ("community-notices.html", r["page"]) in ARCHIVE_BACKED)): raise SystemExit("R130b: R59 would require a notice that is off this issue")
 # Helpful Webpages + archive footer links -> live /pages/ URLs
 s = s.replace(f'<a href="{ARCH}meeting-videos.html" style="color:{G};">Palm Hill Committee Videos</a></div>',
               f'<a href="{ARCH}main.html" style="color:{G};">Palm Hill Newsletter Archives</a></div>\n          <div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          <div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
 # STYLE-RULES R25 (Steven, Oct 17 12:20 AM): footer archive-links row removed (links stay in Helpful Webpages);
 # Helpful Webpages label is 'Committee Meeting Video Archives' (never 'Committee Meeting Videos - Archives')
-assert 'Videos - Archives' not in s, 'R25 label'
+if not ('Videos - Archives' not in s): raise SystemExit('R25 label')
 sys.path.insert(0, SCRIPTS); import style_rules as _sr  # STYLE-RULES.md (shared)
 s = _sr.enforce_title_months(s)  # full months in titles/bands
 import link_archive_bullet as _lab; s = _lab.add(s)
@@ -727,14 +730,14 @@ import link_archive_bullet as _lab; s = _lab.add(s)
 if globals().get("LINKS_SEVEN", False):
     _vo = (f'<div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos - Latest</a></div>\n          '
            f'<div>• <a href="{ARCH}meeting-videos.html" style="color:{G};">Committee Meeting Video Archives</a></div>')
-    assert s.count(_vo) == 1, "R81: video bullets not found"
+    if not (s.count(_vo) == 1): raise SystemExit("R81: video bullets not found")
     s = s.replace(_vo, f'<div>• <a href="{ARCH}videos.html" style="color:{G};">Committee Meeting Videos</a></div>')
     s, _n81 = re.subn(r'<div>• <a href="https://monthly-media\.com/newsletter_download\.php[^"]*" style="color:#3A6B1A;">Palm Hill Link Monthly</a></div>\s*'
                       r'<div>• <a href="' + re.escape(_lab.URL) + r'" style="color:#3A6B1A;">Palm Hill Link Archives</a></div>',
                       f'<div>• <a href="{_lab.URL}" style="color:{G};">Palm Hill Link</a></div>', s)
-    assert _n81 == 1, "R81: Link Monthly + Link Archives bullets not found"
+    if not (_n81 == 1): raise SystemExit("R81: Link Monthly + Link Archives bullets not found")
     _hw = s[s.index("Helpful Webpages</div>"):]; _hw = _hw[:_hw.index("</td>")]
-    assert _hw.count("<div>• ") == 7 and "newsletter_download" not in _hw and "Videos - Latest" not in _hw, "R81/R25: Helpful Webpages must have the 7 approved links"
+    if not (_hw.count("<div>• ") == 7 and "newsletter_download" not in _hw and "Videos - Latest" not in _hw): raise SystemExit("R81/R25: Helpful Webpages must have the 7 approved links")
 import title_dates as _td; s = _td.fix(s)  # STYLE-RULES.md R19 no dates in titles above a date line  # STYLE-RULES.md R14 Helpful Webpages
 # R104 (Steven Nov 1 2026 11:55 AM): a section with no current item shows no header -- the content file's HIDE_SECTIONS
 # {heading: reason} removes the whole section (header + rows) from the main page; archive pages and their URLs are untouched.
@@ -745,7 +748,7 @@ for _k104 in (globals().get("HIDE_SECTIONS") or {}):
         print(f"R104 hidden section already absent: {_h104} ({HIDE_SECTIONS[_k104]})")
         continue
     _a104, _b104 = section_span(s, _h104); s = s[:_a104] + s[_b104:]
-    assert f">{_h104}</span>" not in s, f"R104: {_h104} still on the page"
+    if not (f">{_h104}</span>" not in s): raise SystemExit(f"R104: {_h104} still on the page")
     print(f"R104 hidden section: {_h104} ({HIDE_SECTIONS[_k104]})")
 # STYLE-RULES R40 (Steven, Oct 17 7:23 PM; replaces R22): NO review/test stamp on any copy (previews and test copies included).
 _ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))
@@ -757,9 +760,9 @@ CALCHECK = f"Calendar check - {FULL[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}
 CALCHECK_P = f'<p class="ph-cal-check" style="font-size:11px;color:#888888;text-align:right;margin:12px 0 0 0;">{CALCHECK}</p>'
 s = re.sub(r'\n?\s*<p class="ph-cal-check"[^>]*>[^<]*</p>', "", s)
 _conf = re.compile(r'<p style="font-size:12px;color:#666666;font-style:italic;text-align:center;margin-top:16px;">\s*For the latest details, always confirm event times and updates on the\s*<a [^>]*>official Palm Hill calendar</a>\.\s*</p>')
-assert len(_conf.findall(s)) == 1, "R25: footer calendar-confirm sentence not found exactly once"
+if not (len(_conf.findall(s)) == 1): raise SystemExit("R25: footer calendar-confirm sentence not found exactly once")
 s = _conf.sub(lambda m: CALCHECK_P, s)
-assert "All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1, "R25 footer"
+if not ("All Newsletter Archives →" not in s and "always confirm event times" not in s and s.count('class="ph-cal-check"') == 1): raise SystemExit("R25 footer")
 # R140 (Steven Nov 20 2026 5:03 PM ET): Reference Guide trash/recycling is the minimal Starting December 1st list.
 if ISSUE >= _sr.R140_FROM:
     s = _sr.apply_reference_trash(s)
@@ -824,7 +827,7 @@ def _r1_inset(m):
     if LISTEN_INSET in a: return a
     return re.sub(r'^<a ([^>]*?)style="([^"]*)"', lambda k: f'<a {k.group(1)}style="{k.group(2).rstrip(";")};white-space:nowrap;display:inline-block;{LISTEN_INSET}"', a, count=1)
 s = re.sub(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', _r1_inset, s)
-assert all(LISTEN_INSET in m.group(0) for m in re.finditer(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', s)), "R1 Listen inset missing"
+if not (all(LISTEN_INSET in m.group(0) for m in re.finditer(r'<a [^>]*>(?:<img[^>]*>)?\s*Listen\s*</a>', s))): raise SystemExit("R1 Listen inset missing")
 # STYLE-RULES R85 (Steven Oct 27 2026 12:25 AM): from TEL_FROM on, every printed phone number is a tel: link (preview -> SEND).
 sys.path.insert(0, SCRIPTS); import tel_links as _tel
 if _tel.applies(ISSUE):
@@ -886,25 +889,25 @@ if _rc.returncode != 0: _todo(f"R64: run_checks ({ISSUE}) FAIL\n" + "\n".join(l 
 # Steven Oct 20 4:33 PM: preview builds refresh the archive pages too (the story row shows on Community Stories before publish)
 import subprocess as _sp3
 _ba = _sp3.run(["node", "scripts/build_archive.js"], cwd=str(REPO), capture_output=True, text=True)
-print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); assert _ba.returncode == 0, "build_archive.js failed"
+print("build_archive:", (_ba.stdout or "").strip()[-300:], (_ba.stderr or "").strip()[-300:]); _guard(_ba.returncode == 0, "build_archive.js failed")
 _sr_dyk.assert_r10_locked_pages(REPO)  # R10: locked as-sent pages unchanged (byte pin)
 _sr_dyk.assert_rules_dyk_archive((REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8"), _DYK_ROWS[0]["id"], _DYK3_TEASER)  # R66b
 _sr_dyk.assert_rules_dyk_archive((REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8"), "traffic-rules", _TR_TEASER)  # R66c
 _ca = (REPO / "pages/archive/community-stories.html").read_text(encoding="utf-8")
 if STORY: ARCHIVE_BACKED.append(("community-stories.html", STORY["page"]))
 for _ap, _pg in ARCHIVE_BACKED:  # R59 guard: every archive-backed issue item is on its archive page and the page exists
-    assert (PAGES / _pg).exists(), f"R59: {_pg} missing"
-    assert _pg in (PAGES / "archive" / _ap).read_text(encoding="utf-8"), f"R59: {_pg} not on archive/{_ap}"
-    assert (BASE + _pg) in s, f"R59: issue does not link the final URL {_pg}"
+    if not ((PAGES / _pg).exists()): raise SystemExit(f"R59: {_pg} missing")
+    if not (_pg in (PAGES / "archive" / _ap).read_text(encoding="utf-8")): raise SystemExit(f"R59: {_pg} not on archive/{_ap}")
+    if not ((BASE + _pg) in s): raise SystemExit(f"R59: issue does not link the final URL {_pg}")
 print("R59 archive-backed items OK:", ARCHIVE_BACKED)
-assert not STORY or STORY["page"] in _ca, "R45: the issue's story is not on the Community Stories archive page"
+if not (not STORY or STORY["page"] in _ca): raise SystemExit("R45: the issue's story is not on the Community Stories archive page")
 # Local review copy (D:\PHNEWS\<week>\, fixed names): the story More → / Listen and Story Archives → point to sibling files in the
 # same folder so they open from disk; the repo/Vercel copy keeps absolute URLs that resolve after publish.
 # R58 (Steven Oct 21 11:24 AM): Story Archives → = the canonical live archive page (the one Oct 18 + Main Archive use).
 STORY_ARCHIVE_URL = ARCH + "community-stories.html"   # https://palmhillnews.vercel.app/pages/archive/community-stories.html
 _sa = re.findall(r'href="([^"]+)"[^>]*>Story Archives →', s)
-assert (not STORY or _sa) and all(u == STORY_ARCHIVE_URL for u in _sa), f"R58: Story Archives → must link {STORY_ARCHIVE_URL}, got {_sa}"
-assert 'href="community-stories.html"' in (REPO / "pages/archive/main.html").read_text(encoding="utf-8"), "R58: Main Archive no longer links community-stories.html"
+if not ((not STORY or _sa) and all(u == STORY_ARCHIVE_URL for u in _sa)): raise SystemExit(f"R58: Story Archives → must link {STORY_ARCHIVE_URL}, got {_sa}")
+if not ('href="community-stories.html"' in (REPO / "pages/archive/main.html").read_text(encoding="utf-8")): raise SystemExit("R58: Main Archive no longer links community-stories.html")
 # Local review copy (D:\PHNEWS\<week>\, fixed names). The issue's story + Story Archives links open local copies that mirror the
 # live paths: <story>.html and archive/community-stories.html (the canonical page, incl. this issue's story); every other
 # root-relative link/asset in the local archive copy is made absolute to palmhillnews.vercel.app so it renders like the live page.
@@ -920,7 +923,7 @@ for _u in (("https://palmhillnews.vercel.app/pages/" + STORY["page"], "https://p
 (LOCAL / "archive/community-stories.html").write_text(_lca, encoding="utf-8")
 _old = LOCAL / "community-stories.html"
 if _old.exists(): _old.unlink()   # local review scratch copy only (box), replaced by archive/community-stories.html
-assert not STORY or ('href="../' + STORY["page"]) in _lca, "R58: local archive copy must list and link this issue's story"
+if not (not STORY or ('href="../' + STORY["page"]) in _lca): raise SystemExit("R58: local archive copy must list and link this issue's story")
 _ld = (REPO / "pages/archive/did-you-know.html").read_text(encoding="utf-8")
 _ld = re.sub(r'(href|src)="/(?!/)', r'\1="https://palmhillnews.vercel.app/', _ld)
 _ld = re.sub(r'href="(?!https?:|#|mailto:)([^"/][^"]*\.html)"', r'href="https://palmhillnews.vercel.app/pages/archive/\1"', _ld)
@@ -930,15 +933,15 @@ for _ap, _pg in ARCHIVE_BACKED:
     _sh.copy(PAGES / _pg, LOCAL / _pg)
     _loc = _loc.replace(BASE + _pg, _pg)
     for _u in ("https://palmhillnews.vercel.app/pages/" + _pg, "https://palmhillnews.vercel.app/pages/archive/../" + _pg): _ld = _ld.replace('href="' + _u, 'href="../' + _pg)
-    assert 'href="../' + _pg in _ld, f"R59: local DYK archive copy missing {_pg}"
+    if not ('href="../' + _pg in _ld): raise SystemExit(f"R59: local DYK archive copy missing {_pg}")
 (LOCAL / "archive/did-you-know.html").write_text(_ld, encoding="utf-8"); (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
 # STYLE-RULES R94 (Steven, Oct 30 2026 4:02 PM): the REVIEW / live-preview copy (a web page, never emailed) gets the same in-place
 # Listen block as the archive pages (scripts/listen_inplace.html), so a main-page Listen reads that item on the FIRST press.
 # Links stay plain hrefs (no speech / file:// / load failure -> opens the ?listen=1 page). OUTF (-> SEND / email) stays script-free.
 if _plv.v2_for(ISSUE):
     _loc = _plv.add_inplace(_loc); (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
-    assert _plv.strip_inplace(_loc).lower().count("<script") == 0, "R94: review copy may carry only the in-place Listen block"
-assert "<script" not in OUTF.read_text(encoding="utf-8").lower(), "R76c/R94: the NL output feeding SEND/email must stay script-free"
+    if not (_plv.strip_inplace(_loc).lower().count("<script") == 0): raise SystemExit("R94: review copy may carry only the in-place Listen block")
+if not ("<script" not in OUTF.read_text(encoding="utf-8").lower()): raise SystemExit("R76c/R94: the NL output feeding SEND/email must stay script-free")
 # STYLE-RULES R96 (Oct 30 2026, after the 4:3x PM RCCA on the Omen review folder): the local review copy is self-contained --
 # every pages/<name>.html the review preview links (More →, Source, Listen ?listen=1, cards) is copied (never moved) beside it and
 # linked relatively, and each copied page's site-root refs (/pages/...: CSS, JS, images, PDF attachments) are copied too and made
@@ -969,11 +972,11 @@ for _a in sorted(_r96_assets):
     (LOCAL / _a).parent.mkdir(parents=True, exist_ok=True); _sh.copy2(PAGES / _a, LOCAL / _a)
 (LOCAL / f"PHNEWS-{ISSUE}-preview.html").write_text(_loc, encoding="utf-8")
 _miss96 = [m for m in set(re.findall(r'href="([A-Za-z0-9._/-]+\.(?:html|pdf))', _loc)) if not (LOCAL / m).is_file()]
-assert not _miss96, f"R96: local review copy links missing local files: {_miss96}"
+if not (not _miss96): raise SystemExit(f"R96: local review copy links missing local files: {_miss96}")
 for _pg in _r96:
     _t = (LOCAL / _pg).read_text(encoding="utf-8")
     _m2 = [m for m in re.findall(r'(?:href|src)="(?!https?:|#|mailto:|tel:|data:|javascript:|//)([^"?#]+)', _t) if not (LOCAL / m).is_file()]
-    assert not _m2, f"R96: local copy of {_pg} refers to missing local files: {_m2[:5]}"
+    if not (not _m2): raise SystemExit(f"R96: local copy of {_pg} refers to missing local files: {_m2[:5]}")
 print(f"R96 local review copy: {len(_r96)} linked page(s) + {len(_r96_assets)} asset(s) copied beside the preview")
 print("local review copy:", sorted(str(p.relative_to(LOCAL)) for p in LOCAL.rglob("*") if p.is_file()))
 print("DRY-RUN TODOs:", len(DRYRUN_TODO)) if DRYRUN else None

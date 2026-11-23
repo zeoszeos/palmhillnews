@@ -32,7 +32,7 @@ rec = sorted([e for e in events if e.get("status") == "CONFIRMED" and e.get("nam
               and not reserved_only_name(e.get("name"))
               and RECURRING[0] <= e["date"] <= RECURRING[1] and (e.get("recurring") or e["name"] in AS_RECURRING)
               and not CM.search(e.get("name", ""))], key=k)
-assert rec[0]["date"] >= ISSUE, "R20: recurring window must start on the issue date"
+if not (rec[0]["date"] >= ISSUE): raise SystemExit("R20: recurring window must start on the issue date")
 rec = sorted(collapse_multiday(rec, events), key=k)  # R124: a back-to-back multi-day run (e.g. a cruise) is one date-range row
 def rdate(e): return range_label(e["range_start"], e["range_end"]) if e.get("range_end") else pdate(e["date"])
 def rtime(e): return ("Starts " + ptime(e["range_first_start"])) if e.get("range_end") and e.get("range_first_start") else ptime(e.get("start"))
