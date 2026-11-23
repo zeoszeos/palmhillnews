@@ -49,22 +49,21 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info fro
                    "Amazon Scam Email",                          # ran Nov 15
                    "Exercise Class",                             # began Nov 17
                    "Taste of Golf Instructions"]                 # Taste of Golf was Nov 18
-# R130: a notice that ran in the previous sent issue (Nov 22, frozen at pages/archive/issues/2026-11-22.html) stays off this
-# issue unless Steven keeps it by name. PROPOSED keep-list for the early draft (NOT yet approved by Steven): Nov 22 notices
-# whose dates are still ahead of Sun Nov 29 and whose wording is not stale. Dropped as expired (not proposed): Thanksgiving
-# Holiday Schedule (offices/sanitation field closed Nov 26–27; recycling Nov 25) and Cornhole Tournament (Sat Nov 28).
+# R130 / R144 (Steven Nov 23 2026 2:05 AM ET, voice: "The community notices, keep these seven."):
+# approved keep-list, exactly these seven, in this order. Dropped as expired: Thanksgiving Holiday
+# Schedule (offices/sanitation field closed Nov 26–27; recycling Nov 25) and Cornhole Tournament (Sat Nov 28).
 # Inbox since Sat Nov 21 6:19 PM ET: no new Webmaster, RPM, Megan, committee agenda, or chair-report items to add.
-NOTICES_KEEP_FROM_PREVIOUS = ["Spectrum Fiber Upgrade",              # schedule by Dec 1; unupgraded accounts disconnected Dec 8 (PROPOSED)
-                              "Pianist Needed for Cantata Ensemble", # performance Sun Dec 6 (PROPOSED)
-                              "New Valet Trash Service",            # starts Dec 1 (PROPOSED)
-                              "Palm Hill Annual Golf Cart Parade",   # Dec 12 (PROPOSED)
-                              "Christmas Golf Cart Route",           # pairs with the parade (PROPOSED)
-                              "Ladies Christmas Luncheon",           # luncheon Dec 2 (PROPOSED)
-                              "2027 South Rec Club Seeking Officers"]  # deadline Dec 2 (PROPOSED)
+NOTICES_KEEP_FROM_PREVIOUS = ["Spectrum Fiber Upgrade",              # schedule by Dec 1; unupgraded accounts disconnected Dec 8; teaser adds "Starting December 1st." (R144)
+                              "Pianist Needed for Cantata Ensemble", # performance Sun Dec 6
+                              "New Valet Trash Service",            # starts Dec 1
+                              "Palm Hill Annual Golf Cart Parade",   # Dec 12
+                              "Christmas Golf Cart Route",           # pairs with the parade
+                              "Ladies Christmas Luncheon",           # luncheon Dec 2
+                              "2027 South Rec Club Seeking Officers"]  # deadline Dec 2
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {
-    "NOTICES_EXPECTED": [   # R130: Nov 22 repeats dropped except the PROPOSED keep-list (pending Steven)
+    "NOTICES_EXPECTED": [   # R130/R144: Steven Nov 23 2026 2:05 AM ET approved this exact seven-notice keep-list
         'Spectrum Fiber Upgrade',
         'Pianist Needed for Cantata Ensemble',
         'New Valet Trash Service',
@@ -385,8 +384,21 @@ HOLIDAY_SCHED_BLOCKS = [
 # 2) RPM Spectrum Fiber upgrade, gotwicz 1a1fa3b629ace05e, Fri Nov 20 2026 1:32 PM ET. Subject line after the ticket number is blank; title is taken from the first sentence.
 WM_COPY_SPECTRUM = "2026-11-20-spectrum-fiber-upgrade-notice.html"
 SPECTRUM_TITLE = "Spectrum Fiber Upgrade"
-SPECTRUM_BODY = "Palm Hill has upgraded its Spectrum service to a Fiber solution, which is now fully operational, enhancing service quality and reliability in the community. If you have not called to schedule a professional installation to upgrade your equipment, call 855-326-5115 by December 1, 2026, to prevent any service interruptions. Effective December 8, 2026, all accounts that have not been upgraded will be disconnected."  # R18: source sentences; 3-line guard may cut
+SPECTRUM_BODY = "Palm Hill has upgraded its Spectrum service to a Fiber solution, which is now fully operational, enhancing service quality and reliability in the community. If you have not called to schedule a professional installation to upgrade your equipment, call 855-326-5115 by December 1, 2026, to prevent any service interruptions. Effective December 8, 2026, all accounts that have not been upgraded will be disconnected."  # R18: source sentences (copy page / archive); do not add Steven's teaser fact here
+# R144 (Steven Nov 23 2026 2:05 AM ET, voice: the upgrade "is supposed to start December 1st"): main-page teaser only.
+# The full first source sentence is over the 3-line teaser cap, so R18 already cuts it at "Fiber solution".
+# That source clause stays intact; Steven's addition is appended as ", starting December 1st." Copy page stays SPECTRUM_BLOCKS.
+SPECTRUM_SOURCE_SENTENCE = "Palm Hill has upgraded its Spectrum service to a Fiber solution"
+SPECTRUM_STEVEN_ADDITION = "starting December 1st."
+SPECTRUM_TEASER = SPECTRUM_SOURCE_SENTENCE + ", " + SPECTRUM_STEVEN_ADDITION
 SPECTRUM_DATE = "Schedule installation by: December 1, 2026 · Unupgraded accounts disconnected: December 8, 2026 · Call: 855-326-5115"
+NOTICE_TEASER_ADDITIONS = {
+    SPECTRUM_TITLE: dict(
+        source=SPECTRUM_SOURCE_SENTENCE,
+        addition=SPECTRUM_STEVEN_ADDITION,
+        by="Steven Leonowicz, Nov 23 2026 2:05 AM ET, voice",
+    ),
+}
 SPECTRUM_SUBJECT = "[#XN9635927] Message from Home Owners of Palm Hill, Inc -"
 SPECTRUM_SENT = "Friday, Nov 20, 2026, 1:32 PM ET"
 SPECTRUM_BLOCKS = [
@@ -725,7 +737,7 @@ HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings
 NOTICES = [
     # Steven Nov 20 2026 6:33 PM ET: newest first, ahead of the valet notice and the keep-list.
     (HOLIDAY_SCHED_TITLE, HOLIDAY_SCHED_BODY, "RPM", BASE + WM_COPY_HOLIDAY_SCHED),
-    (SPECTRUM_TITLE, SPECTRUM_BODY, "RPM", BASE + WM_COPY_SPECTRUM),
+    (SPECTRUM_TITLE, SPECTRUM_TEASER, "RPM", BASE + WM_COPY_SPECTRUM),  # R144: teaser = R18-cut source clause + Steven's "starting December 1st."; copy page stays SPECTRUM_BLOCKS
     (PIANIST_TITLE, PIANIST_BODY, "Webmaster", BASE + WM_COPY_PIANIST),
     # R141 (Steven Nov 20 2026 5:03 PM ET): full Fed Up Trash Valet details; newest first, ahead of the keep-list.
     (VALET_TITLE, VALET_BODY, "RPM", BASE + WM_COPY_VALET),

@@ -1776,3 +1776,82 @@ def calendar_notice_duplicate_problems(html, events, keep_as_notice=(), default_
                 break
     return hits
 
+
+
+# R144 (Steven, Nov 23 2026 2:05 AM ET, voice): a Steven-supplied fact added to a
+# source teaser is recorded in the content file; the source sentence stays intact;
+# the addition is not silently written into the source notice page body.
+# Same decision: Nov 29 keeps exactly these seven Community Notices (approved R130 list).
+R144_FROM = "2026-11-29"
+R144_NOV29_NOTICES = [
+    "Spectrum Fiber Upgrade",
+    "Pianist Needed for Cantata Ensemble",
+    "New Valet Trash Service",
+    "Palm Hill Annual Golf Cart Parade",
+    "Christmas Golf Cart Route",
+    "Ladies Christmas Luncheon",
+    "2027 South Rec Club Seeking Officers",
+]
+
+
+def r144_teaser_from_html(html, title):
+    """Visible main-page teaser text for a Community Notice title (text before More →)."""
+    if not html or not title:
+        return ""
+    m = re.search(r"Community Notices(.*?)(?:Weekly Manager Update|Community Stories|Did You Know\??)", html, re.S | re.I)
+    sec = m.group(1) if m else html
+    for block in re.finditer(
+        r'font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">([^<]+)</td>'
+        r'(.*?)(?=font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">|\Z)',
+        sec, re.S):
+        got = re.sub(r"\s+", " ", _html_unescape_r143(block.group(1))).strip()
+        if got != title:
+            continue
+        rest = block.group(2)
+        tm = re.search(r'font-size:15px;color:#333333;[^>]*>(.*?)</div>', rest, re.S)
+        if not tm:
+            return ""
+        text = re.sub(r"<a\b.*?</a>", " ", tm.group(1), flags=re.S)
+        text = re.sub(r"<[^>]+>", " ", text)
+        return re.sub(r"\s+", " ", _html_unescape_r143(text)).strip()
+    return ""
+
+
+def steven_teaser_addition_problems(teaser_by_title, additions, page_text_by_title=None, label=""):
+    """R144: each recorded addition keeps the source sentence intact, appears in the teaser, and stays off the source notice page body unless a labeled editor's note is present."""
+    hits = []
+    where = f" in {label}" if label else ""
+    for title, rec in (additions or {}).items():
+        rec = rec or {}
+        addition = (rec.get("addition") or "").strip()
+        source = (rec.get("source") or "").strip()
+        by = (rec.get("by") or "").strip()
+        if not addition or not source or not by:
+            hits.append(f"R144: {title}: NOTICE_TEASER_ADDITIONS must record source, addition, and who/when{where}")
+            continue
+        teaser = (teaser_by_title or {}).get(title) or ""
+        if source not in teaser:
+            hits.append(f"R144: {title}: source sentence is missing or rewritten in the teaser{where}")
+        if addition not in teaser:
+            hits.append(f"R144: {title}: Steven's addition {addition!r} is missing from the teaser{where}")
+        page = ((page_text_by_title or {}).get(title) or "")
+        if page and addition in page:
+            if not re.search(r"editor'?s note|Steven Leonowicz|Steven's addition|added by Steven", page, re.I):
+                hits.append(
+                    f"R144: {title}: Steven's addition appears on the source notice page without a labeled editor's note{where}"
+                )
+    return hits
+
+
+def r144_keep_list_problems(issue, html, expected=None):
+    """R144: the Nov 29 issue lists exactly the seven approved Community Notices, in order."""
+    if issue < R144_FROM:
+        return []
+    if expected is None:
+        if issue != "2026-11-29":
+            return []
+        expected = list(R144_NOV29_NOTICES)
+    titles = [t for t, _d in r143_notices_from_html(html)]
+    if titles != list(expected):
+        return [f"R144: Community Notices are {titles}, expected exactly {list(expected)}"]
+    return []
