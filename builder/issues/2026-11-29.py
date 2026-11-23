@@ -11,6 +11,7 @@ DEFAULT_WORK = "/workspace/phnews-consolidation/nov29"
 # Community Story (R45/R83/R84). Steven Nov 23 2026 (t1863u: "1 pls") picked candidate 1:
 # "Smiling @ the Ladies Luncheon", Palm Hill Link November 2026, cover photo + story on pp. 2 and 4.
 # Full length, exact source wording, R83 credit line, no byline. STORY_OMIT_APPROVED stays unset (this is a pick, not an omit).
+# R145 (Steven Nov 23 2026, t1864u): middle-right cover-collage tile on the main-page card; story page keeps the full collage.
 STORY = dict(json="builder/nov29/data/community-story-smiling-ladies-luncheon.json", listen="2026-11-listen-smiling-at-the-ladies-luncheon.html", teaser_sentences=2)
 STORY_OMIT_DRYRUN_NOTE = None         # Nov 29 has a story (Smiling @ the Ladies Luncheon); never omitted
 # Carry policy (set up Oct 24 2026 8:3x PM; Steven confirms Friday): keep notices still valid on/after Nov 1, drop Oct 25 one-offs.

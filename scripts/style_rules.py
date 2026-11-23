@@ -1855,3 +1855,58 @@ def r144_keep_list_problems(issue, html, expected=None):
     if titles != list(expected):
         return [f"R144: Community Notices are {titles}, expected exactly {list(expected)}"]
     return []
+
+
+
+# R145 (Steven, Nov 23 2026, t1864u): a Steven-picked single photo from a Link
+# cover collage may appear on the main-page Community Story card, overriding
+# R84's text-only teaser for that case. The story page keeps the full cover.
+R145_FROM = "2026-11-29"
+
+
+def r145_community_stories_section(html):
+    """The Community Stories section of a main-page preview or SEND, or empty."""
+    if not html:
+        return ""
+    m = re.search(
+        r"Community Stories(.*?)(?:Did You Know\??|Residents Reference Guide|From the Board President)",
+        html, re.S | re.I,
+    )
+    return m.group(0) if m else ""
+
+
+def story_main_photo_problems(html, main_photo, story_page_html=None, cover_src=None, label="", repo=None):
+    """R145: a recorded Steven-picked main-card photo is on the card, and the story page still has the full cover."""
+    hits = []
+    where = f" in {label}" if label else ""
+    rec = main_photo or {}
+    if not rec:
+        return hits
+    src = (rec.get("src") or "").strip()
+    alt = (rec.get("alt") or "").strip()
+    by = (rec.get("by") or "").strip()
+    tile = (rec.get("tile") or "").strip()
+    try:
+        w, h = int(rec.get("w") or 0), int(rec.get("h") or 0)
+    except (TypeError, ValueError):
+        w = h = 0
+    if not src or not alt or not by or not tile or w < 1 or h < 1:
+        hits.append(f"R145: main_photo must record src, w, h, alt, which tile, and who/when{where}")
+        return hits
+    if not src.startswith("https://palmhillnews.vercel.app/assets/"):
+        hits.append(f"R145: main_photo src must be an absolute palmhillnews URL{where}")
+    if repo is not None:
+        from pathlib import Path as _P
+        pf = _P(repo) / "public" / src.split("vercel.app/", 1)[-1]
+        if not pf.exists():
+            hits.append(f"R145: main_photo file is missing from public/{where}: {pf.name}")
+    sec = r145_community_stories_section(html) or html
+    if src not in sec:
+        hits.append(f"R145: Steven-picked main-page photo is missing from the Community Stories card{where}")
+    if cover_src and cover_src != src and cover_src in sec:
+        # the full collage may still be linked from a story-page URL elsewhere; only fail if it is used as an <img> on the card
+        if re.search(r'<img\b[^>]*src="' + re.escape(cover_src) + r'"', sec):
+            hits.append(f"R145: the main-page card must show the picked tile, not the full cover collage{where}")
+    if story_page_html is not None and cover_src and cover_src not in story_page_html.split("<article>")[0]:
+        hits.append(f"R145: the story page must still have the full cover collage at the top{where}")
+    return hits

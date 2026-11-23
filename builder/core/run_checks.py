@@ -722,6 +722,22 @@ if C.ISSUE >= _sr83.R144_FROM:
         _k144 = _sr83.r144_keep_list_problems(C.ISSUE, _x144)
         L.ok("R144", not _k144, f"{_n144}: Community Notices are the approved keep-list" + (f" {_k144}" if _k144 else ""))
 
+# R145 (Steven Nov 23 2026, t1864u): a Steven-picked single photo from a cover
+# collage appears on the main-page Community Stories card; the story page keeps the full cover (R84).
+if C.ISSUE >= _sr83.R145_FROM and getattr(C, "STORY", None):
+    _repo145 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _sj145 = json.load(open(_repo145 / C.STORY["json"], encoding="utf-8"))
+    _mp145 = _sj145.get("main_photo")
+    if _mp145:
+        _cover145 = ((_sj145.get("photo") or {}).get("src") or "").strip() or None
+        _spf145 = _repo145 / "pages" / _sj145["live_page_planned"]
+        _sp145 = _spf145.read_text(encoding="utf-8") if _spf145.exists() else ""
+        for _n145, _x145 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+            _p145 = _sr83.story_main_photo_problems(
+                _x145, _mp145, story_page_html=_sp145, cover_src=_cover145, label=_n145, repo=_repo145,
+            )
+            L.ok("R145", not _p145, f"{_n145}: Steven-picked main-page story photo is on the card; story page keeps the full cover" + (f" {_p145}" if _p145 else ""))
+
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:
