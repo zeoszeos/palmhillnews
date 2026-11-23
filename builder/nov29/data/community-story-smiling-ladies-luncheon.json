@@ -1,5 +1,5 @@
 {
- "_about": "Nov 29, 2026 Community Story (R45/R83/R84). Steven picked candidate 1 on Nov 23 2026 (t1863u: '1 pls'): 'Smiling @ the Ladies Luncheon', Palm Hill Link November 2026, cover photo and story on pages 2 and 4. Full length, verbatim from pdftotext -layout of Link-2026-11.pdf (builder/nov29/data/link-2026-11-p2-p4-raw.txt), checked against the page images. Extraction fixes only: line breaks rejoined; the page-2 drop cap V is restored onto 'Volunteering'; the 'continued on page 4' jump line is dropped. No byline is printed; do not invent an author. Credit line is the established R83 form. Cover photo is the PDF's own embedded collage (927×743 JPEG, object 1610) with no print overlays in the photo pixels, so no inpaint was needed; masthead, date line, and Monthly Mania type were separate InDesign elements, not in this image. Pages 2 and 4 are text-only; there are no inside photos of this story (page 3 is ads). Title shown in title case, the way earlier all-caps Link story titles were shown. Steven Nov 23 2026 (t1864u) picked the middle-right collage tile for the main-page Community Story card (R145, overrides R84 text-only teaser for this case). The story page still uses the full cover collage.",
+ "_about": "Nov 29, 2026 Community Story (R45/R83/R84). Steven picked candidate 1 on Nov 23 2026 (t1863u: '1 pls'): 'Smiling @ the Ladies Luncheon', Palm Hill Link November 2026, cover photo and story on pages 2 and 4. Full length, verbatim from pdftotext -layout of Link-2026-11.pdf (builder/nov29/data/link-2026-11-p2-p4-raw.txt), checked against the page images. Extraction fixes only: line breaks rejoined; the page-2 drop cap V is restored onto 'Volunteering'; the 'continued on page 4' jump line is dropped. No byline is printed; do not invent an author. Credit line is the established R83 form. Cover photo is the PDF's own embedded collage (927×743 JPEG, object 1610) with no print overlays in the photo pixels, so no inpaint was needed; masthead, date line, and Monthly Mania type were separate InDesign elements, not in this image. Pages 2 and 4 are text-only; there are no inside photos of this story (page 3 is ads). Title shown in title case, the way earlier all-caps Link story titles were shown. Steven Nov 23 2026 (t1864u) picked the middle-center collage tile (narrow portrait: pink top at bottom left, striped top at bottom right) for the main-page Community Story card (R145, overrides R84 text-only teaser for this case). The story page still uses the full cover collage.",
  "title": "Smiling @ the Ladies Luncheon",
  "title_print": "SMILING @ THE LADIES LUNCHEON",
  "kicker": "Cover Photo",
@@ -32,17 +32,18 @@
  "teaser_note": "R18: first two sentences of the opening paragraph (the quoted 'you’ll be fine.' does not split on the period because a close-quote follows it). Display date is the 1st of the Link month (R83).",
  "main_photo": {
   "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-main-november-2026.jpg",
-  "w": 297,
-  "h": 261,
-  "alt": "Palm Hill ladies dining at a restaurant table, with red and blue cups and fish decorations on the wall",
-  "tile": "middle-right",
+  "w": 196,
+  "h": 262,
+  "alt": "Palm Hill ladies dining at a restaurant table, with fish decorations on a blue wall and windows at the right",
+  "tile": "middle-center",
   "crop": [
-   618,
+   365,
    240,
-   915,
-   501
+   561,
+   502
   ],
   "from": "smiling-ladies-luncheon-cover-november-2026.jpg",
-  "by": "Steven Leonowicz, Nov 23 2026, t1864u: 'Can you pick one pic from the collage for the main page? This one would be good' (the middle-right tile of the November 2026 Link cover collage)"
+  "display_h": 280,
+  "by": "Steven Leonowicz, Nov 23 2026, t1864u: 'Can you pick one pic from the collage for the main page? This one would be good' (the middle-center tile of the November 2026 Link cover collage; crop corrected from the middle-right tile)"
  }
 }

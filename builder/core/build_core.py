@@ -467,12 +467,20 @@ if STORY:
     _mp_html = ""
     if _mp:
         # R145: Steven-picked single photo on the main-page card (email-safe). Story page keeps the full cover (R84).
+        # Portrait photos are height-capped so they don't stretch full-width and run tall; landscape may use a wider cap.
+        _nat_w, _nat_h = int(_mp["w"]), int(_mp["h"])
+        if _nat_h > _nat_w:
+            _disp_h = int(_mp.get("display_h") or 280)
+            _disp_w = max(1, int(round(_disp_h * _nat_w / _nat_h)))
+        else:
+            _disp_w = int(_mp.get("display_w") or min(_nat_w, 560))
+            _disp_h = max(1, int(round(_disp_w * _nat_h / _nat_w)))
         _mp_html = (
-            f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;">'
+            f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;">'
             f'<tr><td style="padding:0;">'
             f'<a href="{BASE + STORY["page"]}" style="text-decoration:none;">'
-            f'<img src="{_mp["src"]}" width="{int(_mp["w"])}" height="{int(_mp["h"])}" alt="{escape(_mp["alt"])}" '
-            f'style="display:block;width:100%;max-width:560px;height:auto;border:0;outline:none;text-decoration:none;">'
+            f'<img src="{_mp["src"]}" width="{_disp_w}" height="{_disp_h}" alt="{escape(_mp["alt"])}" '
+            f'style="display:block;width:{_disp_w}px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;">'
             f'</a></td></tr></table>'
         )
     _row = (f'<tr style="background:#FFFFFF;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'

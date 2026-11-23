@@ -8,7 +8,7 @@ SRC = "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladi
 COVER = "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-cover-november-2026.jpg"
 REC = dict(
     src=SRC, w=297, h=261, alt="Ladies at lunch",
-    tile="middle-right",
+    tile="middle-center",
     by="Steven Leonowicz, Nov 23 2026, t1864u",
 )
 CARD = f'<div>Community Stories</div><img src="{SRC}" width="297" height="261" alt="Ladies at lunch"><div>More</div>Residents Reference Guide'
