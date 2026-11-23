@@ -7,9 +7,9 @@ import style_rules as sr
 
 TITLE = "Spectrum Fiber Upgrade"
 SOURCE = "Palm Hill has upgraded its Spectrum service to a Fiber solution"
-ADDITION = "starting December 1st."
-TEASER = SOURCE + ", " + ADDITION
-REC = {TITLE: {"source": SOURCE, "addition": ADDITION, "by": "Steven Leonowicz, Nov 23 2026 2:05 AM ET, voice"}}
+ADDITION = "Schedule installation by December 1, 2026."
+TEASER = SOURCE + ". " + ADDITION
+REC = {TITLE: {"source": SOURCE, "addition": ADDITION, "by": "Steven Leonowicz, Nov 23 2026: 2:05 AM ET keep-list; later approved schedule-by-December-1 framing (source wording)"}}
 
 def _notice_html(title, teaser, date_line="Schedule installation by: December 1, 2026"):
     return (
@@ -28,7 +28,7 @@ def test_missing_addition_fails():
     assert hits and ADDITION in hits[0]
 
 def test_rewritten_source_fails():
-    bad = "Palm Hill has upgraded its fiber service, starting December 1st."
+    bad = "Palm Hill has upgraded its fiber service. Schedule installation by December 1, 2026."
     hits = sr.steven_teaser_addition_problems({TITLE: bad}, REC)
     assert any("source sentence is missing or rewritten" in h for h in hits)
 

@@ -53,7 +53,7 @@ NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info fro
 # approved keep-list, exactly these seven, in this order. Dropped as expired: Thanksgiving Holiday
 # Schedule (offices/sanitation field closed Nov 26–27; recycling Nov 25) and Cornhole Tournament (Sat Nov 28).
 # Inbox since Sat Nov 21 6:19 PM ET: no new Webmaster, RPM, Megan, committee agenda, or chair-report items to add.
-NOTICES_KEEP_FROM_PREVIOUS = ["Spectrum Fiber Upgrade",              # schedule by Dec 1; unupgraded accounts disconnected Dec 8; teaser adds "Starting December 1st." (R144)
+NOTICES_KEEP_FROM_PREVIOUS = ["Spectrum Fiber Upgrade",              # schedule by Dec 1; unupgraded accounts disconnected Dec 8; teaser: schedule installation by December 1, 2026 (R144, Steven Nov 23)
                               "Pianist Needed for Cantata Ensemble", # performance Sun Dec 6
                               "New Valet Trash Service",            # starts Dec 1
                               "Palm Hill Annual Golf Cart Parade",   # Dec 12
@@ -387,16 +387,18 @@ SPECTRUM_TITLE = "Spectrum Fiber Upgrade"
 SPECTRUM_BODY = "Palm Hill has upgraded its Spectrum service to a Fiber solution, which is now fully operational, enhancing service quality and reliability in the community. If you have not called to schedule a professional installation to upgrade your equipment, call 855-326-5115 by December 1, 2026, to prevent any service interruptions. Effective December 8, 2026, all accounts that have not been upgraded will be disconnected."  # R18: source sentences (copy page / archive); do not add Steven's teaser fact here
 # R144 (Steven Nov 23 2026 2:05 AM ET, voice: the upgrade "is supposed to start December 1st"): main-page teaser only.
 # The full first source sentence is over the 3-line teaser cap, so R18 already cuts it at "Fiber solution".
-# That source clause stays intact; Steven's addition is appended as ", starting December 1st." Copy page stays SPECTRUM_BLOCKS.
+# That source clause stays intact. Steven Nov 23 (after the 2:05 AM draft): use the source's "schedule by December 1"
+# framing, not "starting December 1st." Addition is source wording, cut short, no Dec 8 disconnect in the teaser.
+# Copy page stays SPECTRUM_BLOCKS.
 SPECTRUM_SOURCE_SENTENCE = "Palm Hill has upgraded its Spectrum service to a Fiber solution"
-SPECTRUM_STEVEN_ADDITION = "starting December 1st."
-SPECTRUM_TEASER = SPECTRUM_SOURCE_SENTENCE + ", " + SPECTRUM_STEVEN_ADDITION
+SPECTRUM_STEVEN_ADDITION = "Schedule installation by December 1, 2026."
+SPECTRUM_TEASER = SPECTRUM_SOURCE_SENTENCE + ". " + SPECTRUM_STEVEN_ADDITION
 SPECTRUM_DATE = "Schedule installation by: December 1, 2026 · Unupgraded accounts disconnected: December 8, 2026 · Call: 855-326-5115"
 NOTICE_TEASER_ADDITIONS = {
     SPECTRUM_TITLE: dict(
         source=SPECTRUM_SOURCE_SENTENCE,
         addition=SPECTRUM_STEVEN_ADDITION,
-        by="Steven Leonowicz, Nov 23 2026 2:05 AM ET, voice",
+        by="Steven Leonowicz, Nov 23 2026: 2:05 AM ET keep-list; later approved schedule-by-December-1 framing (source wording)",
     ),
 }
 SPECTRUM_SUBJECT = "[#XN9635927] Message from Home Owners of Palm Hill, Inc -"
@@ -737,7 +739,7 @@ HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings
 NOTICES = [
     # Steven Nov 20 2026 6:33 PM ET: newest first, ahead of the valet notice and the keep-list.
     (HOLIDAY_SCHED_TITLE, HOLIDAY_SCHED_BODY, "RPM", BASE + WM_COPY_HOLIDAY_SCHED),
-    (SPECTRUM_TITLE, SPECTRUM_TEASER, "RPM", BASE + WM_COPY_SPECTRUM),  # R144: teaser = R18-cut source clause + Steven's "starting December 1st."; copy page stays SPECTRUM_BLOCKS
+    (SPECTRUM_TITLE, SPECTRUM_TEASER, "RPM", BASE + WM_COPY_SPECTRUM),  # R144: teaser = R18-cut source clause + source "Schedule installation by December 1, 2026."; copy page stays SPECTRUM_BLOCKS
     (PIANIST_TITLE, PIANIST_BODY, "Webmaster", BASE + WM_COPY_PIANIST),
     # R141 (Steven Nov 20 2026 5:03 PM ET): full Fed Up Trash Valet details; newest first, ahead of the keep-list.
     (VALET_TITLE, VALET_BODY, "RPM", BASE + WM_COPY_VALET),

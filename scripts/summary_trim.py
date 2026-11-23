@@ -11,8 +11,8 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 SHORT = [
  # Steven Nov 20 2026 6:33 PM ET: Thanksgiving / Spectrum / pianist notices; teasers are source sentences, cut never reworded; More → = the copied email
  ("Due to the Thanksgiving Holiday, Maintenance &amp; Administrative offices", "Due to the Thanksgiving Holiday, Maintenance &amp; Administrative offices will be off/closed.", B + "2026-11-20-holiday-schedule-trash-sanitation-field-notice.html"),
- # R144 (Steven Nov 23 2026 2:05 AM ET): keep the R18 cut of the source clause, plus Steven's start-date addition. Nov 22 as-sent pages are not rebuilt.
- ("Palm Hill has upgraded its Spectrum service to a Fiber solution", "Palm Hill has upgraded its Spectrum service to a Fiber solution, starting December 1st.", B + "2026-11-20-spectrum-fiber-upgrade-notice.html"),
+ # R144 (Steven Nov 23): keep the R18 cut of the source clause, plus the source's schedule-by-December-1 framing (not "starting December 1st"). Nov 22 as-sent pages are not rebuilt.
+ ("Palm Hill has upgraded its Spectrum service to a Fiber solution", "Palm Hill has upgraded its Spectrum service to a Fiber solution. Schedule installation by December 1, 2026.", B + "2026-11-20-spectrum-fiber-upgrade-notice.html"),
  ("The Cantata Ensemble is seeking a pianist to accompany our performance", "The Cantata Ensemble is seeking a pianist to accompany our performance on Sunday, December 6th.", B + "2026-11-19-pianist-needed-for-cantata-ensemble-notice.html"),
  # Steven Nov 20 2026 5:03 PM ET (voice): Fed Up Trash Valet details as a Community Notice (R141); teaser is the first source sentences; More → = the copied RPM email plus Bob Newport's clear-bags note
  ("Effective December 1, 2026, Palm Hill will begin a new valet trash", "Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC.", B + "2026-11-17-new-valet-trash-service-notice.html"),
