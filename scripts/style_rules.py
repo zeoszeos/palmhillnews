@@ -1264,7 +1264,10 @@ def masthead_seam_problems(html):
 # and margins on the page stay exactly as before (dropping the -3px margins
 # made every Listen row 3-5px taller on the laptop). The old 512px file stays
 # published so archived as-sent issues keep working.
+# R131 applies from the Nov 15 preview/SEND on; Oct 25 and earlier keep the original 512px icon (archived issues are not rewritten).
+R131_FROM = "2026-11-15"
 LISTEN_ICON_URL = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"
+LISTEN_ICON_URL_LEGACY = "https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png"
 LISTEN_ICON_REL = "public/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"
 LISTEN_ICON_MAX_BYTES = 20000
 LISTEN_ICON_MAX_PX = 48
@@ -1784,6 +1787,12 @@ R146_GUARD_GLOBS = (
     "builder/core/*.py",
     "scripts/check_*.py",
     "scripts/style_rules.py",
+    "scripts/publish_issue.py",
+    "scripts/page_listen.py",
+    "scripts/event_page.py",
+    "scripts/tel_links.py",
+    "scripts/link_archive_bullet.py",
+    "scripts/build_link_archive.py",
 )
 
 def bare_assert_problems(repo):

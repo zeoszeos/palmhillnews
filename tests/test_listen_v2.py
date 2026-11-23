@@ -9,6 +9,7 @@
      on the first touch/click anywhere (not only the bar); on file:// the Listen link falls back to normal navigation.
 Usage: /workspace/pwvenv/bin/python tests/test_listen_v2.py [--shots DIR]"""
 import os, sys, re, mimetypes
+from urllib.parse import urljoin
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(R, "scripts"))
 import page_listen as PL
 SHOTS = sys.argv[sys.argv.index("--shots") + 1] if "--shots" in sys.argv else None
@@ -36,11 +37,26 @@ def serve(route):
     if os.path.isdir(f): f = os.path.join(f, "index.html")
     if not os.path.exists(f): return route.continue_() if not p.endswith(".html") else route.fulfill(status=404, body="nf")  # images: production
     route.fulfill(body=open(f, "rb").read(), content_type=mimetypes.guess_type(f)[0] or "application/octet-stream")
+
+def first_notice_listen_selector(html):
+    """The first Community Notice Listen link in this issue's preview.
+    Do not hard-code a notice slug: notices change week to week, and a slug
+    from an earlier issue will time out when it is no longer on the preview."""
+    i = html.find(">Community Notices</span>")
+    if i < 0:
+        i = html.find("Community Notices")
+    seg = html[i:i + 25000] if i >= 0 else html
+    m = re.search(r'href="https://palmhillnews\.vercel\.app/pages/([^"?#]+\.html)\?listen=1"', seg)
+    if not m:
+        raise SystemExit("test_listen_v2: no Community Notice Listen link in the preview")
+    return f'a[href*="{m.group(1)}"][href*="listen=1"]'
+
 B = "https://palmhillnews.vercel.app/"
 def main():
     from playwright.sync_api import sync_playwright
     fails = []; ok = lambda c, m: (print(("PASS " if c else "FAIL ") + m), c or fails.append(m))
     _pv = open(os.path.join(R, PREV), encoding="utf-8").read()
+    NOTICE_LISTEN = first_notice_listen_selector(_pv)
     ok("<script" not in PL.strip_inplace(_pv).lower() and _pv.count("ph-inplace-listen:start") == 1, "R94: Nov 1 live preview = in-place Listen block only")
     _sd = os.path.join(os.environ.get("PHNEWS_WORK", "/workspace/phnews-consolidation/nov1"), f"PHNEWS-{ISSUE}-SEND.html")
     if os.path.exists(_sd): ok("<script" not in open(_sd, encoding="utf-8").read().lower(), "Nov 1 SEND (email) has no <script>")
@@ -62,7 +78,7 @@ def main():
             pg = ctx.new_page(); pg.goto(B + NOTICE + "?listen=1", wait_until="load"); pg.wait_for_selector(".ph-tap-bar", state="visible", timeout=2500)
             hb = pg.locator("h1").bounding_box(); (pg.touchscreen.tap if name == "iphone" else pg.mouse.click)(hb["x"] + 5, hb["y"] + hb["height"] / 2); pg.wait_for_timeout(300)
             ok(len(pg.evaluate("() => window.__spoken")) > 0 and pg.query_selector(".ph-tap-bar") is None, f"{name}: first touch anywhere on a blocked page starts reading")
-            for label, url, sel in (("live preview notice", B + PREV, 'a[href*="notice-join-the-palm-hill"][href*="listen=1"]'), ("archive", B + ARCH, "a.ph-listen"), ("issue page", B + f"pages/archive/issues/{ISSUE}.html", 'a[href*="listen=1"]')):
+            for label, url, sel in (("live preview notice", B + PREV, NOTICE_LISTEN), ("archive", B + ARCH, "a.ph-listen"), ("issue page", B + f"pages/archive/issues/{ISSUE}.html", 'a[href*="listen=1"]')):
                 pg = ctx.new_page(); pg.goto(url, wait_until="load"); a = pg.locator(sel).first; a.scroll_into_view_if_needed()
                 if SHOTS and name == "iphone" and label == "issue page":
                     pg.evaluate("(s) => { const a = document.querySelector(s); const r = a.closest('table') || a.parentElement; r.style.outline = '3px dashed #c00'; }", sel)
@@ -84,8 +100,11 @@ def main():
         _loc = os.path.join(os.environ.get("PHNEWS_WORK", "/workspace/phnews-consolidation/nov1"), "local-nov1", f"PHNEWS-{ISSUE}-preview.html")
         if os.path.exists(_loc):
             ctx = b.new_context(); ctx.add_init_script(SLOW_BLOCK); ctx.route("**/*", serve); pg = ctx.new_page(); pg.goto("file://" + _loc, wait_until="load")
-            a = pg.locator('a[href*="notice-join-the-palm-hill"][href*="listen=1"]').first; href = a.get_attribute("href"); a.click(); pg.wait_for_url(lambda u: u.startswith("https:"), timeout=5000)
-            ok(pg.url.split("?")[0] == href.split("?")[0], f"file:// review copy: Listen falls back to opening {href.split('/')[-1]}")
+            a = pg.locator(NOTICE_LISTEN).first; href = a.get_attribute("href")
+            before = pg.url
+            expected = urljoin(before, href)
+            a.click(); pg.wait_for_url(lambda u: u.split("?")[0] == expected.split("?")[0], timeout=5000)
+            ok(pg.url.split("?")[0] == expected.split("?")[0], f"file:// review copy: Listen falls back to opening {href.split('/')[-1]}")
         b.close()
     print("test_listen_v2:", "PASS" if not fails else f"FAIL ({len(fails)})"); return 1 if fails else 0
 if __name__ == "__main__": sys.exit(main())

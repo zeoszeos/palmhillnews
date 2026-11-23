@@ -36,8 +36,8 @@ from datetime import date as _d0, timedelta as _td0
 CAL_WINDOW = ((_d0.fromisoformat(ISSUE) - _td0(days=7)).isoformat(), (_d0.fromisoformat(ISSUE) + _td0(days=60)).isoformat())
 # STYLE-RULES R21 (Steven, Oct 16 11:32 PM): re-pull the calendar right before every proof/publish build (prints the diff).
 # PHNEWS_CAL_OFFLINE=1 only for re-renders that must reproduce an already-pulled snapshot.
+sys.path.insert(0, SCRIPTS); import pull_calendar as _pc
 if os.environ.get("PHNEWS_CAL_OFFLINE") != "1":
-    sys.path.insert(0, SCRIPTS); import pull_calendar as _pc
     _pc.pull(str(ROOT / "data"), *CAL_WINDOW)
 CALF = sorted(glob.glob(str(ROOT / "data/cal-*.json")))[-1]
 OUTF = ROOT / f"PHNEWS-{ISSUE}-preview.html"
@@ -47,7 +47,9 @@ THIS_WEEK, UPCOMING, RECURRING, MEETINGS = (C.WINDOWS[k] for k in ("THIS_WEEK", 
 if not (CAL_WINDOW == C.WINDOWS["CAL_WINDOW"]): raise SystemExit("R21b: calendar window must come from ISSUE")
 BASE = "https://palmhillnews.vercel.app/pages/"; CAL = "https://www.palmhillcountryclub.net/calendar-1/"
 ARCH = BASE + "archive/"
-SPK = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"  # R131: small 48px icon for Gmail iOS (was 2026-10-04/...-512-v3.png, still published for archived issues)
+# R131: Nov 15+ uses the small 48px icon; earlier issues keep the original 512px file (archived as-sent copies are not rewritten).
+import style_rules as _sr131
+SPK = _sr131.LISTEN_ICON_URL if ISSUE >= _sr131.R131_FROM else _sr131.LISTEN_ICON_URL_LEGACY
 G = "#3A6B1A"
 MON3 = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 FULL = ("January","February","March","April","May","June","July","August","September","October","November","December")
@@ -751,7 +753,7 @@ for _k104 in (globals().get("HIDE_SECTIONS") or {}):
     if not (f">{_h104}</span>" not in s): raise SystemExit(f"R104: {_h104} still on the page")
     print(f"R104 hidden section: {_h104} ({HIDE_SECTIONS[_k104]})")
 # STYLE-RULES R40 (Steven, Oct 17 7:23 PM; replaces R22): NO review/test stamp on any copy (previews and test copies included).
-_ct = datetime.fromtimestamp(os.path.getmtime(CALF), ZoneInfo("America/New_York"))
+_ct = _pc.snapshot_time(CALF)
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)
 # STYLE-RULES R24 (Steven, Oct 16 11:54 PM): resident-facing footer line "Calendar check - October 16, 11:38 PM" from the pull this build used
 CALCHECK = f"Calendar check - {FULL[_ct.month-1]} {_ct.day}, {(_ct.hour-1)%12+1}:{_ct:%M} {'AM' if _ct.hour<12 else 'PM'}"
@@ -865,8 +867,12 @@ if _plv.v2_for(ISSUE):
         if _n != _t: _f.write_text(_n, encoding="utf-8"); print("R85d keep v2 listen:", _rel)
 sys.path.insert(0, SCRIPTS); import check_listen_coverage as _lc; _lc.require_since(_R49_T0)  # R49 (Steven, Oct 18 12:41 AM): required step
 _lc.require_nl(OUTF)  # R49b (Steven, Oct 18 2:05 AM): every ?listen=1 link in this NL opens a page whose Listen starts reading
-# STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal
-import subprocess as _sp2; _lr = _sp2.run([sys.executable, str(REPO / "scripts/fetch_link_pdf.py")], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
+# STYLE-RULES.md R15: monthly Link save (new Palm Hill Link PDF -> Vercel), non-fatal.
+# A frozen rebuild (PHNEWS_CAL_OFFLINE=1) must not hit monthly-media or rewrite link-issues.json.
+if os.environ.get("PHNEWS_CAL_OFFLINE") == "1":
+    print("LINK SAVE: skipped (PHNEWS_CAL_OFFLINE=1; no live Link fetch on a frozen rebuild)")
+else:
+    _lr = _sp2.run([sys.executable, str(REPO / "scripts/fetch_link_pdf.py")], capture_output=True, text=True); print((_lr.stdout or _lr.stderr).strip()[-400:])
 json.dump({"calendar_file": CALF, "meetings": [(e["date"], e["name"]) for e in meetings], "this_week": [(e["date"], e["name"]) for e in this_week],
            "upcoming": [(e["date"], e["name"]) for e in upcoming], "stamp": stamp,
            **({"all_events": [(e["date"], e["name"]) for e in all_events]} if _AE else {})}, open(ROOT / f"build-audit-{C.SHORT}.json", "w"), indent=1)

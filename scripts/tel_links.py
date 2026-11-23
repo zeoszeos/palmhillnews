@@ -18,7 +18,7 @@ def dated_from(name):
 def href(num):
     m = re.match(r"(.*?)(?:\s*(?:ext\.?|x)\s*(\d+))?$", num); d = re.sub(r"\D", "", m.group(1))
     if len(d) == 11 and d[0] == "1": d = d[1:]
-    assert len(d) == 10, num
+    if not (len(d) == 10): raise SystemExit(f"R85: not a 10-digit phone number: {num}")
     return "tel:+1" + d + ("," + m.group(2) if m.group(2) else "")
 def _wrap_text(t):
     return PHONE.sub(lambda m: f'<a href="{href(m.group(0))}" style="{LINK_STYLE}">{m.group(0)}</a>', t)

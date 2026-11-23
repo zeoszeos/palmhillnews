@@ -7,7 +7,7 @@ import style_rules as sr
 
 PAGE = (
     "<h1>New Valet Trash Service</h1>"
-    "<p>Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. Please review the details below.</p>"
+    "<p>Effective December 1, 2026, Palm Hill will begin a new valet trash and recycling service with Fed Up Trash Valet LLC. The first collection will be the recycling on December 2nd. Please review the details below.</p>"
     "<li>Trash: Mondays and Thursdays for the ENTIRE community (You will now have two days of collection from your home!)</li>"
     "<li>Recycling: Wednesdays for the ENTIRE community</li>"
     "<li>Collection takes place between 8:00 a.m. and 4:00 p.m. on service days.</li>"
