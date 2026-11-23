@@ -51,7 +51,7 @@ def listen_fix(s):
         head = re.match(r'<td[^>]*>', t).group(0)
         if "padding-right:14px" not in head:
             head2 = head.replace('width:1%;"', 'width:1%;' + TD_STYLE + '"', 1)
-            assert head2 != head, head
+            if not (head2 != head): raise SystemExit(head)
             t = head2 + t[len(head):]
         def a(mm):
             tag = mm.group(0)
@@ -78,13 +78,13 @@ def service_box_fit(s):
         pat = _re.compile(r'<div (?:class="ph-svc-line" )?style="color:#2D5016;font-weight:bold;((?:margin-top:4px;)?)(?:font-size:\d+px;line-height:[\d.]+;)?">' + lab)
         s, k = pat.subn(lambda m: f'<div class="ph-svc-line" style="color:#2D5016;font-weight:bold;{m.group(1)}font-size:13px;line-height:1.35;">' + lab, s, count=1)
         n += k
-    assert n == 2, f"R27: service-request lines not found ({n})"
+    if not (n == 2): raise SystemExit(f"R27: service-request lines not found ({n})")
     # phones: keep each phone number whole when the URGENT line wraps (no "(727)" / "581-8729" split)
     a = s.find('URGENT SERVICE REQUESTS – Business Hours:'); b = s.find("</div>", a)
     seg = _re.sub(r'(?<!nowrap;">)\((\d{3})\) (\d{3}-\d{4})', r'<span style="white-space:nowrap;">(\1) \2</span>', s[a:b])
     s = s[:a] + seg + s[b:]
     i = s.find('<div style="background:#FFF9E6;')
-    assert i > 0, "R27: service-request box not found"
+    if not (i > 0): raise SystemExit("R27: service-request box not found")
     return s[:i] + SVC_CSS + s[i:]
 
 
@@ -420,7 +420,7 @@ def dyk_items_ok(items, multi_approved=None):
     return all(i.get("id") and i.get("paragraphs") for i in items)
 
 def assert_dyk_items(items, multi_approved=None):
-    assert dyk_items_ok(items, multi_approved), "R50: more than one Did You Know in the issue needs Steven's recorded approval (DYK_MULTI_APPROVED)"
+    if not (dyk_items_ok(items, multi_approved)): raise SystemExit("R50: more than one Did You Know in the issue needs Steven's recorded approval (DYK_MULTI_APPROVED)")
 
 
 # STYLE-RULES R52 (Steven, Oct 20 2026 3:03 PM): no "Palm Hill Link" name inside any article / story / Did You Know page
@@ -1264,7 +1264,10 @@ def masthead_seam_problems(html):
 # and margins on the page stay exactly as before (dropping the -3px margins
 # made every Listen row 3-5px taller on the laptop). The old 512px file stays
 # published so archived as-sent issues keep working.
+# R131 applies from the Nov 15 preview/SEND on; Oct 25 and earlier keep the original 512px icon (archived issues are not rewritten).
+R131_FROM = "2026-11-15"
 LISTEN_ICON_URL = "https://palmhillnews.vercel.app/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"
+LISTEN_ICON_URL_LEGACY = "https://palmhillnews.vercel.app/assets/images/phnews/2026-10-04/speaker-read-aloud-green-gold-512-v3.png"
 LISTEN_ICON_REL = "public/assets/images/phnews/v4/speaker-read-aloud-green-gold-48-v1.png"
 LISTEN_ICON_MAX_BYTES = 20000
 LISTEN_ICON_MAX_PX = 48
@@ -1776,3 +1779,45 @@ def calendar_notice_duplicate_problems(html, events, keep_as_notice=(), default_
                 break
     return hits
 
+
+
+# R146 (Steven, Nov 23 2026): live build and send-gate guards raise SystemExit, not assert
+# (assert is stripped by python -O, so a failing guard would not stop the build).
+R146_GUARD_GLOBS = (
+    "builder/core/*.py",
+    "scripts/check_*.py",
+    "scripts/style_rules.py",
+    "scripts/publish_issue.py",
+    "scripts/page_listen.py",
+    "scripts/event_page.py",
+    "scripts/tel_links.py",
+    "scripts/link_archive_bullet.py",
+    "scripts/build_link_archive.py",
+)
+
+def bare_assert_problems(repo):
+    """Return 'rel:line: <source>' for any bare assert in live guard code (R146). Uses AST so
+    comments and strings that mention assert are not flagged."""
+    import ast
+    from pathlib import Path
+    root = Path(repo)
+    hits, files = [], []
+    for g in R146_GUARD_GLOBS:
+        files.extend(sorted(root.glob(g)))
+    seen = set()
+    for p in files:
+        if p in seen or not p.is_file() or p.suffix != ".py":
+            continue
+        seen.add(p)
+        text = p.read_text(encoding="utf-8")
+        try:
+            tree = ast.parse(text, filename=str(p))
+        except SyntaxError as e:
+            hits.append(f"{p.relative_to(root)}: failed to parse ({e})")
+            continue
+        lines = text.splitlines()
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Assert):
+                line = lines[n.lineno - 1].strip() if 0 < n.lineno <= len(lines) else "assert"
+                hits.append(f"{p.relative_to(root)}:{n.lineno}: {line}")
+    return hits

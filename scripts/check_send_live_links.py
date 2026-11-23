@@ -8,16 +8,19 @@ labeled with its cause:
   NOT LIVE YET   the page exists in this checkout (draft branch) but not on the live site;
                  the draft must be merged to main (live pages only) before a review copy is sent
   MISSING        the page is in neither this checkout nor the live site (bad slug or page never built)
+  NETWORK ERROR  a palmhillnews link did not answer (status 0). This is a connection problem,
+                 not a missing merge; check the network and re-run
 
 Outside links (club site, Drive, Zoom, PDFs) are retried once; a 404/410 fails, while a
-timeout or other network error is printed as a warning only.
+timeout or other network error is printed as a warning only. If every outside link fails
+to answer, the check fails, because those links were not verified.
 
 Usage:
   python3 scripts/check_send_live_links.py --issue 2026-11-15
   python3 scripts/check_send_live_links.py --file path/to/PHNEWS-...-SEND.html
 Exit 0 = every link is good on production (safe to send the review copy). Exit 1 = do not send.
 """
-import argparse, html, os, re, sys, urllib.parse, urllib.request, urllib.error
+import argparse, html, os, re, sys, time, urllib.parse, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,8 +36,10 @@ def extract_urls(text):
 
 def fetch_status(url, timeout=25):
     """Return the final HTTP status after redirects, or 0 on a network error."""
+    if url.startswith(SITE):  # a CDN may still hold a 404 cached from before the merge: bust it (as check_live_archive.py does)
+        url += ("&" if "?" in url else "?") + "cb=" + str(int(time.time()))
     for method in ("HEAD", "GET"):
-        req = urllib.request.Request(url, method=method, headers={"User-Agent": UA})
+        req = urllib.request.Request(url, method=method, headers={"User-Agent": UA, "Cache-Control": "no-cache"})
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.status
@@ -67,6 +72,8 @@ def classify(url, status, root=ROOT):
     if status == 200:
         return None
     if url.startswith(SITE):
+        if status == 0:
+            return ("FAIL", "NETWORK ERROR (no answer from the live site; check the connection and re-run, this is not a merge problem)")
         if in_checkout(url, root):
             return ("FAIL", "NOT LIVE YET (page is on the draft branch, not on main/live)")
         return ("FAIL", "MISSING (page is not in the repo or on the live site)")
@@ -108,6 +115,10 @@ def main(argv=None):
           f"{len(fails)} broken, {len(warns)} warnings")
     for sev, cause, code, u in sorted(problems, key=lambda p: (p[0], p[1], p[3])):
         print(f"  {sev} {code or 'ERR'} {cause}: {u}")
+    outside = [u for u in urls if not u.startswith(SITE)]
+    if outside and all(codes[u] == 0 for u in outside):
+        print("  FAIL no outside link answered at all: the connection is probably down, so outside links were NOT verified")
+        fails.append(("FAIL", "no outside link answered", 0, ""))
     if fails:
         print("R123 FAIL: do not send a review copy or the blast until every link above is live.")
         return 1

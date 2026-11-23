@@ -2,12 +2,14 @@
 """STYLE-RULES R60 (Steven Oct 21 8:34 PM): Community Notices guard. Fails the build when any main-page notice
 (a) renders more than 3 lines at 390px or 660px (R18), (b) is trimmed (its source text is in summary_trim.SHORT with a
 full-text page) but lacks More → to that page (R23/R47), or (c) has a #listen-pending Listen or a pages/previews/ link."""
+def _guard(ok, msg):  # replaces assert (assert is stripped by python -O); same stop-the-build effect as the R-guards
+    if not ok: raise SystemExit(msg)
 import re, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 import summary_trim as _st
 
 def section(s):
-    h = s.find(">Community Notices</span>"); assert h > 0, "R60: Community Notices section not found"
+    h = s.find(">Community Notices</span>"); _guard(h > 0, "R60: Community Notices section not found")
     e = min([x for x in (s.find('<div class="canonical-section">', h + 1), s.find('<div class="section04">', h + 1)) if x > 0] or [len(s)])
     return s[h:e]
 

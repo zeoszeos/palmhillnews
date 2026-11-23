@@ -52,5 +52,9 @@ body += '''<p class="ph-source">Source: Palm Hill Link PDFs as published by mont
 </html>
 '''
 # R81 guard: the current monthly issue link (Helpful Webpages' old 'Palm Hill Link Monthly') is the first link under the title
-assert (head + body).split('<h1 class="ph-section">', 1)[1].split("<a ", 1)[1].startswith('href="https://monthly-media.com/newsletter_download.php'), "R81: current monthly issue link must lead palm-hill-link.html"
+if not D.get("current_download"):
+    raise SystemExit("R81: data/link-issues.json is missing current_download (the current monthly-media download URL)")
+_first = (head + body).split('<h1 class="ph-section">', 1)[1].split("<a ", 1)[1]
+if not _first.startswith('href="https://monthly-media.com/newsletter_download.php'):
+    raise SystemExit("R81: current monthly issue link must lead palm-hill-link.html")
 open(f"{R}/pages/archive/palm-hill-link.html", "w", encoding="utf-8").write(_SR.assert_archive_top(head + body, "palm-hill-link.html")); print("wrote pages/archive/palm-hill-link.html")  # R44

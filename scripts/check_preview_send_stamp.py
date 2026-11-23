@@ -98,7 +98,7 @@ def check_live_preview_hrefs(repo):
 
 def stamps(html):
     c, m = CAL.findall(html), MAST.findall(html)
-    assert len(c) == 1, f"R70: expected 1 Calendar check line, found {len(c)}"
+    if not (len(c) == 1): raise SystemExit(f"R70: expected 1 Calendar check line, found {len(c)}")
     return c[0], (m[0] if m else None)
 
 def sync(local_preview, repo, issue):

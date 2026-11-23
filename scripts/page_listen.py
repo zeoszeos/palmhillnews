@@ -80,7 +80,7 @@ def _button(t):
         mm = re.search(r'<main\b[^>]*>', body)
         if mm: k = off + mm.end(); return t[:k] + ROW_MAIN + t[k:]
         d = re.search(r'<h1\b[^>]*>.*?</h1>', body, re.S)
-    assert d, "no date line, <main> or h1 to anchor the Listen button"
+    if not d: raise SystemExit("no date line, <main> or h1 to anchor the Listen button")
     k = off + d.end()
     return t[:k] + "\n" + ROW + t[k:]
 def add_file(path):

@@ -82,7 +82,8 @@ if _NWS:   # R92 guard: Next Week directly under This Week, header range = issue
          f"Next Week directly under This Week, {_W('NEXT_WEEK')}, {len(audit['upcoming'])} rows in window")
 # A3: one shared treat-as-recurring list
 b25 = (H / "build_core.py").read_text(encoding="utf-8")
-_as = lambda src: set(eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))
+import ast as _ast
+_as = lambda src: set(_ast.literal_eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))  # literal_eval: never executes scraped text
 L.ok("L09a", set(lc.TREAT_AS_RECURRING) == _as(b25) == _as((H / "recurring.py").read_text(encoding="utf-8")), "TREAT_AS_RECURRING == builder/recurring AS_RECURRING")
 for n in lc.TREAT_AS_RECURRING:
     L.ok("L09", n not in tw and n not in up, f'This Week/Upcoming exclude "{n}"')
@@ -604,7 +605,7 @@ if C.ISSUE >= "2026-11-15":
         L.ok("R129", not _p129, f"{_n129}: green masthead keeps original palm placement and paints gaps green" + (f" {_p129}" if _p129 else ""))
 # R131 / R132 (Steven Nov 14 2026, evening ET, Gmail app on iPhone): Listen icons are the small
 # 48px PNG; only the wrapping masthead cell paints the green.
-if C.ISSUE >= "2026-11-15":
+if C.ISSUE >= _sr83.R131_FROM:
     for _n131, _x131 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
         _p131 = _sr83.listen_icon_problems(_x131, _repo_arch)
         L.ok("R131", not _p131, f"{_n131}: Listen icons use the small 48px speaker PNG" + (f" {_p131}" if _p131 else ""))

@@ -5,6 +5,17 @@ import glob, json, os, sys, urllib.parse, urllib.request
 from datetime import datetime
 FEED = "https://script.google.com/macros/s/AKfycbyvtkPTYvMnc5u_BmQdbRezCRNItiYdCDYe1jVZ3lN5qICGQwyeLPpA9Js40R9RTdI/exec"
 FIELDS = ("date", "start", "end", "venue", "status", "movedTo", "place", "info", "cancelReason", "link", "recurring", "category")
+def snapshot_time(path, tz="America/New_York"):
+    """The pull time recorded in the snapshot name cal-YYYYMMDD-HHMM.json (R24). Use this,
+    not file mtime: a copied work tree changes mtime and would print the wrong Calendar check."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    import re
+    m = re.search(r"cal-(\d{8})-(\d{4})\.json$", os.path.basename(str(path)))
+    if not m:
+        return datetime.fromtimestamp(os.path.getmtime(path), ZoneInfo(tz))
+    return datetime.strptime(m.group(1) + m.group(2), "%Y%m%d%H%M").replace(tzinfo=ZoneInfo(tz))
+
 def key(e): return (e["name"], e["date"], e["start"])
 def diff(old, new):
     O = {key(e): e for e in old}; N = {key(e): e for e in new}; out = []

@@ -17,7 +17,8 @@ sys.path.insert(0, str(HERE))
 import style_rules as _sr, summary_trim as _st, source_sections as _ss, notice_listen as _nl, readability as _rd, check_listen_coverage as _lc
 ap = argparse.ArgumentParser(); ap.add_argument("--issue", required=True); ap.add_argument("--root", default=os.environ.get("PHNEWS_WORK") or "/workspace/phnews-consolidation/oct18")  # R67: env PHNEWS_WORK
 ap.add_argument("--repo", default=str(REPO)); ap.add_argument("--dry-run", action="store_true"); a = ap.parse_args()
-I = a.issue; ROOT = Path(a.root); REPO = Path(a.repo); assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", I), I
+I = a.issue; ROOT = Path(a.root); REPO = Path(a.repo)
+if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", I): raise SystemExit(f"publish_issue: issue date must be YYYY-MM-DD, got {I!r}")
 from datetime import date
 _d = date.fromisoformat(I); LONG = f"{_d:%B} {_d.day}, {_d.year}"; SHORT = f"{_d:%b} {_d.day}"
 L = "https://palmhillnews.vercel.app/pages/"; PV = REPO / f"pages/previews/{I}"
@@ -40,7 +41,7 @@ s = clean(s)
 s = re.sub(r"<!-- ph-review-stamp:start -->.*?<!-- ph-review-stamp:end -->", "", s, flags=re.S)  # R22
 _sr.assert_no_stamp(s, NAME)  # R40
 s = s.replace(f"PHNEWS {LONG} — DRAFT (not sent)", f"PHNEWS {LONG}")
-assert f"previews/{I}" not in s and "DRAFT" not in s and "noindex" not in s, "preview-only text left in the SEND file"
+if not (f"previews/{I}" not in s and "DRAFT" not in s and "noindex" not in s): raise SystemExit("preview-only text left in the SEND file")
 s = _st.trim(_sr.enforce_title_months(s))  # R18 (no listen_fix: the builder already applied the R1/R18c Listen inset, Oct 24)
 import tel_links as _tel  # R85/R85b: trim re-inserts source text (e.g. "608-312 -6958"), so re-link phones and guard, same as the builder
 if _tel.applies(I):
