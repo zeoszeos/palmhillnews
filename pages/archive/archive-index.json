@@ -224,6 +224,15 @@
       "items": [
         {
           "date": "2026-11-01",
+          "title": "Smiling @ the Ladies Luncheon",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-smiling-at-the-ladies-luncheon.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-listen-smiling-at-the-ladies-luncheon.html",
+          "issues": [
+            "2026-11-29"
+          ]
+        },
+        {
+          "date": "2026-11-01",
           "title": "Way Back When",
           "url": "https://palmhillnews.vercel.app/pages/2026-11-way-back-when.html",
           "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-listen-way-back-when.html",

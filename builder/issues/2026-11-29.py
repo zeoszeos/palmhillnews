@@ -8,10 +8,11 @@ VOL_NO = 20
 SHORT = "nov29"
 DEFAULT_REPO = "/workspace/phnews-nov29-prep"
 DEFAULT_WORK = "/workspace/phnews-consolidation/nov29"
-# Community Story (R45). No new story is slated. Way Back When already ran Nov 22; do not repeat. Needs Steven's pick,
-# or his recorded R45 OK to omit the section. Not inventing a story. STORY_OMIT_APPROVED is intentionally unset.
-STORY = None
-STORY_OMIT_DRYRUN_NOTE = "Early draft Mon Nov 23 2026: no new Community Story slated; Way Back When ran Nov 22. Needs Steven's pick or R45 omit approval."
+# Community Story (R45/R83/R84). Steven Nov 23 2026 (t1863u: "1 pls") picked candidate 1:
+# "Smiling @ the Ladies Luncheon", Palm Hill Link November 2026, cover photo + story on pp. 2 and 4.
+# Full length, exact source wording, R83 credit line, no byline. STORY_OMIT_APPROVED stays unset (this is a pick, not an omit).
+STORY = dict(json="builder/nov29/data/community-story-smiling-ladies-luncheon.json", listen="2026-11-listen-smiling-at-the-ladies-luncheon.html", teaser_sentences=2)
+STORY_OMIT_DRYRUN_NOTE = None         # Nov 29 has a story (Smiling @ the Ladies Luncheon); never omitted
 # Carry policy (set up Oct 24 2026 8:3x PM; Steven confirms Friday): keep notices still valid on/after Nov 1, drop Oct 25 one-offs.
 NOTICES_DROPPED = ["Library Closed starting the week of October 26th", "Info from Linda", "North Clubhouse Ice Machine Moved",
                    "Help with maintaining Sanitation Field", "Please observe important stop sign rules",
@@ -1276,8 +1277,6 @@ FIRST_NOTICE = None   # Nov 8: December Link Deadline (Nov 5) dropped as stale
 HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 1; no new message (Steven Nov 1 11:55 AM)",
                  # R120 (Steven Nov 7 2026): no newer monthly report, so the September 30 card leaves this main page.
                  "shareholders": "September 30 monthly report; no newer monthly report (Steven Nov 7 2026)",
-                 # R45: no new Community Story slated; Way Back When ran Nov 22. Omit is dry-run only until Steven picks or records R45 approval.
-                 "story": "No new Community Story slated; Way Back When ran Nov 22. Pending Steven's pick or R45 omit approval.",
                  # R89/R104: do not carry last week's DYK. Placeholder until Steven picks. Do not repeat Rule III.A (Oct 25) without his OK.
                  "dyk": "Did You Know pick pending Steven. Not repeating Nov 22 Use of Common Grounds / golf course, and not repeating Rule III.A (Oct 25) without his OK."}
 # Weekly Manager Update: Nov 13 (redacted per R142) stays until a newer Megan update arrives (no age cutoff).
