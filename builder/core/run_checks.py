@@ -85,7 +85,9 @@ b25 = (H / "build_core.py").read_text(encoding="utf-8")
 _as = lambda src: set(eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))
 L.ok("L09a", set(lc.TREAT_AS_RECURRING) == _as(b25) == _as((H / "recurring.py").read_text(encoding="utf-8")), "TREAT_AS_RECURRING == builder/recurring AS_RECURRING")
 for n in lc.TREAT_AS_RECURRING:
-    L.ok("L09", n not in tw and n not in up, f'This Week/Upcoming exclude "{n}"')
+    # Exact title match: a differently named one-off (e.g. "Writing Club Guest Speaker") may appear
+    # even if its name contains a recurring activity as a substring.
+    L.ok("L09", n not in titles(tw) and n not in titles(up), f'This Week/Upcoming exclude "{n}"')
 # L11 Community Notices (locked list, not scraped)
 cn = lc._section(page, "Community Notices")
 L.ok("L11", titles(cn) == lc.NOTICES_EXPECTED, f"Notices rows {titles(cn)}")

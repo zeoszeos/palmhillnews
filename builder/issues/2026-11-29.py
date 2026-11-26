@@ -1,8 +1,10 @@
 """PHNEWS Sunday, November 29, 2026 (Vol. 1, No. 20) -- issue content file (STYLE-RULES R71). Data only; all logic is in builder/core/.
 EARLY DRAFT (Steven Nov 23 2026 1:36 AM ET: archive add, backups, and Nov 29 early draft). Built Mon Nov 23 2026 from the
 Nov 22 file on the box alone: calendar pulled from Tony's feed (R21b window Nov 22–Jan 28), inboxes checked since Sat Nov 21
-6:19 PM ET. Nothing approved yet: every keep/omit below is a DRAFT for Steven. New week = copy the idea of this file, never a builder.
-Do not merge, send, email, or publish without Steven's OK."""
+6:19 PM ET. Refresh Thu Nov 26 2026: calendar re-pulled (R21b window Nov 22–Jan 28, snapshot cal-20261126-0956.json,
+9:56 AM ET); palmhillblast checked since the Nov 23 build. One new chair report (Golf Advisory, meeting Nov 10,
+Carolyn Story, Tue Nov 24 9:11 PM ET). No new Megan weekly update. DYK still pending Steven. Do not merge, send the
+resident blast, or publish without Steven's OK."""
 ISSUE = "2026-11-29"
 VOL_NO = 20
 SHORT = "nov29"
@@ -79,6 +81,7 @@ LOCKED = {
     # Mon Nov 16 2026 12:54 PM ET (thread 1a1e57f65bfd72ee). Direct from Tony (not a Chuck forward).
     # Meeting of Nov 9 is inside the 30-day window (cutoff Oct 23). Replaces the R104b placeholder.
     "CHAIR_EXPECTED": {
+        'Golf Advisory Committee': 'During winter play, use the cart path to allow grass to grow. The 90-degree rule is enforced.',
         'Communications Committee': 'Website: the new home page went live November 2, with a Coming Up box and near real-time notices.',
     },
 }
@@ -123,6 +126,11 @@ EVENT_DETAIL = {
     "Free Golf Lessons": "Everyone welcome. Bring golf clubs. Instructors: Caroline Zimmerman & Chuck Barovian. Questions: contact Caroline Zimmerman.",
     # Nov 23 2026 early-draft calendar pull (cal-20261123-0148): one-off Nativity Pageant (Sun Dec 6). Calendar info, verbatim.
     "Nativity Pageant": "In place of the December Worship Service.",
+    # Nov 26 2026 calendar re-pull: one-off Hoss Collar (Sun Nov 29). Same listing text as the Nov 22 Hoss Collar
+    # Shuffle row; the personal phone is left out (not OK'd for print). Wording is the calendar info minus the contact line.
+    "Hoss Collar": "New players arrive 6:00pm to learn the basics. Cost $1, bring exact amount. Wear closed toe shoes. All levels welcome.",
+    # Same pull: one-off Fireside Chat (Wed Dec 2). Calendar info, verbatim.
+    "Fireside Chat": "Informal Q&A as per webblast.",
 }
 EVENT_EXTRA_SRC = {"Halloween Golf Cart Parade": BASE + "2026-09-18-halloween-golf-cart-parade-notice.html",
                    "Halloween Dance Party": BASE + "2026-10-08-info-from-linda-notice.html",
@@ -166,7 +174,8 @@ INFO_COVERED = {"Halloween Golf Cart Parade", "Senior Empowerment Luncheon", "No
                 "North Clubhouse Bazaar", "Bookclub activity.  Lunch at a Vietnamese Restaurant",
                 "Hoss Collar Shuffle", "Bookclub Activity.  Lunch at a seafood restaurant TBA",
                 "Free Golf Lessons",
-                "Nativity Pageant"}   # Nov 29 early draft: Nativity Pageant from Nov 23 calendar pull, listing text only
+                "Nativity Pageant",
+                "Hoss Collar", "Fireside Chat"}  # Nov 26 calendar re-pull: listing text only (phone left off Hoss Collar)
 TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan", "Bookclub Lunch at Irish Pub": "Book Club Lunch at Irish Pub",
          "Bookclub activity.  Lunch at a Vietnamese Restaurant": "Book Club Lunch at a Vietnamese Restaurant", "December Bookclub": "December Book Club",
          "Bookclub Activity.  Lunch at a seafood restaurant TBA": "Book Club Lunch at a seafood restaurant TBA"}   # Nov 22; Jan 21 lunch from Nov 20 calendar re-pull
@@ -1009,6 +1018,61 @@ COMMS_1109 = [
     ("p", "Communications Committee Chair"),
 ]
 COMMS_1109_TEASER = "Website: the new home page went live November 2, with a Coming Up box and near real-time notices."  # Tony's wording (R18, first sentence of the Website bullet)
+# R77 (Nov 29): Golf Advisory Committee Report, meeting of Tuesday Nov 10, 2026 -- Carolyn Story (nystory11@gmail.com)
+# to palmhillblast, "GOLF ADVISORY COMMITTEE", Tue Nov 24 2026 9:11 PM ET (message 1a21079093c565a3). Minutes wording
+# verbatim, bullet by bullet; Gmail wrapped a few lines -- joined into one bullet or paragraph each (no words changed).
+# Title is "Golf Advisory Committee Report" (date goes on the date line, R77). Meeting of Nov 10 is inside the 30-day
+# window (cutoff Oct 30). Replaces the Oct 13 Golf card (latest per committee, 30-day retention). No attachments.
+# Next meeting in the report ("December 8, 2:00 p.m., South Boardroom") matches Tony's calendar (Dec 8 2:00 PM, Board Room South).
+GOLF_1110_PAGE = "2026-11-10-golf-advisory-committee-report.html"
+GOLF_1110_LISTEN = "2026-11-29-listen-golf-advisory-committee-report.html"
+GOLF_1110 = [
+    ("p", "Date: November 10, 2:00 p.m. Report by: Randy Mitchell, for Joe Clay Next meeting: December 8, 2:00 p.m., South Boardroom"),
+    ("h2", "Course Conditions and Maintenance"),
+    ("ul", ["Seeding of the fairways with winter ryegrass is scheduled for 11/21.",
+            "Blue and white markers on some tee boxes will stay in the same location to allow the grass to grow.",
+            "During winter play, use the cart path to allow grass to grow. The 90-degree rule is enforced.",
+            "Play has increased. It is important to repair divots on the greens and tee boxes.",
+            "Tree trimming on the fifth hole is out for bids and will be reviewed through the Buildings and Grounds Committee."]),
+    ("h2", "Membership Report (Megan)"),
+    ("ul", ["126 paid memberships",
+            "67 paid golf cart fees",
+            "14 10-packs sold"]),
+    ("h2", "Fiscal Year Transition (Megan)"),
+    ("p", "Megan presented and explained the process and transition timeline for changing the golf committee fiscal year. A partial prorated season would align future billing with the new fiscal calendar."),
+    ("p", "Decision: The committee voted to table this for now, to allow more understanding and information on the impact on membership."),
+    ("h2", "Board Meeting Summary"),
+    ("p", "Carolyn Story presented to the board the summary of the last golf meeting, including plans for the upcoming Taste of Golf, a valuable opportunity for all shareholders to experience our beautiful golf course."),
+    ("h2", "Association and League Reports"),
+    ("p", "Women's Association (Sue Waldecker)"),
+    ("ul", ["There are now 24 players and one new member.",
+            "The Ladies Golf Association meeting is on 11/13.",
+            "A new app, Golf League Tracker, is being used to calculate handicaps, prepare pairings and print scorecards."]),
+    ("p", "Men's Association (Lawrence Lotz)"),
+    ("ul", ["The annual dues payment process was streamlined this year: members complete information on an envelope, insert annual dues and turn it in at the pro shop.",
+            "Members are reminded to sign in before each round of golf.",
+            "Pro shop staff will be on site 8:30 a.m. to 2:30 p.m. Lawrence suggested a possible volunteer sheet for members to staff the pro shop after the staff leave."]),
+    ("p", "Couples League (Mike McCarthy)"),
+    ("ul", ["Everything is going along fine. There were 56 golfers last Thursday.",
+            "They are looking for people to host future couples golf days."]),
+    ("p", "Bandits (Lawrence Lotz)"),
+    ("ul", ["The season has begun and more Bandits are arriving each week."]),
+    ("h2", "Individual Reports"),
+    ("ul", ["Landscaping (Mike McCarthy): The Men's Association meeting was looking for suggestions for course improvements and/or needs. Contact Joe Clay, Jeff Wesso or Randy Mitchell.",
+            "Future Planning (Mike Leahy): The goal this year is to work with Joe Clay to identify the square footage needed for equipment, and its location and placement.",
+            "Pro Shop (Sue Waldecker): The inside and outside were cleaned, and the new plantings look very attractive.",
+            "Accountability (Caroline Zimmerman): Lawrence Lotz will be working on the volunteer list to assist pro shop staff after hours."]),
+    ("h2", "Taste of Golf (Carolyn Zimmerman)"),
+    ("ul", ["Date: November 18.",
+            "82 golfers signed up to date.",
+            "Groupings are complete for the 13 stations, with 40 volunteers.",
+            "The golf course will be closed that day from 9 a.m. to 3 p.m."]),
+    ("h2", "Next Meeting"),
+    ("p", "December 8, 2:00 p.m., South Boardroom."),
+    ("p", "Submitted by"),
+    ("p", "Carolyn M. Story, Board Liaison"),
+]
+GOLF_1110_TEASER = "During winter play, use the cart path to allow grass to grow. The 90-degree rule is enforced."  # minutes wording (R18)
 # Chair reports with a generated full page (scripts/chair_report_page.py); the core writes the page (never overwriting a published
 # one), seeds its listen-* page and puts the card at the top of CHAIR, in this order (so the last one listed ends up first).
 CHAIR_REPORTS = [
@@ -1030,6 +1094,10 @@ CHAIR_REPORTS = [
          source="Source: Communications Committee Report (Tony Ciaramitaro)",
          card=("Communications Committee", "2026-11-09", COMMS_1109_TEASER,
         BASE + COMMS_1109_PAGE, BASE + COMMS_1109_LISTEN)),
+    dict(page=GOLF_1110_PAGE, listen=GOLF_1110_LISTEN, title="Golf Advisory Committee Report", blocks=GOLF_1110,
+         source="Source: Golf Advisory Committee Report (Carolyn Story)",
+         card=("Golf Advisory Committee", "2026-11-10", GOLF_1110_TEASER,
+        BASE + GOLF_1110_PAGE, BASE + GOLF_1110_LISTEN)),
 ]
 # Archive rows this issue adds (R59; archive/archive-items.json, idempotent on the row's page): (section, row)
 ARCHIVE_ROWS = [
@@ -1039,6 +1107,8 @@ ARCHIVE_ROWS = [
                                     "listen": COMMS_1012_LISTEN, "issues": ["2026-11-01"]}),
     ("committee-reports", {"date": "2026-11-09", "title": "Communications Committee Report", "page": COMMS_1109_PAGE,
                                     "listen": COMMS_1109_LISTEN, "issues": ["2026-11-22"]}),
+    ("committee-reports", {"date": "2026-11-10", "title": "Golf Advisory Committee Report", "page": GOLF_1110_PAGE,
+                                    "listen": GOLF_1110_LISTEN, "issues": ["2026-11-29"]}),
 ]
 # Rules and Regulations (Bob Newport, palmhillblast "Re: Committee Chair Reports Archive", Sat Oct 17 12:05 PM ET): the three
 # attached reports are Mar 23, May 11 and Aug 10, 2026 -- all older than the 30-day retention cutoff (Sep 18), and Aug 10 is
@@ -1281,4 +1351,5 @@ HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 
                  # R89/R104: do not carry last week's DYK. Placeholder until Steven picks. Do not repeat Rule III.A (Oct 25) without his OK.
                  "dyk": "Did You Know pick pending Steven. Not repeating Nov 22 Use of Common Grounds / golf course, and not repeating Rule III.A (Oct 25) without his OK."}
 # Weekly Manager Update: Nov 13 (redacted per R142) stays until a newer Megan update arrives (no age cutoff).
-# No new update in palmhillblast or gotwicz since Sat Nov 21 6:19 PM ET.
+# No new Megan weekly update in palmhillblast since the Nov 23 build (checked Thu Nov 26 2026). One new chair
+# report: Golf Advisory Committee minutes (meeting Nov 10) from Carolyn Story, Tue Nov 24 9:11 PM ET.

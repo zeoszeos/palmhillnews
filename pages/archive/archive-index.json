@@ -751,6 +751,15 @@
       "page_link_label": "Committee Report Archives →",
       "items": [
         {
+          "date": "2026-11-10",
+          "title": "Golf Advisory Committee Report",
+          "url": "https://palmhillnews.vercel.app/pages/2026-11-10-golf-advisory-committee-report.html",
+          "listen_url": "https://palmhillnews.vercel.app/pages/2026-11-29-listen-golf-advisory-committee-report.html",
+          "issues": [
+            "2026-11-29"
+          ]
+        },
+        {
           "date": "2026-11-09",
           "title": "Communications Committee Report",
           "url": "https://palmhillnews.vercel.app/pages/2026-11-09-communications-committee-report.html",
