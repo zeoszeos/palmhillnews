@@ -1776,3 +1776,137 @@ def calendar_notice_duplicate_problems(html, events, keep_as_notice=(), default_
                 break
     return hits
 
+
+
+# R144 (Steven, Nov 23 2026 2:05 AM ET, voice): a Steven-supplied fact added to a
+# source teaser is recorded in the content file; the source sentence stays intact;
+# the addition is not silently written into the source notice page body.
+# Same decision: Nov 29 keeps exactly these seven Community Notices (approved R130 list).
+R144_FROM = "2026-11-29"
+R144_NOV29_NOTICES = [
+    "Spectrum Fiber Upgrade",
+    "Pianist Needed for Cantata Ensemble",
+    "New Valet Trash Service",
+    "Palm Hill Annual Golf Cart Parade",
+    "Christmas Golf Cart Route",
+    "Ladies Christmas Luncheon",
+    "2027 South Rec Club Seeking Officers",
+]
+
+
+def r144_teaser_from_html(html, title):
+    """Visible main-page teaser text for a Community Notice title (text before More →)."""
+    if not html or not title:
+        return ""
+    m = re.search(r"Community Notices(.*?)(?:Weekly Manager Update|Community Stories|Did You Know\??)", html, re.S | re.I)
+    sec = m.group(1) if m else html
+    for block in re.finditer(
+        r'font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">([^<]+)</td>'
+        r'(.*?)(?=font-weight:bold;color:#333333;text-align:left;padding-right:\d+px;">|\Z)',
+        sec, re.S):
+        got = re.sub(r"\s+", " ", _html_unescape_r143(block.group(1))).strip()
+        if got != title:
+            continue
+        rest = block.group(2)
+        tm = re.search(r'font-size:15px;color:#333333;[^>]*>(.*?)</div>', rest, re.S)
+        if not tm:
+            return ""
+        text = re.sub(r"<a\b.*?</a>", " ", tm.group(1), flags=re.S)
+        text = re.sub(r"<[^>]+>", " ", text)
+        return re.sub(r"\s+", " ", _html_unescape_r143(text)).strip()
+    return ""
+
+
+def steven_teaser_addition_problems(teaser_by_title, additions, page_text_by_title=None, label=""):
+    """R144: each recorded addition keeps the source sentence intact, appears in the teaser, and stays off the source notice page body unless a labeled editor's note is present."""
+    hits = []
+    where = f" in {label}" if label else ""
+    for title, rec in (additions or {}).items():
+        rec = rec or {}
+        addition = (rec.get("addition") or "").strip()
+        source = (rec.get("source") or "").strip()
+        by = (rec.get("by") or "").strip()
+        if not addition or not source or not by:
+            hits.append(f"R144: {title}: NOTICE_TEASER_ADDITIONS must record source, addition, and who/when{where}")
+            continue
+        teaser = (teaser_by_title or {}).get(title) or ""
+        if source not in teaser:
+            hits.append(f"R144: {title}: source sentence is missing or rewritten in the teaser{where}")
+        if addition not in teaser:
+            hits.append(f"R144: {title}: Steven's addition {addition!r} is missing from the teaser{where}")
+        page = ((page_text_by_title or {}).get(title) or "")
+        if page and addition in page:
+            if not re.search(r"editor'?s note|Steven Leonowicz|Steven's addition|added by Steven", page, re.I):
+                hits.append(
+                    f"R144: {title}: Steven's addition appears on the source notice page without a labeled editor's note{where}"
+                )
+    return hits
+
+
+def r144_keep_list_problems(issue, html, expected=None):
+    """R144: the Nov 29 issue lists exactly the seven approved Community Notices, in order."""
+    if issue < R144_FROM:
+        return []
+    if expected is None:
+        if issue != "2026-11-29":
+            return []
+        expected = list(R144_NOV29_NOTICES)
+    titles = [t for t, _d in r143_notices_from_html(html)]
+    if titles != list(expected):
+        return [f"R144: Community Notices are {titles}, expected exactly {list(expected)}"]
+    return []
+
+
+
+# R145 (Steven, Nov 23 2026, t1864u): a Steven-picked single photo from a Link
+# cover collage may appear on the main-page Community Story card, overriding
+# R84's text-only teaser for that case. The story page keeps the full cover.
+R145_FROM = "2026-11-29"
+
+
+def r145_community_stories_section(html):
+    """The Community Stories section of a main-page preview or SEND, or empty."""
+    if not html:
+        return ""
+    m = re.search(
+        r"Community Stories(.*?)(?:Did You Know\??|Residents Reference Guide|From the Board President)",
+        html, re.S | re.I,
+    )
+    return m.group(0) if m else ""
+
+
+def story_main_photo_problems(html, main_photo, story_page_html=None, cover_src=None, label="", repo=None):
+    """R145: a recorded Steven-picked main-card photo is on the card, and the story page still has the full cover."""
+    hits = []
+    where = f" in {label}" if label else ""
+    rec = main_photo or {}
+    if not rec:
+        return hits
+    src = (rec.get("src") or "").strip()
+    alt = (rec.get("alt") or "").strip()
+    by = (rec.get("by") or "").strip()
+    tile = (rec.get("tile") or "").strip()
+    try:
+        w, h = int(rec.get("w") or 0), int(rec.get("h") or 0)
+    except (TypeError, ValueError):
+        w = h = 0
+    if not src or not alt or not by or not tile or w < 1 or h < 1:
+        hits.append(f"R145: main_photo must record src, w, h, alt, which tile, and who/when{where}")
+        return hits
+    if not src.startswith("https://palmhillnews.vercel.app/assets/"):
+        hits.append(f"R145: main_photo src must be an absolute palmhillnews URL{where}")
+    if repo is not None:
+        from pathlib import Path as _P
+        pf = _P(repo) / "public" / src.split("vercel.app/", 1)[-1]
+        if not pf.exists():
+            hits.append(f"R145: main_photo file is missing from public/{where}: {pf.name}")
+    sec = r145_community_stories_section(html) or html
+    if src not in sec:
+        hits.append(f"R145: Steven-picked main-page photo is missing from the Community Stories card{where}")
+    if cover_src and cover_src != src and cover_src in sec:
+        # the full collage may still be linked from a story-page URL elsewhere; only fail if it is used as an <img> on the card
+        if re.search(r'<img\b[^>]*src="' + re.escape(cover_src) + r'"', sec):
+            hits.append(f"R145: the main-page card must show the picked tile, not the full cover collage{where}")
+    if story_page_html is not None and cover_src and cover_src not in story_page_html.split("<article>")[0]:
+        hits.append(f"R145: the story page must still have the full cover collage at the top{where}")
+    return hits

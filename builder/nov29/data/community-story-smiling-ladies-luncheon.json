@@ -1,0 +1,49 @@
+{
+ "_about": "Nov 29, 2026 Community Story (R45/R83/R84). Steven picked candidate 1 on Nov 23 2026 (t1863u: '1 pls'): 'Smiling @ the Ladies Luncheon', Palm Hill Link November 2026, cover photo and story on pages 2 and 4. Full length, verbatim from pdftotext -layout of Link-2026-11.pdf (builder/nov29/data/link-2026-11-p2-p4-raw.txt), checked against the page images. Extraction fixes only: line breaks rejoined; the page-2 drop cap V is restored onto 'Volunteering'; the 'continued on page 4' jump line is dropped. No byline is printed; do not invent an author. Credit line is the established R83 form. Cover photo is the PDF's own embedded collage (927×743 JPEG, object 1610) with no print overlays in the photo pixels, so no inpaint was needed; masthead, date line, and Monthly Mania type were separate InDesign elements, not in this image. Pages 2 and 4 are text-only; there are no inside photos of this story (page 3 is ads). Title shown in title case, the way earlier all-caps Link story titles were shown. Steven Nov 23 2026 (t1864u) picked the middle-center collage tile (narrow portrait: pink top at bottom left, striped top at bottom right) for the main-page Community Story card (R145, overrides R84 text-only teaser for this case). The story page still uses the full cover collage.",
+ "title": "Smiling @ the Ladies Luncheon",
+ "title_print": "SMILING @ THE LADIES LUNCHEON",
+ "kicker": "Cover Photo",
+ "byline": null,
+ "paragraphs": [
+  "Volunteering for the first time appeared daunting. Sure, everyone says, “It’s easy, you’ll be fine.” I can be a bit of an overthinker and an over planner, so nothing is easy the first time. The instructions provided and the partner who picked me, as a trainee, were what made my first experience co-hosting a Palm Hill Ladies Luncheon truly memorable. For those of you who have hosting experience, I hope you continue to welcome such a fun afternoon with friends.",
+  "To me, it was extraordinary to spend 1 hour or less, 6 times in a month, asking ladies to give me money. The instructions also stated that I needed to make a list with everyone’s name and everyone’s phone number. Why would ladies who have only seen my face a few times be willing to agree to such an arrangement? They were even bringing me extra money for their friends. What kind of place is this? I’m collecting money from ladies who barely know me and who are willing to trust me to hold $5 for them, plus give me their important information?",
+  "They immediately trusted me to keep their money, like a bank, and return it in a few weeks with some sort of reward for their trust? This is quite unusual and even a little suspicious. I began to feel as if I was promising snowfall in Florida or selling snow to Eskimos, and they were buying it. Maybe they imagined or read somewhere that I was putting in an order for a youth elixir, and everyone was willing to give it a try. Either way, I suppose their $5 was not too much to lose.",
+  "Whatever was going on, the sweet system at Palm Hill works and it works well. After three weeks, a total of 47 ladies signed up to have lunch with ME at a restaurant where I had never been and I couldn’t tout. Oh, my goodness, I could never imagine such a gift. I’ve been living here for six months and people were bringing me money and were willing to get dressed up and are willing to drive to go to lunch with ME.",
+  "I am grateful to everyone who took a chance and trusted in me.",
+  "Well, then I found out that I followed my co-host’s directions and booked the restaurant where everyone loves to go. And everyone arrived 30 minutes early and were ready to order their well-tested selections. And then I learned that the restaurant was known and loved for generously giving gift certificates to ensure that when the next new trainee comes through, they can feel as special as I felt. There I was, going to lunch with 47 of my new generous neighbors, who were more than willing to give me $5 just because they could tell, I just needed a few new friends. Thanks for recognizing my neediness and thanks too for your kindness. Thanks for your smiling faces! Thanks for showing me that at Palm Hill, love lives here!",
+  "It all had nothing to do with me; I’m just a trainee."
+ ],
+ "photo": {
+  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-cover-november-2026.jpg",
+  "w": 927,
+  "h": 743,
+  "alt": "Seven photos of Palm Hill ladies dining together at a restaurant luncheon",
+  "caption": "Smiling @ the Ladies Luncheon",
+  "note": "PDF embedded cover collage from Link-2026-11.pdf page 1 (object 1610, 927×743 JPEG). Print overlays (November 2026 / Issue 9 / Monthly Mania Winner) were not in the photo pixels. No inside photos on pages 2 or 4."
+ },
+ "credit_line": "First published in the Palm Hill Link, November 2026",
+ "credit_status": "R83 established credit line; Steven picked this story Nov 23 2026 (t1863u)",
+ "teaser_candidate": "Volunteering for the first time appeared daunting. Sure, everyone says, “It’s easy, you’ll be fine.”",
+ "live_page_planned": "2026-11-smiling-at-the-ladies-luncheon.html",
+ "listen_page": "2026-11-listen-smiling-at-the-ladies-luncheon.html",
+ "date_line": "Nov 1, 2026",
+ "date_long": "November 1, 2026",
+ "date_iso": "2026-11-01",
+ "teaser_note": "R18: first two sentences of the opening paragraph (the quoted 'you’ll be fine.' does not split on the period because a close-quote follows it). Display date is the 1st of the Link month (R83).",
+ "main_photo": {
+  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-main-november-2026.jpg",
+  "w": 196,
+  "h": 262,
+  "alt": "Palm Hill ladies dining at a restaurant table, with fish decorations on a blue wall and windows at the right",
+  "tile": "middle-center",
+  "crop": [
+   365,
+   240,
+   561,
+   502
+  ],
+  "from": "smiling-ladies-luncheon-cover-november-2026.jpg",
+  "display_h": 280,
+  "by": "Steven Leonowicz, Nov 23 2026, t1864u: 'Can you pick one pic from the collage for the main page? This one would be good' (the middle-center tile of the November 2026 Link cover collage; crop corrected from the middle-right tile)"
+ }
+}

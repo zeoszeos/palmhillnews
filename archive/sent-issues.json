@@ -2,6 +2,22 @@
   "_about": "Source of truth for which PHNEWS issues have shipped (STYLE-RULES R127/R128). The public archive index may only list issues with status=shipped whose date is before the current week's issue (style_rules.current_issue()). Add a shipped row only after the blast (or web-only publish) has gone out, and add that issue to the archive the following week from the as-sent HTML. Never invent as-sent copy. The current week's issue stays out until the following week.",
   "issues": [
     {
+      "date": "2026-11-22",
+      "volume": 1,
+      "number": 19,
+      "label": "Week of Nov 22, 2026",
+      "sent": "2026-11-21T23:03:00-05:00",
+      "file_dated": "2026-11-21T16:04:00-05:00",
+      "format": "Email newsletter",
+      "source": "As-sent SEND (58,067 bytes), the November 21, 4:04 PM r8 build (PR #181, 11d6a15) pasted into MyNetWire and queued once to Active All Users (1,370 recipients) Saturday, Nov 21, 2026 at about 11:03 PM ET: /workspace/phnews-consolidation/nov22-r2/PHNEWS-2026-11-22-SEND-r8.html. Calendar check: November 21, 4:04 PM.",
+      "nas": "02-Issues/2026-11/2026-11-22/sent-final/PHNEWS-2026-11-22-FINAL.html",
+      "as_sent_path": "archive/sent-final/2026-11-22/PHNEWS-2026-11-22-SEND.html",
+      "status": "shipped",
+      "archive_page": "pages/archive/issues/2026-11-22.html",
+      "bytes": 58067,
+      "sha256": "79c46be20645669b6623dc6549db011bcfc90192a054c7be2d248579c156c3d3"
+    },
+    {
       "date": "2026-11-15",
       "volume": 1,
       "number": 18,

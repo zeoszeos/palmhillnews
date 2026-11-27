@@ -85,7 +85,9 @@ b25 = (H / "build_core.py").read_text(encoding="utf-8")
 _as = lambda src: set(eval(re.search(r"^AS_RECURRING = (\{[^}]*\})", src, re.M).group(1)))
 L.ok("L09a", set(lc.TREAT_AS_RECURRING) == _as(b25) == _as((H / "recurring.py").read_text(encoding="utf-8")), "TREAT_AS_RECURRING == builder/recurring AS_RECURRING")
 for n in lc.TREAT_AS_RECURRING:
-    L.ok("L09", n not in tw and n not in up, f'This Week/Upcoming exclude "{n}"')
+    # Exact title match: a differently named one-off (e.g. "Writing Club Guest Speaker") may appear
+    # even if its name contains a recurring activity as a substring.
+    L.ok("L09", n not in titles(tw) and n not in titles(up), f'This Week/Upcoming exclude "{n}"')
 # L11 Community Notices (locked list, not scraped)
 cn = lc._section(page, "Community Notices")
 L.ok("L11", titles(cn) == lc.NOTICES_EXPECTED, f"Notices rows {titles(cn)}")
@@ -692,6 +694,51 @@ if C.ISSUE >= _sr83.R143_FROM:
     for _n143, _x143 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
         _p143 = _sr83.calendar_notice_duplicate_problems(_x143, _evs143, keep_as_notice=_keep143, default_year=_year143, label=_n143)
         L.ok("R143", not _p143, f"{_n143}: dated club-calendar events are not duplicated as Community Notices" + (f" {_p143}" if _p143 else ""))
+
+# R144 (Steven Nov 23 2026 2:05 AM ET, voice): Steven-supplied teaser additions are recorded
+# and leave the source sentence / notice page body intact; Nov 29 keeps exactly seven notices.
+if C.ISSUE >= _sr83.R144_FROM:
+    _add144 = getattr(C, "NOTICE_TEASER_ADDITIONS", None) or {}
+    _repo144 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _pages144 = {}
+    for _title144, _rec144 in _add144.items():
+        _href144 = None
+        for _row144 in (getattr(C, "NOTICES", []) or []):
+            if _row144 and _row144[0] == _title144:
+                _href144 = _row144[3] if len(_row144) > 3 else None
+                break
+        if _href144:
+            _fn144 = str(_href144).rsplit("/", 1)[-1].split("?")[0]
+            _fp144 = _repo144 / "pages" / _fn144
+            if _fp144.exists():
+                _pages144[_title144] = _fp144.read_text(encoding="utf-8")
+    _from_file144 = {n[0]: n[1] for n in (getattr(C, "NOTICES", []) or []) if n and n[0] in _add144}
+    for _n144, _x144 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _tease144 = dict(_from_file144)
+        for _title144 in _add144:
+            _html_t144 = _sr83.r144_teaser_from_html(_x144, _title144)
+            if _html_t144:
+                _tease144[_title144] = _html_t144
+        _p144 = _sr83.steven_teaser_addition_problems(_tease144, _add144, _pages144, label=_n144)
+        L.ok("R144", not _p144, f"{_n144}: Steven-supplied teaser additions are recorded and leave the source intact" + (f" {_p144}" if _p144 else ""))
+        _k144 = _sr83.r144_keep_list_problems(C.ISSUE, _x144)
+        L.ok("R144", not _k144, f"{_n144}: Community Notices are the approved keep-list" + (f" {_k144}" if _k144 else ""))
+
+# R145 (Steven Nov 23 2026, t1864u): a Steven-picked single photo from a cover
+# collage appears on the main-page Community Stories card; the story page keeps the full cover (R84).
+if C.ISSUE >= _sr83.R145_FROM and getattr(C, "STORY", None):
+    _repo145 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
+    _sj145 = json.load(open(_repo145 / C.STORY["json"], encoding="utf-8"))
+    _mp145 = _sj145.get("main_photo")
+    if _mp145:
+        _cover145 = ((_sj145.get("photo") or {}).get("src") or "").strip() or None
+        _spf145 = _repo145 / "pages" / _sj145["live_page_planned"]
+        _sp145 = _spf145.read_text(encoding="utf-8") if _spf145.exists() else ""
+        for _n145, _x145 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+            _p145 = _sr83.story_main_photo_problems(
+                _x145, _mp145, story_page_html=_sp145, cover_src=_cover145, label=_n145, repo=_repo145,
+            )
+            L.ok("R145", not _p145, f"{_n145}: Steven-picked main-page story photo is on the card; story page keeps the full cover" + (f" {_p145}" if _p145 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)

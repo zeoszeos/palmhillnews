@@ -451,7 +451,8 @@ if C.STORY:   # content file STORY = dict(json=<story data json>, listen=<listen
     _JC = json.load(open(REPO / C.STORY["json"], encoding="utf-8"))
     STORY = dict(title=_JC["title"], date=_JC["date_iso"], teaser=_R18_CUT(_JC["teaser_candidate"], C.STORY["teaser_sentences"]),
                  page=_JC["live_page_planned"], listen=C.STORY["listen"],   # Steven Oct 20 4:33 PM: live page (written by stage script), never the undeployed preview URL
-                 source=None, archive_title=_JC["title"])
+                 source=None, archive_title=_JC["title"],
+                 main_photo=_JC.get("main_photo"))  # R145: optional Steven-picked single photo on the main-page card
 # PHNEWS_DRYRUN=1 lets the build finish without a story for workspace testing only -- it is NOT Steven's R45 approval and never publishes.
 # R45: STORY_OMIT_APPROVED is Steven's recorded OK to leave Community Stories off a real issue
 # (e.g. the story was moved to Community Notices). STORY_OMIT_DRYRUN_NOTE is workspace dry-run only.
@@ -462,9 +463,30 @@ if STORY: assert STORY["teaser"].replace("'", "\u2019") in _story_page or STORY[
 if STORY: assert (PAGES / STORY["listen"]).exists(), "R45: story listen page missing"
 if STORY:
     _d = date.fromisoformat(STORY["date"])
+    _mp = STORY.get("main_photo") or {}
+    _mp_html = ""
+    if _mp:
+        # R145: Steven-picked single photo on the main-page card (email-safe). Story page keeps the full cover (R84).
+        # Portrait photos are height-capped so they don't stretch full-width and run tall; landscape may use a wider cap.
+        _nat_w, _nat_h = int(_mp["w"]), int(_mp["h"])
+        if _nat_h > _nat_w:
+            _disp_h = int(_mp.get("display_h") or 280)
+            _disp_w = max(1, int(round(_disp_h * _nat_w / _nat_h)))
+        else:
+            _disp_w = int(_mp.get("display_w") or min(_nat_w, 560))
+            _disp_h = max(1, int(round(_disp_w * _nat_h / _nat_w)))
+        _mp_html = (
+            f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;">'
+            f'<tr><td style="padding:0;">'
+            f'<a href="{BASE + STORY["page"]}" style="text-decoration:none;">'
+            f'<img src="{_mp["src"]}" width="{_disp_w}" height="{_disp_h}" alt="{escape(_mp["alt"])}" '
+            f'style="display:block;width:{_disp_w}px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;">'
+            f'</a></td></tr></table>'
+        )
     _row = (f'<tr style="background:#FFFFFF;page-break-inside:avoid;break-inside:avoid;"><td style="padding:6px 8px;border-bottom:1px solid #ddd;">'
             + title_row(escape(STORY["title"]), listen(BASE + STORY["listen"] + "?listen=1"))
             + f'<div style="font-size:14px;color:#666666;margin-top:2px;">{_d.strftime("%A, %b %-d, %Y")}</div>'
+            + _mp_html
             + f'<div style="font-size:15px;color:#333333;margin-top:3px;">{escape(STORY["teaser"])} <a href="{BASE + STORY["page"]}" style="color:{G};white-space:nowrap;">More →</a></div>'
             + f'<div style="margin-top:4px;font-size:14px;line-height:1.6;"><a href="{ARCH}community-stories.html" style="color:{G};white-space:nowrap;">Story Archives →</a></div>'
             + (f'<div style="font-size:13px;color:#666666;margin-top:5px;">Source: {escape(STORY["source"])}</div>' if STORY["source"] else "") + '</td></tr>')
