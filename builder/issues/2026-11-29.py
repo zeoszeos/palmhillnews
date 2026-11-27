@@ -1,10 +1,10 @@
 """PHNEWS Sunday, November 29, 2026 (Vol. 1, No. 20) -- issue content file (STYLE-RULES R71). Data only; all logic is in builder/core/.
 EARLY DRAFT (Steven Nov 23 2026 1:36 AM ET: archive add, backups, and Nov 29 early draft). Built Mon Nov 23 2026 from the
 Nov 22 file on the box alone: calendar pulled from Tony's feed (R21b window Nov 22–Jan 28), inboxes checked since Sat Nov 21
-6:19 PM ET. Refresh Thu Nov 26 2026: calendar re-pulled (R21b window Nov 22–Jan 28, snapshot cal-20261126-0956.json,
-9:56 AM ET); palmhillblast checked since the Nov 23 build. One new chair report (Golf Advisory, meeting Nov 10,
-Carolyn Story, Tue Nov 24 9:11 PM ET). No new Megan weekly update. DYK still pending Steven. Do not merge, send the
-resident blast, or publish without Steven's OK."""
+6:19 PM ET. Refresh Thu Nov 26 2026: calendar re-pulled; Golf Advisory Nov 10 report added. Final refresh Fri Nov 27 2026:
+calendar re-pulled (R21b window Nov 22–Jan 28, snapshot cal-20261127-1018.json, 10:18 AM ET, 0 changes vs Nov 26 9:59 AM);
+palmhillblast checked since the Nov 26 9:59 AM build — no new Megan weekly update, agenda, or chair report. DYK still
+pending Steven. Do not merge, send the resident blast, or publish without Steven's OK."""
 ISSUE = "2026-11-29"
 VOL_NO = 20
 SHORT = "nov29"
@@ -1351,5 +1351,5 @@ HIDE_SECTIONS = {"president": "Henry Klain's October message ran Oct 25 and Nov 
                  # R89/R104: do not carry last week's DYK. Placeholder until Steven picks. Do not repeat Rule III.A (Oct 25) without his OK.
                  "dyk": "Did You Know pick pending Steven. Not repeating Nov 22 Use of Common Grounds / golf course, and not repeating Rule III.A (Oct 25) without his OK."}
 # Weekly Manager Update: Nov 13 (redacted per R142) stays until a newer Megan update arrives (no age cutoff).
-# No new Megan weekly update in palmhillblast since the Nov 23 build (checked Thu Nov 26 2026). One new chair
-# report: Golf Advisory Committee minutes (meeting Nov 10) from Carolyn Story, Tue Nov 24 9:11 PM ET.
+# No new Megan weekly update in palmhillblast since the Nov 26 9:59 AM build (checked Fri Nov 27 2026).
+# Golf Advisory Committee minutes (meeting Nov 10, Carolyn Story, Tue Nov 24 9:11 PM ET) stay in this issue.
