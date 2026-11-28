@@ -513,7 +513,9 @@ if _dm97.applies(C.ISSUE):
     if _sd97.exists():
         _s97 = _sd97.read_text(encoding="utf-8")
         L.ok("R97", not _dm97.find_white(_s97), f"SEND: no pure-white row/cell/table backgrounds {_dm97.find_white(_s97)[:3]}")
-        L.ok("R97", _dm97.head_ok(_s97), "SEND head: color-scheme / supported-color-schemes light only + :root{color-scheme:light only}")
+        L.ok("R97", _dm97.head_ok(_s97), "SEND head: color-scheme light only / supported-color-schemes light + :root{color-scheme:light only;}")
+        _p147 = _dm97.forward_light_problems(_s97)
+        L.ok("R147", not _p147, "SEND: body, wrappers and section containers have explicit light backgrounds and text color" + (f" {_p147[:3]}" if _p147 else ""))
 # R98 (Steven Oct 30 2026 10:39 PM): no border-left accent on chair-report rows or Did You Know items (preview + SEND), from Nov 1.
 if C.ISSUE >= "2026-11-01":
     _p98 = [page] + ([(ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8")] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else [])
