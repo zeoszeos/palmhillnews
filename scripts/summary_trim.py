@@ -9,6 +9,8 @@ MORE = '<a href="{u}" style="color:#3A6B1A;white-space:nowrap;">More →</a>'
 # (never the short 2026-10-18-notice-*.html page); style_rules.assert_webmaster_more checks every build.
 # full-text prefix -> (short text in source wording, full-text page or None when the row already links to it)
 SHORT = [
+ # Steven Nov 28 2026: Dec 1 South Coffee / Christmas Breakfast (Linda Keehl blast); first source sentence; More → = the copied email
+ ("I need to remind everyone that our Wed. Coffee on Dec. 2", "I need to remind everyone that our Wed. Coffee on Dec. 2 will have to be moved to Tues. Dec. 1.", B + "2026-11-28-south-coffee-and-christmas-breakfast-notice.html"),
  # Steven Nov 20 2026 6:33 PM ET: Thanksgiving / Spectrum / pianist notices; teasers are source sentences, cut never reworded; More → = the copied email
  ("Due to the Thanksgiving Holiday, Maintenance &amp; Administrative offices", "Due to the Thanksgiving Holiday, Maintenance &amp; Administrative offices will be off/closed.", B + "2026-11-20-holiday-schedule-trash-sanitation-field-notice.html"),
  # R144 (Steven Nov 23): keep the R18 cut of the source clause, plus the source's schedule-by-December-1 framing (not "starting December 1st"). Nov 22 as-sent pages are not rebuilt.

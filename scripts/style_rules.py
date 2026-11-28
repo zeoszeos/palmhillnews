@@ -1781,9 +1781,11 @@ def calendar_notice_duplicate_problems(html, events, keep_as_notice=(), default_
 # R144 (Steven, Nov 23 2026 2:05 AM ET, voice): a Steven-supplied fact added to a
 # source teaser is recorded in the content file; the source sentence stays intact;
 # the addition is not silently written into the source notice page body.
-# Same decision: Nov 29 keeps exactly these seven Community Notices (approved R130 list).
+# Same Nov 23 decision: the Nov 29 R130 keep-list. Steven Nov 28 added
+# "South Coffee and Christmas Breakfast" as the first (newest) notice.
 R144_FROM = "2026-11-29"
 R144_NOV29_NOTICES = [
+    "South Coffee and Christmas Breakfast",
     "Spectrum Fiber Upgrade",
     "Pianist Needed for Cantata Ensemble",
     "New Valet Trash Service",
@@ -1844,7 +1846,7 @@ def steven_teaser_addition_problems(teaser_by_title, additions, page_text_by_tit
 
 
 def r144_keep_list_problems(issue, html, expected=None):
-    """R144: the Nov 29 issue lists exactly the seven approved Community Notices, in order."""
+    """R144: the Nov 29 issue lists exactly the approved Community Notices, in order."""
     if issue < R144_FROM:
         return []
     if expected is None:
@@ -1910,3 +1912,150 @@ def story_main_photo_problems(html, main_photo, story_page_html=None, cover_src=
     if story_page_html is not None and cover_src and cover_src not in story_page_html.split("<article>")[0]:
         hits.append(f"R145: the story page must still have the full cover collage at the top{where}")
     return hits
+
+
+# R148 (Steven, Nov 28 2026 10:55 AM ET, voice): Community Notice event times
+# show a start time only, unless Steven explicitly approved an end time for
+# that notice. The guard inspects the R93 date line under each currently
+# shown Community Notice title (not the teaser or the source-page body).
+# A contact deadline in body text, e.g. "no later than close of the meeting
+# on Tues. Dec. 1 (around 10am)", is source wording and is not an event end
+# time. "Ending at South Clubhouse" is a place, not an end time.
+# Allowlist: issue content file NOTICE_EVENT_END_TIMES_APPROVED (titles).
+R148_FROM = "2026-11-29"
+R148_GUARD = "notice_event_end_time_problems"
+
+_R148_CLOCK = r"(?:1[0-2]|0?[1-9])(?::[0-5]\d)?\s*(?:a\.?m\.?|p\.?m\.?)"
+_R148_SOFT = r"(?:around|about|approx(?:imately)?|circa)?\s*"
+_R148_SEP = r"(?:–|—|−|-|to|through|until|till)"
+_R148_RANGE = re.compile(
+    rf"{_R148_CLOCK}\s*{_R148_SEP}\s*{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+# "8:00-10:00 AM" / "10 a.m.–1 p.m." with am/pm only on the second clock
+_R148_RANGE_SHARED = re.compile(
+    rf"(?:1[0-2]|0?[1-9])(?::[0-5]\d)?\s*(?:–|—|−|-)\s*{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+_R148_ENDS = re.compile(
+    rf"\b(?:ends?|ending|close[sd]?)\s+(?:at|around|about|by)\s*{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+_R148_END_TIME = re.compile(
+    rf"\bend(?:s|ing)?\s*times?\b|\buntil\s+{_R148_SOFT}{_R148_CLOCK}|\bthrough\s+{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+_R148_FROM_FOR = re.compile(
+    rf"\bfrom\s+{_R148_CLOCK}\s+for\b",
+    re.I,
+)
+
+
+def r148_end_time_reason(date_line):
+    """Why this Community Notice date line shows an end time or time range, or None."""
+    s = date_line or ""
+    if _R148_RANGE.search(s) or _R148_RANGE_SHARED.search(s):
+        return "a start–end time range"
+    if _R148_ENDS.search(s):
+        return "an end time"
+    if _R148_END_TIME.search(s):
+        return "an end time"
+    if _R148_FROM_FOR.search(s):
+        return "a start time with a duration"
+    return None
+
+
+def notice_event_end_time_problems(html, allowed=None, label=""):
+    """R148: currently shown Community Notice date lines have no end time or time range unless the title is allowlisted."""
+    allowed = set(allowed or ())
+    hits = []
+    where = f" in {label}" if label else ""
+    for title, date_line in r143_notices_from_html(html):
+        if not date_line:
+            continue
+        if title in allowed:
+            continue
+        why = r148_end_time_reason(date_line)
+        if why:
+            hits.append(
+                f"R148: {title!r} date line shows {why} without Steven's OK{where}: {date_line!r}"
+            )
+    return hits
+
+
+# R149 (Steven, Nov 28 2026 11:01 AM ET, voice): before any review or test copy
+# is sent, every <img> src in the SEND must return HTTP 200 with an image
+# Content-Type from the live site. A failed send teaches Gmail's image proxy
+# a broken URL (the Ladies Luncheon main-page crop was requested in review
+# emails on Nov 26 and Nov 27 10:24 AM ET, before PR #182 deployed it at
+# 10:44 AM ET). New or versioned assets are not live until the PR merges, so
+# this is a pre-send gate (scripts/check_send_live_images.py) that raises
+# SystemExit on failure. Do not use a Vercel preview-deployment URL in the
+# SEND; use https://palmhillnews.vercel.app/... . Numbered R149 so it does
+# not collide with R146 on draft PR #183; R148 is the notice start-time-only rule.
+R149_FROM = "2026-11-29"
+R149_GUARD = "send_live_image_problems"
+R149_LIVE_HOSTS = {"palmhillnews.vercel.app", "www.palmhillnews.vercel.app"}
+
+
+def r149_img_srcs(html):
+    """Unique absolute or relative <img src> values from a SEND or preview, in order."""
+    if not html:
+        return []
+    found = re.findall(r'<img\b[^>]*?\bsrc\s*=\s*"([^"]+)"', html, re.I)
+    found += re.findall(r"<img\b[^>]*?\bsrc\s*=\s*'([^']+)'", html, re.I)
+    out, seen = [], set()
+    for u in found:
+        u = _html_unescape_r143(u).strip()
+        if u and u not in seen:
+            seen.add(u)
+            out.append(u)
+    return out
+
+
+def r149_is_preview_deployment(url):
+    """True when the URL is a Vercel preview deployment, not the live palmhillnews site."""
+    if not url:
+        return False
+    host = (re.match(r"https?://([^/]+)", url, re.I) or type("m", (), {"group": lambda s, n: ""})()).group(1)
+    host = (host or "").split("@")[-1].lower()
+    if host in R149_LIVE_HOSTS:
+        return False
+    return host.endswith(".vercel.app")
+
+
+def r149_preview_image_url_problems(html, label=""):
+    """R149 structural check: SEND/preview images must not use a Vercel preview-deployment URL."""
+    hits = []
+    where = f" in {label}" if label else ""
+    for src in r149_img_srcs(html):
+        if r149_is_preview_deployment(src):
+            hits.append(f"R149: preview-deployment image URL{where}: {src}")
+    return hits
+
+
+def send_live_image_problems_from_results(srcs, results, label=""):
+    """Build R149 failure strings from {src: (status, content_type)} fetch results."""
+    hits = []
+    where = f" in {label}" if label else ""
+    for src in srcs or []:
+        if r149_is_preview_deployment(src):
+            hits.append(f"R149: preview-deployment image URL{where}: {src}")
+            continue
+        if not re.match(r"https?://", src or "", re.I):
+            hits.append(f"R149: image src is not an absolute live URL{where}: {src}")
+            continue
+        status, ctype = (results or {}).get(src, (0, ""))
+        ctype = (ctype or "").split(";")[0].strip().lower()
+        if status != 200:
+            hits.append(f"R149: {src} returned HTTP {status or 'ERR'}, not 200{where}")
+        elif not ctype.startswith("image/"):
+            hits.append(f"R149: {src} content-type is {ctype!r}, not an image{where}")
+    return hits
+
+
+def send_live_image_problems(html, fetch, label=""):
+    """R149: every <img> in html must fetch as HTTP 200 with an image content-type (fetch(url) -> (status, ctype))."""
+    srcs = r149_img_srcs(html)
+    results = {s: fetch(s) for s in srcs}
+    return send_live_image_problems_from_results(srcs, results, label=label)

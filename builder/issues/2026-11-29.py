@@ -3,12 +3,14 @@ EARLY DRAFT (Steven Nov 23 2026 1:36 AM ET: archive add, backups, and Nov 29 ear
 Nov 22 file on the box alone: calendar pulled from Tony's feed (R21b window Nov 22–Jan 28), inboxes checked since Sat Nov 21
 6:19 PM ET. Refresh Thu Nov 26 2026: calendar re-pulled; Golf Advisory Nov 10 report added. Final refresh Fri Nov 27 2026:
 calendar re-pulled (R21b window Nov 22–Jan 28, snapshot cal-20261127-1018.json, 10:18 AM ET, 0 changes vs Nov 26 9:59 AM);
-palmhillblast checked since the Nov 26 9:59 AM build — no new Megan weekly update, agenda, or chair report. DYK still
-pending Steven. Do not merge, send the resident blast, or publish without Steven's OK."""
+palmhillblast checked since the Nov 26 9:59 AM build — no new Megan weekly update, agenda, or chair report. Late refresh
+Sat Nov 28 2026: calendar re-pulled (cal-20261128-1054.json, 10:54 AM ET); add Linda Keehl Webmaster blast (Sat Nov 28
+5:03 AM ET, Tony fwd 8:07 AM) as a Community Notice for the Dec 1 South Coffee / Christmas Breakfast, start 8:00 AM only
+(R148). DYK still pending Steven. Do not merge, send the resident blast, or publish without Steven's OK."""
 ISSUE = "2026-11-29"
 VOL_NO = 20
 SHORT = "nov29"
-DEFAULT_REPO = "/workspace/phnews-nov29-prep"
+DEFAULT_REPO = "/workspace/phnews-nov29-late"
 DEFAULT_WORK = "/workspace/phnews-consolidation/nov29"
 # Community Story (R45/R83/R84). Steven Nov 23 2026 (t1863u: "1 pls") picked candidate 1:
 # "Smiling @ the Ladies Luncheon", Palm Hill Link November 2026, cover photo + story on pp. 2 and 4.
@@ -67,7 +69,8 @@ NOTICES_KEEP_FROM_PREVIOUS = ["Spectrum Fiber Upgrade",              # schedule 
 R60C_ICE_NOTICE = False               # the ice machine notice is dropped for Nov 1
 DRYRUN_OK = True                      # PHNEWS_DRYRUN=1 lists content guards as TODOs (workspace only)
 LOCKED = {
-    "NOTICES_EXPECTED": [   # R130/R144: Steven Nov 23 2026 2:05 AM ET approved this exact seven-notice keep-list
+    "NOTICES_EXPECTED": [   # R130/R144: Nov 23 seven-notice keep-list plus the Nov 28 coffee / Christmas Breakfast notice (Steven, start 8 AM only)
+        'South Coffee and Christmas Breakfast',
         'Spectrum Fiber Upgrade',
         'Pianist Needed for Cantata Ensemble',
         'New Valet Trash Service',
@@ -185,6 +188,7 @@ TITLE = {"Bookclub:Foster by Claire Keegan": "Book Club: Foster by Claire Keegan
 R143_KEEP_AS_NOTICE = {
     "Palm Hill Annual Golf Cart Parade",  # calendar: Christmas Golf Cart Parade, Dec 12; R56 More -> existing notice
     "Cornhole Tournament",                # calendar recurring event Nov 28; reminder notice kept in LOCKED
+    "South Coffee and Christmas Breakfast",  # calendar: South Coffee, Dec 1 8:00 AM South Main Hall (PENDING PRESIDENT); Steven Nov 28: keep as Community Notice, start 8 AM only
 }
 
 # Oct 25: events new to the issue window (calendar re-pull Oct 20 2:40 PM). Detail = the calendar listing text (light edits only).
@@ -392,6 +396,33 @@ HOLIDAY_SCHED_BLOCKS = [
     ("p", "Resource Property Management, Inc. on behalf of Home Owners of Palm Hill, Inc"),
     ("p", "(727) 581-2662 | www.resourcepropertymgmt.com"),
 ]
+# 0) South Coffee / Christmas Breakfast (Steven Nov 28: add Linda Keehl Webmaster
+# blast of Sat Nov 28 2026 5:03 AM ET, Tony fwd 8:07 AM; start 8 AM only, no end time).
+# Body is the blast wording (wrapped lines joined). The date line is start-only (R148)
+# from Tony's club calendar (2026-12-01 08:00 South Coffee @ South Main Hall).
+# "around 10am" stays only in the Martha Ladd contact-deadline sentence.
+WM_COPY_COFFEE_XMAS = "2026-11-28-south-coffee-and-christmas-breakfast-notice.html"
+COFFEE_XMAS_TITLE = "South Coffee and Christmas Breakfast"
+COFFEE_XMAS_SUBJECT = "Coffee change reminder"
+COFFEE_XMAS_SENT = "Saturday, Nov 28, 2026, 5:03 AM ET"
+COFFEE_XMAS_DATE = "Coffee: Tuesday, December 1, 2026 · Start: 8:00 AM · Place: South Clubhouse · Call: 517-320-0302"
+COFFEE_XMAS_TEASER = "I need to remind everyone that our Wed. Coffee on Dec. 2 will have to be moved to Tues. Dec. 1."  # R18: prefix of the first source sentence (3-line cap at 390px); full sentence stays on the copy page
+COFFEE_XMAS_CAL_LINE = "Club calendar: Tuesday, December 1, 2026 · Start: 8:00 AM · Place: South Clubhouse · Call: 517-320-0302."  # R93 date-line words; start only (R148)
+COFFEE_XMAS_BLOCKS = [
+    ("p", COFFEE_XMAS_CAL_LINE),
+    ("p", "Hello Palm Hill- I need to remind everyone that our Wed. Coffee on Dec. 2 will have to be moved to Tues. Dec. 1 due to a power outage planned for the south clubhouse. This coffee on the 1st is a very special coffee time. It is our yearly Christmas Breakfast with- raffles, prizes for Christmas dress up, breakfast, gifts, and our business meeting to close our slate of nominations for our elections in January."),
+    ("p", "We are looking for some key positions that need to be filled. All the great activities that go on here in Palm Hill are planned by your Inside Entertainment Director. This is an important position that would come with board backing and many volunteers that are also needed to do the events. We are also looking for a Bazaar Director to keep our beloved resale store and furniture store going along with the big sale in March. It is a big job but there are a lot of people to help and support. A good sense of organization is helpful. A smaller job open is that of Inspiration. We love to hear our inspiring words at the beginning of our coffees. Maybe this is your thing."),
+    ("p", "Just remember that just because you can't take a whole job that you can still help: Set-up for events. Kitchen help at coffee or event. Bazaar sorting and pricing. Assistant to Inside Entertainment. Many hands make the work more fun!"),
+    ("p", "If you are interested in any of these positions, please let Martha Ladd know ASAP but no later than close of the meeting on Tues. Dec. 1 (around 10am). Martha Ladd is on our search committee and would love to hear from you even if you only want to ask a question. Call at 517-320-0302 email- bigbadbamal@hotmail.com."),
+    ("p", "We look forward to having you join us on Tues. Dec. 1 for Breakfast and Christmas goodies. Thank-you to everyone who already gives their time and to those being brave to give it a try. You are the reason the South Clubhouse is home to so much fun."),
+    ("p", "Linda Keehl, President, South Recreation Club."),
+]
+COFFEE_XMAS_SOURCE = (
+    "Source: Palm Hill webmaster notice (Linda Keehl, President, South Recreation Club), "
+    "Sat Nov 28 2026 5:03 AM ET, copied as sent. Club calendar date line (start time only) "
+    "from Tony's club calendar, Dec 1 8:00 AM, South Clubhouse (South Main Hall)."
+)
+
 # 2) RPM Spectrum Fiber upgrade, gotwicz 1a1fa3b629ace05e, Fri Nov 20 2026 1:32 PM ET. Subject line after the ticket number is blank; title is taken from the first sentence.
 WM_COPY_SPECTRUM = "2026-11-20-spectrum-fiber-upgrade-notice.html"
 SPECTRUM_TITLE = "Spectrum Fiber Upgrade"
@@ -439,6 +470,9 @@ CORNHOLE_REMINDER_BODY = "There are still a few openings for our first cornhole 
 CORNHOLE_REMINDER_DATE = "Tournament: Saturday, November 28, 2026 · Contact: 518-866-2079"
 
 WM_COPIES = [
+    # Steven Nov 28 2026: newest first (coffee/Christmas Breakfast 5:03 AM, then Nov 20 items).
+    (WM_COPY_COFFEE_XMAS, COFFEE_XMAS_SUBJECT, COFFEE_XMAS_SENT, COFFEE_XMAS_BLOCKS,
+        dict(title=COFFEE_XMAS_TITLE)),  # default source/sender (L27/L29: never "Palm Hill Webmaster" or "Linda Keehl," on the Source line)
     # Steven Nov 20 2026 6:33 PM ET: newest first (Thanksgiving 4:02 PM, Spectrum 1:32 PM, pianist Nov 19).
     (WM_COPY_HOLIDAY_SCHED, HOLIDAY_SCHED_SUBJECT, HOLIDAY_SCHED_SENT, HOLIDAY_SCHED_BLOCKS,
         dict(source="Source: Resource Property Management message to residents, Nov 20, copied as sent.",
@@ -748,6 +782,8 @@ SOUTHREC_TEASER = "The South Recreation Club has positions available for the 202
 HOLIDAY_TITLE = "A convenient way to send holiday cards for Palm Hill residents"  # Steven correction Oct 24 11:39 AM: exact main-page title (R60b guard)
 HOLIDAY_TEASER = "A simple way for Palm Hill residents to send holiday greetings to friends and neighbors within the community."  # flyer's own words, verbatim
 NOTICES = [
+    # Steven Nov 28 2026: newest first — Dec 1 South Coffee / Christmas Breakfast (Linda Keehl blast).
+    (COFFEE_XMAS_TITLE, COFFEE_XMAS_TEASER, "Webmaster", BASE + WM_COPY_COFFEE_XMAS),
     # Steven Nov 20 2026 6:33 PM ET: newest first, ahead of the valet notice and the keep-list.
     (HOLIDAY_SCHED_TITLE, HOLIDAY_SCHED_BODY, "RPM", BASE + WM_COPY_HOLIDAY_SCHED),
     (SPECTRUM_TITLE, SPECTRUM_TEASER, "RPM", BASE + WM_COPY_SPECTRUM),  # R144: teaser = R18-cut source clause + source "Schedule installation by December 1, 2026."; copy page stays SPECTRUM_BLOCKS
@@ -850,6 +886,7 @@ NOTICES = [
 # "<What>: <date>" in source wording only (two dates split with " · "), or an approved "No date". Titles carry no dates.
 NOTICE_DATES = True
 NOTICE_DATE_LINE = {
+    COFFEE_XMAS_TITLE: COFFEE_XMAS_DATE,  # R148: start time only (Steven Nov 28 10:55 AM ET)
     HOLIDAY_SCHED_TITLE: HOLIDAY_SCHED_DATE,
     SPECTRUM_TITLE: SPECTRUM_DATE,
     PIANIST_TITLE: PIANIST_DATE,
@@ -879,6 +916,12 @@ NOTICE_DATE_LINE = {
         "Coffees: month of November (North Clubhouse) · Pancakes: November 14th, arrival time 7:30 AM",         # Webmaster Oct 15
     "Taste of Golf": "Event: November 18, 2026; 10 AM · Meet at Pro Shop",                                       # Webmaster Oct 14
 }
+# R148 (Steven Nov 28 2026 10:55 AM ET): Community Notice event/date lines show a start
+# time only, unless Steven explicitly approved an end time for that notice. Titles listed
+# here may show a start–end range or an end time; everyone else fails the R148 guard.
+# Empty for Nov 29: no currently shown notice has an approved end time.
+NOTICE_EVENT_END_TIMES_APPROVED = set()
+
 NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to all": leave undated
     SCAM_TITLE: "Nov 15 draft: the Webmaster email (Thu Nov 12) warns about a scam received that day; no event date (flagged for Steven)",
     ROUTE_TITLE: "Nov 15 draft: the route email is an image-only map with START and END labels and no printed date (flagged for Steven)",
@@ -1329,6 +1372,7 @@ TONY_FB_NOTICE = False
 # R102 (Steven Oct 31 2026 7:33 PM, voice): flyer phone numbers Steven OKs are printed verbatim and must be tap-to-call
 # in the NL row (preview + SEND) and on the copy page. (label, number as printed, page file)
 REQUIRED_TEL = [("Cornhole Tournament", "518-866-2079", WM_COPY_CORNHOLE),
+                 ("South Coffee and Christmas Breakfast", "517-320-0302", WM_COPY_COFFEE_XMAS),  # Martha Ladd, Nov 28 Webmaster blast (Steven approved)
                  ("Pianist Needed for Cantata Ensemble", "269-317-6890", WM_COPY_PIANIST),
                  ("Spectrum Fiber Upgrade", "855-326-5115", WM_COPY_SPECTRUM),
                  ("Christmas Golf Cart Route", "(727) 581-8729", WM_COPY_ROUTE)]  # R133 (Steven Nov 15 2026): official office number
@@ -1341,7 +1385,7 @@ VOTE_BANNER = dict(heading="\u2605 Don't forget to vote on Tuesday, November 3!"
 TOP_BANNERS = []   # Nov 8: DST (Nov 1) and vote (Nov 3) banners are past
 
 # R103 (Steven Oct 31 2026, via Susan's proof note): the Webmaster December Link Deadline notice is the first Community Notice
-FIRST_NOTICE = None   # Nov 8: December Link Deadline (Nov 5) dropped as stale
+FIRST_NOTICE = COFFEE_XMAS_TITLE  # R103: newest notice first (Steven Nov 28 coffee / Christmas Breakfast)
 
 # R104 (Steven Nov 1 2026 11:55 AM: "if there are no current items in a section, we won't even show the section header"):
 # sections (by key: president, story, chair, manager, dyk, ...) with no current item are left out entirely (header and all). Archive pages and URLs stay live.
