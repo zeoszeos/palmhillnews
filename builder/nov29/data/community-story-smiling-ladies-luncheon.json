@@ -31,7 +31,7 @@
  "date_iso": "2026-11-01",
  "teaser_note": "R18: first two sentences of the opening paragraph (the quoted 'you’ll be fine.' does not split on the period because a close-quote follows it). Display date is the 1st of the Link month (R83).",
  "main_photo": {
-  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-main-november-2026.jpg",
+  "src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-main-november-2026-v2.jpg",
   "w": 196,
   "h": 262,
   "alt": "Palm Hill ladies dining at a restaurant table, with fish decorations on a blue wall and windows at the right",
@@ -44,6 +44,8 @@
   ],
   "from": "smiling-ladies-luncheon-cover-november-2026.jpg",
   "display_h": 280,
-  "by": "Steven Leonowicz, Nov 23 2026, t1864u: 'Can you pick one pic from the collage for the main page? This one would be good' (the middle-center tile of the November 2026 Link cover collage; crop corrected from the middle-right tile)"
+  "by": "Steven Leonowicz, Nov 23 2026, t1864u: 'Can you pick one pic from the collage for the main page? This one would be good' (the middle-center tile of the November 2026 Link cover collage; crop corrected from the middle-right tile)",
+  "prior_src": "https://palmhillnews.vercel.app/assets/images/phnews/2026-11/smiling-ladies-luncheon-main-november-2026.jpg",
+  "version_note": "Steven Nov 28 2026 11:01 AM ET: copy the crop to a new versioned name so Gmail fetches it fresh. Root cause: Gmail's image proxy cached a failed load of the original filename from review emails sent Nov 26 and Nov 27 10:24 AM ET, before PR #182 deployed the file at 10:44 AM ET. The original file stays published so existing URLs remain valid. Do not delete it."
  }
 }

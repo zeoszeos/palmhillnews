@@ -1781,9 +1781,11 @@ def calendar_notice_duplicate_problems(html, events, keep_as_notice=(), default_
 # R144 (Steven, Nov 23 2026 2:05 AM ET, voice): a Steven-supplied fact added to a
 # source teaser is recorded in the content file; the source sentence stays intact;
 # the addition is not silently written into the source notice page body.
-# Same decision: Nov 29 keeps exactly these seven Community Notices (approved R130 list).
+# Same Nov 23 decision: the Nov 29 R130 keep-list. Steven Nov 28 added
+# "South Coffee and Christmas Breakfast" as the first (newest) notice.
 R144_FROM = "2026-11-29"
 R144_NOV29_NOTICES = [
+    "South Coffee and Christmas Breakfast",
     "Spectrum Fiber Upgrade",
     "Pianist Needed for Cantata Ensemble",
     "New Valet Trash Service",
@@ -1844,7 +1846,7 @@ def steven_teaser_addition_problems(teaser_by_title, additions, page_text_by_tit
 
 
 def r144_keep_list_problems(issue, html, expected=None):
-    """R144: the Nov 29 issue lists exactly the seven approved Community Notices, in order."""
+    """R144: the Nov 29 issue lists exactly the approved Community Notices, in order."""
     if issue < R144_FROM:
         return []
     if expected is None:
@@ -1909,4 +1911,304 @@ def story_main_photo_problems(html, main_photo, story_page_html=None, cover_src=
             hits.append(f"R145: the main-page card must show the picked tile, not the full cover collage{where}")
     if story_page_html is not None and cover_src and cover_src not in story_page_html.split("<article>")[0]:
         hits.append(f"R145: the story page must still have the full cover collage at the top{where}")
+    return hits
+
+
+# R148 (Steven, Nov 28 2026 10:55 AM ET, voice): Community Notice event times
+# show a start time only, unless Steven explicitly approved an end time for
+# that notice. The guard inspects the R93 date line under each currently
+# shown Community Notice title (not the teaser or the source-page body).
+# A contact deadline in body text, e.g. "no later than close of the meeting
+# on Tues. Dec. 1 (around 10am)", is source wording and is not an event end
+# time. "Ending at South Clubhouse" is a place, not an end time.
+# Allowlist: issue content file NOTICE_EVENT_END_TIMES_APPROVED (titles).
+R148_FROM = "2026-11-29"
+R148_GUARD = "notice_event_end_time_problems"
+
+_R148_CLOCK = r"(?:1[0-2]|0?[1-9])(?::[0-5]\d)?\s*(?:a\.?m\.?|p\.?m\.?)"
+_R148_SOFT = r"(?:around|about|approx(?:imately)?|circa)?\s*"
+_R148_SEP = r"(?:–|—|−|-|to|through|until|till)"
+_R148_RANGE = re.compile(
+    rf"{_R148_CLOCK}\s*{_R148_SEP}\s*{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+# "8:00-10:00 AM" / "10 a.m.–1 p.m." with am/pm only on the second clock
+_R148_RANGE_SHARED = re.compile(
+    rf"(?:1[0-2]|0?[1-9])(?::[0-5]\d)?\s*(?:–|—|−|-)\s*{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+_R148_ENDS = re.compile(
+    rf"\b(?:ends?|ending|close[sd]?)\s+(?:at|around|about|by)\s*{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+_R148_END_TIME = re.compile(
+    rf"\bend(?:s|ing)?\s*times?\b|\buntil\s+{_R148_SOFT}{_R148_CLOCK}|\bthrough\s+{_R148_SOFT}{_R148_CLOCK}",
+    re.I,
+)
+_R148_FROM_FOR = re.compile(
+    rf"\bfrom\s+{_R148_CLOCK}\s+for\b",
+    re.I,
+)
+
+
+def r148_end_time_reason(date_line):
+    """Why this Community Notice date line shows an end time or time range, or None."""
+    s = date_line or ""
+    if _R148_RANGE.search(s) or _R148_RANGE_SHARED.search(s):
+        return "a start–end time range"
+    if _R148_ENDS.search(s):
+        return "an end time"
+    if _R148_END_TIME.search(s):
+        return "an end time"
+    if _R148_FROM_FOR.search(s):
+        return "a start time with a duration"
+    return None
+
+
+def notice_event_end_time_problems(html, allowed=None, label=""):
+    """R148: currently shown Community Notice date lines have no end time or time range unless the title is allowlisted."""
+    allowed = set(allowed or ())
+    hits = []
+    where = f" in {label}" if label else ""
+    for title, date_line in r143_notices_from_html(html):
+        if not date_line:
+            continue
+        if title in allowed:
+            continue
+        why = r148_end_time_reason(date_line)
+        if why:
+            hits.append(
+                f"R148: {title!r} date line shows {why} without Steven's OK{where}: {date_line!r}"
+            )
+    return hits
+
+
+# R149 (Steven, Nov 28 2026 11:01 AM ET, voice): before any review or test copy
+# is sent, every <img> src in the SEND must return HTTP 200 with an image
+# Content-Type from the live site. A failed send teaches Gmail's image proxy
+# a broken URL (the Ladies Luncheon main-page crop was requested in review
+# emails on Nov 26 and Nov 27 10:24 AM ET, before PR #182 deployed it at
+# 10:44 AM ET). New or versioned assets are not live until the PR merges, so
+# this is a pre-send gate (scripts/check_send_live_images.py) that raises
+# SystemExit on failure. Do not use a Vercel preview-deployment URL in the
+# SEND; use https://palmhillnews.vercel.app/... . Numbered R149 so it does
+# not collide with R146 on draft PR #183; R148 is the notice start-time-only rule.
+R149_FROM = "2026-11-29"
+R149_GUARD = "send_live_image_problems"
+R149_LIVE_HOSTS = {"palmhillnews.vercel.app", "www.palmhillnews.vercel.app"}
+
+
+def r149_img_srcs(html):
+    """Unique absolute or relative <img src> values from a SEND or preview, in order."""
+    if not html:
+        return []
+    found = re.findall(r'<img\b[^>]*?\bsrc\s*=\s*"([^"]+)"', html, re.I)
+    found += re.findall(r"<img\b[^>]*?\bsrc\s*=\s*'([^']+)'", html, re.I)
+    out, seen = [], set()
+    for u in found:
+        u = _html_unescape_r143(u).strip()
+        if u and u not in seen:
+            seen.add(u)
+            out.append(u)
+    return out
+
+
+def r149_is_preview_deployment(url):
+    """True when the URL is a Vercel preview deployment, not the live palmhillnews site."""
+    if not url:
+        return False
+    host = (re.match(r"https?://([^/]+)", url, re.I) or type("m", (), {"group": lambda s, n: ""})()).group(1)
+    host = (host or "").split("@")[-1].lower()
+    if host in R149_LIVE_HOSTS:
+        return False
+    return host.endswith(".vercel.app")
+
+
+def r149_preview_image_url_problems(html, label=""):
+    """R149 structural check: SEND/preview images must not use a Vercel preview-deployment URL."""
+    hits = []
+    where = f" in {label}" if label else ""
+    for src in r149_img_srcs(html):
+        if r149_is_preview_deployment(src):
+            hits.append(f"R149: preview-deployment image URL{where}: {src}")
+    return hits
+
+
+def send_live_image_problems_from_results(srcs, results, label=""):
+    """Build R149 failure strings from {src: (status, content_type)} fetch results."""
+    hits = []
+    where = f" in {label}" if label else ""
+    for src in srcs or []:
+        if r149_is_preview_deployment(src):
+            hits.append(f"R149: preview-deployment image URL{where}: {src}")
+            continue
+        if not re.match(r"https?://", src or "", re.I):
+            hits.append(f"R149: image src is not an absolute live URL{where}: {src}")
+            continue
+        status, ctype = (results or {}).get(src, (0, ""))
+        ctype = (ctype or "").split(";")[0].strip().lower()
+        if status != 200:
+            hits.append(f"R149: {src} returned HTTP {status or 'ERR'}, not 200{where}")
+        elif not ctype.startswith("image/"):
+            hits.append(f"R149: {src} content-type is {ctype!r}, not an image{where}")
+    return hits
+
+
+def send_live_image_problems(html, fetch, label=""):
+    """R149: every <img> in html must fetch as HTTP 200 with an image content-type (fetch(url) -> (status, ctype))."""
+    srcs = r149_img_srcs(html)
+    results = {s: fetch(s) for s in srcs}
+    return send_live_image_problems_from_results(srcs, results, label=label)
+
+
+# R150 (Steven, Nov 28 2026 11:13 AM ET, voice): the location source of truth for a
+# calendar-sourced event is Tony's club calendar. When an email or verbal name
+# conflicts with the calendar but refers to the same venue, the calendar wording
+# wins. The newsletter already prints a standing display form of the calendar
+# venue field (for example the feed's "North Main Hall" is shown as "North
+# Clubhouse"). That mapped calendar wording is what must appear. A Steven-approved
+# override list may permit a different displayed location for a named event.
+# First applied to Fireside Chat, Dec 2, 2026: keep "North Clubhouse" (calendar
+# display wording); do not change it to Tony's email "North Main Hall".
+R150_FROM = "2026-11-29"
+R150_GUARD = "calendar_location_problems"
+R150_SECTIONS = (
+    "Committee & Board Meeting Schedules",
+    "Events - This Week",
+    "Events - Next Week",
+    "Events - Upcoming",
+)
+CALENDAR_VENUE_DISPLAY = {
+    "Board Room South": "South Clubhouse Boardroom",
+    "North Main Hall": "North Clubhouse",
+    "South Main Hall": "South Clubhouse",
+    "Off-Site": "Off-Site",
+    "Small Meeting Room South": "Small Meeting Room South",
+    "South Lawn and Patio": "South Lawn and Patio",
+    "Golf Course": "Golf Course",
+    "North Library": "North Library",
+}
+# Calendar meeting names -> the title the newsletter prints (matching only).
+CALENDAR_NAME_DISPLAY = {
+    "Communications Committee": "Communications Committee Meeting",
+    "Building & Grounds Committee": "Buildings and Grounds Committee Meeting",
+    "Planning & Environmental Committee": "Planning and Environmental Committee Meeting",
+}
+_R150_MON = {
+    "january": 1, "jan": 1, "february": 2, "feb": 2, "march": 3, "mar": 3,
+    "april": 4, "apr": 4, "may": 5, "june": 6, "jun": 6, "july": 7, "jul": 7,
+    "august": 8, "aug": 8, "september": 9, "sep": 9, "sept": 9, "october": 10,
+    "oct": 10, "november": 11, "nov": 11, "december": 12, "dec": 12,
+}
+_R150_DATE = re.compile(
+    r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s+"
+    r"(January|February|March|April|May|June|July|August|September|October|November|December|"
+    r"Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+(\d{1,2}),\s*(\d{4})",
+    re.I,
+)
+
+
+def calendar_display_venue(feed_venue, venue_map=None):
+    """The wording the newsletter must use for a calendar venue field (standing display map)."""
+    m = venue_map if venue_map is not None else CALENDAR_VENUE_DISPLAY
+    v = (feed_venue or "").strip()
+    return m.get(v, v)
+
+
+def r150_parse_row_date(text):
+    m = _R150_DATE.search(text or "")
+    if not m:
+        return None
+    return f"{int(m.group(3)):04d}-{_R150_MON[m.group(1).lower().rstrip('.')]:02d}-{int(m.group(2)):02d}"
+
+
+def r150_override_location(overrides, title, date_iso):
+    """Approved displayed location for this event, or None."""
+    rec = overrides or {}
+    if (title, date_iso) in rec:
+        return rec[(title, date_iso)]
+    key = f"{title}|{date_iso}" if date_iso else title
+    if key in rec:
+        return rec[key]
+    if title in rec:
+        return rec[title]
+    return None
+
+
+def r150_calendar_rows_from_html(html):
+    """Calendar-section rows as (section, title, location, date_iso) from a preview or SEND."""
+    if not html:
+        return []
+    heads = []
+    for name in R150_SECTIONS:
+        for needle in (name, name.replace("&", "&amp;")):
+            i = html.find(">" + needle + "</span>")
+            if i >= 0:
+                heads.append((i, name))
+                break
+    heads.sort()
+    out = []
+    for idx, (start, name) in enumerate(heads):
+        end = heads[idx + 1][0] if idx + 1 < len(heads) else len(html)
+        # stop at Community Notices / other following sections too
+        for stop in ("Community Notices", "Weekly Manager Update", "Community Stories",
+                     "Recurring Meetings &amp; Events", "Recurring Meetings & Events"):
+            j = html.find(">" + stop + "</span>", start + 1)
+            if 0 < j < end:
+                end = j
+        sec = html[start:end]
+        for block in re.finditer(
+            r'font-weight:bold;color:#333333;text-align:left;padding-right:10px;">([^<]+)</td>'
+            r'<td[^>]*text-align:right[^>]*>(.*?)</td>'
+            r'(.*?)(?=font-weight:bold;color:#333333;text-align:left;padding-right:10px;">|\Z)',
+            sec, re.S,
+        ):
+            title = re.sub(r"\s+", " ", _html_unescape_r143(block.group(1))).strip()
+            loc = re.sub(r"<[^>]+>", " ", block.group(2))
+            loc = re.sub(r"\s+", " ", _html_unescape_r143(loc)).strip()
+            rest = block.group(3) or ""
+            rest_txt = re.sub(r"<[^>]+>", " ", rest)
+            date_iso = r150_parse_row_date(_html_unescape_r143(rest_txt))
+            if title and loc:
+                out.append((name, title, loc, date_iso))
+    return out
+
+
+def _r150_event_names(e, title_map=None):
+    names = {(e.get("name") or "").strip()}
+    names.add(CALENDAR_NAME_DISPLAY.get(e.get("name") or "", ""))
+    tm = title_map or {}
+    names.add((tm.get(e.get("name") or "") or "").strip())
+    return {n for n in names if n}
+
+
+def calendar_location_problems(html, events, overrides=None, venue_map=None, title_map=None, label=""):
+    """R150: each calendar-sourced event row uses the calendar (display-mapped) location, unless allowlisted."""
+    hits = []
+    where = f" in {label}" if label else ""
+    by = {}
+    for e in events or []:
+        date = (e.get("date") or "").strip()
+        for n in _r150_event_names(e, title_map=title_map):
+            by.setdefault((n, date), []).append(e)
+    for section, title, loc, date_iso in r150_calendar_rows_from_html(html):
+        evs = by.get((title, date_iso or "")) or []
+        if not evs and title in {n for n, _d in by} and date_iso:
+            # no exact date match: do not guess a location
+            continue
+        if not evs:
+            continue
+        e = evs[0]
+        approved = r150_override_location(overrides, title, date_iso)
+        if approved is not None:
+            expected = approved
+            source = "Steven-approved override"
+        else:
+            expected = calendar_display_venue(e.get("venue"), venue_map=venue_map)
+            source = "club calendar"
+        if loc != expected:
+            hits.append(
+                f"R150: {title!r} on {date_iso or 'undated'} shows {loc!r}, "
+                f"but the {source} wording is {expected!r}{where}"
+            )
     return hits

@@ -17,6 +17,10 @@ Usage: python3 scripts/source_sections.py ISSUE.html [...]   (exit 1 on any fail
 import re, sys, html as H
 BASE = "https://palmhillnews.vercel.app/pages/"
 SOURCES = {
+    # Steven Nov 28 2026: Linda Keehl Webmaster blast (Coffee change reminder); one email = one notice.
+    "2026-11-28-south-coffee-and-christmas-breakfast-notice.html": dict(
+        subject="Coffee change reminder", notice_title="South Coffee and Christmas Breakfast", use_existing_page=True,
+        sections=[dict(heading="South coffee moved to Dec. 1 Christmas Breakfast", keys=["Coffee", "Dec. 1", "power outage"])], approved_omit=[]),
     # Steven Nov 20 2026 6:33 PM ET: RPM Thanksgiving and Spectrum emails (gotwicz) and Webmaster pianist notice, one email = one notice.
     "2026-11-20-holiday-schedule-trash-sanitation-field-notice.html": dict(
         subject="[#XN9638266] Message from Home Owners of Palm Hill, Inc - HOLIDAY SCHEDULE-TRASH & SANITATION FIELD", notice_title="Thanksgiving Holiday Schedule", use_existing_page=True,

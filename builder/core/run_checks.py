@@ -698,7 +698,7 @@ if C.ISSUE >= _sr83.R143_FROM:
         L.ok("R143", not _p143, f"{_n143}: dated club-calendar events are not duplicated as Community Notices" + (f" {_p143}" if _p143 else ""))
 
 # R144 (Steven Nov 23 2026 2:05 AM ET, voice): Steven-supplied teaser additions are recorded
-# and leave the source sentence / notice page body intact; Nov 29 keeps exactly seven notices.
+# and leave the source sentence / notice page body intact; Nov 29 keeps the approved notice list.
 if C.ISSUE >= _sr83.R144_FROM:
     _add144 = getattr(C, "NOTICE_TEASER_ADDITIONS", None) or {}
     _repo144 = Path(__import__("os").environ.get("PHNEWS_REPO") or str(C.DEFAULT_REPO))
@@ -741,6 +741,36 @@ if C.ISSUE >= _sr83.R145_FROM and getattr(C, "STORY", None):
                 _x145, _mp145, story_page_html=_sp145, cover_src=_cover145, label=_n145, repo=_repo145,
             )
             L.ok("R145", not _p145, f"{_n145}: Steven-picked main-page story photo is on the card; story page keeps the full cover" + (f" {_p145}" if _p145 else ""))
+
+# R148 (Steven Nov 28 2026 10:55 AM ET): Community Notice event/date lines show a
+# start time only, unless the notice is on NOTICE_EVENT_END_TIMES_APPROVED.
+if C.ISSUE >= _sr83.R148_FROM:
+    _ok148 = set(getattr(C, "NOTICE_EVENT_END_TIMES_APPROVED", None) or [])
+    for _n148, _x148 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p148 = _sr83.notice_event_end_time_problems(_x148, allowed=_ok148, label=_n148)
+        L.ok("R148", not _p148, f"{_n148}: Community Notice event lines show a start time only unless Steven approved an end time" + (f" {_p148}" if _p148 else ""))
+
+# R149 (Steven Nov 28 2026 11:01 AM ET): SEND images must not use a Vercel
+# preview-deployment URL (live-site 200 + image Content-Type is the pre-send
+# gate in scripts/check_send_live_images.py, which raises SystemExit).
+if C.ISSUE >= _sr83.R149_FROM:
+    _sd149 = ROOT / f"PHNEWS-{C.ISSUE}-SEND.html"
+    if _sd149.exists():
+        _p149 = _sr83.r149_preview_image_url_problems(_sd149.read_text(encoding="utf-8"), label="SEND")
+        L.ok("R149", not _p149, "SEND: image URLs are not Vercel preview deployments" + (f" {_p149}" if _p149 else ""))
+
+# R150 (Steven Nov 28 2026 11:13 AM ET): calendar-sourced event locations use the
+# club calendar (standing display map). An email/verbal name that conflicts but
+# refers to the same venue does not replace that wording unless allowlisted.
+if C.ISSUE >= _sr83.R150_FROM:
+    import glob as _glob150
+    _cals150 = sorted(_glob150.glob(str(ROOT / "data" / "cal-*.json")))
+    _evs150 = (__import__("json").load(open(_cals150[-1], encoding="utf-8")).get("events") or []) if _cals150 else []
+    _ok150 = getattr(C, "LOCATION_CALENDAR_OVERRIDE_APPROVED", None) or {}
+    _titles150 = getattr(C, "TITLE", None) or {}
+    for _n150, _x150 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p150 = _sr83.calendar_location_problems(_x150, _evs150, overrides=_ok150, title_map=_titles150, label=_n150)
+        L.ok("R150", not _p150, f"{_n150}: calendar-sourced event locations match the club calendar wording" + (f" {_p150}" if _p150 else ""))
 
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
