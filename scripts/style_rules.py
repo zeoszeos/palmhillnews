@@ -2059,3 +2059,156 @@ def send_live_image_problems(html, fetch, label=""):
     srcs = r149_img_srcs(html)
     results = {s: fetch(s) for s in srcs}
     return send_live_image_problems_from_results(srcs, results, label=label)
+
+
+# R150 (Steven, Nov 28 2026 11:13 AM ET, voice): the location source of truth for a
+# calendar-sourced event is Tony's club calendar. When an email or verbal name
+# conflicts with the calendar but refers to the same venue, the calendar wording
+# wins. The newsletter already prints a standing display form of the calendar
+# venue field (for example the feed's "North Main Hall" is shown as "North
+# Clubhouse"). That mapped calendar wording is what must appear. A Steven-approved
+# override list may permit a different displayed location for a named event.
+# First applied to Fireside Chat, Dec 2, 2026: keep "North Clubhouse" (calendar
+# display wording); do not change it to Tony's email "North Main Hall".
+R150_FROM = "2026-11-29"
+R150_GUARD = "calendar_location_problems"
+R150_SECTIONS = (
+    "Committee & Board Meeting Schedules",
+    "Events - This Week",
+    "Events - Next Week",
+    "Events - Upcoming",
+)
+CALENDAR_VENUE_DISPLAY = {
+    "Board Room South": "South Clubhouse Boardroom",
+    "North Main Hall": "North Clubhouse",
+    "South Main Hall": "South Clubhouse",
+    "Off-Site": "Off-Site",
+    "Small Meeting Room South": "Small Meeting Room South",
+    "South Lawn and Patio": "South Lawn and Patio",
+    "Golf Course": "Golf Course",
+    "North Library": "North Library",
+}
+# Calendar meeting names -> the title the newsletter prints (matching only).
+CALENDAR_NAME_DISPLAY = {
+    "Communications Committee": "Communications Committee Meeting",
+    "Building & Grounds Committee": "Buildings and Grounds Committee Meeting",
+    "Planning & Environmental Committee": "Planning and Environmental Committee Meeting",
+}
+_R150_MON = {
+    "january": 1, "jan": 1, "february": 2, "feb": 2, "march": 3, "mar": 3,
+    "april": 4, "apr": 4, "may": 5, "june": 6, "jun": 6, "july": 7, "jul": 7,
+    "august": 8, "aug": 8, "september": 9, "sep": 9, "sept": 9, "october": 10,
+    "oct": 10, "november": 11, "nov": 11, "december": 12, "dec": 12,
+}
+_R150_DATE = re.compile(
+    r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s+"
+    r"(January|February|March|April|May|June|July|August|September|October|November|December|"
+    r"Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+(\d{1,2}),\s*(\d{4})",
+    re.I,
+)
+
+
+def calendar_display_venue(feed_venue, venue_map=None):
+    """The wording the newsletter must use for a calendar venue field (standing display map)."""
+    m = venue_map if venue_map is not None else CALENDAR_VENUE_DISPLAY
+    v = (feed_venue or "").strip()
+    return m.get(v, v)
+
+
+def r150_parse_row_date(text):
+    m = _R150_DATE.search(text or "")
+    if not m:
+        return None
+    return f"{int(m.group(3)):04d}-{_R150_MON[m.group(1).lower().rstrip('.')]:02d}-{int(m.group(2)):02d}"
+
+
+def r150_override_location(overrides, title, date_iso):
+    """Approved displayed location for this event, or None."""
+    rec = overrides or {}
+    if (title, date_iso) in rec:
+        return rec[(title, date_iso)]
+    key = f"{title}|{date_iso}" if date_iso else title
+    if key in rec:
+        return rec[key]
+    if title in rec:
+        return rec[title]
+    return None
+
+
+def r150_calendar_rows_from_html(html):
+    """Calendar-section rows as (section, title, location, date_iso) from a preview or SEND."""
+    if not html:
+        return []
+    heads = []
+    for name in R150_SECTIONS:
+        for needle in (name, name.replace("&", "&amp;")):
+            i = html.find(">" + needle + "</span>")
+            if i >= 0:
+                heads.append((i, name))
+                break
+    heads.sort()
+    out = []
+    for idx, (start, name) in enumerate(heads):
+        end = heads[idx + 1][0] if idx + 1 < len(heads) else len(html)
+        # stop at Community Notices / other following sections too
+        for stop in ("Community Notices", "Weekly Manager Update", "Community Stories",
+                     "Recurring Meetings &amp; Events", "Recurring Meetings & Events"):
+            j = html.find(">" + stop + "</span>", start + 1)
+            if 0 < j < end:
+                end = j
+        sec = html[start:end]
+        for block in re.finditer(
+            r'font-weight:bold;color:#333333;text-align:left;padding-right:10px;">([^<]+)</td>'
+            r'<td[^>]*text-align:right[^>]*>(.*?)</td>'
+            r'(.*?)(?=font-weight:bold;color:#333333;text-align:left;padding-right:10px;">|\Z)',
+            sec, re.S,
+        ):
+            title = re.sub(r"\s+", " ", _html_unescape_r143(block.group(1))).strip()
+            loc = re.sub(r"<[^>]+>", " ", block.group(2))
+            loc = re.sub(r"\s+", " ", _html_unescape_r143(loc)).strip()
+            rest = block.group(3) or ""
+            rest_txt = re.sub(r"<[^>]+>", " ", rest)
+            date_iso = r150_parse_row_date(_html_unescape_r143(rest_txt))
+            if title and loc:
+                out.append((name, title, loc, date_iso))
+    return out
+
+
+def _r150_event_names(e, title_map=None):
+    names = {(e.get("name") or "").strip()}
+    names.add(CALENDAR_NAME_DISPLAY.get(e.get("name") or "", ""))
+    tm = title_map or {}
+    names.add((tm.get(e.get("name") or "") or "").strip())
+    return {n for n in names if n}
+
+
+def calendar_location_problems(html, events, overrides=None, venue_map=None, title_map=None, label=""):
+    """R150: each calendar-sourced event row uses the calendar (display-mapped) location, unless allowlisted."""
+    hits = []
+    where = f" in {label}" if label else ""
+    by = {}
+    for e in events or []:
+        date = (e.get("date") or "").strip()
+        for n in _r150_event_names(e, title_map=title_map):
+            by.setdefault((n, date), []).append(e)
+    for section, title, loc, date_iso in r150_calendar_rows_from_html(html):
+        evs = by.get((title, date_iso or "")) or []
+        if not evs and title in {n for n, _d in by} and date_iso:
+            # no exact date match: do not guess a location
+            continue
+        if not evs:
+            continue
+        e = evs[0]
+        approved = r150_override_location(overrides, title, date_iso)
+        if approved is not None:
+            expected = approved
+            source = "Steven-approved override"
+        else:
+            expected = calendar_display_venue(e.get("venue"), venue_map=venue_map)
+            source = "club calendar"
+        if loc != expected:
+            hits.append(
+                f"R150: {title!r} on {date_iso or 'undated'} shows {loc!r}, "
+                f"but the {source} wording is {expected!r}{where}"
+            )
+    return hits

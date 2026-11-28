@@ -922,6 +922,11 @@ NOTICE_DATE_LINE = {
 # Empty for Nov 29: no currently shown notice has an approved end time.
 NOTICE_EVENT_END_TIMES_APPROVED = set()
 
+# R150 (Steven Nov 28 2026 11:13 AM ET): displayed locations that differ from the
+# club calendar (after CALENDAR_VENUE_DISPLAY) need an explicit OK. Empty: Fireside
+# Chat keeps "North Clubhouse" (calendar display of the feed's "North Main Hall").
+LOCATION_CALENDAR_OVERRIDE_APPROVED = {}
+
 NOTICE_NO_DATE = {  # source gives no date; Steven Oct 30 2026 12:13 PM "yes to all": leave undated
     SCAM_TITLE: "Nov 15 draft: the Webmaster email (Thu Nov 12) warns about a scam received that day; no event date (flagged for Steven)",
     ROUTE_TITLE: "Nov 15 draft: the route email is an image-only map with START and END labels and no printed date (flagged for Steven)",

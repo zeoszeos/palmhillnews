@@ -66,9 +66,7 @@ def is_cmte(e): return e.get("category") == "Meetings" and bool(COMMITTEE_RE.sea
 sys.path.insert(0, SCRIPTS); import style_rules as _sr121  # R121 reserved-only filter
 def ok(e): return e.get("status") == "CONFIRMED" and e["name"] != "Private Event" and "test" not in e["name"].lower() and not _sr121.reserved_only_name(e.get("name"))
 AS_RECURRING = {"Hand and Foot Cards", "Ukulele Group", "Ear Wax Removal", "I Got It", "Karaoke Obi-Time", "Writing Club"}
-VENUE = {"Board Room South": "South Clubhouse Boardroom", "North Main Hall": "North Clubhouse", "South Main Hall": "South Clubhouse",
-         "Off-Site": "Off-Site", "Small Meeting Room South": "Small Meeting Room South", "South Lawn and Patio": "South Lawn and Patio",
-         "Golf Course": "Golf Course", "North Library": "North Library"}
+VENUE = dict(_sr121.CALENDAR_VENUE_DISPLAY)  # R150: one display map, calendar wording wins
 CANON = {"Communications Committee": "Communications Committee Meeting", "Building & Grounds Committee": "Buildings and Grounds Committee Meeting",
          "Planning & Environmental Committee": "Planning and Environmental Committee Meeting"}
 

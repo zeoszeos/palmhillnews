@@ -759,6 +759,19 @@ if C.ISSUE >= _sr83.R149_FROM:
         _p149 = _sr83.r149_preview_image_url_problems(_sd149.read_text(encoding="utf-8"), label="SEND")
         L.ok("R149", not _p149, "SEND: image URLs are not Vercel preview deployments" + (f" {_p149}" if _p149 else ""))
 
+# R150 (Steven Nov 28 2026 11:13 AM ET): calendar-sourced event locations use the
+# club calendar (standing display map). An email/verbal name that conflicts but
+# refers to the same venue does not replace that wording unless allowlisted.
+if C.ISSUE >= _sr83.R150_FROM:
+    import glob as _glob150
+    _cals150 = sorted(_glob150.glob(str(ROOT / "data" / "cal-*.json")))
+    _evs150 = (__import__("json").load(open(_cals150[-1], encoding="utf-8")).get("events") or []) if _cals150 else []
+    _ok150 = getattr(C, "LOCATION_CALENDAR_OVERRIDE_APPROVED", None) or {}
+    _titles150 = getattr(C, "TITLE", None) or {}
+    for _n150, _x150 in [("preview", page)] + ([("SEND", (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").read_text(encoding="utf-8"))] if (ROOT / f"PHNEWS-{C.ISSUE}-SEND.html").exists() else []):
+        _p150 = _sr83.calendar_location_problems(_x150, _evs150, overrides=_ok150, title_map=_titles150, label=_n150)
+        L.ok("R150", not _p150, f"{_n150}: calendar-sourced event locations match the club calendar wording" + (f" {_p150}" if _p150 else ""))
+
 res = L.results + L2.results
 from explain import explain as _why  # R75: plain-English why/fix line under each FAIL (counts unchanged)
 for r in res:
